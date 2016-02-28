@@ -7,6 +7,16 @@
 struct SDL_Window;
 struct SDL_WindowEvent;
 
+/*  We use CRTP ("curiously recurring template pattern") to inject specialization
+    into the template.
+
+    Impl must provide the following members:
+
+    void init()
+        Called when window is being opened. Use this to bind to the graphics subsystem.
+    void redraw()
+        Called to draw the contents of the window.
+ */
 template <class Impl> class Window {
     struct Deleter;
 
@@ -22,6 +32,9 @@ public:
 
     static void dispatch_event(SDL_WindowEvent &ev);
     static void dispatch_redraw(uint32_t win_id);
+
+protected:
+    auto sdl_pointer() -> SDL_Window *;
 
 private:
     struct Deleter { void operator() (SDL_Window *win); };

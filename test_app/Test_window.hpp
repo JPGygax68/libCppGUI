@@ -7,4 +7,6 @@ public:
     Test_window();
 
     void init();
+
+    void redraw();
 };

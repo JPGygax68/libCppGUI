@@ -45,7 +45,27 @@ void Window<Impl>::dispatch_event(SDL_WindowEvent &ev)
 template <class Impl>
 void Window<Impl>::dispatch_redraw(uint32_t win_id)
 {
-    window_map()[win_id]->request_redraw();
+    static_cast<Impl*>(window_map()[win_id])->redraw();
+}
+
+template<class Impl>
+auto Window<Impl>::sdl_pointer() -> SDL_Window *
+{
+    return _win.get();
+}
+
+template <class Impl>
+Window<Impl>::Window(const std::string &title)
+{
+    auto win = SDL_CreateWindow(title.c_str(),
+        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 0, 0,
+        SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_OPENGL);
+
+    _win.reset(win);
+
+    window_map()[SDL_GetWindowID(win)] = this;
+
+    static_cast<Impl*>(this)->init();
 }
 
 template <class Impl>
@@ -79,18 +99,6 @@ void Window<Impl>::request_redraw()
     SDL_UserEvent &ue = ev.user;
     ue.windowID = SDL_GetWindowID(_win.get());
     SDL_PushEvent(&ev);
-}
-
-template <class Impl>
-Window<Impl>::Window(const std::string &title)
-{
-    auto win = SDL_CreateWindow(title.c_str(),
-        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 0, 0,
-        SDL_WINDOW_MAXIMIZED | SDL_WINDOW_OPENGL);
-
-    _win.reset(win);
-
-    window_map()[SDL_GetWindowID(win)] = this;
 }
 
 template <class Impl>

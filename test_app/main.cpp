@@ -5,11 +5,12 @@
 #include "./Test_window.hpp"
 #include "./Application.hpp"
 
+// Explicitly instantiate Application and Window templates
 #include "./Window.ipp"
 #include "./Application.ipp"
 Application<Test_window>;
 
-int main(int argc, char *argv[])
+int main(int /*argc*/, char * /*argv*/[])
 {
     try
     {
