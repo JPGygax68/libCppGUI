@@ -7,11 +7,11 @@
 
 #include "./Window.hpp"
 
-static std::map<Uint32, Window*> windows;
+static std::map<Uint32, Window_base*> windows;
 
-Uint32 Window::redraw_event_id;
+Uint32 Window_base::redraw_event_id;
 
-static class Window::Static_init {
+static class Window_base::Static_init {
 public:
     Static_init()
     {
@@ -22,21 +22,13 @@ public:
     }
 } _init;
 
-auto Window::create(const std::string& title) -> std::unique_ptr<Window>
-{
-    auto win = SDL_CreateWindow(title.c_str(), 
-        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 0, 0, 
-        SDL_WINDOW_MAXIMIZED|SDL_WINDOW_OPENGL);
-
-    return std::unique_ptr<Window>{new Window{ win }};
-}
-
+template <class Impl>
 void Window::dispatch_event(SDL_WindowEvent &ev)
 {
     windows[ev.windowID]->handle_event(ev);
 }
 
-void Window::dispatch_redraw(Uint32 win_id)
+void Window::dispatch_redraw(uint32_t win_id)
 {
     windows[win_id]->request_redraw();
 }
@@ -71,8 +63,12 @@ void Window::request_redraw()
     SDL_PushEvent(&ev);
 }
 
-Window::Window(SDL_Window *win)
+Window::Window(const std::string &title)
 {
+    auto win = SDL_CreateWindow(title.c_str(),
+        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 0, 0,
+        SDL_WINDOW_MAXIMIZED | SDL_WINDOW_OPENGL);
+
     _win.reset(win);
 
     windows[SDL_GetWindowID(win)] = this;

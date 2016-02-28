@@ -1,7 +1,6 @@
 #pragma once
 
-struct SDL_Window;
-
+template <class WinT>
 class Application {
 public:
     int run();

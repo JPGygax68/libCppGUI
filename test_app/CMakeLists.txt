@@ -4,7 +4,9 @@ add_executable( ${PROJECT_NAME}
   
   main.cpp
 
-  Window.cpp Window.hpp
+  Test_window.hpp       Test_window.cpp
+  Application.hpp       Application.ipp
+  Window.hpp            Window.ipp 
 )
 
 target_link_libraries( ${PROJECT_NAME} PRIVATE SDL2-static SDL2main libCppGUI)

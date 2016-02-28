@@ -2,35 +2,34 @@
 
 #include <string>
 #include <memory>
+#include <map>
 
 struct SDL_Window;
 struct SDL_WindowEvent;
 
-class Window {
+template <class Impl> class Window {
     struct Deleter;
 
 public:
     using Pointer = std::unique_ptr<SDL_Window, Deleter>;
 
-    static Uint32 redraw_event_id;
+    static auto redraw_event_id() -> uint32_t &;
 
-    static auto create(const std::string &title = "SDL Window") -> std::unique_ptr<Window>;
-
-    static void dispatch_event(SDL_WindowEvent &ev);
-    static void dispatch_redraw(Uint32 win_id);
-
+    Window(const std::string &title); // TODO: should probably be made protected
     ~Window();
-
-    void handle_event(SDL_WindowEvent &ev);
 
     void request_redraw();
 
+    static void dispatch_event(SDL_WindowEvent &ev);
+    static void dispatch_redraw(uint32_t win_id);
 
 private:
-    Window(SDL_Window *);
-
     struct Deleter { void operator() (SDL_Window *win); };
     class Static_init;
+
+    static auto window_map() -> std::map<uint32_t, Window*> &;
+
+    void handle_event(SDL_WindowEvent &ev);
 
     Pointer _win;
 };

@@ -1,13 +1,20 @@
 #include <iostream>
 
 #include <SDL_main.h>
+
+#include "./Test_window.hpp"
 #include "./Application.hpp"
+
+#include "./Window.ipp"
+#include "./Application.ipp"
+Application<Test_window>;
 
 int main(int argc, char *argv[])
 {
     try
     {
-        Application app;
+        auto win = std::make_unique<Test_window>();
+        Application<Test_window> app;
 
         app.run();
 
