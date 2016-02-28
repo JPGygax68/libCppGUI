@@ -7,3 +7,18 @@
 [submodule "external/libGPCGLWrappers"]
 	path = external/libGPCGLWrappers
 	url = git@github.com:JPGygax68/libGPCGLWrappers.git
+[submodule "external/libGPCGUIGLRenderer"]
+	path = external/libGPCGUIGLRenderer
+	url = git@github.com:JPGygax68/libGPCGUIGLRenderer.git
+[submodule "external/libGPCGUIRenderer"]
+	path = external/libGPCGUIRenderer
+	url = git@github.com:JPGygax68/libGPCGUIRenderer.git
+[submodule "external/libGPCFonts"]
+	path = external/libGPCFonts
+	url = git@github.com:JPGygax68/libGPCFonts.git
+[submodule "external/libGPCGLUtils"]
+	path = external/libGPCGLUtils
+	url = git@github.com:JPGygax68/libGPCGLUtils.git
+[submodule "external/GPCBin2C"]
+	path = external/GPCBin2C
+	url = git@github.com:JPGygax68/gpcbin2c.git

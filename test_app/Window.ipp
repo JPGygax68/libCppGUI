@@ -55,10 +55,10 @@ auto Window<Impl>::sdl_pointer() -> SDL_Window *
 }
 
 template <class Impl>
-Window<Impl>::Window(const std::string &title)
+Window<Impl>::Window(const std::string &title, int w, int h)
 {
     auto win = SDL_CreateWindow(title.c_str(),
-        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 0, 0,
+        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h,
         SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_OPENGL);
 
     _win.reset(win);

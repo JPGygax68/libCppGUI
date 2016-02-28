@@ -14,6 +14,9 @@ struct SDL_WindowEvent;
 
     void init()
         Called when window is being opened. Use this to bind to the graphics subsystem.
+    void size_changed(int w, int h)
+        Called when the size of the window changes (includes window creation)
+        TODO: use Size struct instead of w, h
     void redraw()
         Called to draw the contents of the window.
  */
@@ -25,7 +28,7 @@ public:
 
     static auto redraw_event_id() -> uint32_t &;
 
-    Window(const std::string &title); // TODO: should probably be made protected
+    Window(const std::string &title, int w = 800, int h = 600); // TODO: should probably be made protected
     ~Window();
 
     void request_redraw();

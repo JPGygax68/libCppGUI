@@ -1,15 +1,10 @@
 #include <iostream>
-#pragma warning(push)
-#pragma warning(disable:4251)
-#include <glbinding/gl/gl.h>
-#include <glbinding/Binding.h>
-#pragma warning(pop)
-using namespace gl;
-#include <gpc/gl/wrappers.hpp>
 
 #include "./Window.ipp"
 
 #include "./Test_window.hpp"
+
+#include <gpc/gl/wrappers.hpp>
 
 Test_window::Test_window():
     Window<Test_window>("Test window")
@@ -25,7 +20,7 @@ void Test_window::init()
     if (!ctx) throw std::runtime_error("Test_window::init(): failed to create OpenGL context");
     SDL_GL_MakeCurrent(sdl_pointer(), ctx);
     glbinding::Binding::initialize();
-    GL(ClearColor, 0, 0.5, 1, 1);
+    GL(ClearColor, 0, 0.5f, 1, 1);
 }
 
 void Test_window::redraw()
