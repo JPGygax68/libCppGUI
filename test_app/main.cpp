@@ -5,12 +5,19 @@
 
 int main(int argc, char *argv[])
 {
-    Application app;
+    try
+    {
+        Application app;
 
-    app.run();
+        app.run();
 
-    std::cout << "Press RETURN to terminate" << std::endl;
-    char ch; std::cin >> std::noskipws >> ch;
-
-    return 0;
+        return 0;
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << std::endl;
+        std::cout << "Press RETURN to terminate" << std::endl;
+        char ch; std::cin >> std::noskipws >> ch;
+        return -1;
+    }
 }

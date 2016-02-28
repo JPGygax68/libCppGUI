@@ -15,6 +15,14 @@ int Application::run()
         {
             break;
         }
+        else if (ev.type == SDL_WINDOWEVENT)
+        {
+            Window::dispatch_event(ev.window);
+        }
+        else if (ev.type == Window::redraw_event_id)
+        {
+            Window::dispatch_redraw(ev.user.windowID);
+        }
     }
 
     return -1;
