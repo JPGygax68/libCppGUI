@@ -7,7 +7,12 @@ namespace cppgui {
     template <class Renderer>
     class Root_widget {
     public:
-        void render(Renderer &);
+        void render(Renderer *);
+
+        void set_size(int w, int h);
+
+    private:
+        int _w, _h;
     };
 
 } // ns cppgui

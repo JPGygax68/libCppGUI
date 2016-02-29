@@ -14,14 +14,20 @@ using namespace gl;
 
 class Test_window : public Window<Test_window> {
 public:
+    using Renderer = gpc::gui::gl::renderer<true>;
+
     Test_window();
 
     void init();
+    void cleanup();
 
     void redraw();
 
-private:
-    using Root_widget = cppgui::Root_widget<gpc::gui::gl::renderer<true>>;
+    void size_changed(int w, int h);
 
-    Root_widget _root_widget;
+private:
+    using Root_widget = cppgui::Root_widget<Renderer>;
+
+    Root_widget     _root_widget;
+    Renderer       *_renderer;
 };

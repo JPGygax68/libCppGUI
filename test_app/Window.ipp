@@ -82,8 +82,13 @@ void Window<Impl>::handle_event(SDL_WindowEvent &ev)
     switch (ev.event)
     {
     case SDL_WINDOWEVENT_SHOWN:
+        request_redraw();
+        break;
     case SDL_WINDOWEVENT_MAXIMIZED:
+        request_redraw();
+        break;
     case SDL_WINDOWEVENT_SIZE_CHANGED:
+        static_cast<Impl*>(this)->size_changed(ev.data1, ev.data2); // width & height, respectively
         request_redraw();
         break;
     }
