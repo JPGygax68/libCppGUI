@@ -22,6 +22,26 @@ public:
 } _init;
 
 template <class Impl>
+Window<Impl>::Window(const std::string &title, int w, int h)
+{
+    auto win = SDL_CreateWindow(title.c_str(),
+        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h,
+        SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_OPENGL);
+
+    _win.reset(win);
+
+    window_map()[SDL_GetWindowID(win)] = this;
+
+    static_cast<Impl*>(this)->init_graphics();
+}
+
+template <class Impl>
+Window<Impl>::~Window()
+{
+    window_map().erase(SDL_GetWindowID(_win.get()));
+}
+
+template <class Impl>
 auto Window<Impl>::redraw_event_id() -> uint32_t &
 {
     static uint32_t id = SDL_RegisterEvents(1);
@@ -52,26 +72,6 @@ template<class Impl>
 auto Window<Impl>::sdl_pointer() -> SDL_Window *
 {
     return _win.get();
-}
-
-template <class Impl>
-Window<Impl>::Window(const std::string &title, int w, int h)
-{
-    auto win = SDL_CreateWindow(title.c_str(),
-        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h,
-        SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_OPENGL);
-
-    _win.reset(win);
-
-    window_map()[SDL_GetWindowID(win)] = this;
-
-    static_cast<Impl*>(this)->init();
-}
-
-template <class Impl>
-Window<Impl>::~Window()
-{
-    window_map().erase(SDL_GetWindowID(_win.get()));
 }
 
 template <class Impl>

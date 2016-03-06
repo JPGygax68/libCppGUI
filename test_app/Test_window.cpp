@@ -1,19 +1,26 @@
 #include <iostream>
 
 #include "./Window.ipp"
-#include "./cppgui/Root_widget.hpp"
-#include "./cppgui/Root_widget.ipp"
+#include "./cppgui/Label.hpp"
 
 #include "./Test_window.hpp"
 
+#include "./cppgui/Widget.ipp"
+#include "./cppgui/Label.ipp"
+
 #include <gpc/gl/wrappers.hpp>
+
+#include "./Fonts.hpp"
 
 Test_window::Test_window():
     Window<Test_window>("Test window")
 {
+
+    _label.set_font(&Fonts::default_font());
+    _label.set_text(U"Hello World!");
 }
 
-void Test_window::init()
+void Test_window::init_graphics()
 {
     std::cout << "Test_window::init()" << std::endl;
 
@@ -23,10 +30,11 @@ void Test_window::init()
     SDL_GL_MakeCurrent(sdl_pointer(), ctx);
     glbinding::Binding::initialize();
     _renderer = new Renderer{};
+    _renderer->init();
     GL(ClearColor, 0.0f, 0.5f, 1.0f, 1.0f);
 }
 
-void Test_window::cleanup()
+void Test_window::cleanup_graphics()
 {
     assert(_renderer);
     // TODO: renderer cleanup ?
@@ -38,12 +46,14 @@ void Test_window::redraw()
     std::cout << "Test_window::redraw()" << std::endl;
     //GL(Clear, GL_COLOR_BUFFER_BIT);
     _renderer->enter_context();
-    _root_widget.render(_renderer);
+    _label.render(_renderer);
     _renderer->leave_context();
     SDL_GL_SwapWindow(sdl_pointer());
 }
 
 void Test_window::size_changed(int w, int h)
 {
-    _root_widget.set_size(w, h);
+    _label.set_position({5, 5});
+    _label.set_extents({ 200, 120 });
+    _renderer->define_viewport(0, 0, w, h);
 }

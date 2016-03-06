@@ -12,8 +12,9 @@ struct SDL_WindowEvent;
 
     Impl must provide the following members:
 
-    void init()
-        Called when window is being opened. Use this to bind to the graphics subsystem.
+    void init_graphics()
+        Called when window is being opened, which is upon construction, BEFORE
+        the derived constructor is called! Use this to bind to the graphics subsystem.
     void size_changed(int w, int h)
         Called when the size of the window changes (includes window creation)
         TODO: use Size struct instead of w, h
