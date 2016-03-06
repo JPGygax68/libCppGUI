@@ -20,7 +20,7 @@ namespace cppgui {
         auto minimal_size() -> Extents override;
 
         void update_resources(Renderer *) override;
-        void render(Renderer *) override;
+        void render(Renderer *, const Position &offset) override;
 
         struct Layouter {
             static void update(Label &);

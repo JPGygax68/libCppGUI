@@ -8,6 +8,7 @@ namespace cppgui {
 
     struct Position {
         int x, y;
+        auto operator + (const Position &offs) const { return Position{ offs.x + x, offs.y + y }; }
     };
 
     struct Extents {
@@ -37,7 +38,7 @@ namespace cppgui {
 
         virtual void update_resources(Renderer *) = 0;
 
-        virtual void render(Renderer *) = 0;
+        virtual void render(Renderer *, const Position &offset) = 0;
 
         void update_layout();
 

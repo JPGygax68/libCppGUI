@@ -33,10 +33,10 @@ namespace cppgui {
     }
 
     template<class Renderer>
-    void Label<Renderer>::render(Renderer *r)
+    void Label<Renderer>::render(Renderer *r, const Position &offset)
     {
         fill(r, rgba_to_native({0.8f, 0.8f, 0.8f, 1}));
-        auto p = position();
+        auto p = offset + position();
         r->render_text(_fnthnd, p.x + _txpos.x, p.y + _txpos.y, _text.data(), _text.size());
     }
 
