@@ -11,7 +11,7 @@ endif()
 
 set(font_file LiberationSans-Regular)
 
-foreach(size IN ITEMS 14 16)
+foreach(size IN ITEMS 14 16 24)
 
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont

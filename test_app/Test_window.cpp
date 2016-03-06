@@ -15,7 +15,6 @@
 Test_window::Test_window():
     Window<Test_window>("Test window")
 {
-
     _label.set_font(&Fonts::default_font());
     _label.set_text(U"Hello World!");
 }
@@ -44,6 +43,13 @@ void Test_window::cleanup_graphics()
 void Test_window::redraw()
 {
     std::cout << "Test_window::redraw()" << std::endl;
+
+    if (!_gfxres_ok)
+    {
+        _label.update_resources(_renderer);
+        _gfxres_ok = true;
+    }
+
     //GL(Clear, GL_COLOR_BUFFER_BIT);
     _renderer->enter_context();
     _label.render(_renderer);
@@ -53,7 +59,8 @@ void Test_window::redraw()
 
 void Test_window::size_changed(int w, int h)
 {
-    _label.set_position({5, 5});
-    _label.set_extents({ 200, 120 });
+    _label.set_position({ 50, 50 });
+    _label.set_extents({ 200, 60 });
+    _label.update_layout();
     _renderer->define_viewport(0, 0, w, h);
 }

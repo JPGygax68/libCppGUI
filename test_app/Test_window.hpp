@@ -31,4 +31,5 @@ private:
 
     Label           _label;
     Renderer       *_renderer;
+    bool            _gfxres_ok = false;
 };

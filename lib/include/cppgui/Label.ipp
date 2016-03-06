@@ -27,15 +27,28 @@ namespace cppgui {
     }
 
     template<class Renderer>
+    void Label<Renderer>::update_resources(Renderer *r)
+    {
+        _fnthnd = r->register_font(*_font);
+    }
+
+    template<class Renderer>
     void Label<Renderer>::render(Renderer *r)
     {
-        fill(r, rgba_to_native({0.8f, 0.8f, 0.8f, 1})); // TODO: THIS IS STRICTLY A PLACEHOLDER!!
+        fill(r, rgba_to_native({0.8f, 0.8f, 0.8f, 1}));
+        auto p = position();
+        r->render_text(_fnthnd, p.x + _txpos.x, p.y + _txpos.y, _text.data(), _text.size());
     }
 
     template<class Renderer>
     inline void Label<Renderer>::Layouter::update(Label &label)
     {
-        auto text_bounds = label._font->compute_text_extents(0, _text.data(), _text.size());
+        auto txb = label._font->compute_text_extents(0, label._text.data(), label._text.size());
+        auto ext = label.extents();
+        label._txpos = { 
+            static_cast<int>((ext.w - txb.width ()) / 2            ), 
+            static_cast<int>((ext.h - txb.height()) / 2 + txb.y_max) 
+        };
     }
 
 } // ns cppgui
