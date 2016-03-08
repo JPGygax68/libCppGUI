@@ -1,5 +1,7 @@
 #pragma once
 
+#include "./Container.hpp"
+
 namespace cppgui {
 
     extern int dummy;

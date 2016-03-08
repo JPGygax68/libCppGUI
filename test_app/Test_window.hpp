@@ -8,6 +8,7 @@
 using namespace gl;
 
 #include <gpc/gui/gl/renderer.hpp> // TODO: replace with new namespace/naming
+#include <cppgui/Root_widget.hpp>
 #include <cppgui/Label.hpp>
 
 #include "./Window.hpp"
@@ -27,9 +28,10 @@ public:
 
 private:
     //using Root_widget = cppgui::Root_widget<Renderer>;
-    using Label = cppgui::Label<Renderer>;
+    using Label = cppgui::Label<Renderer, true>;
 
-    Label           _label;
-    Renderer       *_renderer;
-    bool            _gfxres_ok = false;
+    cppgui::Root_widget<Renderer>   _root_widget;
+    Label                           _label;
+    Renderer                       *_renderer;
+    bool                            _gfxres_ok = false;
 };

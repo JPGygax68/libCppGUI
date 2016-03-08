@@ -17,6 +17,8 @@ Test_window::Test_window():
 {
     _label.set_font(&Fonts::default_font());
     _label.set_text(U"Hello World!");
+
+    //_root_widget.add_child(_label);
 }
 
 void Test_window::init_graphics()
@@ -61,6 +63,6 @@ void Test_window::size_changed(int w, int h)
 {
     _label.set_position({ 50, 50 });
     _label.set_extents({ 200, 60 });
-    _label.update_layout();
+    _label.layout();
     _renderer->define_viewport(0, 0, w, h);
 }
