@@ -7,6 +7,8 @@
 
 #include "./cppgui/Widget.ipp"
 #include "./cppgui/Label.ipp"
+#include "./cppgui/Container.ipp"
+#include "./cppgui/Root_widget.ipp"
 
 #include <gpc/gl/wrappers.hpp>
 
@@ -18,7 +20,7 @@ Test_window::Test_window():
     _label.set_font(&Fonts::default_font());
     _label.set_text(U"Hello World!");
 
-    //_root_widget.add_child(_label);
+    _root_widget.add_child(&_label);
 }
 
 void Test_window::init_graphics()
@@ -54,7 +56,8 @@ void Test_window::redraw()
 
     //GL(Clear, GL_COLOR_BUFFER_BIT);
     _renderer->enter_context();
-    _label.render(_renderer, {0, 0});
+    //_label.render(_renderer, {0, 0});
+    _root_widget.render(_renderer, { 0, 0 });
     _renderer->leave_context();
     SDL_GL_SwapWindow(sdl_pointer());
 }
@@ -65,4 +68,9 @@ void Test_window::size_changed(int w, int h)
     _label.set_extents({ 200, 60 });
     _label.layout();
     _renderer->define_viewport(0, 0, w, h);
+}
+
+void Test_window::mouse_motion(int x, int y)
+{
+    _root_widget.mouse_motion({x, y});
 }

@@ -57,9 +57,15 @@ auto Window<Impl>::window_map() -> std::map<uint32_t, Window*> &
 }
 
 template <class Impl>
-void Window<Impl>::dispatch_event(SDL_WindowEvent &ev)
+void Window<Impl>::dispatch_window_event(SDL_WindowEvent &ev)
 {
-    window_map()[ev.windowID]->handle_event(ev);
+    window_map()[ev.windowID]->handle_window_event(ev);
+}
+
+template<class Impl>
+void Window<Impl>::dispatch_mousemotion_event(SDL_MouseMotionEvent & ev)
+{
+    window_map()[ev.windowID]->handle_mousemotion_event(ev);
 }
 
 template <class Impl>
@@ -75,9 +81,9 @@ auto Window<Impl>::sdl_pointer() -> SDL_Window *
 }
 
 template <class Impl>
-void Window<Impl>::handle_event(SDL_WindowEvent &ev)
+void Window<Impl>::handle_window_event(SDL_WindowEvent &ev)
 {
-    std::cout << "Window::handle_event()" << std::endl;
+    std::cout << "Window::handle_window_event()" << std::endl;
 
     switch (ev.event)
     {
@@ -92,6 +98,15 @@ void Window<Impl>::handle_event(SDL_WindowEvent &ev)
         request_redraw();
         break;
     }
+}
+
+
+template <class Impl>
+void Window<Impl>::handle_mousemotion_event(SDL_MouseMotionEvent &ev)
+{
+    std::cout << "Window::handle_mousemotion_event()" << std::endl;
+
+    static_cast<Impl*>(this)->mouse_motion(ev.x, ev.y);
 }
 
 template <class Impl>

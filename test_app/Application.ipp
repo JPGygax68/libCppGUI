@@ -18,7 +18,11 @@ int Application<WinT>::run()
         }
         else if (ev.type == SDL_WINDOWEVENT)
         {
-            WinT::dispatch_event(ev.window);
+            WinT::dispatch_window_event(ev.window);
+        }
+        else if (ev.type == SDL_MOUSEMOTION)
+        {
+            WinT::dispatch_mousemotion_event(ev.motion);
         }
         else if (ev.type == WinT::redraw_event_id())
         {

@@ -25,6 +25,7 @@ public:
     void redraw();
 
     void size_changed(int w, int h);
+    void mouse_motion(int x, int y);
 
 private:
     //using Root_widget = cppgui::Root_widget<Renderer>;

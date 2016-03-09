@@ -31,6 +31,8 @@ namespace cppgui {
         void set_position(const Position &);
         void set_extents(const Extents &);
 
+        virtual void mouse_motion(const Position &) {};
+
     protected:
         Rectangle   _rect;
     };

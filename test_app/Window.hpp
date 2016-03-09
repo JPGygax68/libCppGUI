@@ -6,6 +6,7 @@
 
 struct SDL_Window;
 struct SDL_WindowEvent;
+struct SDL_MouseMotionEvent;
 
 /*  We use CRTP ("curiously recurring template pattern") to inject specialization
     into the template.
@@ -16,8 +17,10 @@ struct SDL_WindowEvent;
         Called when window is being opened, which is upon construction, BEFORE
         the derived constructor is called! Use this to bind to the graphics subsystem.
     void size_changed(int w, int h)
-        Called when the size of the window changes (includes window creation)
+        Called when the size of the window changes (includes window creation).
         TODO: use Size struct instead of w, h
+    void mouse_motion(const Position &)
+        Called when the user is moving the mouse within the confines of the window.
     void redraw()
         Called to draw the contents of the window.
  */
@@ -34,7 +37,8 @@ public:
 
     void request_redraw();
 
-    static void dispatch_event(SDL_WindowEvent &ev);
+    static void dispatch_window_event(SDL_WindowEvent &ev);
+    static void dispatch_mousemotion_event(SDL_MouseMotionEvent &ev);
     static void dispatch_redraw(uint32_t win_id);
 
 protected:
@@ -46,7 +50,8 @@ private:
 
     static auto window_map() -> std::map<uint32_t, Window*> &;
 
-    void handle_event(SDL_WindowEvent &ev);
+    void handle_window_event(SDL_WindowEvent &ev);
+    void handle_mousemotion_event(SDL_MouseMotionEvent &ev);
 
     Pointer _win;
 };

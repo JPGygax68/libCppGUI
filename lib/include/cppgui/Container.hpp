@@ -9,26 +9,24 @@ namespace cppgui {
     public:
         void add_child(Widget<Renderer> *);
 
+        void mouse_motion(const Position &) override;
+
+        void update_resources(Renderer *) override;
+        void render(Renderer *, const Position &offset) override;
+
     private:
         std::vector<Widget<Renderer>*> _children;
+        Widget                         *_hovered_child = nullptr;
     };
 
-    /*
-    template<class Renderer>
-    class Container_full : public Widget<Renderer>, public Layouter {
+    template <class Renderer>
+    class Container_full : public Container_min<Renderer>, public Widget_layouter {
     public:
-        auto minimal_size() -> Extents override;
-        void layout() override;
+        //auto minimal_size() -> Extents override;
+        //void layout() override;
     };
 
     template <class Renderer, bool WithLayout = true>
-    class Container_full : public std::conditional<WithLayout, Container_full, Container_min> {};
-
-    template<class Renderer>
-    inline void Container_min<Renderer>::add_child(Widget<Renderer> *child)
-    {
-        _children.push_back(child);
-    }
-    */
+    class Container : public std::conditional<WithLayout, Container_full<Renderer>, Container_min<Renderer>>::type {};
 
 } // ns cppgui
