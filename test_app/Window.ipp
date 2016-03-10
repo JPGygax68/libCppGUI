@@ -104,7 +104,7 @@ void Window<Impl>::handle_window_event(SDL_WindowEvent &ev)
 template <class Impl>
 void Window<Impl>::handle_mousemotion_event(SDL_MouseMotionEvent &ev)
 {
-    std::cout << "Window::handle_mousemotion_event()" << std::endl;
+    // std::cout << "Window::handle_mousemotion_event()" << std::endl;
 
     static_cast<Impl*>(this)->mouse_motion(ev.x, ev.y);
 }

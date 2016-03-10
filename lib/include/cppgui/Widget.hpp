@@ -11,16 +11,25 @@ namespace cppgui {
 
     struct Position {
         int x, y;
-        auto operator + (const Position &offs) const { return Position{ offs.x + x, offs.y + y }; }
+        auto operator + (const Position &offs) const { return Position{ x + offs.x, y + offs.y }; }
+        auto operator - (const Position &offs) const { return Position{ x - offs.x, y - offs.y }; }
     };
 
     struct Extents {
         unsigned int w, h;
+        bool contains(const Position &pos) const { 
+            return pos.x >= 0 && pos.y >= 0 
+                && (unsigned int) pos.x < w && (unsigned int) pos.y < h; 
+        }
     };
 
     struct Rectangle {
         Position pos;
         Extents  ext;
+        bool contains(const Position &p) const
+        { 
+            return ext.contains(p - pos);
+        }
     };
 
     class Widget_base {
@@ -33,8 +42,17 @@ namespace cppgui {
 
         virtual void mouse_motion(const Position &) {};
 
+        virtual void mouse_enter();
+        virtual void mouse_exit();
+
+        bool hovered() const { return _hovered; }
+
     protected:
+        void trigger_redraw();
+
         Rectangle   _rect;
+
+        bool        _hovered = false;
     };
 
     template <class Renderer>

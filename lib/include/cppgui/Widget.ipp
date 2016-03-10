@@ -14,14 +14,31 @@ namespace cppgui {
         _rect.ext = ext;
     }
 
+    inline void Widget_base::mouse_enter()
+    {
+        _hovered = true;
+        trigger_redraw();
+    }
+
+    inline void Widget_base::mouse_exit()
+    {
+        _hovered = false;
+        trigger_redraw();
+    }
+
+    inline void Widget_base::trigger_redraw()
+    {
+        std::cerr << "Widget_base::trigger_redraw() not implemented yet" << std::endl;
+    }
+
     template<class Renderer>
-    auto Widget<Renderer>::rgba_to_native(const Rgba_norm &color) -> Native_color
+    inline auto Widget<Renderer>::rgba_to_native(const Rgba_norm &color) -> Native_color
     {
         return Renderer::rgba_to_native(color);
     }
 
     template<class Renderer>
-    void Widget<Renderer>::fill(Renderer *r, const Native_color &color)
+    inline void Widget<Renderer>::fill(Renderer *r, const Native_color &color)
     {
         auto b{ rectangle() };
         r->fill_rect(b.pos.x, b.pos.y, b.ext.w, b.ext.h, color);

@@ -9,11 +9,25 @@ namespace cppgui {
     }
 
     template<class Renderer>
-    inline void Container_min<Renderer>::mouse_motion(const Position &)
+    inline void Container_min<Renderer>::mouse_motion(const Position &pos)
     {
-        std::cerr << "Container<Renderer>::mouse_motion(): TODO!" << std::endl;
+        Widget<Renderer> *hovered = nullptr;
 
-        // TODO: detect mouse in / out for children; send to hovered child
+        for (auto child : _children)
+        {
+            if (child->rectangle().contains(pos))
+            {
+                child->mouse_motion(pos - child->position());
+                hovered = child;
+            }
+        }
+
+        if (hovered != _hovered_child)
+        {
+            if (_hovered_child) _hovered_child->mouse_exit();
+            if (hovered) hovered->mouse_enter();
+            _hovered_child = hovered;
+        }
     }
 
     template<class Renderer>
