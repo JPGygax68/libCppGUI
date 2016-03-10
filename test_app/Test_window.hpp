@@ -8,7 +8,7 @@
 using namespace gl;
 
 #include <gpc/gui/gl/renderer.hpp> // TODO: replace with new namespace/naming
-#include <cppgui/Root_widget.hpp>
+#include <cppgui/Frame.hpp>
 #include <cppgui/Label.hpp>
 
 #include "./Window.hpp"
@@ -28,10 +28,10 @@ public:
     void mouse_motion(int x, int y);
 
 private:
-    //using Root_widget = cppgui::Root_widget<Renderer>;
+    //using Frame = cppgui::Frame<Renderer>;
     using Label = cppgui::Label<Renderer, true>;
 
-    cppgui::Root_widget<Renderer>   _root_widget;
+    cppgui::Frame<Renderer>         _frame;
     Label                           _label;
     Renderer                       *_renderer;
     bool                            _gfxres_ok = false;
