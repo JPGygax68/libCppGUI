@@ -2,16 +2,16 @@
 
 namespace cppgui {
 
-    template<class Renderer>
-    void Container_min<Renderer>::add_child(Widget<Renderer> *child)
+    template <class Config>
+    inline void Container_min<Config>::add_child(Widget<Config> *child)
     {
         _children.push_back(child);
     }
 
-    template<class Renderer>
-    inline void Container_min<Renderer>::mouse_motion(const Position &pos)
+    template <class Config>
+    inline void Container_min<Config>::mouse_motion(const Position &pos)
     {
-        Widget<Renderer> *hovered = nullptr;
+        Widget<Config> *hovered = nullptr;
 
         for (auto child : _children)
         {
@@ -30,8 +30,8 @@ namespace cppgui {
         }
     }
 
-    template<class Renderer>
-    void Container_min<Renderer>::update_resources(Renderer *r)
+    template <class Config>
+    void Container_min<Config>::update_resources(Renderer *r)
     {
         for (auto& child: _children)
         {
@@ -39,8 +39,8 @@ namespace cppgui {
         }
     }
 
-    template<class Renderer>
-    void Container_min<Renderer>::render(Renderer *r, const Position & offset)
+    template <class Config>
+    void Container_min<Config>::render(Renderer *r, const Position & offset)
     {
         auto pos = offset + position();
 

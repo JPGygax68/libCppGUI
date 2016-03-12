@@ -17,6 +17,10 @@ class Test_window : public Window<Test_window> {
 public:
     using Renderer = gpc::gui::gl::renderer<true>;
 
+    struct Widget_config {
+        using Renderer = Renderer;
+    };
+
     Test_window();
 
     void init_graphics();
@@ -29,10 +33,10 @@ public:
 
 private:
     //using Root_widget = cppgui::Root_widget<Renderer>;
-    using Label = cppgui::Label<Renderer, true>;
+    using Label = cppgui::Label<Widget_config>;
 
-    cppgui::Root_widget<Renderer>   _root_widget;
-    Label                           _label;
-    Renderer                       *_renderer;
-    bool                            _gfxres_ok = false;
+    cppgui::Root_widget<Widget_config>  _root_widget;
+    Label                               _label;
+    Widget_config::Renderer            *_renderer;
+    bool                                _gfxres_ok = false;
 };

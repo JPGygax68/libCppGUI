@@ -14,8 +14,8 @@ namespace cppgui {
             to acknowledge that the root widget is special, and give it its own
             implementations of the few methods that it could inherit from container.
      */
-    template <class Renderer>
-    class Root_widget: public Container<Renderer> {
+    template <class Config>
+    class Root_widget: public Container<Config> {
     public:
         Root_widget();
 
