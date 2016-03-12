@@ -37,6 +37,8 @@ public:
 
     void request_redraw();
 
+    virtual void closing() {};
+
     static void dispatch_window_event(SDL_WindowEvent &ev);
     static void dispatch_mousemotion_event(SDL_MouseMotionEvent &ev);
     static void dispatch_redraw(uint32_t win_id);

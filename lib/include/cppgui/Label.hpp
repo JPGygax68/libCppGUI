@@ -17,7 +17,7 @@ namespace cppgui {
         void set_font(const gpc::fonts::rasterized_font *);
         void set_text(const std::u32string &);
 
-        void update_resources(Renderer *) override;
+        void update_render_resources(Renderer *) override;
         void render(Renderer *, const Position &) override;
 
     protected:

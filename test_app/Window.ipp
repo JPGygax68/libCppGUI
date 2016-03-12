@@ -97,6 +97,9 @@ void Window<Impl>::handle_window_event(SDL_WindowEvent &ev)
         static_cast<Impl*>(this)->size_changed(ev.data1, ev.data2); // width & height, respectively
         request_redraw();
         break;
+    case SDL_WINDOWEVENT_CLOSE:
+        static_cast<Impl*>(this)->closing();
+        break;
     }
 }
 

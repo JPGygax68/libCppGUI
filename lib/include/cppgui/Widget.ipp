@@ -32,9 +32,16 @@ namespace cppgui {
     }
 
     template<class Config>
+    void Widget<Config>::cleanup_render_resources(Renderer *r)
+    {
+        Config::Color_mapper::release_all_resources(r);
+        Config::Font_mapper::release_all_resources(r);
+    }
+
+    template<class Config>
     auto Widget<Config>::rgba_to_native(Renderer *r, const Rgba_norm &color) -> Native_color
     {
-        return map(r, color);
+        return get_resource(r, color);
     }
 
     template<class Renderer>

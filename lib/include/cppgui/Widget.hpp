@@ -3,11 +3,15 @@
 #include <cassert>
 #include <type_traits>
 
+#include <gpc/fonts/rasterized_font.hpp>
 #include <gpc/gui/renderer.hpp> // TODO: other source & namespace
+
+#include "./Resource_mapper.hpp"
 
 namespace cppgui {
 
     using Rgba_norm = gpc::gui::rgba_norm;
+    using Rasterized_font = gpc::fonts::rasterized_font;
 
     struct Position {
         int x, y;
@@ -57,9 +61,22 @@ namespace cppgui {
 
     /** Concept Widget_config
      */
+    template <typename Renderer>
     struct Widget_config {
 
-        //using Renderer = ...;
+        using Font_handle = typename Renderer::font_handle;
+
+        struct Font_mapper : public Resource_mapper<
+            Font_mapper, 
+            Renderer, 
+            const Rasterized_font *, Font_handle, 
+            Renderer::font_handles_are_resources
+        > {
+            auto obtain(Renderer *r, const Rasterized_font *font) { 
+                return r->register_font(*font); }
+            void release(Renderer *r, Font_handle hnd) { 
+                r->release_font(hnd); }
+        };
 
         //using Color_mapper = ...;
 
@@ -69,17 +86,26 @@ namespace cppgui {
 
     template <class Config>
     class Widget: public Widget_base,
-        protected Config::Color_mapper
+        protected Config::Color_mapper,
+        protected Config::Font_mapper
     {
     public:
         using Renderer     = typename Config::Renderer;
         using Native_color = typename Renderer::native_color;
         using Font_handle  = typename Renderer::font_handle;
 
-        virtual void update_resources(Renderer *) = 0;
+        virtual void update_render_resources(Renderer *) = 0;
+        
         virtual void render(Renderer *, const Position &offset) = 0;
 
+        void cleanup_render_resources(Renderer *);
+
     protected:
+        using Config::Color_mapper::get_resource;
+        using Config::Font_mapper::get_resource;
+        using Config::Color_mapper::release_resource;
+        using Config::Font_mapper::release_resource;
+
         auto rgba_to_native(Renderer *, const Rgba_norm &) -> Native_color;
         void fill(Renderer *r, const Native_color &);
     };

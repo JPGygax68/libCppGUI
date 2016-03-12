@@ -5,7 +5,7 @@
 
 #include "./Test_window.hpp"
 
-#include <cppgui/Resource_mapper.hpp>
+#include <cppgui/Resource_mapper.ipp>
 #include <cppgui/Widget.ipp>
 #include <cppgui/Label.ipp>
 #include <cppgui/Container.ipp>
@@ -42,6 +42,7 @@ void Test_window::cleanup_graphics()
 {
     assert(_renderer);
     // TODO: renderer cleanup ?
+    _root_widget.cleanup_render_resources(_renderer);
     delete _renderer;
 }
 
@@ -51,7 +52,7 @@ void Test_window::redraw()
 
     if (!_gfxres_ok)
     {
-        _label.update_resources(_renderer);
+        _label.update_render_resources(_renderer);
         _gfxres_ok = true;
     }
 
@@ -74,4 +75,10 @@ void Test_window::size_changed(int w, int h)
 void Test_window::mouse_motion(int x, int y)
 {
     _root_widget.mouse_motion({x, y});
+}
+
+void Test_window::closing()
+{
+    _label.cleanup_render_resources(_renderer);
+    _root_widget.cleanup_render_resources(_renderer);
 }

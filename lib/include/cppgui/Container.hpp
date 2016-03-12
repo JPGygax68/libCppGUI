@@ -11,7 +11,7 @@ namespace cppgui {
 
         void mouse_motion(const Position &) override;
 
-        void update_resources(Renderer *) override;
+        void update_render_resources(Renderer *) override;
         void render(Renderer *, const Position &offset) override;
 
     private:

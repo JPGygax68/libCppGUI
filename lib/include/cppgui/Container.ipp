@@ -31,11 +31,11 @@ namespace cppgui {
     }
 
     template <class Config>
-    void Container_min<Config>::update_resources(Renderer *r)
+    void Container_min<Config>::update_render_resources(Renderer *r)
     {
         for (auto& child: _children)
         {
-            child->update_resources(r);
+            child->update_render_resources(r);
         }
     }
 

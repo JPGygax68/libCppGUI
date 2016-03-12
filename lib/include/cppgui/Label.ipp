@@ -4,34 +4,34 @@
 
 namespace cppgui {
 
-    template<class Renderer>
-    inline void Label_min<Renderer>::set_font(const gpc::fonts::rasterized_font *font)
+    template<class Config>
+    inline void Label_min<Config>::set_font(const gpc::fonts::rasterized_font *font)
     {
         _font = font;
     }
 
-    template<class Renderer>
-    inline void Label_min<Renderer>::set_text(const std::u32string &text)
+    template<class Config>
+    inline void Label_min<Config>::set_text(const std::u32string &text)
     {
         _text = text;
     }
 
-    template<class Renderer>
-    inline void Label_min<Renderer>::update_resources(Renderer *r)
+    template<class Config>
+    inline void Label_min<Config>::update_render_resources(Renderer *r)
     {
-        _fnthnd = r->register_font(*_font);
+        _fnthnd = get_resource(r, _font);
     }
 
-    template<class Renderer>
-    inline void Label_min<Renderer>::render(Renderer *r, const Position &offset)
+    template<class Config>
+    inline void Label_min<Config>::render(Renderer *r, const Position &offset)
     {
         fill(r, rgba_to_native(r, {0.8f, 0.8f, 0.8f, 1}));
         auto p = offset + position();
         r->render_text(_fnthnd, p.x + _txpos.x, p.y + _txpos.y, _text.data(), _text.size());
     }
 
-    template<class Renderer>
-    inline auto Label_full<Renderer>::minimal_size() -> Extents
+    template<class Config>
+    inline auto Label_full<Config>::minimal_size() -> Extents
     {
         assert(!_text.empty()); // TODO: TENTATIVE RULE: layouting may not occur before conditions are met (font, text must be set) ?
 
@@ -40,8 +40,8 @@ namespace cppgui {
         return{ bounds.width(), bounds.height() };
     }
 
-    template<class Renderer>
-    void Label_full<Renderer>::layout()
+    template<class Config>
+    void Label_full<Config>::layout()
     {
 
         auto txb = _font->compute_text_extents(0, _text.data(), _text.size());

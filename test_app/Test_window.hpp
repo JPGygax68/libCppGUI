@@ -18,13 +18,15 @@ class Test_window : public Window<Test_window> {
 public:
     using Renderer = gpc::gui::gl::renderer<true>;
 
-    struct Widget_config {
-        using Renderer = Renderer;
-        
-        struct Color_mapper : public cppgui::Resource_mapper<Color_mapper, Renderer, cppgui::Rgba_norm, cppgui::Rgba_norm, false> {
+    struct Widget_config: public cppgui::Widget_config<Renderer> {
 
-            auto map(Renderer *, const cppgui::Rgba_norm &color) { return color; }
-        };
+        using Renderer = Renderer;
+        using Font_handle = Renderer::font_handle;
+
+        // We override the color mapper
+        // TODO: this should not be necessary, the identity mapper should be chosen automatically
+        // according to a static boolean set in the renderer class
+        using Color_mapper = cppgui::Identity_mapper<Renderer, cppgui::Rgba_norm>;
     };
 
     Test_window();
@@ -36,6 +38,8 @@ public:
 
     void size_changed(int w, int h);
     void mouse_motion(int x, int y);
+
+    void closing() override;
 
 private:
     //using Root_widget = cppgui::Root_widget<Renderer>;
