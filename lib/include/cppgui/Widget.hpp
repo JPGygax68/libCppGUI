@@ -55,6 +55,41 @@ namespace cppgui {
         bool        _hovered = false;
     };
 
+    enum Resource_usage_type {
+        direct,                     // renderer uses resource directly
+        trivially_convertible,      // conversion from resource to native representation is trivial 
+                                    // (can be repeated often without significant CPU load)
+        registered,                 // conversion from resource to native representation is expensive,
+                                    // representations should be kept in maps
+    };
+
+    /** Concept Widget_config
+     */
+    struct Widget_config {
+
+        //static auto constexpr color_usage_type() { return direct; }
+        static const Resource_usage_type        color_usage_type = direct;
+        
+        //static auto constexpr font_usage_type() { return registered; }
+        static const Resource_usage_type        font_usage_type = registered;
+    };
+
+    template <typename Resource, Resource_usage_type>
+    struct Resource_mapper {
+    };
+
+    template <typename Resource>
+    struct Resource_mapper<Resource, direct> {
+        static auto constexpr convert(const Resource &generic) { return generic; }
+    };
+
+    template <typename Resource>
+    struct Resource_mapper<Resource, registered> {
+        static auto constexpr convert(const Resource &generic)
+        { 
+        }
+    };
+
     template <class Renderer>
     class Widget: public Widget_base {
     public:
