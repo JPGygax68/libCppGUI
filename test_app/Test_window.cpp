@@ -5,10 +5,11 @@
 
 #include "./Test_window.hpp"
 
-#include "./cppgui/Widget.ipp"
-#include "./cppgui/Label.ipp"
-#include "./cppgui/Container.ipp"
-#include "./cppgui/Root_widget.ipp"
+#include <cppgui/Resource_mapper.hpp>
+#include <cppgui/Widget.ipp>
+#include <cppgui/Label.ipp>
+#include <cppgui/Container.ipp>
+#include <cppgui/Root_widget.ipp>
 
 #include <gpc/gl/wrappers.hpp>
 

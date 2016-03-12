@@ -4,11 +4,12 @@ add_library( ${PROJECT_NAME} STATIC
 
     src/dummy.cpp
 
-    include/cppgui/Widget.hpp include/cppgui/Widget.ipp
-    include/cppgui/Label.hpp include/cppgui/Label.ipp
-    include/cppgui/Box.hpp include/cppgui/Box.ipp
-    include/cppgui/Container.hpp include/cppgui/Container.ipp
-    include/cppgui/Root_widget.hpp include/cppgui/Root_widget.ipp
+    include/cppgui/Widget.hpp           include/cppgui/Widget.ipp
+    include/cppgui/Label.hpp            include/cppgui/Label.ipp
+    include/cppgui/Box.hpp              include/cppgui/Box.ipp
+    include/cppgui/Container.hpp        include/cppgui/Container.ipp
+    include/cppgui/Root_widget.hpp      include/cppgui/Root_widget.ipp
+    include/cppgui/Resource_mapper.hpp  include/cppgui/Resource_mapper.ipp
 )
 
 if (NOT TARGET libGPCFonts)

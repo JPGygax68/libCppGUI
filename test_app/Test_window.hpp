@@ -8,6 +8,7 @@
 using namespace gl;
 
 #include <gpc/gui/gl/renderer.hpp> // TODO: replace with new namespace/naming
+#include <cppgui/Resource_mapper.hpp>
 #include <cppgui/Root_widget.hpp>
 #include <cppgui/Label.hpp>
 
@@ -19,6 +20,11 @@ public:
 
     struct Widget_config {
         using Renderer = Renderer;
+        
+        struct Color_mapper : public cppgui::Resource_mapper<Color_mapper, Renderer, cppgui::Rgba_norm, cppgui::Rgba_norm, false> {
+
+            auto map(Renderer *, const cppgui::Rgba_norm &color) { return color; }
+        };
     };
 
     Test_window();

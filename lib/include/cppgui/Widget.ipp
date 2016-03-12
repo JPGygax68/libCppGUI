@@ -31,10 +31,10 @@ namespace cppgui {
         std::cerr << "Widget_base::trigger_redraw() not implemented yet" << std::endl;
     }
 
-    template<class Renderer>
-    inline auto Widget<Renderer>::rgba_to_native(const Rgba_norm &color) -> Native_color
+    template<class Config>
+    auto Widget<Config>::rgba_to_native(Renderer *r, const Rgba_norm &color) -> Native_color
     {
-        return Renderer::rgba_to_native(color);
+        return map(r, color);
     }
 
     template<class Renderer>

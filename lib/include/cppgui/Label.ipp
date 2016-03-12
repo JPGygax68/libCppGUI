@@ -25,7 +25,7 @@ namespace cppgui {
     template<class Renderer>
     inline void Label_min<Renderer>::render(Renderer *r, const Position &offset)
     {
-        fill(r, rgba_to_native({0.8f, 0.8f, 0.8f, 1}));
+        fill(r, rgba_to_native(r, {0.8f, 0.8f, 0.8f, 1}));
         auto p = offset + position();
         r->render_text(_fnthnd, p.x + _txpos.x, p.y + _txpos.y, _text.data(), _text.size());
     }
