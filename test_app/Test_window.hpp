@@ -18,15 +18,26 @@ class Test_window : public Window<Test_window> {
 public:
     using Renderer = gpc::gui::gl::renderer<true>;
 
-    struct Widget_config: public cppgui::Widget_config<Renderer> {
+    struct Widget_config {
 
         using Renderer = Renderer;
         using Font_handle = Renderer::font_handle;
+        using Widget    = cppgui::Widget<Widget_config, true>;
+        using Container = cppgui::Container<Widget_config, true>;
 
         // We override the color mapper
         // TODO: this should not be necessary, the identity mapper should be chosen automatically
         // according to a static boolean set in the renderer class
         using Color_mapper = cppgui::Identity_mapper<Renderer, cppgui::Rgba_norm>;
+        using Font_mapper = cppgui::Default_font_mapper<Renderer>;
+
+        using Widget_update_handler = cppgui::Default_widget_update_handler<Container>;
+        
+        using Container_base_update_handler = cppgui::Default_container_update_handler<Widget, Container>;
+
+        struct Root_widget_update_handler {
+            void invalidate_child(Widget *);
+        };
     };
 
     Test_window();
@@ -45,8 +56,8 @@ private:
     //using Root_widget = cppgui::Root_widget<Renderer>;
     using Label = cppgui::Label<Widget_config>;
 
-    cppgui::Root_widget<Widget_config>  _root_widget;
-    Label                               _label;
-    Widget_config::Renderer            *_renderer;
-    bool                                _gfxres_ok = false;
+    cppgui::Root_widget<Widget_config, true>    _root_widget;
+    Label                                       _label;
+    Widget_config::Renderer                    *_renderer;
+    bool                                        _gfxres_ok = false;
 };

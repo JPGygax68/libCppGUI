@@ -4,10 +4,12 @@
 
 namespace cppgui {
 
-    template <class Config>
-    class Container_min: public Widget<Config> {
+    /** Container, without layouting.
+     */
+    template <class Config, bool WithLayout>
+    class Container_basic: public Config::Container_base_update_handler, public Widget<Config, WithLayout> {
     public:
-        void add_child(Widget<Config> *);
+        void add_child(Widget *);
 
         void mouse_motion(const Position &) override;
 
@@ -15,18 +17,18 @@ namespace cppgui {
         void render(Renderer *, const Position &offset) override;
 
     private:
-        std::vector<Widget<Config>*> _children;
-        Widget                         *_hovered_child = nullptr;
+        std::vector<Widget*>    _children;
+        Widget                 *_hovered_child = nullptr;
     };
 
     template <class Config>
-    class Container_full : public Container_min<Config>, public Widget_layouter {
+    class Container_full : public Container_basic<Config, true>, public Widget_layouter {
     public:
         //auto minimal_size() -> Extents override;
         //void layout() override;
     };
 
-    template <class Config, bool WithLayout = true>
-    class Container : public std::conditional<WithLayout, Container_full<Config>, Container_min<Config>>::type {};
+    template <class Config, bool WithLayout>
+    class Container : public std::conditional<WithLayout, Container_full<Config>, Container_basic<Config, false>>::type {};
 
 } // ns cppgui

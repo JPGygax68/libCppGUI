@@ -6,6 +6,11 @@ namespace cppgui {
 
     extern int dummy;
 
+    template <class Config, bool WithLayout>
+    class Root_widget_basic {
+
+    };
+
     /** TODO: for now, Root_widget inherits from Container. This has drawbacks, mainly
             because Container has some features that the Root_widget does not need (for
             example, Root_widget does not need a position, nor should it compute a
@@ -14,8 +19,8 @@ namespace cppgui {
             to acknowledge that the root widget is special, and give it its own
             implementations of the few methods that it could inherit from container.
      */
-    template <class Config>
-    class Root_widget: public Container<Config> {
+    template <class Config, bool WithLayout>
+    class Root_widget: public Config::Root_widget_update_handler, public Container<Config, WithLayout> {
     public:
         Root_widget();
 

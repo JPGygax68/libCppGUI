@@ -66,6 +66,7 @@ void Test_window::redraw()
 
 void Test_window::size_changed(int w, int h)
 {
+    _root_widget.set_extents({ (unsigned)w, (unsigned)h });
     _label.set_position({ 50, 50 });
     _label.set_extents({ 200, 60 });
     _label.layout();

@@ -11,8 +11,10 @@ namespace gpc { namespace fonts {
 
 namespace cppgui {
 
-    template <class Config>
-    class Label_min: public Widget<Config> {
+    /** Label, without layouting.
+     */
+    template <class Config, bool WithLayout>
+    class Label_basic: public Widget<Config, WithLayout> {
     public:
         void set_font(const gpc::fonts::rasterized_font *);
         void set_text(const std::u32string &);
@@ -28,13 +30,13 @@ namespace cppgui {
     };
 
     template <class Config>
-    class Label_full: public Label_min<Config>, public Widget_layouter {
+    class Label_full: public Label_basic<Config, true>, public Widget_layouter {
     public:
         auto minimal_size() -> Extents override;
         void layout() override;
     };
 
     template <class Config, bool WithLayout = true>
-    class Label: public std::conditional<WithLayout, Label_full<Config>, Label_min<Config>>::type {};
+    class Label: public std::conditional<WithLayout, Label_full<Config>, Label_basic<Config, false>>::type {};
 
 } // ns cppgui

@@ -36,68 +36,67 @@ namespace cppgui {
         }
     };
 
-    class Widget_base {
+    // Default font mapper
+
+    template <class Renderer>
+    struct Default_font_mapper : public Resource_mapper<
+        Default_font_mapper<Renderer>,
+        Renderer,
+        const Rasterized_font *, typename Renderer::font_handle,
+        Renderer::font_handles_are_resources
+    > {
+        using Font_handle = typename Renderer::font_handle;
+
+        auto obtain(Renderer *r, const Rasterized_font *font) {
+            return r->register_font(*font);
+        }
+        void release(Renderer *r, Font_handle hnd) {
+            r->release_font(hnd);
+        }
+    };
+
+    // Default update handlers 
+
+    template <class Container>
+    struct Default_widget_update_handler {
+        void set_container(Container *);
+        void invalidate();
+    private:
+        Container *_container;
+    };
+
+    template <class Widget, class Container>
+    struct Default_container_update_handler : public Default_widget_update_handler<Widget> {
+        void child_added(Widget *);
+        virtual void invalidate_child(Widget *);
+    };
+
+    template <class Config, bool WithLayout>
+    class Abstract_widget:
+        public Config::Color_mapper,
+        public Config::Font_mapper
+    {
     public:
+        using Renderer          = typename Config::Renderer;
+        using Native_color      = typename Renderer::native_color;
+        using Font_handle       = typename Renderer::font_handle;
+
         auto rectangle() const { return _rect; }
         auto position() const { return _rect.pos; }
         auto extents() const { return _rect.ext; }
         void set_position(const Position &);
         void set_extents(const Extents &);
 
+        // TODO: color and other style definitions belong into stylesheets
+        static auto button_face_color() { return Rgba_norm{ 0.8f, 0.8f, 0.8f, 1 }; }
+        static auto button_face_hovered_color() { return Rgba_norm{ 0.9f, 0.9f, 0.9f, 1 }; }
+
         virtual void mouse_motion(const Position &) {};
-
-        virtual void mouse_enter();
-        virtual void mouse_exit();
-
-        bool hovered() const { return _hovered; }
-
-    protected:
-        void trigger_redraw();
-
-        Rectangle   _rect;
-
-        bool        _hovered = false;
-    };
-
-    /** Concept Widget_config
-     */
-    template <typename Renderer>
-    struct Widget_config {
-
-        using Font_handle = typename Renderer::font_handle;
-
-        struct Font_mapper : public Resource_mapper<
-            Font_mapper, 
-            Renderer, 
-            const Rasterized_font *, Font_handle, 
-            Renderer::font_handles_are_resources
-        > {
-            auto obtain(Renderer *r, const Rasterized_font *font) { 
-                return r->register_font(*font); }
-            void release(Renderer *r, Font_handle hnd) { 
-                r->release_font(hnd); }
-        };
-
-        //using Color_mapper = ...;
-
-        //static const bool color_mapping_expensive = false;
-        //static const bool font_mapping_expensive = true;
-    };
-
-    template <class Config>
-    class Widget: public Widget_base,
-        protected Config::Color_mapper,
-        protected Config::Font_mapper
-    {
-    public:
-        using Renderer     = typename Config::Renderer;
-        using Native_color = typename Renderer::native_color;
-        using Font_handle  = typename Renderer::font_handle;
+        virtual void mouse_enter() = 0;
+        virtual void mouse_exit() = 0;
 
         virtual void update_render_resources(Renderer *) = 0;
-        
         virtual void render(Renderer *, const Position &offset) = 0;
-
         void cleanup_render_resources(Renderer *);
 
     protected:
@@ -108,6 +107,22 @@ namespace cppgui {
 
         auto rgba_to_native(Renderer *, const Rgba_norm &) -> Native_color;
         void fill(Renderer *r, const Native_color &);
+
+    private:
+        Rectangle _rect;
+    };
+
+    template <class Config, bool WithLayout>
+    class Widget: public Abstract_widget<Config, WithLayout>, public Config::Widget_update_handler {
+    public:
+        // TODO: should the following be protected ?
+        bool hovered() const { return _hovered; }
+
+        void mouse_enter() override;
+        void mouse_exit() override;
+
+    private:
+        bool _hovered = false;
     };
 
     class Widget_layouter {

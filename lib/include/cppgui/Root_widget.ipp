@@ -2,8 +2,8 @@
 
 namespace cppgui {
 
-    template<class Renderer>
-    inline Root_widget<Renderer>::Root_widget()
+    template <class Config, bool WithLayout>
+    inline Root_widget<Config, WithLayout>::Root_widget()
     {
         set_position({ 0, 0 }); // TODO: this would not be necessary if Root_widget did not inherit from Container
     }

@@ -1,0 +1,95 @@
+14-03-2016
+----------
+
+How to implement trigger_redraw() in a way that will get optimal run-time behaviour on any possible combination of backends ? Brainstorming.
+
+- For a game-type application where frames are redrawn at a high rate independently of GUI interactions, trigger_redraw() could be a no-op
+  - Caveat: this does not apply, however, if the GUI is rendered to a dedicated off-screen buffer.
+  
+- When the only reason to redraw the GUI is in response to user interaction, the best approach is to collect and delay redraw operations until the input event that triggered the need to redraw something has been fully handled.
+
+  - Caveat: the fact that an input event has been fully handled does not necessarily mean that the (partial or full) redraw can or should be done right away. It is conceivable (though probably not very common) that it could happen in another thread. This would make sense if, for example, the GUI is rather complex and rendering it in the same thread as the "event pump" could reduce responsiveness.
+  
+- For old-style hardware with only 2D acceleration, or when rendering directly to video memory without the help of a GPU (e.g. Linux framebuffer), it can make sense to execute redraws immediately.
+
+- Under the same circumstances, certain operations such as scrolling can be optimized so that only some parts of the affected area need to be redrawn.
+
+- Modern hardware can also help reduce the need to redraw, though in different ways (off-screen buffers / images in video memory ("textures")).
+
+- In rare cases of very low-performance hardware, it could make sense to make redraws interruptible: if filling in an area uncovered by scrolling takes too long, and new input events are already pending, the user experience may be better served by "pushing back" the redraws.
+
+---------------
+
+The above requirements are pretty diverse. It seems important to me that a programmer need not concern himself with all these details, not even when adapting the library for new backends. It is therefore imperative not only to provide abstractions for drawing operations, but also to come up with an impeccable architecture to support said abstractions.
+
+### "Scrolling"
+
+I used the term "scrolling" above, but that is actually a user-space term. "Blitting" was the technical term used for fast transfers of image portions to and from a framebuffer, which is what made scrolling (at reasonable speeds) possible back then. And though such technology is unlikely to come back on PCs, it could be useful on low-power embedded devices.
+
+Contemporary graphical hardware, which is typically 3D-capable, does not need to resort to optimizing image transfers: it has enough memory to store images "whole", and is able to render a whole lot of them at great speed, and at any position.
+
+Supporting these fundamentally different types of hardware requires a higher-level abstraction, so I'm toying with the idea of "virtual spaces".
+
+For example, a listbox could be implemented as a frame that displays a range of "stripes". These stripes would be of fixed height and identified by numbers that would start at 0; however stripes could be added both at the end and before the current first stripe (and possibly inserted anywhere in-between too).
+
+With 2D acceleration (or none), e.g. scrolling down would then translate to "blitting" the bulk of the visibles stripes upward, then triggering a redraw (delayed or not) for the newly uncovered stripe.
+
+With 3D acceleration, the implementation would allocate textures - individually for each strip or, more realistically, of greater size so that each texture could hold several stripes -, and draw the stripes from there.
+
+Caveat: it should be noted that using textures to store the rendered content of list box items would not normally be a worthwhile optimization - though it could be if the rendering is non-trivial. The idea of virtual spaces (1-dimensional in this example) remains valid.
+
+### What's needed
+
+- A draw() method on every widget. Takes into account all state and renders the widget "from scratch".
+
+- A method invalidate() that expresses the need to redraw the widget (by executing draw() as soon as possible)
+
+  - In a game-like rendering loop (without off-screen buffer), invalidate() can be reduced to setting a "dirty" flag.
+  
+  - The most common case is probably to just delegate to a callback, which is tasked with updating the UI (possibly redrawing layers both
+    "below" and "above" the UI)
+
+- All GUI renderer implementations must provide a pair of methods to prepare for and cleaning up after rendering
+  
+  - This does NOT mean setting the current OpenGL context, which is a platform-specific operation. This must be done by the code, directly called or indirectly triggered by invalidate(), that does the actual rendering.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
