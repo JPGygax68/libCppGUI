@@ -12,6 +12,13 @@ namespace cppgui {
     void Root_widget<Config, WithLayout>::add_child(Widget<Config, WithLayout> *child)
     {
         _add_child(child);
+        static_cast<Config::Widget_update_handler*>(child)->added_to_container(static_cast<Abstract_container<Config, WithLayout>*>(this));
+    }
+
+    template<class Config, bool WithLayout>
+    void Root_widget<Config, WithLayout>::mouse_motion(const Position &pos)
+    {
+        handle_mouse_motion(pos); // Abstract_container
     }
 
     template<class Config, bool WithLayout>

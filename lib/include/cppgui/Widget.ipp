@@ -5,16 +5,29 @@
 
 namespace cppgui {
 
-    template<class ChildT, class ContainerT>
-    inline void Default_child_update_handler<ChildT, ContainerT>::added_to_container(ContainerT *child)
+    template<class Config, bool WithLayout>
+    void Default_widget_update_handler<Config, WithLayout>::invalidate()
     {
-        // TODO ?
+        // Pass "up" to container
+        _container->child_invalidated(static_cast<WidgetT*>(this));
     }
 
-    template<class ChildT, class ContainerT>
-    inline void Default_container_update_handler<ChildT, ContainerT>::child_added(ChildT *child)
+    template<class Config, bool WithLayout>
+    inline void Default_widget_update_handler<Config, WithLayout>::added_to_container(Abstract_container<Config, WithLayout> *cont)
+    {
+        _container = cont;
+    }
+
+    template<class Config, bool WithLayout>
+    inline void Default_container_update_handler<Config, WithLayout>::child_added(Widget<Config, WithLayout> *child)
     {
         child->set_container(static_cast<ContainerT*>(this));
+    }
+
+    template<class Config, bool WithLayout>
+    void Default_container_update_handler<Config, WithLayout>::child_invalidated(Widget<Config, WithLayout> *)
+    {
+        // TODO
     }
 
     template<class Config, bool WithLayout>
@@ -66,7 +79,7 @@ namespace cppgui {
     template<class Config, bool WithLayout>
     void Widget<Config, WithLayout>::invalidate()
     {
-        // TODO: call glue code
+        Config::Widget_update_handler::invalidate();
     }
 
 } // ns cppgui

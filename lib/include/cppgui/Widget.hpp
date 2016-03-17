@@ -37,7 +37,8 @@ namespace cppgui {
     };
 
     // Forward declarations
-    template <class Config, bool WithLayout> class _Container;
+    template <class Config, bool WithLayout> class Abstract_container;
+    template <class Config, bool WithLayout> class Widget;
 
     // Default font mapper
 
@@ -60,17 +61,24 @@ namespace cppgui {
 
     // Default update handlers 
 
-    template <class ChildT, class ContainerT>
-    struct Default_container_update_handler {
-        void child_added(ChildT *);
-        virtual void invalidate_child(ChildT *);
+    template <class Config, bool WithLayout>
+    struct Default_container_update_handler_base {
+        void child_added(Widget<Config, WithLayout> *);
+        void child_invalidated(Widget<Config, WithLayout> *);
+        virtual void handle_child_invalidated(Widget<Config, WithLayout> *) = 0;
     };
 
-    template <class ChildT, class ContainerT>
-    struct Default_child_update_handler {
-        void added_to_container(ContainerT *);
+    template <class Config, bool WithLayout>
+    struct Default_container_update_handler: public Default_container_update_handler_base<Config, WithLayout> {
+        void handle_child_invalidated(Widget<Config, WithLayout> *) override;
+    };
+
+    template <class Config, bool WithLayout>
+    struct Default_widget_update_handler {
+        void invalidate();
+        void added_to_container(Abstract_container<Config, WithLayout> *);
     private:
-        ContainerT *_container;
+        Abstract_container<Config, WithLayout> *_container;
     };
 
     template <class Config, bool WithLayout>
@@ -79,9 +87,9 @@ namespace cppgui {
         public Config::Font_mapper
     {
     public:
-        using Renderer          = typename Config::Renderer;
-        using Native_color      = typename Renderer::native_color;
-        using Font_handle       = typename Renderer::font_handle;
+        using Renderer     = typename Config::Renderer;
+        using Native_color = typename Renderer::native_color;
+        using Font_handle  = typename Renderer::font_handle;
 
         auto rectangle() const { return _rect; }
         auto position() const { return _rect.pos; }
@@ -93,11 +101,11 @@ namespace cppgui {
         static auto button_face_color        () { return Rgba_norm{ 0.8f, 0.8f, 0.8f, 1 }; }
         static auto button_face_hovered_color() { return Rgba_norm{ 0.9f, 0.9f, 0.9f, 1 }; }
 
-        virtual void mouse_motion(const Position &) {};
+        virtual void mouse_motion(const Position &) {}
         virtual void mouse_enter() {};
         virtual void mouse_exit() {};
 
-        virtual void update_render_resources(Renderer *) = 0;
+        virtual void update_render_resources(Renderer *) {}
         void cleanup_render_resources(Renderer *);
 
     protected:
@@ -114,7 +122,9 @@ namespace cppgui {
     };
 
     template <class Config, bool WithLayout>
-    class Widget: public Abstract_widget<Config, WithLayout> { // TODO: also inherit from Update aspects
+    class Widget: public Abstract_widget<Config, WithLayout>,
+        public Config::Widget_update_handler
+    {
     public:
         // TODO: should the following be protected ?
         bool hovered() const { return _hovered; }
