@@ -10,7 +10,7 @@
 
 namespace cppgui {
 
-    using Rgba_norm = gpc::gui::rgba_norm;
+    using Rgba_norm       = gpc::gui::rgba_norm;
     using Rasterized_font = gpc::fonts::rasterized_font;
 
     struct Position {
@@ -36,6 +36,9 @@ namespace cppgui {
         }
     };
 
+    // Forward declarations
+    template <class Config, bool WithLayout> class _Container;
+
     // Default font mapper
 
     template <class Renderer>
@@ -57,18 +60,17 @@ namespace cppgui {
 
     // Default update handlers 
 
-    template <class Container>
-    struct Default_widget_update_handler {
-        void set_container(Container *);
-        void invalidate();
-    private:
-        Container *_container;
+    template <class ChildT, class ContainerT>
+    struct Default_container_update_handler {
+        void child_added(ChildT *);
+        virtual void invalidate_child(ChildT *);
     };
 
-    template <class Widget, class Container>
-    struct Default_container_update_handler : public Default_widget_update_handler<Widget> {
-        void child_added(Widget *);
-        virtual void invalidate_child(Widget *);
+    template <class ChildT, class ContainerT>
+    struct Default_child_update_handler {
+        void added_to_container(ContainerT *);
+    private:
+        ContainerT *_container;
     };
 
     template <class Config, bool WithLayout>
@@ -88,15 +90,14 @@ namespace cppgui {
         void set_extents(const Extents &);
 
         // TODO: color and other style definitions belong into stylesheets
-        static auto button_face_color() { return Rgba_norm{ 0.8f, 0.8f, 0.8f, 1 }; }
+        static auto button_face_color        () { return Rgba_norm{ 0.8f, 0.8f, 0.8f, 1 }; }
         static auto button_face_hovered_color() { return Rgba_norm{ 0.9f, 0.9f, 0.9f, 1 }; }
 
         virtual void mouse_motion(const Position &) {};
-        virtual void mouse_enter() = 0;
-        virtual void mouse_exit() = 0;
+        virtual void mouse_enter() {};
+        virtual void mouse_exit() {};
 
         virtual void update_render_resources(Renderer *) = 0;
-        virtual void render(Renderer *, const Position &offset) = 0;
         void cleanup_render_resources(Renderer *);
 
     protected:
@@ -113,13 +114,18 @@ namespace cppgui {
     };
 
     template <class Config, bool WithLayout>
-    class Widget: public Abstract_widget<Config, WithLayout>, public Config::Widget_update_handler {
+    class Widget: public Abstract_widget<Config, WithLayout> { // TODO: also inherit from Update aspects
     public:
         // TODO: should the following be protected ?
         bool hovered() const { return _hovered; }
 
         void mouse_enter() override;
         void mouse_exit() override;
+
+        virtual void render(Renderer *, const Position &offset) = 0;
+
+    protected:
+        virtual void invalidate();
 
     private:
         bool _hovered = false;

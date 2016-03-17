@@ -5,30 +5,16 @@
 
 namespace cppgui {
 
-
-    template<class Container>
-    inline void Default_widget_update_handler<Container>::set_container(Container *cont)
+    template<class ChildT, class ContainerT>
+    inline void Default_child_update_handler<ChildT, ContainerT>::added_to_container(ContainerT *child)
     {
-        _container = cont;
+        // TODO ?
     }
 
-    template<class Widget>
-    inline void Default_widget_update_handler<Widget>::invalidate()
+    template<class ChildT, class ContainerT>
+    inline void Default_container_update_handler<ChildT, ContainerT>::child_added(ChildT *child)
     {
-        assert(_container);
-        _container->invalidate_child(static_cast<Widget*>(this));
-    }
-
-    template<class Widget, class Container>
-    inline void Default_container_update_handler<Widget, Container>::child_added(Widget *child)
-    {
-        child->set_container(static_cast<Container*>(this));
-    }
-
-    template<class Widget, class Container>
-    inline void cppgui::Default_container_update_handler<Widget, Container>::invalidate_child(Widget *)
-    {
-        // TODO
+        child->set_container(static_cast<ContainerT*>(this));
     }
 
     template<class Config, bool WithLayout>
@@ -75,6 +61,12 @@ namespace cppgui {
     {
         _hovered = false;
         invalidate();
+    }
+
+    template<class Config, bool WithLayout>
+    void Widget<Config, WithLayout>::invalidate()
+    {
+        // TODO: call glue code
     }
 
 } // ns cppgui

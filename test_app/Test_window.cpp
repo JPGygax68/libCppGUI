@@ -59,7 +59,7 @@ void Test_window::redraw()
     //GL(Clear, GL_COLOR_BUFFER_BIT);
     _renderer->enter_context();
     //_label.render(_renderer, {0, 0});
-    _root_widget.render(_renderer, { 0, 0 });
+    _root_widget.render(_renderer);
     _renderer->leave_context();
     SDL_GL_SwapWindow(sdl_pointer());
 }

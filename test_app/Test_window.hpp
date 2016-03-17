@@ -22,7 +22,7 @@ public:
 
         using Renderer = Renderer;
         using Font_handle = Renderer::font_handle;
-        using Widget    = cppgui::Widget<Widget_config, true>;
+        using Widget    = cppgui::Widget   <Widget_config, true>;
         using Container = cppgui::Container<Widget_config, true>;
 
         // We override the color mapper
@@ -31,9 +31,8 @@ public:
         using Color_mapper = cppgui::Identity_mapper<Renderer, cppgui::Rgba_norm>;
         using Font_mapper = cppgui::Default_font_mapper<Renderer>;
 
-        using Widget_update_handler = cppgui::Default_widget_update_handler<Container>;
-        
-        using Container_base_update_handler = cppgui::Default_container_update_handler<Widget, Container>;
+        using Child_update_handler     = cppgui::Default_child_update_handler    <Widget, Container>;
+        using Container_update_handler = cppgui::Default_container_update_handler<Widget, Container>;
 
         struct Root_widget_update_handler {
             void invalidate_child(Widget *);

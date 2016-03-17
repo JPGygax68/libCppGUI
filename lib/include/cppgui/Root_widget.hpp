@@ -6,11 +6,6 @@ namespace cppgui {
 
     extern int dummy;
 
-    template <class Config, bool WithLayout>
-    class Root_widget_basic {
-
-    };
-
     /** TODO: for now, Root_widget inherits from Container. This has drawbacks, mainly
             because Container has some features that the Root_widget does not need (for
             example, Root_widget does not need a position, nor should it compute a
@@ -20,15 +15,13 @@ namespace cppgui {
             implementations of the few methods that it could inherit from container.
      */
     template <class Config, bool WithLayout>
-    class Root_widget: public Config::Root_widget_update_handler, public Container<Config, WithLayout> {
+    class Root_widget: public Config::Root_widget_update_handler, public _Container<Config, WithLayout> {
     public:
         Root_widget();
 
-        // TODO: the following belong into the Root_widget_full class (following the usual splitting scheme)
-        auto minimal_size() -> Extents override { return { 0, 0 }; };
-        void layout() override {};
+        void add_child(Widget<Config, WithLayout> *);
 
-        // TODO: do we need non-inherited event injection methods ?
+        void render(Renderer *);
     };
 
 } // ns cppgui
