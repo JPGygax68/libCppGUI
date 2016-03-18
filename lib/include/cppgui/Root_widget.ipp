@@ -12,7 +12,7 @@ namespace cppgui {
     void Root_widget<Config, WithLayout>::add_child(Widget<Config, WithLayout> *child)
     {
         _add_child(child);
-        static_cast<Config::Widget_update_handler*>(child)->added_to_container(static_cast<Abstract_container<Config, WithLayout>*>(this));
+        child->added_to_container(static_cast<Abstract_container_t*>(this));
     }
 
     template<class Config, bool WithLayout>
@@ -22,7 +22,7 @@ namespace cppgui {
     }
 
     template<class Config, bool WithLayout>
-    inline void Root_widget<Config, WithLayout>::render(Renderer *r)
+    inline void Root_widget<Config, WithLayout>::render(Renderer *r, const Position &)
     {
         // TODO: the following is temporary - it must be made optional
         r->clear(r->rgba_to_native({ 0, 0.5f, 0.2f, 1 }));
@@ -31,6 +31,22 @@ namespace cppgui {
         {
             child->render(r, { 0, 0 });
         }
+    }
+
+    // Default update handler implementation ------------------------
+
+    template<class Config, bool With_layout>
+    template<class Next_aspects>
+    inline void Default_root_widget_updater<Config, With_layout>::Aspect<Next_aspects>::invalidate()
+    {
+        // TODO
+    }
+
+    template<class Config, bool With_layout>
+    template<class Next_aspects>
+    inline void Default_root_widget_container_updater<Config, With_layout>::Aspect<Next_aspects>::child_invalidated(Widget_t *)
+    {
+        // TODO
     }
 
 } // ns cppgui

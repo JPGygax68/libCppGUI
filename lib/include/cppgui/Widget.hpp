@@ -36,10 +36,6 @@ namespace cppgui {
         }
     };
 
-    // Forward declarations
-    template <class Config, bool WithLayout> class Abstract_container;
-    template <class Config, bool WithLayout> class Widget;
-
     // Default font mapper
 
     template <class Renderer>
@@ -59,32 +55,31 @@ namespace cppgui {
         }
     };
 
-    // Default update handlers 
+    // "Aspect" stuff
 
-    template <class Config, bool WithLayout>
-    struct Default_container_update_handler_base {
-        void child_added(Widget<Config, WithLayout> *);
-        void child_invalidated(Widget<Config, WithLayout> *);
-        virtual void handle_child_invalidated(Widget<Config, WithLayout> *) = 0;
-    };
+    struct Nil_struct {}; // end-of-chain for aspects
 
-    template <class Config, bool WithLayout>
-    struct Default_container_update_handler: public Default_container_update_handler_base<Config, WithLayout> {
-        void handle_child_invalidated(Widget<Config, WithLayout> *) override;
-    };
+    template <class Next_aspects>
+    struct Nil_aspect: public Next_aspects {};
 
-    template <class Config, bool WithLayout>
-    struct Default_widget_update_handler {
-        void invalidate();
-        void added_to_container(Abstract_container<Config, WithLayout> *);
-    private:
-        Abstract_container<Config, WithLayout> *_container;
-    };
+    template<bool B, template <class = Nil_aspect> class Aspect1, template <class = Nil_aspect> class Aspect2>
+    struct select_aspect { template <class Next_aspects = Nil_aspect> using aspect = Aspect1<Next_aspects>; };
 
-    template <class Config, bool WithLayout>
+    template<template <class> class Aspect1, template <class> class Aspect2>
+    struct select_aspect<false, Aspect1, Aspect2> { template <class Next_aspects = Nil_aspect> using aspect = Aspect2<Next_aspects>; };
+
+    /** Abstract_widget: functionality common to both Root_widget and Widget, i.e. not including the ability
+        to function as an element in a container.
+     */
+    template <
+        class Config, 
+        template <class = Nil_aspect> class Layouting_aspect,
+        template <class = Nil_aspect> class Updating_aspect
+    >
     class Abstract_widget:
         public Config::Color_mapper,
-        public Config::Font_mapper
+        public Config::Font_mapper,
+        public Updating_aspect<Layouting_aspect<Nil_struct> >
     {
     public:
         using Renderer     = typename Config::Renderer;
@@ -108,6 +103,8 @@ namespace cppgui {
         virtual void update_render_resources(Renderer *) {}
         void cleanup_render_resources(Renderer *);
 
+        virtual void render(Renderer *, const Position &offset) = 0;
+
     protected:
         using Config::Color_mapper::get_resource;
         using Config::Font_mapper::get_resource;
@@ -121,30 +118,59 @@ namespace cppgui {
         Rectangle _rect;
     };
 
-    template <class Config, bool WithLayout>
-    class Widget: public Abstract_widget<Config, WithLayout>,
-        public Config::Widget_update_handler
-    {
+    template <class Next_aspects>
+    struct Nil_layouter: public Next_aspects {};
+
+    // Widget layouter (optional aspect)
+
+    template <class Next_aspects>
+    class Widget_layouter_base {
     public:
+        virtual auto minimal_size() -> Extents = 0;
+        virtual void layout() = 0;
+    };
+
+    template <
+        class Config,
+        bool With_layouting
+    >
+    class Widget: public Abstract_widget<Config, Widget_layouter_base, Config::Widget_updater> {
+    public:
+        using Renderer = typename Config::Renderer;
+        using Font_handle = typename Renderer::font_handle;
+
         // TODO: should the following be protected ?
         bool hovered() const { return _hovered; }
 
         void mouse_enter() override;
         void mouse_exit() override;
 
-        virtual void render(Renderer *, const Position &offset) = 0;
-
-    protected:
-        virtual void invalidate();
-
     private:
         bool _hovered = false;
     };
 
-    class Widget_layouter {
-    public:
-        virtual auto minimal_size() -> Extents = 0;
-        virtual void layout() = 0;
+    // Default implementations for Updating_aspect
+
+    template <class Config, bool With_layout> class Abstract_container;
+
+    template <class Config, bool With_layout> class Default_container_updater;
+
+    template <class Config, bool With_layout>
+    struct Default_widget_updater {
+
+        template <class Next_aspects>
+        struct Aspect : public Next_aspects {
+            using Widget_t = Widget<Config, With_layout>;
+            using Abstract_container_t = Abstract_container<Config, With_layout>;
+
+            void invalidate();
+            void added_to_container(Abstract_container_t *);
+
+            auto container() const { return _container; }
+
+        private:
+            Abstract_container_t *_container;
+        };
     };
 
 } // ns cppgui

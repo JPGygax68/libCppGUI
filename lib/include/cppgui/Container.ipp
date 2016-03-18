@@ -2,16 +2,16 @@
 
 namespace cppgui {
 
-    template <class Config, bool WithLayout>
-    inline void Abstract_container<Config, WithLayout>::_add_child(Widget<Config, WithLayout> *child)
+    template <class Config, bool With_layout>
+    inline void Abstract_container<Config, With_layout>::_add_child(Widget<Config, With_layout> *child)
     {
         _children.push_back(child);
     }
 
-    template<class Config, bool WithLayout>
-    auto Abstract_container<Config, WithLayout>::child_at(const Position &pos) -> Widget<Config, WithLayout>*
+    template<class Config, bool With_layout>
+    auto Abstract_container<Config, With_layout>::child_at(const Position &pos) -> Widget<Config, With_layout>*
     {
-        Widget<Config, WithLayout> *target = nullptr;
+        Widget<Config, With_layout> *target = nullptr;
 
         for (auto child : _children)
         {
@@ -25,10 +25,10 @@ namespace cppgui {
         return target;
     }
 
-    template<class Config, bool WithLayout>
-    void Abstract_container<Config, WithLayout>::handle_mouse_motion(const Position &pos)
+    template<class Config, bool With_layout>
+    void Abstract_container<Config, With_layout>::handle_mouse_motion(const Position &pos)
     {
-        Widget<Config, WithLayout> *hovered = child_at(pos);
+        Widget<Config, With_layout> *hovered = child_at(pos);
 
         if (hovered != _hovered_child)
         {
@@ -38,25 +38,10 @@ namespace cppgui {
         }
     }
 
-    template<class Config, class Update_handler, bool WithLayout>
-    void Abstract_container<Config, WithLayout>::child_invalidated(Widget<Config, WithLayout>*)
+    template <class Config, bool With_layout>
+    void Container<Config, With_layout>::mouse_motion(const Position &pos)
     {
-        static_cast<Config::Container_update_handler*>(this)->child_invalidated(child);
-    }
-
-    template<class Config, bool WithLayout>
-    inline void Container_basic<Config, WithLayout>::add_child(Widget<Config, WithLayout> *child)
-    {
-        _add_child(child);
-
-        static_cast<Config::Container_update_handler*>(this)->child_added(child);
-        static_cast<Config::Widget_update_handler*>(child)->added_to_container(this);
-    }
-
-    template <class Config, class Update_handler, bool WithLayout>
-    void Container_basic<Config, WithLayout>::mouse_motion(const Position &pos)
-    {
-        Widget<Config, WithLayout> *hovered = child_at(pos);
+        Widget<Config, With_layout> *hovered = child_at(pos);
 
         if (hovered != _hovered_child)
         {
@@ -66,8 +51,8 @@ namespace cppgui {
         }
     }
 
-    template <class Config, bool WithLayout>
-    inline void Container_basic<Config, WithLayout>::update_render_resources(Renderer *r)
+    template <class Config, bool With_layout>
+    inline void Container<Config, With_layout>::update_render_resources(Renderer *r)
     {
         for (auto& child : _children)
         {
@@ -75,8 +60,8 @@ namespace cppgui {
         }
     }
 
-    template <class Config, bool WithLayout>
-    void Container_basic<Config, WithLayout>::render(Renderer *r, const Position & offset)
+    template <class Config, bool With_layout>
+    void Container<Config, With_layout>::render(Renderer *r, const Position & offset)
     {
         auto pos = offset + position();
 
@@ -84,6 +69,13 @@ namespace cppgui {
         {
             child->render(r, pos);
         }
+    }
+
+    template<class Config, bool With_layout>
+    template<class Next_aspects>
+    inline void Default_abstract_container_updater<Config, With_layout>::Aspect<Next_aspects>::child_invalidated(Widget_t *)
+    {
+        // TODO
     }
 
 } // ns cppgui

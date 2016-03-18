@@ -5,48 +5,56 @@
 namespace cppgui {
 
     template<class Config, bool WithLayout>
-    inline void Label_basic<Config, WithLayout>::set_font(const gpc::fonts::rasterized_font *font)
+    inline void Label<Config, WithLayout>::set_font(const gpc::fonts::rasterized_font *font)
     {
         _font = font;
     }
 
     template<class Config, bool WithLayout>
-    inline void Label_basic<Config, WithLayout>::set_text(const std::u32string &text)
+    inline void Label<Config, WithLayout>::set_text(const std::u32string &text)
     {
         _text = text;
     }
 
     template<class Config, bool WithLayout>
-    inline void Label_basic<Config, WithLayout>::update_render_resources(Renderer *r)
+    inline void Label<Config, WithLayout>::update_render_resources(Renderer *r)
     {
         _fnthnd = get_resource(r, _font);
     }
 
     template<class Config, bool WithLayout>
-    inline void Label_basic<Config, WithLayout>::render(Renderer *r, const Position &offset)
+    inline void Label<Config, WithLayout>::render(Renderer *r, const Position &offset)
     {
         fill(r, rgba_to_native(r, hovered() ? button_face_hovered_color() : button_face_color()));
         auto p = offset + position();
         r->render_text(_fnthnd, p.x + _txpos.x, p.y + _txpos.y, _text.data(), _text.size());
     }
 
-    template<class Config>
-    inline auto Label_full<Config>::minimal_size() -> Extents
-    {
-        assert(!_text.empty()); // TODO: TENTATIVE RULE: layouting may not occur before conditions are met (font, text must be set) ?
+    // Layouter aspect ----------------------------------------------
 
-        auto bounds = _font->compute_text_extents(0, _text.data(), _text.size());
+    template<class Config, bool With_layout>
+    template<class Next_aspects>
+    inline auto Label_layouter<Config, With_layout>::Aspect<Next_aspects>::minimal_size() -> Extents
+    {
+        auto p = static_cast<Label<Config, With_layout>*>(this);
+
+        assert(!p->text().empty()); // TODO: TENTATIVE RULE: layouting may not occur before conditions are met (font, text must be set) ?
+
+        auto bounds = p->font()->compute_text_extents(0, p->text().data(), p->text().size());
 
         return{ bounds.width(), bounds.height() };
     }
 
-    template<class Config>
-    void Label_full<Config>::layout()
+    template<class Config, bool With_layout>
+    template<class Next_aspects>
+    void Label_layouter<Config, With_layout>::Aspect<Next_aspects>::layout()
     {
+        auto p = static_cast<Label<Config, With_layout>*>(this);
 
-        auto txb = _font->compute_text_extents(0, _text.data(), _text.size());
+        auto txb = p->font()->compute_text_extents(0, p->text().data(), p->text().size());
         auto ext = extents();
-        _txpos = {
+
+        p->text_position() = {
             static_cast<int>((ext.w - txb.width()) / 2),
             static_cast<int>((ext.h - txb.height()) / 2 + txb.y_max)
         };

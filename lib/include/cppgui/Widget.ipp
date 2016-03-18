@@ -2,84 +2,78 @@
 
 #include "./Widget.hpp"
 #include "./Container.hpp"
+#include "Root_widget.hpp"
 
 namespace cppgui {
 
-    template<class Config, bool WithLayout>
-    void Default_widget_update_handler<Config, WithLayout>::invalidate()
+    template<class Config, bool With_layout>     
+    template<class Next_aspects>
+    inline void Default_widget_updater<Config, With_layout>::Aspect<Next_aspects>::invalidate()
     {
+        auto c = static_cast<Abstract_container<Config, With_layout>*>(this->container());
+
         // Pass "up" to container
-        _container->child_invalidated(static_cast<WidgetT*>(this));
+        c->child_invalidated(static_cast<Widget_t*>(this));
     }
 
-    template<class Config, bool WithLayout>
-    inline void Default_widget_update_handler<Config, WithLayout>::added_to_container(Abstract_container<Config, WithLayout> *cont)
+    template<class Config, bool With_layout>
+    template<class Next_aspects>
+    void Default_root_widget_updater<Config, With_layout>::Aspect<Next_aspects>::added_to_container(Abstract_container_t *)
+    {
+        // DO NOTHING
+    }
+
+    template<class Config, bool With_layout>
+    template<class Next_aspects>
+    inline void Default_widget_updater<Config, With_layout>::Aspect<Next_aspects>::added_to_container(Abstract_container_t *cont)
     {
         _container = cont;
     }
 
-    template<class Config, bool WithLayout>
-    inline void Default_container_update_handler<Config, WithLayout>::child_added(Widget<Config, WithLayout> *child)
-    {
-        child->set_container(static_cast<ContainerT*>(this));
-    }
-
-    template<class Config, bool WithLayout>
-    void Default_container_update_handler<Config, WithLayout>::child_invalidated(Widget<Config, WithLayout> *)
-    {
-        // TODO
-    }
-
-    template<class Config, bool WithLayout>
-    inline void Abstract_widget<Config, WithLayout>::set_position(const Position &pos)
+    template <class Config, template <class = Nil_aspect> class Layouting_aspect, template <class = Nil_aspect> class Updating_aspect>
+    inline void Abstract_widget<Config, Layouting_aspect, Updating_aspect>::set_position(const Position &pos)
     {
         _rect.pos = pos;
     }
 
-    template<class Config, bool WithLayout>
-    inline void Abstract_widget<Config, WithLayout>::set_extents(const Extents &ext)
+    template <class Config, template <class = Nil_aspect> class Layouting_aspect, template <class = Nil_aspect> class Updating_aspect>
+    inline void Abstract_widget<Config, Layouting_aspect, Updating_aspect>::set_extents(const Extents &ext)
     {
         _rect.ext = ext;
     }
 
-    template<class Config, bool WithLayout>
-    inline void Abstract_widget<Config, WithLayout>::cleanup_render_resources(Renderer *r)
+    template <class Config, template <class = Nil_aspect> class Layouting_aspect, template <class = Nil_aspect> class Updating_aspect>
+    inline void Abstract_widget<Config, Layouting_aspect, Updating_aspect>::cleanup_render_resources(Renderer *r)
     {
         Config::Color_mapper::release_all_resources(r);
         Config::Font_mapper ::release_all_resources(r);
     }
 
-    template <class Config, bool WithLayout>
-    inline auto Abstract_widget<Config, WithLayout>::rgba_to_native(Renderer *r, const Rgba_norm &color) -> Native_color
+    template <class Config, template <class = Nil_aspect> class Layouting_aspect, template <class = Nil_aspect> class Updating_aspect>
+    inline auto Abstract_widget<Config, Layouting_aspect, Updating_aspect>::rgba_to_native(Renderer *r, const Rgba_norm &color) -> Native_color
     {
         return get_resource(r, color);
     }
 
-    template <class Config, bool WithLayout>
-    inline void Abstract_widget<Config, WithLayout>::fill(Renderer *r, const Native_color &color)
+    template <class Config, template <class = Nil_aspect> class Layouting_aspect, template <class = Nil_aspect> class Updating_aspect>
+    inline void Abstract_widget<Config, Layouting_aspect, Updating_aspect>::fill(Renderer *r, const Native_color &color)
     {
         auto b{ rectangle() };
         r->fill_rect(b.pos.x, b.pos.y, b.ext.w, b.ext.h, color);
     }
 
-    template<class Config, bool WithLayout>
-    inline void Widget<Config, WithLayout>::mouse_enter()
+    template<class Config, bool With_layout>
+    inline void Widget<Config, With_layout>::mouse_enter()
     {
         _hovered = true;
         invalidate();
     }
 
-    template<class Config, bool WithLayout>
-    inline void Widget<Config, WithLayout>::mouse_exit()
+    template<class Config, bool With_layout>
+    inline void Widget<Config, With_layout>::mouse_exit()
     {
         _hovered = false;
         invalidate();
-    }
-
-    template<class Config, bool WithLayout>
-    void Widget<Config, WithLayout>::invalidate()
-    {
-        Config::Widget_update_handler::invalidate();
     }
 
 } // ns cppgui
