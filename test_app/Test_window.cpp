@@ -22,6 +22,8 @@ Test_window::Test_window():
     _label.set_text(U"Hello World!");
 
     _root_widget.add_child(&_label);
+
+    _root_widget.on_invalidated([this]() { request_redraw(); });
 }
 
 void Test_window::init_graphics()

@@ -31,8 +31,8 @@ public:
         using Widget_updater = cppgui::Default_widget_updater<Widget_config, true>::Aspect<Next_aspects>;
         template <class Next_aspects>
         using Abstract_container_updater = cppgui::Default_abstract_container_updater<Widget_config, true>::Aspect<Next_aspects>;
-        template <class Next_aspects>
-        using Root_widget_updater = cppgui::Default_root_widget_updater<Widget_config, true>::Aspect<Next_aspects>;
+        //template <class Next_aspects>
+        //using Root_widget_updater = cppgui::Default_root_widget_updater<Widget_config, true>::Aspect<Next_aspects>;
         template <class Next_aspects>
         using Root_widget_container_updater = cppgui::Default_root_widget_container_updater<Widget_config, true>::Aspect<Next_aspects>;
 

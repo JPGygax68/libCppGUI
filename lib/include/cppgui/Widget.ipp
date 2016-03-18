@@ -10,17 +10,10 @@ namespace cppgui {
     template<class Next_aspects>
     inline void Default_widget_updater<Config, With_layout>::Aspect<Next_aspects>::invalidate()
     {
-        auto c = static_cast<Abstract_container<Config, With_layout>*>(this->container());
-
-        // Pass "up" to container
+        //auto c = static_cast<Abstract_container<Config, With_layout>*>(this->container());
+        //c->child_invalidated(static_cast<Widget_t*>(this));
+        auto c = this->container();
         c->child_invalidated(static_cast<Widget_t*>(this));
-    }
-
-    template<class Config, bool With_layout>
-    template<class Next_aspects>
-    void Default_root_widget_updater<Config, With_layout>::Aspect<Next_aspects>::added_to_container(Abstract_container_t *)
-    {
-        // DO NOTHING
     }
 
     template<class Config, bool With_layout>

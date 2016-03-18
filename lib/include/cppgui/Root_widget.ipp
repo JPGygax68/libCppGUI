@@ -33,20 +33,4 @@ namespace cppgui {
         }
     }
 
-    // Default update handler implementation ------------------------
-
-    template<class Config, bool With_layout>
-    template<class Next_aspects>
-    inline void Default_root_widget_updater<Config, With_layout>::Aspect<Next_aspects>::invalidate()
-    {
-        // TODO
-    }
-
-    template<class Config, bool With_layout>
-    template<class Next_aspects>
-    inline void Default_root_widget_container_updater<Config, With_layout>::Aspect<Next_aspects>::child_invalidated(Widget_t *)
-    {
-        // TODO
-    }
-
 } // ns cppgui
