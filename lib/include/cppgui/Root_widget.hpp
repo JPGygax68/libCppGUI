@@ -51,7 +51,7 @@ namespace cppgui {
     template <class Config, bool With_layout>
     struct Default_root_widget_container_updater {
 
-        CPPGUI_ASPECT(Aspect)
+        CPPGUI_DEFINE_ASPECT(Aspect)
         {
             using Widget_t = Widget<Config, With_layout>;
             using Container_t = Container<Config, With_layout>;

@@ -60,11 +60,7 @@ namespace cppgui {
     /** Abstract_widget: functionality common to both Root_widget and Widget, i.e. not including the ability
         to function as an element in a container.
      */
-    template <
-        class Config, 
-        template <class = Nil_aspect> class Layouting_aspect,
-        template <class = Nil_aspect> class Updating_aspect
-    >
+    template <class Config, CPPGUI_ASPECT(Layouting_aspect), CPPGUI_ASPECT(Updating_aspect)>
     class Abstract_widget:
         public Config::Color_mapper,
         public Config::Font_mapper,
@@ -86,6 +82,7 @@ namespace cppgui {
         static auto button_face_hovered_color() { return Rgba_norm{ 0.9f, 0.9f, 0.9f, 1 }; }
 
         virtual void mouse_motion(const Position &) {}
+        virtual void mouse_click(int button, int count);
         virtual void mouse_enter() {};
         virtual void mouse_exit() {};
 
@@ -112,11 +109,13 @@ namespace cppgui {
 
     // Widget layouter (optional aspect)
 
-    CPPGUI_ASPECT(Widget_layouter_base)
+    CPPGUI_DEFINE_ASPECT(Widget_layouter_base)
     {
         virtual auto minimal_size() -> Extents = 0;
         virtual void layout() = 0;
     };
+
+    // Widget 
 
     template <
         class Config,
@@ -146,7 +145,7 @@ namespace cppgui {
     template <class Config, bool With_layout>
     struct Default_widget_updater {
 
-        CPPGUI_ASPECT(Aspect)
+        CPPGUI_DEFINE_ASPECT(Aspect)
         {
             using Widget_t = Widget<Config, With_layout>;
             using Abstract_container_t = Abstract_container<Config, With_layout>;

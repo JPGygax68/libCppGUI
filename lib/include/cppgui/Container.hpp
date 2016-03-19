@@ -4,7 +4,7 @@
 
 namespace cppgui {
 
-    /** Container functionality (ability to contain and render Widgets).
+    /** Container functionality (ability to contain Widgets).
      */
     template <class Config, bool With_layout>
     class Abstract_container: public Config::template Abstract_container_updater<Nil_struct>
@@ -23,8 +23,8 @@ namespace cppgui {
         Widget_t *_hovered_child = nullptr;
     };
 
-    template <class Aspect_parent>
-    struct Container_layouter: public Aspect_parent {
+    CPPGUI_DEFINE_ASPECT(Container_layouter)
+    {        
         // TODO
     };
 
@@ -48,7 +48,7 @@ namespace cppgui {
     template <class Config, bool With_layout>
     struct Default_abstract_container_updater {
 
-        CPPGUI_ASPECT(Aspect)
+        CPPGUI_DEFINE_ASPECT(Aspect)
         {
             using Widget_t = Widget<Config, With_layout>;
             using Container_t = Container<Config, With_layout>;

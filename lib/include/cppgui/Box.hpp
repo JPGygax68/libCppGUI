@@ -4,18 +4,20 @@
 
 namespace cppgui {
 
-    template <class Renderer>
-    class Widget;
+    template <class Config, bool With_layout> class Widget;
 
-    template <class Renderer>
-    class Box: public Container<Renderer> {
+    template <class Config, bool With_layout>
+    class Box: public Container<Config, With_layout> 
+    {
     public:
+        using Widget_t = Widget<Config, With_layout>;
+
         void set_header(Widget *);
         void set_content(Widget *);
         void set_footer(Widget *);
 
     private:
-        Widget *_header, *_content, *_footer;
+        Widget_t *_header, *_content, *_footer;
     };
 
 } // ns cppgui
