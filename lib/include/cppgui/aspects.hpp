@@ -15,7 +15,31 @@ namespace cppgui {
 
         So, although it is possible to think of aspects as being latched onto the "side"
         of the class they augment, implementation-wise this is done via simple inheritance.
-     */
+
+        Note that the macro CPPGUI() is provided to emit the above construct.
+
+        To provide an aspect that is templatized, use a wrapping struct, e.g.:
+
+        template <class T, bool Support_effects>
+        struct My_aspect {
+
+            CPPGUI(Aspect)
+            {
+                // ...
+            };
+        };
+
+        It makes sense in such as case to follow a convention and always use "Aspect" as the
+        name of the aspect, and to use the real name for the wrapping struct.
+
+        To use an aspect, simply inherit from it, passing the class it augments as its 
+        template parameter:
+
+        class My_class: public Parent_aspect_A<Parent_class> {
+            // ...
+        };
+
+    */
 
     struct Nil_struct {}; // end-of-chain for aspects
 
@@ -26,8 +50,8 @@ namespace cppgui {
         std::conditional<> cannot be used for the simple reason that it works with fully
         defined types; select_aspect<> works with one-parameter templates.
 
-        select_aspect<> makes it possible to inject completely different implementations
-        of a feature
+        select_aspect<> makes it possible, for example, to inject completely different
+        implementations of a feature into a class, depending on a boolean template parameter.
      */
 
     template<bool B, template <class = Nil_aspect> class Aspect1, template <class = Nil_aspect> class Aspect2>
@@ -40,7 +64,8 @@ namespace cppgui {
         define an aspect, and possibly to make them stand out more clearly.
         Usage:
 
-        CPPGUI_ASPECT(My_aspect) {
+        CPPGUI_ASPECT(My_aspect)
+        {
             // ... declaration / inline implementations
         };
 
