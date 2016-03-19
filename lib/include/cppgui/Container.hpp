@@ -23,8 +23,8 @@ namespace cppgui {
         Widget_t *_hovered_child = nullptr;
     };
 
-    template <class Next_aspects>
-    struct Container_layouter: public Next_aspects {
+    template <class Aspect_parent>
+    struct Container_layouter: public Aspect_parent {
         // TODO
     };
 
@@ -35,7 +35,7 @@ namespace cppgui {
     {
     public:
         using Renderer = typename Config::Renderer;
-        template <class Next_aspects> using Layouter_t = Container_layouter<Next_aspects>;
+        template <class Aspect_parent> using Layouter_t = Container_layouter<Aspect_parent>;
 
         void add_child(Widget<Config, With_layout> *); // TODO: really need to override ?
 
@@ -48,8 +48,8 @@ namespace cppgui {
     template <class Config, bool With_layout>
     struct Default_abstract_container_updater {
 
-        template <class Next_aspects>
-        struct Aspect : public Next_aspects {
+        CPPGUI_ASPECT(Aspect)
+        {
             using Widget_t = Widget<Config, With_layout>;
             using Container_t = Container<Config, With_layout>;
 

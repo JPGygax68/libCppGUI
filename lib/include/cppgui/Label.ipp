@@ -33,8 +33,8 @@ namespace cppgui {
     // Layouter aspect ----------------------------------------------
 
     template<class Config, bool With_layout>
-    template<class Next_aspects>
-    inline auto Label_layouter<Config, With_layout>::Aspect<Next_aspects>::minimal_size() -> Extents
+    template<class Aspect_parent>
+    inline auto Label_layouter<Config, With_layout>::Aspect<Aspect_parent>::minimal_size() -> Extents
     {
         auto p = static_cast<Label<Config, With_layout>*>(this);
 
@@ -46,8 +46,8 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    template<class Next_aspects>
-    void Label_layouter<Config, With_layout>::Aspect<Next_aspects>::layout()
+    template<class Aspect_parent>
+    void Label_layouter<Config, With_layout>::Aspect<Aspect_parent>::layout()
     {
         auto p = static_cast<Label<Config, With_layout>*>(this);
 

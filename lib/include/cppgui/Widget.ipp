@@ -7,8 +7,8 @@
 namespace cppgui {
 
     template<class Config, bool With_layout>     
-    template<class Next_aspects>
-    inline void Default_widget_updater<Config, With_layout>::Aspect<Next_aspects>::invalidate()
+    template<class Aspect_parent>
+    inline void Default_widget_updater<Config, With_layout>::Aspect<Aspect_parent>::invalidate()
     {
         //auto c = static_cast<Abstract_container<Config, With_layout>*>(this->container());
         //c->child_invalidated(static_cast<Widget_t*>(this));
@@ -17,8 +17,8 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    template<class Next_aspects>
-    inline void Default_widget_updater<Config, With_layout>::Aspect<Next_aspects>::added_to_container(Abstract_container_t *cont)
+    template<class Aspect_parent>
+    inline void Default_widget_updater<Config, With_layout>::Aspect<Aspect_parent>::added_to_container(Abstract_container_t *cont)
     {
         _container = cont;
     }

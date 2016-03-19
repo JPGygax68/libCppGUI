@@ -27,14 +27,14 @@ public:
         using Label = cppgui::Label<Widget_config, true>;
         using Root_widget = cppgui::Root_widget<Widget_config, true>;
         
-        template <class Next_aspects>
-        using Widget_updater = cppgui::Default_widget_updater<Widget_config, true>::Aspect<Next_aspects>;
-        template <class Next_aspects>
-        using Abstract_container_updater = cppgui::Default_abstract_container_updater<Widget_config, true>::Aspect<Next_aspects>;
-        //template <class Next_aspects>
-        //using Root_widget_updater = cppgui::Default_root_widget_updater<Widget_config, true>::Aspect<Next_aspects>;
-        template <class Next_aspects>
-        using Root_widget_container_updater = cppgui::Default_root_widget_container_updater<Widget_config, true>::Aspect<Next_aspects>;
+        template <class Aspect_parent>
+        using Widget_updater = cppgui::Default_widget_updater<Widget_config, true>::Aspect<Aspect_parent>;
+        template <class Aspect_parent>
+        using Abstract_container_updater = cppgui::Default_abstract_container_updater<Widget_config, true>::Aspect<Aspect_parent>;
+        //template <class Aspect_parent>
+        //using Root_widget_updater = cppgui::Default_root_widget_updater<Widget_config, true>::Aspect<Aspect_parent>;
+        template <class Aspect_parent>
+        using Root_widget_container_updater = cppgui::Default_root_widget_container_updater<Widget_config, true>::Aspect<Aspect_parent>;
 
         //using Container   = cppgui::Container<Widget_config, true>;
         //using Root_widget = cppgui::Root_widget<Widget_config, true>;

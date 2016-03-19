@@ -8,10 +8,12 @@ namespace cppgui {
 
     extern int dummy;
 
+#define __aspect
+
     template <class Config, bool With_layout>
     class Root_widget: 
         public Abstract_widget<Config, Nil_aspect, Nil_aspect>, // Config::Root_widget_updater>,
-        public Config::template Root_widget_container_updater<Abstract_container<Config, With_layout>>
+        public __aspect Config::template Root_widget_container_updater<Abstract_container<Config, With_layout>>
     {
     public:
         using Abstract_container_t = Abstract_container<Config, With_layout>;
@@ -31,8 +33,8 @@ namespace cppgui {
     template <class Config, bool With_layout>
     struct Default_root_widget_updater {
 
-        template <class Next_aspects>
-        struct Aspect : public Next_aspects {
+        template <class Aspect_parent>
+        struct Aspect : public Aspect_parent {
             using Abstract_container_t = Abstract_container<Config, With_layout>;
             using Invalidated_handler = std::function<void()>;
 
@@ -49,9 +51,8 @@ namespace cppgui {
     template <class Config, bool With_layout>
     struct Default_root_widget_container_updater {
 
-        template <class Next_aspects>
-        struct Aspect : public Next_aspects {
-
+        CPPGUI_ASPECT(Aspect)
+        {
             using Widget_t = Widget<Config, With_layout>;
             using Container_t = Container<Config, With_layout>;
             using Invalidated_handler = std::function<void()>;

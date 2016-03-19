@@ -72,8 +72,8 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    template<class Next_aspects>
-    inline void Default_abstract_container_updater<Config, With_layout>::Aspect<Next_aspects>::child_invalidated(Widget_t *)
+    template<class Aspect_parent>
+    inline void Default_abstract_container_updater<Config, With_layout>::Aspect<Aspect_parent>::child_invalidated(Widget_t *)
     {
         // TODO
     }

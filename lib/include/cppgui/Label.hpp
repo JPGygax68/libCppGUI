@@ -13,8 +13,9 @@ namespace cppgui {
 
     template <class Config, bool With_layout>
     struct Label_layouter {
-        template <class Next_aspects>
-        struct Aspect: public Next_aspects {
+        
+        CPPGUI_ASPECT(Aspect)
+        {
             auto minimal_size() -> Extents override;
             void layout() override;
         };

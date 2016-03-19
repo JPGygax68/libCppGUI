@@ -6,6 +6,8 @@
 #include <gpc/fonts/rasterized_font.hpp>
 #include <gpc/gui/renderer.hpp> // TODO: other source & namespace
 
+#include "./aspects.hpp"
+
 #include "./Resource_mapper.hpp"
 
 namespace cppgui {
@@ -54,19 +56,6 @@ namespace cppgui {
             r->release_font(hnd);
         }
     };
-
-    // "Aspect" stuff
-
-    struct Nil_struct {}; // end-of-chain for aspects
-
-    template <class Next_aspects>
-    struct Nil_aspect: public Next_aspects {};
-
-    template<bool B, template <class = Nil_aspect> class Aspect1, template <class = Nil_aspect> class Aspect2>
-    struct select_aspect { template <class Next_aspects = Nil_aspect> using aspect = Aspect1<Next_aspects>; };
-
-    template<template <class> class Aspect1, template <class> class Aspect2>
-    struct select_aspect<false, Aspect1, Aspect2> { template <class Next_aspects = Nil_aspect> using aspect = Aspect2<Next_aspects>; };
 
     /** Abstract_widget: functionality common to both Root_widget and Widget, i.e. not including the ability
         to function as an element in a container.
@@ -118,14 +107,13 @@ namespace cppgui {
         Rectangle _rect;
     };
 
-    template <class Next_aspects>
-    struct Nil_layouter: public Next_aspects {};
+    template <class Aspect_parent>
+    struct Nil_layouter: public Aspect_parent {};
 
     // Widget layouter (optional aspect)
 
-    template <class Next_aspects>
-    class Widget_layouter_base {
-    public:
+    CPPGUI_ASPECT(Widget_layouter_base)
+    {
         virtual auto minimal_size() -> Extents = 0;
         virtual void layout() = 0;
     };
@@ -158,8 +146,8 @@ namespace cppgui {
     template <class Config, bool With_layout>
     struct Default_widget_updater {
 
-        template <class Next_aspects>
-        struct Aspect : public Next_aspects {
+        CPPGUI_ASPECT(Aspect)
+        {
             using Widget_t = Widget<Config, With_layout>;
             using Abstract_container_t = Abstract_container<Config, With_layout>;
 
