@@ -11,7 +11,7 @@ namespace gpc { namespace fonts {
 
 namespace cppgui {
 
-    template <class Config, bool With_layout>
+    template <class Config>
     struct Label_layouter {
         
         CPPGUI_DEFINE_ASPECT(Aspect)
@@ -25,7 +25,7 @@ namespace cppgui {
      */
     template <class Config, bool With_layout>
     class Label: 
-        public select_aspect<With_layout, Label_layouter<Config, With_layout>::Aspect, Nil_layouter>::template aspect<Widget<Config, With_layout>>
+        public select_aspect<With_layout, Label_layouter<Config>::Aspect, Nil_layouter>::template aspect<Widget<Config, With_layout>>
     {
     public:
         using Renderer = typename Config::Renderer;

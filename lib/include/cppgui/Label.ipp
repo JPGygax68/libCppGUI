@@ -32,11 +32,11 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template<class Config, bool With_layout>
+    template<class Config>
     template<class Aspect_parent>
-    inline auto Label_layouter<Config, With_layout>::Aspect<Aspect_parent>::minimal_size() -> Extents
+    inline auto Label_layouter<Config>::Aspect<Aspect_parent>::minimal_size() -> Extents
     {
-        auto p = static_cast<Label<Config, With_layout>*>(this);
+        auto p = static_cast<Label<Config, true>*>(this);
 
         assert(!p->text().empty()); // TODO: TENTATIVE RULE: layouting may not occur before conditions are met (font, text must be set) ?
 
@@ -45,11 +45,11 @@ namespace cppgui {
         return{ bounds.width(), bounds.height() };
     }
 
-    template<class Config, bool With_layout>
+    template<class Config>
     template<class Aspect_parent>
-    void Label_layouter<Config, With_layout>::Aspect<Aspect_parent>::layout()
+    void Label_layouter<Config>::Aspect<Aspect_parent>::layout()
     {
-        auto p = static_cast<Label<Config, With_layout>*>(this);
+        auto p = static_cast<Label<Config, true>*>(this);
 
         auto txb = p->font()->compute_text_extents(0, p->text().data(), p->text().size());
         auto ext = extents();

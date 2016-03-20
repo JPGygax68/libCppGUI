@@ -2,12 +2,14 @@
 
 #include "./Window.ipp"
 #include "./cppgui/Label.hpp"
+#include "./cppgui/Textbox.hpp"
 
 #include "./Test_window.hpp"
 
 #include <cppgui/Resource_mapper.ipp>
 #include <cppgui/Widget.ipp>
 #include <cppgui/Label.ipp>
+#include <cppgui/Textbox.ipp>
 #include <cppgui/Container.ipp>
 #include <cppgui/Root_widget.ipp>
 
