@@ -43,31 +43,24 @@ namespace cppgui {
     {
         auto child = child_at(pos);
 
+        /*for (auto& child : _children)
+        {
+            child->mouse_click(relpos, button, count);
+        }*/
+
         if (child) child->mouse_click(pos, button, count);
     }
 
     template <class Config, bool With_layout>
     void Container<Config, With_layout>::mouse_motion(const Position &pos)
     {
-        Widget<Config, With_layout> *hovered = child_at(pos);
-
-        if (hovered != _hovered_child)
-        {
-            if (_hovered_child) _hovered_child->mouse_exit();
-            if (hovered) hovered->mouse_enter();
-            _hovered_child = hovered;
-        }
+        handle_mouse_motion(pos - position());
     }
 
     template<class Config, bool With_layout>
     void Container<Config, With_layout>::mouse_click(const Position &pos, int button, int count)
     {
-        auto relpos = pos - position();
-
-        for (auto& child : _children)
-        {
-            child->mouse_click(relpos, button, count);
-        }
+        handle_mouse_click(pos - position(), button, count);
     }
 
     template <class Config, bool With_layout>

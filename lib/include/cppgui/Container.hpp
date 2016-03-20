@@ -17,6 +17,10 @@ namespace cppgui {
     protected:
         void _add_child(Widget_t *);
         auto child_at(const Position &) -> Widget_t *;
+
+        /** The handle_mouse_xxxx() methods are intended as "delegates" to be called
+            from "real" containers (i.e. descendants of Container<>).            
+         */
         void handle_mouse_motion(const Position &);
         void handle_mouse_click(const Position &, int button, int count);
 
