@@ -28,19 +28,23 @@ namespace cppgui {
         Widget_t *_hovered_child = nullptr;
     };
 
-    CPPGUI_DEFINE_ASPECT(Container_layouter)
-    {        
-        // TODO
+    template <class Config, bool With_layout> struct Container_layouter;
+
+    template <class Config, bool With_layout>
+    struct Container_layouter {
+
+        CPPGUI_DEFINE_ASPECT(Aspect) { };
     };
+
 
     template <class Config, bool With_layout>
     class Container: 
-        public select_aspect<With_layout, Container_layouter, Nil_layouter>::template aspect<Widget<Config, With_layout>>,
+        public Container_layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >,
         public Abstract_container<Config, With_layout>
     {
     public:
         using Renderer = typename Config::Renderer;
-        template <class Aspect_parent> using Layouter_t = Container_layouter<Aspect_parent>;
+        template <class Aspect_parent> using Layouter_t = Container_layouter::Aspect<Aspect_parent>;
 
         void add_child(Widget<Config, With_layout> *); // TODO: really need to override ?
 

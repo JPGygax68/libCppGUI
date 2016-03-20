@@ -83,15 +83,19 @@ namespace cppgui {
         static auto button_face_hovered_color() { return Rgba_norm{ 0.9f, 0.9f, 0.9f, 1 }; }
 
         /** By convention, mouse positions are passed to a widget as relative to
-                their own origin (meaning that it falls to the caller, i.e. usually
-                the container, to subtract the child widget's position() from the
-                coordinates it gets from yet higher up).
+            their own origin (meaning that it falls to the caller, i.e. usually
+            the container, to subtract the child widget's position() from the
+            coordinates it gets from yet higher up).
          */
         virtual void mouse_motion(const Position &) {}
         virtual void mouse_click(const Position &, int button, int count);
         virtual void mouse_enter() {}; // TODO: provide "entry point" parameter ?
         virtual void mouse_exit() {}; // TODO: provide "exit point" parameter ?
 
+        /** TODO: Having a virtual function to update render resources is imperfect
+            in the sense that it is not always necessary to defer the mapping of render
+            resources until pre-render time. In fact, in most cases
+         */
         virtual void update_render_resources(Renderer *) {}
         void cleanup_render_resources(Renderer *);
 

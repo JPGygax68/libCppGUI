@@ -11,12 +11,16 @@ namespace gpc { namespace fonts {
 
 namespace cppgui {
 
+    template <class Config, bool With_layout> struct Label_layouter {
+        CPPGUI_DEFINE_ASPECT(Aspect) {};
+    };
+
     template <class Config>
-    struct Label_layouter {
-        
+    struct Label_layouter<Config, true> {
+
         CPPGUI_DEFINE_ASPECT(Aspect)
         {
-            auto minimal_size() -> Extents override;
+            auto minimal_size()->Extents override;
             void layout() override;
         };
     };
@@ -24,8 +28,7 @@ namespace cppgui {
     /** Label, without layouting.
      */
     template <class Config, bool With_layout>
-    class Label: 
-        public select_aspect<With_layout, Label_layouter<Config>::Aspect, Nil_layouter>::template aspect<Widget<Config, With_layout>>
+    class Label: public Label_layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >
     {
     public:
         using Renderer = typename Config::Renderer;

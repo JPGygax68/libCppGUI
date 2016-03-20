@@ -11,6 +11,7 @@ using namespace gl;
 #include <cppgui/Resource_mapper.hpp>
 #include <cppgui/Root_widget.hpp>
 #include <cppgui/Label.hpp>
+#include <cppgui/Textbox.hpp>
 
 #include "./Window.hpp"
 
@@ -18,15 +19,18 @@ class Test_window : public Window<Test_window> {
 public:
     using Renderer = gpc::gui::gl::renderer<true>;
 
+    struct Widget_config; // forward declaration so we can do our using's
+
+    using Widget = cppgui::Widget<Widget_config, true>;
+    using Label = cppgui::Label<Widget_config, true>;
+    using Root_widget = cppgui::Root_widget<Widget_config, true>;
+    using Textbox = cppgui::Textbox<Widget_config, true>;
+
     struct Widget_config {
 
         using Renderer = Renderer;
         using Font_handle = Renderer::font_handle;
 
-        using Widget = cppgui::Widget<Widget_config, true>;
-        using Label = cppgui::Label<Widget_config, true>;
-        using Root_widget = cppgui::Root_widget<Widget_config, true>;
-        
         template <class Aspect_parent>
         using Widget_updater = cppgui::Default_widget_updater<Widget_config, true>::Aspect<Aspect_parent>;
         template <class Aspect_parent>
@@ -61,8 +65,10 @@ public:
     void closing() override;
 
 private:
-    Widget_config::Root_widget                 _root_widget;
-    Widget_config::Label                       _label;
-    Widget_config::Renderer                    *_renderer;
-    bool                                        _gfxres_ok = false;
+    Root_widget                 _root_widget;
+    Label                       _label;
+    Textbox                     _textbox;
+    
+    Widget_config::Renderer    *_renderer;
+    bool                        _gfxres_ok = false;
 };

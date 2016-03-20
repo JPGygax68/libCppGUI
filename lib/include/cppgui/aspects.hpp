@@ -23,7 +23,7 @@ namespace cppgui {
         template <class T, bool Support_effects>
         struct My_aspect {
 
-            CPPGUI(Aspect)
+            CPPGUI_DEFINE_ASPECT(Aspect)
             {
                 // ...
             };
@@ -31,6 +31,27 @@ namespace cppgui {
 
         It makes sense in such as case to follow a convention and always use "Aspect" as the
         name of the aspect, and to use the real name for the wrapping struct.
+
+        To really leverage the power of templatized aspects, use partial specialization on
+        the wrapper struct:
+
+        template <class T, bool Support_effects>
+        struct My_aspect {
+
+            CPPGUI_DEFINE_ASPECT(Aspect)
+            {
+                // ... FALLBACK IMPLEMENTATION (can be empty)
+            };
+        };
+
+        template <class T>
+        struct My_aspect<T, true> {
+
+            CPPGUI_DEFINE_ASPECT(Aspect)
+            {
+                // ... REAL IMPLEMENTATION ...
+            };
+        };
 
         To use an aspect, simply inherit from it, passing the class it augments as its 
         template parameter:
@@ -43,8 +64,18 @@ namespace cppgui {
 
     struct Nil_struct {}; // end-of-chain for aspects
 
-    template <class Aspect_parent>
-    struct Nil_aspect : public Aspect_parent {};
+    template <class Aspect_parent> struct Nil_aspect : public Aspect_parent {};
+
+    struct Nil_aspect_wrapper {
+        template <class Aspect_parent> struct Aspect {};
+    };
+
+
+#ifdef USE_SELECT_ASPECT
+
+    /** NOTE: THIS IS TEMPORARILY DEPRECATED: use partial specialization instead, makes for more re
+            
+     */
 
     /** The following is the equivalent of std::conditional<>, but for aspects.
         (std::conditional<> cannot be used for the simple reason that it works with fully
@@ -78,6 +109,8 @@ namespace cppgui {
     template<template <class> class Aspect1, template <class> class Aspect2>
     struct select_aspect<false, Aspect1, Aspect2> { template <class Aspect_parent = Nil_aspect> using aspect = Aspect2<Aspect_parent>; };
 
+#endif // USE_SELECT_ASPECT
+
     /** This is a convenience macro to slightly reduce the amount of typing required to
         define an aspect, and possibly to make them stand out more clearly.
         Usage:
@@ -89,6 +122,12 @@ namespace cppgui {
 
         THIS IS EXPERIMENTAL: it is not clear how much help this is, if any.
      */
+
+    #define CPPGUI_DECLARE_ASPECT(name) template <class Aspect_parent> struct name;
+
+    #define CPPGUI_DECLARE_TEMPLATIZED_ASPECT(name) struct Name { template <class Aspect_parent> struct Aspect: public Aspect_parent {}; }
+
+    #define CPPGUI_DEFINE_EMPTY_ASPECT(name) template <class Aspect_parent> struct name: public Aspect_parent {}
 
     #define CPPGUI_DEFINE_ASPECT(name) template <class Aspect_parent> struct name: public Aspect_parent
 

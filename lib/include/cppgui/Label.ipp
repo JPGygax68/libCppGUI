@@ -8,6 +8,7 @@ namespace cppgui {
     inline void Label<Config, WithLayout>::set_font(const gpc::fonts::rasterized_font *font)
     {
         _font = font;
+        // TODO: update layout and obtain new font handle
     }
 
     template<class Config, bool WithLayout>
@@ -34,7 +35,7 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    inline auto Label_layouter<Config>::Aspect<Aspect_parent>::minimal_size() -> Extents
+    inline auto Label_layouter<Config, true>::Aspect<Aspect_parent>::minimal_size() -> Extents
     {
         auto p = static_cast<Label<Config, true>*>(this);
 
@@ -47,7 +48,7 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    void Label_layouter<Config>::Aspect<Aspect_parent>::layout()
+    void Label_layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
         auto p = static_cast<Label<Config, true>*>(this);
 

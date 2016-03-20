@@ -18,7 +18,8 @@ namespace cppgui {
         Resource_mapper is implemented as a specializable, curiously-recurring class template.
      */
     template <typename Impl, typename Backend, typename SourceType, typename MappedType>
-    struct Resource_mapper_base {
+    struct Resource_mapper_concept {
+
         // TODO: use concepts to ensure that Impl provides the required methods
         static_assert(std::is_copy_constructible<SourceType>::value, "Resource_mapper: SourceType must be copy-constructible");
         static_assert(std::is_copy_constructible<MappedType>::value, "Resource_mapper: MappedType must be copy-constructible");
@@ -74,8 +75,9 @@ namespace cppgui {
         get_resource() is just a pass-thru to map_resource().
      */
     template <typename Impl, typename Backend, typename SourceType, typename MappedType>
-    struct Resource_mapper<Impl, Backend, SourceType, MappedType, false>: public Resource_mapper_base<Impl, Backend, SourceType, MappedType> {
-
+    struct Resource_mapper<Impl, Backend, SourceType, MappedType, false>: 
+        public Resource_mapper_concept<Impl, Backend, SourceType, MappedType> 
+    {
         auto get_resource(Backend *b, const SourceType &src) -> MappedType { return Impl::map_resource(b, src); }
 
         void release_resource(const SourceType &) {} // no-op
@@ -92,8 +94,9 @@ namespace cppgui {
         if the source type is a pointer).
      */
     template <typename Impl, typename Backend, typename SourceType, typename MappedType>
-    struct Resource_mapper<Impl, Backend, SourceType, MappedType, true>: public Resource_mapper_base<Impl, Backend, SourceType, MappedType> {
-
+    struct Resource_mapper<Impl, Backend, SourceType, MappedType, true>:
+        public Resource_mapper_concept<Impl, Backend, SourceType, MappedType> 
+    {
         auto get_resource(Backend *b, const SourceType &src) -> MappedType;
 
         void release_resource(const SourceType &);
