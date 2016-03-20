@@ -23,11 +23,11 @@ namespace cppgui {
     }
 
     template<class Config, bool WithLayout>
-    inline void Label<Config, WithLayout>::render(Renderer *r, const Position &offset)
+    inline void Label<Config, WithLayout>::render(Renderer *r, const Position &pos)
     {
         fill(r, rgba_to_native(r, hovered() ? button_face_hovered_color() : button_face_color()));
-        auto p = offset + position();
-        r->render_text(_fnthnd, p.x + _txpos.x, p.y + _txpos.y, _text.data(), _text.size());
+
+        r->render_text(_fnthnd, pos.x + _txpos.x, pos.y + _txpos.y, _text.data(), _text.size());
     }
 
     // Layouter aspect ----------------------------------------------

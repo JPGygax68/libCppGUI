@@ -48,7 +48,7 @@ namespace cppgui {
         void mouse_click(const Position &, int button, int count) override;
 
         void update_render_resources(Renderer *) override;
-        void render(Renderer *, const Position &offset) override;
+        void render(Renderer *, const Position &) override;
     };
 
     template <class Config, bool With_layout>

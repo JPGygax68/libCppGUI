@@ -82,15 +82,24 @@ namespace cppgui {
         static auto button_face_color        () { return Rgba_norm{ 0.8f, 0.8f, 0.8f, 1 }; }
         static auto button_face_hovered_color() { return Rgba_norm{ 0.9f, 0.9f, 0.9f, 1 }; }
 
+        /** By convention, mouse positions are passed to a widget as relative to
+                their own origin (meaning that it falls to the caller, i.e. usually
+                the container, to subtract the child widget's position() from the
+                coordinates it gets from yet higher up).
+         */
         virtual void mouse_motion(const Position &) {}
         virtual void mouse_click(const Position &, int button, int count);
-        virtual void mouse_enter() {};
-        virtual void mouse_exit() {};
+        virtual void mouse_enter() {}; // TODO: provide "entry point" parameter ?
+        virtual void mouse_exit() {}; // TODO: provide "exit point" parameter ?
 
         virtual void update_render_resources(Renderer *) {}
         void cleanup_render_resources(Renderer *);
 
-        virtual void render(Renderer *, const Position &offset) = 0;
+        /** Convention: it is the caller's responsibility to provide the position
+            in "absolute" coordinates, i.e. with the widget's own relative
+            position already added!
+         */
+        virtual void render(Renderer *, const Position &pos) = 0;
 
     protected:
         using Config::Color_mapper::get_resource;

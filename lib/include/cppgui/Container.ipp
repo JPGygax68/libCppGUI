@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "./Container.hpp"
 
 namespace cppgui {
@@ -11,6 +13,11 @@ namespace cppgui {
     template<class Config, bool With_layout>
     auto Abstract_container<Config, With_layout>::child_at(const Position &pos) -> Widget<Config, With_layout>*
     {
+        auto child = std::find_if(std::begin(_children), std::end(_children), [&](auto child) { return child->rectangle().contains(pos); });
+
+        return child != std::end(_children) ? *child : nullptr;
+
+        /*
         Widget<Config, With_layout> *target = nullptr;
 
         for (auto child : _children)
@@ -23,6 +30,7 @@ namespace cppgui {
         }
 
         return target;
+        */
     }
 
     template<class Config, bool With_layout>
@@ -36,6 +44,11 @@ namespace cppgui {
             if (hovered) hovered->mouse_enter();
             _hovered_child = hovered;
         }
+
+        if (_hovered_child)
+        {
+            _hovered_child->mouse_motion(pos - _hovered_child->position());
+        }
     }
 
     template<class Config, bool With_layout>
@@ -43,12 +56,7 @@ namespace cppgui {
     {
         auto child = child_at(pos);
 
-        /*for (auto& child : _children)
-        {
-            child->mouse_click(relpos, button, count);
-        }*/
-
-        if (child) child->mouse_click(pos, button, count);
+        if (child) child->mouse_click(pos - child->position(), button, count);
     }
 
     template <class Config, bool With_layout>
@@ -73,13 +81,11 @@ namespace cppgui {
     }
 
     template <class Config, bool With_layout>
-    void Container<Config, With_layout>::render(Renderer *r, const Position & offset)
+    void Container<Config, With_layout>::render(Renderer *r, const Position &pos)
     {
-        auto pos = offset + position();
-
         for (auto& child : children())
         {
-            child->render(r, pos);
+            child->render(r, pos + child->position());
         }
     }
 
