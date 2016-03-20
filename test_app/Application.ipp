@@ -24,6 +24,14 @@ int Application<WinT>::run()
         {
             WinT::dispatch_mousemotion_event(ev.motion);
         }
+        else if (ev.type == SDL_MOUSEBUTTONDOWN)
+        {
+            WinT::dispatch_mousebutton_event(ev.button);
+        }
+        else if (ev.type == SDL_MOUSEBUTTONUP)
+        {
+            WinT::dispatch_mousebutton_event(ev.button);
+        }
         else if (ev.type == WinT::redraw_event_id())
         {
             WinT::dispatch_redraw(ev.user.windowID);

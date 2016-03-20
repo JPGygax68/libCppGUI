@@ -18,6 +18,7 @@ namespace cppgui {
         void _add_child(Widget_t *);
         auto child_at(const Position &) -> Widget_t *;
         void handle_mouse_motion(const Position &);
+        void handle_mouse_click(const Position &, int button, int count);
 
         std::vector<Widget_t*> _children;
         Widget_t *_hovered_child = nullptr;
@@ -40,6 +41,7 @@ namespace cppgui {
         void add_child(Widget<Config, With_layout> *); // TODO: really need to override ?
 
         void mouse_motion(const Position &) override;
+        void mouse_click(const Position &, int button, int count) override;
 
         void update_render_resources(Renderer *) override;
         void render(Renderer *, const Position &offset) override;

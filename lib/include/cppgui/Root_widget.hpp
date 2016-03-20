@@ -23,6 +23,7 @@ namespace cppgui {
         void add_child(Widget<Config, With_layout> *);
 
         void mouse_motion(const Position &) override;
+        void mouse_click(const Position &, int button, int count) override;
 
         void render(Renderer *, const Position &) override;
     };

@@ -21,7 +21,7 @@ namespace cppgui {
     }
 
     template<class Config, CPPGUI_ASPECT(Layouting_aspect), CPPGUI_ASPECT(Updating_aspect)>
-    void Abstract_widget<Config, Layouting_aspect, Updating_aspect>::mouse_click(int button, int count)
+    void Abstract_widget<Config, Layouting_aspect, Updating_aspect>::mouse_click(const Position &, int button, int count)
     {
         if (button == 1 && count == 1)
         {
@@ -70,6 +70,13 @@ namespace cppgui {
 
     // Widget<> implementation --------------------------------------
 
+    template<class Config, bool With_layouting>
+    void Widget<Config, With_layouting>::on_click(Click_handler handler)
+    {
+        assert(!_click_hndlr);
+        _click_hndlr = handler;
+    }
+
     template<class Config, bool With_layout>
     inline void Widget<Config, With_layout>::mouse_enter()
     {
@@ -82,6 +89,12 @@ namespace cppgui {
     {
         _hovered = false;
         invalidate();
+    }
+
+    template<class Config, bool With_layouting>
+    void Widget<Config, With_layouting>::mouse_click(const Position &pos, int button, int count)
+    {
+        if (_click_hndlr) _click_hndlr(pos, button, count);
     }
 
 } // ns cppgui

@@ -67,9 +67,10 @@ namespace cppgui {
         public Updating_aspect<Layouting_aspect<Nil_struct> >
     {
     public:
-        using Renderer     = typename Config::Renderer;
-        using Native_color = typename Renderer::native_color;
-        using Font_handle  = typename Renderer::font_handle;
+        using Renderer      = typename Config::Renderer;
+        using Native_color  = typename Renderer::native_color;
+        using Font_handle   = typename Renderer::font_handle;
+        using Click_handler = std::function<void(const Position &, int button, int clicks)>; // TODO: support return value ?
 
         auto rectangle() const { return _rect; }
         auto position() const { return _rect.pos; }
@@ -82,7 +83,7 @@ namespace cppgui {
         static auto button_face_hovered_color() { return Rgba_norm{ 0.9f, 0.9f, 0.9f, 1 }; }
 
         virtual void mouse_motion(const Position &) {}
-        virtual void mouse_click(int button, int count);
+        virtual void mouse_click(const Position &, int button, int count);
         virtual void mouse_enter() {};
         virtual void mouse_exit() {};
 
@@ -126,14 +127,19 @@ namespace cppgui {
         using Renderer = typename Config::Renderer;
         using Font_handle = typename Renderer::font_handle;
 
+        void on_click(Click_handler);
+
         // TODO: should the following be protected ?
         bool hovered() const { return _hovered; }
 
         void mouse_enter() override;
         void mouse_exit() override;
 
+        void mouse_click(const Position &, int button, int count) override;
+
     private:
-        bool _hovered = false;
+        Click_handler   _click_hndlr;
+        bool            _hovered = false;
     };
 
     // Default implementations for Updating_aspect

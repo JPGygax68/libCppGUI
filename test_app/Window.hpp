@@ -7,6 +7,7 @@
 struct SDL_Window;
 struct SDL_WindowEvent;
 struct SDL_MouseMotionEvent;
+struct SDL_MouseButtonEvent;
 
 /*  We use CRTP ("curiously recurring template pattern") to inject specialization
     into the template.
@@ -29,6 +30,7 @@ template <class Impl> class Window {
 
 public:
     using Pointer = std::unique_ptr<SDL_Window, Deleter>;
+    enum Button_direction { down = 0, up = 1 };
 
     static auto redraw_event_id() -> uint32_t &;
 
@@ -41,6 +43,7 @@ public:
 
     static void dispatch_window_event(SDL_WindowEvent &ev);
     static void dispatch_mousemotion_event(SDL_MouseMotionEvent &ev);
+    static void dispatch_mousebutton_event(SDL_MouseButtonEvent &ev);
     static void dispatch_redraw(uint32_t win_id);
 
 protected:
@@ -54,6 +57,7 @@ private:
 
     void handle_window_event(SDL_WindowEvent &ev);
     void handle_mousemotion_event(SDL_MouseMotionEvent &ev);
+    void handle_mousebutton_event(SDL_MouseButtonEvent &ev);
 
     Pointer _win;
 };

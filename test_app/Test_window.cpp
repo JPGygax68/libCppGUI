@@ -20,6 +20,10 @@ Test_window::Test_window():
 {
     _label.set_font(&Fonts::default_font());
     _label.set_text(U"Hello World!");
+    _label.on_click([](const cppgui::Position &pos, int button, int clicks) {
+        std::cout << "Label was clicked! (pos = " << pos.x << ", " << pos.y 
+            << ", button = " << button << ", clicks = " << clicks << ")" << std::endl;
+    });
 
     _root_widget.add_child(&_label);
 
@@ -78,6 +82,14 @@ void Test_window::size_changed(int w, int h)
 void Test_window::mouse_motion(int x, int y)
 {
     _root_widget.mouse_motion({x, y});
+}
+
+void Test_window::mouse_button(int x, int y, int button, Button_direction dir, int count)
+{
+    if (dir == up)
+    {
+        _root_widget.mouse_click({ x, y, }, button, count);
+    }
 }
 
 void Test_window::closing()

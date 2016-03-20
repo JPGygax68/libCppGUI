@@ -21,6 +21,12 @@ namespace cppgui {
         handle_mouse_motion(pos); // Abstract_container
     }
 
+    template<class Config, bool With_layout>
+    void Root_widget<Config, With_layout>::mouse_click(const Position &pos, int button, int count)
+    {
+        handle_mouse_click(pos, button, count);
+    }
+
     template<class Config, bool WithLayout>
     inline void Root_widget<Config, WithLayout>::render(Renderer *r, const Position &)
     {
