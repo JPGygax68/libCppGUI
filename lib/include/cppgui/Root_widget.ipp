@@ -2,10 +2,10 @@
 
 namespace cppgui {
 
-    template <class Config, bool WithLayout>
-    inline Root_widget<Config, WithLayout>::Root_widget()
+    template<class Config, bool With_layout>
+    Root_widget<Config, With_layout>::Root_widget(Renderer *r)
     {
-        set_position({ 0, 0 }); // TODO: this would not be necessary if Root_widget did not inherit from Container
+        _renderer = r;
     }
 
     template<class Config, bool WithLayout>
@@ -13,6 +13,12 @@ namespace cppgui {
     {
         _add_child(child);
         child->added_to_container(static_cast<Abstract_container_t*>(this));
+    }
+
+    template<class Config, bool With_layout>
+    auto Root_widget<Config, With_layout>::get_font_handle(const Rasterized_font *font) -> Font_handle
+    {
+        return _font_mapper.get_resource(_renderer, font);
     }
 
     template<class Config, bool WithLayout>

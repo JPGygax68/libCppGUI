@@ -71,6 +71,8 @@ namespace cppgui {
         handle_mouse_click(pos - position(), button, count);
     }
 
+#ifdef NOT_DEFINED
+
     template <class Config, bool With_layout>
     inline void Container<Config, With_layout>::update_render_resources(Renderer *r)
     {
@@ -79,6 +81,8 @@ namespace cppgui {
             child->update_render_resources(r);
         }
     }
+
+#endif
 
     template <class Config, bool With_layout>
     void Container<Config, With_layout>::render(Renderer *r, const Position &pos)

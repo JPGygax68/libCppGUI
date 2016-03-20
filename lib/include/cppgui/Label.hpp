@@ -24,6 +24,8 @@ namespace cppgui {
             void layout() override;
         };
     };
+    
+    template <class Config, bool With_layout> class Root_widget;
 
     /** Label, without layouting.
      */
@@ -33,13 +35,14 @@ namespace cppgui {
     public:
         using Renderer = typename Config::Renderer;
         using Font_handle = typename Renderer::font_handle;
+        using Root_widget_t = Root_widget<Config, With_layout>;
 
-        void set_font(const gpc::fonts::rasterized_font *);
+        void set_font(const Rasterized_font *); //, Root_widget_t *, Renderer *);
         auto font() const { return _font; }
         void set_text(const std::u32string &);
         auto text() const { return _text; }
 
-        void update_render_resources(Renderer *) override;
+        //void update_render_resources(Renderer *) override;
         void render(Renderer *, const Position &) override;
 
         // Interface to layouter aspect
@@ -47,7 +50,7 @@ namespace cppgui {
         auto& text_position() { return _txpos; }
 
     protected:
-        const gpc::fonts::rasterized_font  *_font;
+        const gpc::fonts::rasterized_font  *_font = nullptr;
         std::u32string                      _text;
         Position                            _txpos;
         Font_handle                         _fnthnd;

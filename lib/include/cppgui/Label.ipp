@@ -5,10 +5,14 @@
 namespace cppgui {
 
     template<class Config, bool WithLayout>
-    inline void Label<Config, WithLayout>::set_font(const gpc::fonts::rasterized_font *font)
+    inline void Label<Config, WithLayout>::set_font(const Rasterized_font *font)
     {
-        _font = font;
-        // TODO: update layout and obtain new font handle
+        if (font != _font)
+        {
+            _font = font;
+            _fnthnd = root_widget()->get_font_handle(_font);
+            // TODO: update layout 
+        }
     }
 
     template<class Config, bool WithLayout>
@@ -17,11 +21,15 @@ namespace cppgui {
         _text = text;
     }
 
+#ifdef NOT_DEFINED
+
     template<class Config, bool WithLayout>
     inline void Label<Config, WithLayout>::update_render_resources(Renderer *r)
     {
         _fnthnd = get_resource(r, _font);
     }
+
+#endif
 
     template<class Config, bool WithLayout>
     inline void Label<Config, WithLayout>::render(Renderer *r, const Position &pos)

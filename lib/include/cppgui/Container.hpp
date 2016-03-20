@@ -36,6 +36,22 @@ namespace cppgui {
         CPPGUI_DEFINE_ASPECT(Aspect) { };
     };
 
+    template <class Config, bool With_layout> class Container;
+
+    template <class Config, bool With_layout>
+    struct Default_abstract_container_updater {
+
+        CPPGUI_DEFINE_ASPECT(Aspect)
+        {
+            using Widget_t = Widget<Config, With_layout>;
+            using Container_t = Container<Config, With_layout>;
+            using Root_widget_t = Root_widget<Config, With_layout>;
+
+            virtual void child_invalidated(Widget_t *);
+
+            virtual auto _root_widget() -> Root_widget_t * = 0;
+        };
+    };
 
     template <class Config, bool With_layout>
     class Container: 
@@ -51,20 +67,8 @@ namespace cppgui {
         void mouse_motion(const Position &) override;
         void mouse_click(const Position &, int button, int count) override;
 
-        void update_render_resources(Renderer *) override;
+        //void update_render_resources(Renderer *) override;
         void render(Renderer *, const Position &) override;
-    };
-
-    template <class Config, bool With_layout>
-    struct Default_abstract_container_updater {
-
-        CPPGUI_DEFINE_ASPECT(Aspect)
-        {
-            using Widget_t = Widget<Config, With_layout>;
-            using Container_t = Container<Config, With_layout>;
-
-            virtual void child_invalidated(Widget_t *);
-        };
     };
 
 } // ns cppgui

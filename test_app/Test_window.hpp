@@ -9,6 +9,7 @@ using namespace gl;
 
 #include <gpc/gui/gl/renderer.hpp> // TODO: replace with new namespace/naming
 #include <cppgui/Resource_mapper.hpp>
+#include <cppgui/Default_font_mapper.hpp>
 #include <cppgui/Root_widget.hpp>
 #include <cppgui/Label.hpp>
 #include <cppgui/Textbox.hpp>
@@ -32,11 +33,13 @@ public:
         using Font_handle = Renderer::font_handle;
 
         template <class Aspect_parent>
+        using Abstract_widget_updater = cppgui::Default_abstract_widget_updater<Widget_config, true>::Aspect<Aspect_parent>;
+        template <class Aspect_parent>
         using Widget_updater = cppgui::Default_widget_updater<Widget_config, true>::Aspect<Aspect_parent>;
         template <class Aspect_parent>
         using Abstract_container_updater = cppgui::Default_abstract_container_updater<Widget_config, true>::Aspect<Aspect_parent>;
-        //template <class Aspect_parent>
-        //using Root_widget_updater = cppgui::Default_root_widget_updater<Widget_config, true>::Aspect<Aspect_parent>;
+        template <class Aspect_parent>
+        using Root_widget_updater = cppgui::Default_root_widget_updater<Widget_config, true>::Aspect<Aspect_parent>;
         template <class Aspect_parent>
         using Root_widget_container_updater = cppgui::Default_root_widget_container_updater<Widget_config, true>::Aspect<Aspect_parent>;
 
@@ -70,5 +73,5 @@ private:
     Textbox                     _textbox;
     
     Widget_config::Renderer    *_renderer;
-    bool                        _gfxres_ok = false;
+    //bool                        _gfxres_ok = false;
 };

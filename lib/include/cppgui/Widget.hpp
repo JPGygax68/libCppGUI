@@ -8,7 +8,7 @@
 
 #include "./aspects.hpp"
 
-#include "./Resource_mapper.hpp"
+#include "./Full_resource_mapper.hpp"
 
 namespace cppgui {
 
@@ -38,39 +38,24 @@ namespace cppgui {
         }
     };
 
-    // Default font mapper
-
-    template <class Renderer>
-    struct Default_font_mapper : public Resource_mapper<
-        Default_font_mapper<Renderer>,
-        Renderer,
-        const Rasterized_font *, typename Renderer::font_handle,
-        Renderer::font_handles_are_resources
-    > {
-        using Font_handle = typename Renderer::font_handle;
-
-        auto obtain(Renderer *r, const Rasterized_font *font) {
-            return r->register_font(*font);
-        }
-        void release(Renderer *r, Font_handle hnd) {
-            r->release_font(hnd);
-        }
-    };
+    template <class Config, bool With_layout> class Root_widget;
 
     /** Abstract_widget: functionality common to both Root_widget and Widget, i.e. not including the ability
         to function as an element in a container.
      */
-    template <class Config, CPPGUI_ASPECT(Layouting_aspect), CPPGUI_ASPECT(Updating_aspect)>
+    template <class Config, bool With_layout, CPPGUI_ASPECT(Layouting_aspect), CPPGUI_ASPECT(Updating_aspect)>
     class Abstract_widget:
         public Config::Color_mapper,
-        public Config::Font_mapper,
+        //public Config::Font_mapper,
         public Updating_aspect<Layouting_aspect<Nil_struct> >
     {
     public:
-        using Renderer      = typename Config::Renderer;
-        using Native_color  = typename Renderer::native_color;
-        using Font_handle   = typename Renderer::font_handle;
-        using Click_handler = std::function<void(const Position &, int button, int clicks)>; // TODO: support return value ?
+        using Abstract_widget_t = Abstract_widget;
+        using Root_widget_t     = Root_widget<Config, With_layout>;
+        using Renderer          = typename Config::Renderer;
+        using Native_color      = typename Renderer::native_color;
+        using Font_handle       = typename Renderer::font_handle;
+        using Click_handler     = std::function<void(const Position &, int button, int clicks)>; // TODO: support return value ?
 
         auto rectangle() const { return _rect; }
         auto position() const { return _rect.pos; }
@@ -96,8 +81,8 @@ namespace cppgui {
             in the sense that it is not always necessary to defer the mapping of render
             resources until pre-render time. In fact, in most cases
          */
-        virtual void update_render_resources(Renderer *) {}
-        void cleanup_render_resources(Renderer *);
+        //virtual void update_render_resources(Renderer *) {}
+        //void cleanup_render_resources(Renderer *);
 
         /** Convention: it is the caller's responsibility to provide the position
             in "absolute" coordinates, i.e. with the widget's own relative
@@ -106,10 +91,10 @@ namespace cppgui {
         virtual void render(Renderer *, const Position &pos) = 0;
 
     protected:
-        using Config::Color_mapper::get_resource;
-        using Config::Font_mapper::get_resource;
-        using Config::Color_mapper::release_resource;
-        using Config::Font_mapper::release_resource;
+        //using Config::Color_mapper::get_resource;
+        //using Config::Font_mapper::get_resource;
+        //using Config::Color_mapper::release_resource;
+        //using Config::Font_mapper::release_resource;
 
         auto rgba_to_native(Renderer *, const Rgba_norm &) -> Native_color;
         void fill(Renderer *r, const Native_color &);
@@ -121,7 +106,7 @@ namespace cppgui {
     template <class Aspect_parent>
     struct Nil_layouter: public Aspect_parent {};
 
-    // Widget layouter (optional aspect)
+    // Widget layouter (optional aspect for abstract widget)
 
     CPPGUI_DEFINE_ASPECT(Widget_layouter_base)
     {
@@ -129,16 +114,32 @@ namespace cppgui {
         virtual void layout() = 0;
     };
 
+    // Abstract widget updater
+
+    template <class Config, bool With_layout>
+    struct Default_abstract_widget_updater {
+
+        CPPGUI_DEFINE_ASPECT(Aspect)
+        {
+            using Root_widget_t = Root_widget<Config, With_layout>;
+
+            virtual auto root_widget() -> Root_widget_t * = 0;
+        };
+    };
+
     // Widget 
 
     template <
         class Config,
-        bool With_layouting
+        bool With_layout
     >
-    class Widget: public Abstract_widget<Config, Widget_layouter_base, Config::Widget_updater> {
+    class Widget: public Config::template Widget_updater< Abstract_widget<Config, With_layout, Widget_layouter_base, Config::Abstract_widget_updater> >
+    {
     public:
         using Renderer = typename Config::Renderer;
         using Font_handle = typename Renderer::font_handle;
+        //using Abstract_widget_t = typename Abstract_widget<Config, With_layout, Widget_layouter_base, Config::Abstract_widget_updater>;
+        using Click_handler = typename Abstract_widget::Click_handler;
 
         void on_click(Click_handler);
 
@@ -168,11 +169,14 @@ namespace cppgui {
         {
             using Widget_t = Widget<Config, With_layout>;
             using Abstract_container_t = Abstract_container<Config, With_layout>;
+            using Root_widget_t = Root_widget<Config, With_layout>;
 
             void invalidate();
             void added_to_container(Abstract_container_t *);
 
             auto container() const { return _container; }
+
+            auto root_widget() -> Root_widget_t * override { return _container->_root_widget(); }
 
         private:
             Abstract_container_t *_container;

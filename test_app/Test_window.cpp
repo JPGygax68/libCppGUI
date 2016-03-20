@@ -6,7 +6,7 @@
 
 #include "./Test_window.hpp"
 
-#include <cppgui/Resource_mapper.ipp>
+#include <cppgui/Full_resource_mapper.ipp>
 #include <cppgui/Widget.ipp>
 #include <cppgui/Label.ipp>
 #include <cppgui/Textbox.ipp>
@@ -18,8 +18,12 @@
 #include "./Fonts.hpp"
 
 Test_window::Test_window():
-    Window<Test_window>("Test window")
+    Window<Test_window>("Test window"),
+    _root_widget{ _renderer }
 {
+    // TODO: for now this must come first so that the resource mappers are available
+    _root_widget.add_child(&_label);
+
     _label.set_font(&Fonts::default_font());
     _label.set_text(U"Hello World!");
     _label.on_click([](const cppgui::Position &pos, int button, int clicks) {
@@ -27,11 +31,12 @@ Test_window::Test_window():
             << ", button = " << button << ", clicks = " << clicks << ")" << std::endl;
     });
 
-    _root_widget.add_child(&_label);
-
     _root_widget.on_invalidated([this]() { request_redraw(); });
 }
 
+/** Caution! the following is called from the constructor of Window, i.e. *before* the body
+    of the constructor of Test_window (which is derived from Window).
+ */
 void Test_window::init_graphics()
 {
     std::cout << "Test_window::init()" << std::endl;
@@ -50,7 +55,7 @@ void Test_window::cleanup_graphics()
 {
     assert(_renderer);
     // TODO: renderer cleanup ?
-    _root_widget.cleanup_render_resources(_renderer);
+    //_root_widget.cleanup_render_resources(_renderer);
     delete _renderer;
 }
 
@@ -58,11 +63,11 @@ void Test_window::redraw()
 {
     std::cout << "Test_window::redraw()" << std::endl;
 
-    if (!_gfxres_ok)
+    /* if (!_gfxres_ok)
     {
         _label.update_render_resources(_renderer);
         _gfxres_ok = true;
-    }
+    } */
 
     //GL(Clear, GL_COLOR_BUFFER_BIT);
     _renderer->enter_context();
@@ -96,6 +101,8 @@ void Test_window::mouse_button(int x, int y, int button, Button_direction dir, i
 
 void Test_window::closing()
 {
-    _label.cleanup_render_resources(_renderer);
-    _root_widget.cleanup_render_resources(_renderer);
+    cleanup_graphics();
+    //_label.cleanup_render_resources(_renderer);
+    //_root_widget.cleanup_render_resources(_renderer);
+    // TODO: release all resources of all backends
 }
