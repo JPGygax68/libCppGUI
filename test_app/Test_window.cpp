@@ -35,8 +35,9 @@ Test_window::Test_window():
     _label.set_position({ 50, 50 });
     //_label.set_extents({ 0, 0 }); //200, 50 });
 
+    _textbox.set_font(&Fonts::default_font());
     _textbox.set_position({50, 120});
-    _textbox.set_extents({ 200, 30 });
+    //_textbox.set_extents({ 200, 30 });
 
     _root_widget.on_invalidated([this]() { request_redraw(); });
 
@@ -104,6 +105,11 @@ void Test_window::mouse_button(int x, int y, int button, Button_direction dir, i
     {
         _root_widget.mouse_click({ x, y, }, button, count);
     }
+}
+
+void Test_window::text_input(const char32_t *text, size_t size)
+{
+    _root_widget.text_input(text, size);
 }
 
 void Test_window::closing()

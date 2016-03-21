@@ -4,6 +4,7 @@
 #include <type_traits>
 
 #include <gpc/fonts/rasterized_font.hpp>
+#include <gpc/fonts/bounding_box.hpp>
 #include <gpc/gui/renderer.hpp> // TODO: other source & namespace
 
 #include "./aspects.hpp"
@@ -38,6 +39,8 @@ namespace cppgui {
         }
     };
 
+    using Text_bounding_box = gpc::fonts::bounding_box;
+
     template <class Config, bool With_layout> class Root_widget;
 
     /** Abstract_widget: functionality common to both Root_widget and Widget, i.e. not including the ability
@@ -67,6 +70,8 @@ namespace cppgui {
         static auto button_face_color        () { return Rgba_norm{ 0.8f, 0.8f, 0.8f, 1 }; }
         static auto button_face_hovered_color() { return Rgba_norm{ 0.9f, 0.9f, 0.9f, 1 }; }
 
+        // Input event injection
+
         /** By convention, mouse positions are passed to a widget as relative to
             their own origin (meaning that it falls to the caller, i.e. usually
             the container, to subtract the child widget's position() from the
@@ -74,6 +79,8 @@ namespace cppgui {
          */
         virtual void mouse_motion(const Position &) {}
         virtual void mouse_click(const Position &, int button, int count);
+        virtual void text_input(const char32_t *text, size_t size) {}
+
         virtual void mouse_enter() {}; // TODO: provide "entry point" parameter ?
         virtual void mouse_exit() {}; // TODO: provide "exit point" parameter ?
 
@@ -84,11 +91,10 @@ namespace cppgui {
         //virtual void update_render_resources(Renderer *) {}
         //void cleanup_render_resources(Renderer *);
 
-        /** Convention: it is the caller's responsibility to provide the position
-            in "absolute" coordinates, i.e. with the widget's own relative
-            position already added!
+        /** Convention: the provided position is an offset to be added to the widget's
+            own coordinates.
          */
-        virtual void render(Renderer *, const Position &pos) = 0;
+        virtual void render(Renderer *, const Position &offs) = 0;
 
     protected:
         //using Config::Color_mapper::get_resource;
@@ -97,7 +103,7 @@ namespace cppgui {
         //using Config::Font_mapper::release_resource;
 
         auto rgba_to_native(Renderer *, const Rgba_norm &) -> Native_color;
-        void fill(Renderer *r, const Native_color &);
+        void fill(Renderer *r, const Position &offs, const Native_color &);
 
     private:
         Rectangle _rect = {};
@@ -127,8 +133,8 @@ namespace cppgui {
     template <class Config, bool With_layout>
     struct Default_abstract_widget_updater {
 
-        CPPGUI_DEFINE_ASPECT(Aspect)
-        {
+        template <class Aspect_parent> struct Aspect: public Aspect_parent {
+
             using Root_widget_t = Root_widget<Config, With_layout>;
 
             /** NOTE: the functionality of finding the root widget is part of the "Updater"

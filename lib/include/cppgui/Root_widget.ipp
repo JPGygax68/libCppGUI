@@ -33,15 +33,24 @@ namespace cppgui {
         handle_mouse_click(pos, button, count);
     }
 
-    template<class Config, bool WithLayout>
-    inline void Root_widget<Config, WithLayout>::render(Renderer *r, const Position &pos)
+    template<class Config, bool With_layout>
+    void Root_widget<Config, With_layout>::text_input(const char32_t *, size_t)
     {
+        // TODO
+        assert(false);
+    }
+
+    template<class Config, bool WithLayout>
+    inline void Root_widget<Config, WithLayout>::render(Renderer *r, const Position &offs)
+    {
+        auto pos = offs + position();
+
         // TODO: the following is temporary - it must be made optional
         r->clear(r->rgba_to_native({ 0, 0.5f, 0.2f, 1 }));
         
         for (auto& child : children())
         {
-            child->render(r, pos + child->position());
+            child->render(r, pos);
         }
     }
 

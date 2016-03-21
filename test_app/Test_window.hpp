@@ -64,6 +64,7 @@ public:
     void size_changed(int w, int h);
     void mouse_motion(int x, int y);
     void mouse_button(int x, int y, int button, Button_direction dir, int count);
+    void text_input(const char32_t *, size_t);
 
     void closing() override;
 

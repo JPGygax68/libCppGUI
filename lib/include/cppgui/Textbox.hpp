@@ -7,7 +7,8 @@ namespace cppgui {
     template <class Config, bool With_layout>
     struct Textbox_layouter {
 
-        CPPGUI_DEFINE_ASPECT(Aspect) {
+        template <class Aspect_parent> struct Aspect: public Aspect_parent {
+
             void font_changed() { static_assert(false, "Concept: Textbox_layouter::font_changed(): must never be used"); }
             auto minimal_size() -> Extents { static_assert(false, "Concept: Textbox_layouter::minimal_size(): must never be used"); return {}; }
             void layout() override { static_assert(false, "Concept: Textbox_layouter::layout(): must never be used"); }
@@ -32,7 +33,7 @@ namespace cppgui {
         auto& text_position() { return _txpos; }
 
     private:
-        Rasterized_font    *_font = nullptr;
+        const Rasterized_font *_font = nullptr;
     };
 
     // Layouting aspect ---------------------------------------------
@@ -47,11 +48,16 @@ namespace cppgui {
     template <class Config>
     struct Textbox_layouter<Config, true> {
 
-        CPPGUI_DEFINE_ASPECT(Aspect)
-        {
+        template <class Aspect_parent> struct Aspect : public Aspect_parent {
+            
             void font_changed();
             auto minimal_size() -> Extents override;
             void layout() override;
+
+        private:
+            int _ascent, _descent; // TODO: support vertical writing
+            int _mean_char_width;
+            Position _txpos;
         };
     };
 

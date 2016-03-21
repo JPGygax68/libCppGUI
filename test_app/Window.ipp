@@ -1,5 +1,8 @@
 #pragma once
 
+#include <locale>
+#include <codecvt>
+
 #include "./Window.hpp"
 
 #include <stdexcept>
@@ -74,6 +77,12 @@ void Window<Impl>::dispatch_mousebutton_event(SDL_MouseButtonEvent & ev)
     window_map()[ev.windowID]->handle_mousebutton_event(ev);
 }
 
+template<class Impl>
+void Window<Impl>::dispatch_textinput_event(SDL_TextInputEvent & ev)
+{
+    window_map()[ev.windowID]->handle_textinput_event(ev);
+}
+
 template <class Impl>
 void Window<Impl>::dispatch_redraw(uint32_t win_id)
 {
@@ -123,6 +132,21 @@ void Window<Impl>::handle_mousebutton_event(SDL_MouseButtonEvent & ev)
 {
     auto dir = ev.state == SDL_PRESSED ? down : up;
     static_cast<Impl*>(this)->mouse_button(ev.x, ev.y, ev.button, dir, ev.clicks);
+}
+
+template<class Impl>
+void Window<Impl>::handle_textinput_event(SDL_TextInputEvent & ev)
+{
+#if _MSC_VER == 1900
+    std::wstring_convert<std::codecvt_utf8<int32_t>, int32_t> utf32conv;
+    auto utf32 = utf32conv.from_bytes(ev.text);
+    static_cast<Impl*>(this)->text_input(reinterpret_cast<const char32_t *>(utf32.data()), utf32.size());
+#else
+    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> utf32conv;
+    auto utf32 = utf32conv.from_bytes(ev.text);
+    _text_input_handler(utf32.c_str(), utf32.size());
+    static_cast<Impl*>(this)->text_input(utf32.data(), utf32.size());
+#endif
 }
 
 template <class Impl>

@@ -47,10 +47,11 @@ namespace cppgui {
     }
 
     template <class Config, bool With_layout>
-    inline void Abstract_widget<Config, With_layout>::fill(Renderer *r, const Native_color &color)
+    inline void Abstract_widget<Config, With_layout>::fill(Renderer *r, const Position &offs, const Native_color &color)
     {
         auto b{ rectangle() };
-        r->fill_rect(b.pos.x, b.pos.y, b.ext.w, b.ext.h, color);
+
+        r->fill_rect(offs.x + b.pos.x, offs.y + b.pos.y, b.ext.w, b.ext.h, color);
     }
 
     // Default_widget_updater<> aspect ------------------------------

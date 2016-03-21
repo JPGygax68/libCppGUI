@@ -32,6 +32,10 @@ int Application<WinT>::run()
         {
             WinT::dispatch_mousebutton_event(ev.button);
         }
+        else if (ev.type == SDL_TEXTINPUT)
+        {
+            WinT::dispatch_textinput_event(ev.text);
+        }
         else if (ev.type == WinT::redraw_event_id())
         {
             WinT::dispatch_redraw(ev.user.windowID);

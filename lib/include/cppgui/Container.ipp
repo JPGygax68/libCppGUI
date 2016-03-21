@@ -72,11 +72,13 @@ namespace cppgui {
     }
 
     template <class Config, bool With_layout>
-    void Container<Config, With_layout>::render(Renderer *r, const Position &pos)
+    void Container<Config, With_layout>::render(Renderer *r, const Position &offs)
     {
+        auto pos = offs + position();
+
         for (auto& child : children())
         {
-            child->render(r, pos + child->position());
+            child->render(r, pos);
         }
     }
 
