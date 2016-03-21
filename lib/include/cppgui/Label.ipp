@@ -21,16 +21,6 @@ namespace cppgui {
         _text = text;
     }
 
-#ifdef NOT_DEFINED
-
-    template<class Config, bool WithLayout>
-    inline void Label<Config, WithLayout>::update_render_resources(Renderer *r)
-    {
-        _fnthnd = get_resource(r, _font);
-    }
-
-#endif
-
     template<class Config, bool WithLayout>
     inline void Label<Config, WithLayout>::render(Renderer *r, const Position &pos)
     {

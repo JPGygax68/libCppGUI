@@ -115,7 +115,7 @@ namespace cppgui {
 
     template <> struct Widget_layouter<true> {
 
-        template <class Aspect_parent> struct Aspect {
+        template <class Aspect_parent> struct Aspect: public Aspect_parent {
 
             virtual auto minimal_size()->Extents = 0;
             virtual void layout() = 0;

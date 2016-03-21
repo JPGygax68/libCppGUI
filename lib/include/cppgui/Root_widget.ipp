@@ -45,4 +45,22 @@ namespace cppgui {
         }
     }
 
+    // Layouter aspect ----------------------------------------------
+
+    template <class Config>
+    template<class Aspect_parent>
+    inline void Root_widget_layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    {
+        auto p = static_cast<Root_widget_t*>(this);
+
+        p->layout_children();
+
+        /*
+        for (auto child : p->children())
+        {
+            child->layout();
+        }
+        */
+    }
+
 } // ns cppgui

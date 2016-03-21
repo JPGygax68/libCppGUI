@@ -40,7 +40,7 @@ Test_window::Test_window():
 
     _root_widget.on_invalidated([this]() { request_redraw(); });
 
-    //_root_widget.layout();
+    _root_widget.layout();
 }
 
 /** Caution! the following is called from the constructor of Window, i.e. *before* the body

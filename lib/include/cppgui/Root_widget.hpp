@@ -10,9 +10,30 @@ namespace cppgui {
 
     extern int dummy;
 
+    // Layouting aspect for Root_widget
+
+    template <class Config, bool With_layout> struct Root_widget_layouter {
+
+        template <class Aspect_parent> struct Aspect {};
+    };
+
+    template <class Config> struct Root_widget_layouter<Config, true> {
+
+        template <class Aspect_parent> struct Aspect: public Aspect_parent {
+
+            using Root_widget_t = Root_widget<Config, true>;
+            //using Abstract_container_t = typename Abstract_container<Config, true>;
+
+            virtual auto minimal_size() -> Extents { return {0, 0}; }
+            virtual void layout();
+        };
+    };
+
+    // Root widget
+
     template <class Config, bool With_layout>
     class Root_widget: 
-        public Config::template Root_widget_updater< Abstract_widget<Config, With_layout> >,
+        public Root_widget_layouter<Config, With_layout>::template Aspect< Config::template Root_widget_updater< Abstract_widget<Config, With_layout> > >,
         public Config::Font_mapper,
         public Config::template Root_widget_container_updater< Abstract_container<Config, With_layout> >
     {
@@ -64,8 +85,8 @@ namespace cppgui {
     template <class Config, bool With_layout>
     struct Default_root_widget_container_updater {
 
-        CPPGUI_DEFINE_ASPECT(Aspect)
-        {
+        template <class Aspect_parent> struct Aspect : public Aspect_parent {
+            
             using Widget_t = Widget<Config, With_layout>;
             using Container_t = Container<Config, With_layout>;
             using Invalidated_handler = std::function<void()>;
@@ -84,6 +105,7 @@ namespace cppgui {
         private:
             Invalidated_handler _on_invalidated;
         };
+
     };
 
 } // ns cppgui

@@ -71,19 +71,6 @@ namespace cppgui {
         handle_mouse_click(pos - position(), button, count);
     }
 
-#ifdef NOT_DEFINED
-
-    template <class Config, bool With_layout>
-    inline void Container<Config, With_layout>::update_render_resources(Renderer *r)
-    {
-        for (auto& child : _children)
-        {
-            child->update_render_resources(r);
-        }
-    }
-
-#endif
-
     template <class Config, bool With_layout>
     void Container<Config, With_layout>::render(Renderer *r, const Position &pos)
     {
@@ -98,6 +85,17 @@ namespace cppgui {
     inline void Default_abstract_container_updater<Config, With_layout>::Aspect<Aspect_parent>::child_invalidated(Widget_t *)
     {
         // TODO
+    }
+
+    template<class Config>
+    inline void Abstract_container_layouter<Config, true>::layout_children()
+    {
+        auto p = static_cast<Abstract_container<Config, true>*>(this);
+
+        for (auto child : p->children())
+        {
+            child->layout();
+        }
     }
 
 } // ns cppgui
