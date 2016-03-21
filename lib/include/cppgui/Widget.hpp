@@ -100,7 +100,7 @@ namespace cppgui {
         void fill(Renderer *r, const Native_color &);
 
     private:
-        Rectangle _rect;
+        Rectangle _rect = {};
     };
 
     //template <class Aspect_parent>

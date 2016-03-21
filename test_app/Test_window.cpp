@@ -33,7 +33,7 @@ Test_window::Test_window():
             << ", button = " << button << ", clicks = " << clicks << ")" << std::endl;
     });
     _label.set_position({ 50, 50 });
-    _label.set_extents({ 200, 60 });
+    //_label.set_extents({ 0, 0 }); //200, 50 });
 
     _textbox.set_position({50, 120});
     _textbox.set_extents({ 200, 30 });
