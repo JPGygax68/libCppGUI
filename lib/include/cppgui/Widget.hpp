@@ -43,11 +43,11 @@ namespace cppgui {
     /** Abstract_widget: functionality common to both Root_widget and Widget, i.e. not including the ability
         to function as an element in a container.
      */
-    template <class Config, bool With_layout, CPPGUI_ASPECT(Layouting_aspect), CPPGUI_ASPECT(Updating_aspect)>
+    template <class Config, bool With_layout>
     class Abstract_widget:
         public Config::Color_mapper,
         //public Config::Font_mapper,
-        public Updating_aspect<Layouting_aspect<Nil_struct> >
+        public Config::template Abstract_widget_updater<Nil_struct>
     {
     public:
         using Abstract_widget_t = Abstract_widget;
@@ -103,18 +103,26 @@ namespace cppgui {
         Rectangle _rect;
     };
 
-    template <class Aspect_parent>
-    struct Nil_layouter: public Aspect_parent {};
+    //template <class Aspect_parent>
+    //struct Nil_layouter: public Aspect_parent {};
 
-    // Widget layouter (optional aspect for abstract widget)
+    // Layouting aspect for Widget
 
-    CPPGUI_DEFINE_ASPECT(Widget_layouter_base)
-    {
-        virtual auto minimal_size() -> Extents = 0;
-        virtual void layout() = 0;
+    template <bool With_layout> struct Widget_layouter {
+
+        template <class Aspect_parent> struct Aspect {};
     };
 
-    // Abstract widget updater
+    template <> struct Widget_layouter<true> {
+
+        template <class Aspect_parent> struct Aspect {
+
+            virtual auto minimal_size()->Extents = 0;
+            virtual void layout() = 0;
+        };
+    };
+
+    // Default implementaton for Abstract_widget Updater aspect
 
     template <class Config, bool With_layout>
     struct Default_abstract_widget_updater {
@@ -123,22 +131,27 @@ namespace cppgui {
         {
             using Root_widget_t = Root_widget<Config, With_layout>;
 
+            /** NOTE: the functionality of finding the root widget is part of the "Updater"
+                    family of class aspects because it is tied to the way the container-child
+                    relationship is maintained.
+                    It is conceivable to move this functionality into its own aspect; however,
+                    its implementation would then most likely be dependent 
+             */
             virtual auto root_widget() -> Root_widget_t * = 0;
         };
     };
 
     // Widget 
 
-    template <
-        class Config,
-        bool With_layout
-    >
-    class Widget: public Config::template Widget_updater< Abstract_widget<Config, With_layout, Widget_layouter_base, Config::Abstract_widget_updater> >
+    template <class Config, bool With_layout>
+    class Widget: 
+        public Config::template Widget_updater< Abstract_widget<Config, With_layout> >,
+        public Widget_layouter<With_layout>::template Aspect<Nil_struct>
     {
     public:
         using Renderer = typename Config::Renderer;
         using Font_handle = typename Renderer::font_handle;
-        //using Abstract_widget_t = typename Abstract_widget<Config, With_layout, Widget_layouter_base, Config::Abstract_widget_updater>;
+        //using Abstract_widget_t = typename Abstract_widget<Config, With_layout, Widget_layouter, Config::Abstract_widget_updater>;
         using Click_handler = typename Abstract_widget::Click_handler;
 
         void on_click(Click_handler);

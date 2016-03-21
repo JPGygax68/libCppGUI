@@ -12,7 +12,7 @@ namespace cppgui {
 
     template <class Config, bool With_layout>
     class Root_widget: 
-        public Config::template Root_widget_updater< Abstract_widget<Config, With_layout, Nil_aspect, Config::Abstract_widget_updater> >,
+        public Config::template Root_widget_updater< Abstract_widget<Config, With_layout> >,
         public Config::Font_mapper,
         public Config::template Root_widget_container_updater< Abstract_container<Config, With_layout> >
     {

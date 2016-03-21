@@ -22,7 +22,9 @@ Test_window::Test_window():
     _root_widget{ _renderer }
 {
     // TODO: for now this must come first so that the resource mappers are available
+    //  when set_font() etc. are called
     _root_widget.add_child(&_label);
+    _root_widget.add_child(&_textbox);
 
     _label.set_font(&Fonts::default_font());
     _label.set_text(U"Hello World!");
@@ -30,8 +32,15 @@ Test_window::Test_window():
         std::cout << "Label was clicked! (pos = " << pos.x << ", " << pos.y 
             << ", button = " << button << ", clicks = " << clicks << ")" << std::endl;
     });
+    _label.set_position({ 50, 50 });
+    _label.set_extents({ 200, 60 });
+
+    _textbox.set_position({50, 120});
+    _textbox.set_extents({ 200, 30 });
 
     _root_widget.on_invalidated([this]() { request_redraw(); });
+
+    //_root_widget.layout();
 }
 
 /** Caution! the following is called from the constructor of Window, i.e. *before* the body
@@ -80,8 +89,6 @@ void Test_window::redraw()
 void Test_window::size_changed(int w, int h)
 {
     _root_widget.set_extents({ (unsigned)w, (unsigned)h });
-    _label.set_position({ 50, 50 });
-    _label.set_extents({ 200, 60 });
     _label.layout();
     _renderer->define_viewport(0, 0, w, h);
 }

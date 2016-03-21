@@ -8,20 +8,20 @@ namespace cppgui {
 
     // Abstract_widget<> --------------------------------------------
 
-    template <class Config, bool With_layout, CPPGUI_ASPECT(Layouting_aspect), CPPGUI_ASPECT(Updating_aspect)>
-    inline void Abstract_widget<Config, With_layout, Layouting_aspect, Updating_aspect>::set_position(const Position &pos)
+    template <class Config, bool With_layout>
+    inline void Abstract_widget<Config, With_layout>::set_position(const Position &pos)
     {
         _rect.pos = pos;
     }
 
-    template <class Config, bool With_layout, CPPGUI_ASPECT(Layouting_aspect), CPPGUI_ASPECT(Updating_aspect)>
-    inline void Abstract_widget<Config, With_layout, Layouting_aspect, Updating_aspect>::set_extents(const Extents &ext)
+    template <class Config, bool With_layout>
+    inline void Abstract_widget<Config, With_layout>::set_extents(const Extents &ext)
     {
         _rect.ext = ext;
     }
 
-    template<class Config, bool With_layout, CPPGUI_ASPECT(Layouting_aspect), CPPGUI_ASPECT(Updating_aspect)>
-    void Abstract_widget<Config, With_layout, Layouting_aspect, Updating_aspect>::mouse_click(const Position &, int button, int count)
+    template<class Config, bool With_layout>
+    void Abstract_widget<Config, With_layout>::mouse_click(const Position &, int button, int count)
     {
         if (button == 1 && count == 1)
         {
@@ -31,8 +31,8 @@ namespace cppgui {
 
 #ifdef NOT_DEFINED
 
-    template <class Config, CPPGUI_ASPECT(Layouting_aspect), CPPGUI_ASPECT(Updating_aspect)>
-    inline void Abstract_widget<Config, Layouting_aspect, Updating_aspect>::cleanup_render_resources(Renderer *r)
+    template <class Config, bool With_layout>
+    inline void Abstract_widget<Config, With_layout>::cleanup_render_resources(Renderer *r)
     {
         Config::Color_mapper::release_all_resources(r);
         Config::Font_mapper ::release_all_resources(r);
@@ -40,14 +40,14 @@ namespace cppgui {
 
 #endif
 
-    template <class Config, bool With_layout, CPPGUI_ASPECT(Layouting_aspect), CPPGUI_ASPECT(Updating_aspect)>
-    inline auto Abstract_widget<Config, With_layout, Layouting_aspect, Updating_aspect>::rgba_to_native(Renderer *r, const Rgba_norm &color) -> Native_color
+    template <class Config, bool With_layout>
+    inline auto Abstract_widget<Config, With_layout>::rgba_to_native(Renderer *r, const Rgba_norm &color) -> Native_color
     {
         return get_resource(r, color);
     }
 
-    template <class Config, bool With_layout, CPPGUI_ASPECT(Layouting_aspect), CPPGUI_ASPECT(Updating_aspect)>
-    inline void Abstract_widget<Config, With_layout, Layouting_aspect, Updating_aspect>::fill(Renderer *r, const Native_color &color)
+    template <class Config, bool With_layout>
+    inline void Abstract_widget<Config, With_layout>::fill(Renderer *r, const Native_color &color)
     {
         auto b{ rectangle() };
         r->fill_rect(b.pos.x, b.pos.y, b.ext.w, b.ext.h, color);
