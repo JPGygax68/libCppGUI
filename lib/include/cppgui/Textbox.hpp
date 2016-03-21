@@ -18,7 +18,7 @@ namespace cppgui {
     };
 
     template <class Config, bool With_layout>
-    class Textbox_base: public Widget<Config, With_layout>
+    class Textbox: public Textbox_layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >
     {
     public:
         using Renderer = typename Config::Renderer;
@@ -52,9 +52,6 @@ namespace cppgui {
         Font_handle             _fnthnd;
     };
 
-    template <class Config, bool With_layout>
-    class Textbox : public Textbox_layouter<Config, With_layout>::Aspect< Textbox_base<Config, With_layout> > {};
-
     // Layouting aspect ---------------------------------------------
 
     template <class Config>
@@ -68,7 +65,7 @@ namespace cppgui {
 
         template <class Aspect_parent> struct Aspect : public Aspect_parent {
         
-            using Textbox_t = Textbox_base<Config, true>;
+            using Textbox_t = Textbox<Config, true>;
 
             void font_changed();
             auto minimal_size() -> Extents override;

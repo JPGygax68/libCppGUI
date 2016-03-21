@@ -25,7 +25,7 @@ public:
     using Widget = cppgui::Widget<Widget_config, true>;
     using Label = cppgui::Label<Widget_config, true>;
     using Root_widget = cppgui::Root_widget<Widget_config, true>;
-    using Textbox_base = cppgui::Textbox<Widget_config, true>;
+    using Textbox = cppgui::Textbox<Widget_config, true>;
 
     struct Widget_config {
 
@@ -69,7 +69,7 @@ public:
 private:
     Root_widget                 _root_widget;
     Label                       _label;
-    Textbox_base                     _textbox;
+    Textbox                     _textbox;
     
     Widget_config::Renderer    *_renderer;
     //bool                        _gfxres_ok = false;

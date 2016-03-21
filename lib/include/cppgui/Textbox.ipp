@@ -3,7 +3,7 @@
 namespace cppgui {
 
     template<class Config, bool With_layout>
-    void Textbox_base<Config, With_layout>::set_font(const Rasterized_font *font)
+    void Textbox<Config, With_layout>::set_font(const Rasterized_font *font)
     {
         if (font != _font)
         {
@@ -14,7 +14,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Textbox_base<Config, With_layout>::set_text(const std::u32string &text)
+    void Textbox<Config, With_layout>::set_text(const std::u32string &text)
     {
         _text = text;
         invalidate();
@@ -22,7 +22,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Textbox_base<Config, With_layout>::mouse_click(const Position &pos, int button, int count)
+    void Textbox<Config, With_layout>::mouse_click(const Position &pos, int button, int count)
     {
         if (button == 1 && count == 1)
         {
@@ -34,21 +34,21 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Textbox_base<Config, With_layout>::gained_focus()
+    void Textbox<Config, With_layout>::gained_focus()
     {
         // TODO: more...
         invalidate();
     }
 
     template<class Config, bool With_layout>
-    void Textbox_base<Config, With_layout>::loosing_focus()
+    void Textbox<Config, With_layout>::loosing_focus()
     {
         // TODO: more
         invalidate();
     }
 
     template<class Config, bool With_layout>
-    inline void Textbox_base<Config, With_layout>::render(Renderer *r, const Position &offs)
+    inline void Textbox<Config, With_layout>::render(Renderer *r, const Position &offs)
     {
         fill(r, offs, rgba_to_native(r, {1, 1, 1, 1})); // TODO: (VERY MUCH) PROVISIONAL, GET REAL COLOR!
 
@@ -62,7 +62,7 @@ namespace cppgui {
     template <class Aspect_parent>
     inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::font_changed()
     {
-        auto p = static_cast<Textbox_base<Config, true>*>(this);
+        auto p = static_cast<Textbox<Config, true>*>(this);
 
         if (p->font())
         {
@@ -86,7 +86,7 @@ namespace cppgui {
     template<class Aspect_parent>
     inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
-        this->_txpos = {0, _ascent };
+        static_cast<Textbox_t*>(this)->text_position() = {0, _ascent };
     }
 
 } // ns cppgui
