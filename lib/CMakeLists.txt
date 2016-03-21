@@ -6,7 +6,7 @@ add_library( ${PROJECT_NAME} STATIC
 
     include/cppgui/Widget.hpp                       include/cppgui/Widget.ipp
     include/cppgui/Label.hpp                        include/cppgui/Label.ipp
-    include/cppgui/Textbox.hpp                      include/cppgui/Textbox.ipp
+    include/cppgui/Textbox_base.hpp                      include/cppgui/Textbox_base.ipp
     include/cppgui/Box.hpp                          include/cppgui/Box.ipp
     include/cppgui/Container.hpp                    include/cppgui/Container.ipp
     include/cppgui/Root_widget.hpp                  include/cppgui/Root_widget.ipp

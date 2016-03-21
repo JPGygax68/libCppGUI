@@ -25,15 +25,13 @@ public:
     using Widget = cppgui::Widget<Widget_config, true>;
     using Label = cppgui::Label<Widget_config, true>;
     using Root_widget = cppgui::Root_widget<Widget_config, true>;
-    using Textbox = cppgui::Textbox<Widget_config, true>;
+    using Textbox_base = cppgui::Textbox<Widget_config, true>;
 
     struct Widget_config {
 
         using Renderer = Renderer;
         using Font_handle = Renderer::font_handle;
 
-        template <class Aspect_parent>
-        using Abstract_widget_updater = cppgui::Default_abstract_widget_updater<Widget_config, true>::Aspect<Aspect_parent>;
         template <class Aspect_parent>
         using Widget_updater = cppgui::Default_widget_updater<Widget_config, true>::Aspect<Aspect_parent>;
         template <class Aspect_parent>
@@ -71,7 +69,7 @@ public:
 private:
     Root_widget                 _root_widget;
     Label                       _label;
-    Textbox                     _textbox;
+    Textbox_base                     _textbox;
     
     Widget_config::Renderer    *_renderer;
     //bool                        _gfxres_ok = false;

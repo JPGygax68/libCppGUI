@@ -38,6 +38,7 @@ Test_window::Test_window():
     _textbox.set_font(&Fonts::default_font());
     _textbox.set_position({50, 120});
     //_textbox.set_extents({ 200, 30 });
+    _textbox.set_text(U"Abc");
 
     _root_widget.on_invalidated([this]() { request_redraw(); });
 

@@ -48,9 +48,8 @@ namespace cppgui {
      */
     template <class Config, bool With_layout>
     class Abstract_widget:
-        public Config::Color_mapper,
+        public Config::Color_mapper
         //public Config::Font_mapper,
-        public Config::template Abstract_widget_updater<Nil_struct>
     {
     public:
         using Abstract_widget_t = Abstract_widget;
@@ -70,6 +69,8 @@ namespace cppgui {
         static auto button_face_color        () { return Rgba_norm{ 0.8f, 0.8f, 0.8f, 1 }; }
         static auto button_face_hovered_color() { return Rgba_norm{ 0.9f, 0.9f, 0.9f, 1 }; }
 
+        virtual auto root_widget() -> Root_widget_t * = 0;
+
         // Input event injection
 
         /** By convention, mouse positions are passed to a widget as relative to
@@ -79,10 +80,12 @@ namespace cppgui {
          */
         virtual void mouse_motion(const Position &) {}
         virtual void mouse_click(const Position &, int button, int count);
-        virtual void text_input(const char32_t *text, size_t size) {}
+        virtual void text_input(const char32_t *, size_t) {}
 
-        virtual void mouse_enter() {}; // TODO: provide "entry point" parameter ?
-        virtual void mouse_exit() {}; // TODO: provide "exit point" parameter ?
+        virtual void mouse_enter() {}       // TODO: provide "entry point" parameter ?
+        virtual void mouse_exit() {}        // TODO: provide "exit point" parameter ?
+        virtual void gained_focus() {}
+        virtual void loosing_focus() {}
 
         /** TODO: Having a virtual function to update render resources is imperfect
             in the sense that it is not always necessary to defer the mapping of render
@@ -109,10 +112,7 @@ namespace cppgui {
         Rectangle _rect = {};
     };
 
-    //template <class Aspect_parent>
-    //struct Nil_layouter: public Aspect_parent {};
-
-    // Layouting aspect for Widget
+    // Layouting aspect
 
     template <bool With_layout> struct Widget_layouter {
 
@@ -123,27 +123,8 @@ namespace cppgui {
 
         template <class Aspect_parent> struct Aspect: public Aspect_parent {
 
-            virtual auto minimal_size()->Extents = 0;
+            virtual auto minimal_size() -> Extents = 0;
             virtual void layout() = 0;
-        };
-    };
-
-    // Default implementaton for Abstract_widget Updater aspect
-
-    template <class Config, bool With_layout>
-    struct Default_abstract_widget_updater {
-
-        template <class Aspect_parent> struct Aspect: public Aspect_parent {
-
-            using Root_widget_t = Root_widget<Config, With_layout>;
-
-            /** NOTE: the functionality of finding the root widget is part of the "Updater"
-                    family of class aspects because it is tied to the way the container-child
-                    relationship is maintained.
-                    It is conceivable to move this functionality into its own aspect; however,
-                    its implementation would then most likely be dependent 
-             */
-            virtual auto root_widget() -> Root_widget_t * = 0;
         };
     };
 
@@ -177,8 +158,24 @@ namespace cppgui {
 
     // Default implementations for Updating_aspect
 
-    template <class Config, bool With_layout> class Abstract_container;
+    /** The "Updater" aspect of a widget is responsible for making sure it gets
+        redrawn when invalidate() has been called.
 
+        The default implementation uses a pointer to parent to pass up redraw
+        requests until they reach the root widget, which "handles" the request
+        by passing it along to callback function.
+
+        Because there is chance that a different implementation may not need
+        to follow that route (e.g. by calling render() directly), the pointer
+        to container may not be needed, so it is a member of this aspect
+        implementation rather than of Widget<> itself.
+
+        TODO: THIS IS PROVISIONAL. If it turns out, during further development, 
+        that a pointer to container is needed for reasons that are not dependent
+        on the Updater (or any other) aspect family, that pointer, and the
+        methods associated with it, should be moved to the Widget<> stem class.
+     */
+    template <class Config, bool With_layout> class Abstract_container;
     template <class Config, bool With_layout> class Default_container_updater;
 
     template <class Config, bool With_layout>

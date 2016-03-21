@@ -3,19 +3,57 @@
 namespace cppgui {
 
     template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::set_font(const Rasterized_font *font)
+    void Textbox_base<Config, With_layout>::set_font(const Rasterized_font *font)
     {
         if (font != _font)
         {
             _font = font;
-            font_changed();
+            static_cast<Textbox_t*>(this)->font_changed();
+            _fnthnd = root_widget()->get_font_handle(_font);
         }
     }
 
     template<class Config, bool With_layout>
-    inline void Textbox<Config, With_layout>::render(Renderer *r, const Position &offset)
+    void Textbox_base<Config, With_layout>::set_text(const std::u32string &text)
     {
-        fill(r, offset, rgba_to_native(r, {1, 1, 1, 1})); // TODO: (VERY MUCH) PROVISIONAL, GET REAL COLOR!
+        _text = text;
+        invalidate();
+        // TODO: reposition caret
+    }
+
+    template<class Config, bool With_layout>
+    void Textbox_base<Config, With_layout>::mouse_click(const Position &pos, int button, int count)
+    {
+        if (button == 1 && count == 1)
+        {
+            root_widget()->set_focus_to(this);
+        }
+        else {
+            Widget_t::mouse_click(pos, button, count);
+        }
+    }
+
+    template<class Config, bool With_layout>
+    void Textbox_base<Config, With_layout>::gained_focus()
+    {
+        // TODO: more...
+        invalidate();
+    }
+
+    template<class Config, bool With_layout>
+    void Textbox_base<Config, With_layout>::loosing_focus()
+    {
+        // TODO: more
+        invalidate();
+    }
+
+    template<class Config, bool With_layout>
+    inline void Textbox_base<Config, With_layout>::render(Renderer *r, const Position &offs)
+    {
+        fill(r, offs, rgba_to_native(r, {1, 1, 1, 1})); // TODO: (VERY MUCH) PROVISIONAL, GET REAL COLOR!
+
+        auto pos = offs + position();
+        r->render_text(_fnthnd, pos.x + _txpos.x, pos.y + _txpos.y, _text.data(), _text.size());
     }
 
     // Layouter aspect ----------------------------------------------
@@ -24,7 +62,7 @@ namespace cppgui {
     template <class Aspect_parent>
     inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::font_changed()
     {
-        auto p = static_cast<Textbox<Config, true>*>(this);
+        auto p = static_cast<Textbox_base<Config, true>*>(this);
 
         if (p->font())
         {
@@ -48,7 +86,7 @@ namespace cppgui {
     template<class Aspect_parent>
     inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
-        _txpos = {0, _ascent };
+        this->_txpos = {0, _ascent };
     }
 
 } // ns cppgui

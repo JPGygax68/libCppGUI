@@ -71,11 +71,7 @@ namespace cppgui {
     };
 
 
-#ifdef USE_SELECT_ASPECT
-
-    /** NOTE: THIS IS TEMPORARILY DEPRECATED: use partial specialization instead, makes for more re
-            
-     */
+#ifdef USE_ASPECTS
 
     /** The following is the equivalent of std::conditional<>, but for aspects.
         (std::conditional<> cannot be used for the simple reason that it works with fully
@@ -109,7 +105,7 @@ namespace cppgui {
     template<template <class> class Aspect1, template <class> class Aspect2>
     struct select_aspect<false, Aspect1, Aspect2> { template <class Aspect_parent = Nil_aspect> using aspect = Aspect2<Aspect_parent>; };
 
-#endif // USE_SELECT_ASPECT
+#endif // USE_ASPECTS
 
     /** This is a convenience macro to slightly reduce the amount of typing required to
         define an aspect, and possibly to make them stand out more clearly.

@@ -39,6 +39,7 @@ namespace cppgui {
     {
     public:
         using Renderer = typename Config::Renderer;
+        using Widget_t = typename Widget<Config, With_layout>;
         //using Abstract_widget_t = typename Abstract_widget<Config, With_layout, Nil_aspect, Nil_aspect>;
         //using Abstract_container_t = Abstract_container<Config, With_layout>;
         using Font_mapper = typename Config::Font_mapper;
@@ -46,7 +47,10 @@ namespace cppgui {
 
         Root_widget(Renderer *);
 
-        void add_child(Widget<Config, With_layout> *);
+        void add_child(Widget_t *);
+
+        // TODO: request mechanism ?
+        void set_focus_to(Widget_t *);
 
         auto get_font_handle(const Rasterized_font *) -> Font_handle;
 
@@ -59,6 +63,7 @@ namespace cppgui {
     private:
         Font_mapper     _font_mapper;
         Renderer       *_renderer = nullptr;
+        Widget_t       *_focused_widget = nullptr;
     };
 
     // Default implementation for Widget_updater aspect
@@ -97,8 +102,9 @@ namespace cppgui {
 
             void child_invalidated(Widget_t *) override {
 
-                assert(_on_invalidated);
-                _on_invalidated();
+                // TODO: protect against multiple invalidations resulting from a single input event
+                // TODO: protect against invalidation during setup ?
+                if (_on_invalidated) _on_invalidated();
             }
 
             auto _root_widget() -> Root_widget_t * override { return static_cast<Root_widget_t*>(this); }

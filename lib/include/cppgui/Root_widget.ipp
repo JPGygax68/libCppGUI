@@ -16,6 +16,14 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Root_widget<Config, With_layout>::set_focus_to(Widget_t *widget)
+    {
+        if (_focused_widget) _focused_widget->loosing_focus(); // TODO: support veto-ing loss of focus ?
+        _focused_widget = widget;
+        if (_focused_widget) _focused_widget->gained_focus();
+    }
+
+    template<class Config, bool With_layout>
     auto Root_widget<Config, With_layout>::get_font_handle(const Rasterized_font *font) -> Font_handle
     {
         return _font_mapper.get_resource(_renderer, font);
@@ -34,8 +42,14 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::text_input(const char32_t *, size_t)
+    void Root_widget<Config, With_layout>::text_input(const char32_t *text, size_t size)
     {
+        if (_focused_widget)
+        {
+            _focused_widget->text_input(text, size);
+        }
+
+
         // TODO
         assert(false);
     }
