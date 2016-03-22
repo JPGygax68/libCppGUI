@@ -15,6 +15,7 @@ using namespace gl;
 #include <cppgui/Textbox.hpp>
 
 #include <SDL_keyboard.h>
+#include <SDL_mouse.h>
 
 #include "./Window.hpp"
 
@@ -61,6 +62,39 @@ public:
             static bool is_right    (const Keycode &key) { return key.sym == SDLK_RIGHT    ; }
             static bool is_backspace(const Keycode &key) { return key.sym == SDLK_BACKSPACE; }
             static bool is_delete   (const Keycode &key) { return key.sym == SDLK_DELETE   ; }
+        };
+
+        struct Cursor {
+
+            using Cursor_handle = SDL_Cursor *;
+
+            static auto get_current_cursor() {
+
+                return SDL_GetCursor();
+            }
+
+            static auto get_arrow_cursor() {
+
+                // TODO: do we have to manage this resource ?
+                return SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+            }
+
+            static auto get_ibeam_cursor() {
+
+                // TODO: do we have to manage this resource ?
+                return SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_IBEAM);
+            }
+
+            static void free_cursor(Cursor_handle cursor) {
+
+                SDL_FreeCursor(cursor);
+            }
+
+            static void set_cursor(Cursor_handle cursor) {
+
+                SDL_SetCursor(cursor);
+            }
+
         };
     };
 

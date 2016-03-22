@@ -49,7 +49,8 @@ namespace cppgui {
     template <class Config, bool With_layout>
     class Abstract_widget:
         public Config::Color_mapper
-        //public Config::Font_mapper,
+        //public Config::Font_mapper
+        //public Config::Cursor
     {
     public:
         using Keyboard          = typename Config::Keyboard;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <stack>
 
 #include "./aspects.hpp"
 #include "./Widget.hpp"
@@ -45,6 +46,7 @@ namespace cppgui {
         //using Abstract_container_t = Abstract_container<Config, With_layout>;
         using Font_mapper = typename Config::Font_mapper;
         using Font_handle = typename Renderer::font_handle;
+        using Cursor_handle = typename Config::Cursor::Cursor_handle;
 
         Root_widget(Renderer *);
 
@@ -52,6 +54,9 @@ namespace cppgui {
 
         // TODO: request mechanism ?
         void set_focus_to(Widget_t *);
+
+        void push_cursor(Cursor_handle);
+        void pop_cursor();
 
         auto get_font_handle(const Rasterized_font *) -> Font_handle;
 
@@ -64,9 +69,10 @@ namespace cppgui {
         void render(Renderer *, const Position &) override;
 
     private:
-        Font_mapper     _font_mapper;
-        Renderer       *_renderer = nullptr;
-        Widget_t       *_focused_widget = nullptr;
+        Font_mapper                 _font_mapper;
+        Renderer                   *_renderer = nullptr;
+        Widget_t                   *_focused_widget = nullptr;
+        std::stack<Cursor_handle>   _cursor_stack;
     };
 
     // Default implementation for Widget_updater aspect

@@ -50,6 +50,18 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Textbox<Config, With_layout>::mouse_enter()
+    {
+        root_widget()->push_cursor( Config::Cursor::get_ibeam_cursor() );
+    }
+
+    template<class Config, bool With_layout>
+    void Textbox<Config, With_layout>::mouse_exit()
+    {
+        root_widget()->pop_cursor();
+    }
+
+    template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::gained_focus()
     {
         // TODO: more...
@@ -75,7 +87,7 @@ namespace cppgui {
             r->render_text(_fnthnd, pos.x, pos.y, _text.data(), _text.size());
         }
 
-        r->fill_rect(pos.x + _caret_offs, pos.y - _ascent, 2, _ascent - _descent, rgba_to_native(r, { 0, 0.3f, 0.8f, 1 })); // TODO: width, color
+        r->fill_rect(pos.x + _caret_offs, pos.y - _ascent, 2, _ascent - _descent, rgba_to_native(r, { 0, 0.3f, 0.8f, 0.5f })); // TODO: width, color
     }
 
     template<class Config, bool With_layout>

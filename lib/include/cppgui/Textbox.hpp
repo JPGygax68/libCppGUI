@@ -36,6 +36,9 @@ namespace cppgui {
         void text_input(const char32_t *text, size_t count) override;
         void key_down(const Keycode &) override;
 
+        void mouse_enter() override;
+        void mouse_exit() override;
+
         void gained_focus() override;
         void loosing_focus() override;
 
