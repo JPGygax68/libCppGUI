@@ -9,6 +9,8 @@ struct SDL_WindowEvent;
 struct SDL_MouseMotionEvent;
 struct SDL_MouseButtonEvent;
 struct SDL_TextInputEvent;
+struct SDL_KeyboardEvent;
+struct SDL_Keysym;
 
 /*  We use CRTP ("curiously recurring template pattern") to inject specialization
     into the template.
@@ -46,6 +48,7 @@ public:
     static void dispatch_mousemotion_event(SDL_MouseMotionEvent &ev);
     static void dispatch_mousebutton_event(SDL_MouseButtonEvent &ev);
     static void dispatch_textinput_event(SDL_TextInputEvent &ev);
+    static void dispatch_keydown_event(SDL_KeyboardEvent &ev);
     static void dispatch_redraw(uint32_t win_id);
 
 protected:
@@ -61,6 +64,7 @@ private:
     void handle_mousemotion_event(SDL_MouseMotionEvent &ev);
     void handle_mousebutton_event(SDL_MouseButtonEvent &ev);
     void handle_textinput_event(SDL_TextInputEvent &ev);
+    void handle_keydown_event(SDL_KeyboardEvent &ev);
 
     Pointer _win;
 };

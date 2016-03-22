@@ -14,7 +14,7 @@
 namespace cppgui {
 
     using Rgba_norm       = gpc::gui::rgba_norm;
-    using Rasterized_font = gpc::fonts::rasterized_font;
+    using Rasterized_font = gpc::fonts::rasterized_font; // TODO: use typedef/struct that encompasses variant, too
 
     struct Position {
         int x, y;
@@ -52,6 +52,8 @@ namespace cppgui {
         //public Config::Font_mapper,
     {
     public:
+        using Keyboard          = typename Config::Keyboard;
+        using Keycode           = typename Keyboard::Keycode;
         using Abstract_widget_t = Abstract_widget;
         using Root_widget_t     = Root_widget<Config, With_layout>;
         using Renderer          = typename Config::Renderer;
@@ -81,6 +83,8 @@ namespace cppgui {
         virtual void mouse_motion(const Position &) {}
         virtual void mouse_click(const Position &, int button, int count);
         virtual void text_input(const char32_t *, size_t) {}
+        virtual void key_down(const Keycode &) {}
+        //virtual void key_up(const Keycode &) {}
 
         virtual void mouse_enter() {}       // TODO: provide "entry point" parameter ?
         virtual void mouse_exit() {}        // TODO: provide "exit point" parameter ?

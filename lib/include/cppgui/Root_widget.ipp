@@ -48,10 +48,15 @@ namespace cppgui {
         {
             _focused_widget->text_input(text, size);
         }
+    }
 
-
-        // TODO
-        assert(false);
+    template<class Config, bool With_layout>
+    void Root_widget<Config, With_layout>::key_down(const Keycode &key)
+    {
+        if (_focused_widget)
+        {
+            _focused_widget->key_down(key);
+        }
     }
 
     template<class Config, bool WithLayout>

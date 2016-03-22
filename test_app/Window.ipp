@@ -83,6 +83,12 @@ void Window<Impl>::dispatch_textinput_event(SDL_TextInputEvent & ev)
     window_map()[ev.windowID]->handle_textinput_event(ev);
 }
 
+template<class Impl>
+void Window<Impl>::dispatch_keydown_event(SDL_KeyboardEvent & ev)
+{
+    window_map()[ev.windowID]->handle_keydown_event(ev);
+}
+
 template <class Impl>
 void Window<Impl>::dispatch_redraw(uint32_t win_id)
 {
@@ -147,6 +153,12 @@ void Window<Impl>::handle_textinput_event(SDL_TextInputEvent & ev)
     _text_input_handler(utf32.c_str(), utf32.size());
     static_cast<Impl*>(this)->text_input(utf32.data(), utf32.size());
 #endif
+}
+
+template<class Impl>
+void Window<Impl>::handle_keydown_event(SDL_KeyboardEvent &ev)
+{
+    static_cast<Impl*>(this)->key_down(ev.keysym); // TODO: pass "repeat" too ?
 }
 
 template <class Impl>

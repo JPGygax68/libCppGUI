@@ -39,6 +39,7 @@ namespace cppgui {
     {
     public:
         using Renderer = typename Config::Renderer;
+        using Keycode  = typename Config::Keyboard::Keycode;
         using Widget_t = typename Widget<Config, With_layout>;
         //using Abstract_widget_t = typename Abstract_widget<Config, With_layout, Nil_aspect, Nil_aspect>;
         //using Abstract_container_t = Abstract_container<Config, With_layout>;
@@ -57,6 +58,8 @@ namespace cppgui {
         void mouse_motion(const Position &) override;
         void mouse_click(const Position &, int button, int count) override;
         void text_input(const char32_t *, size_t) override;
+        void key_down(const Keycode &) override;
+        //void key_up(const Keycode &) override;
 
         void render(Renderer *, const Position &) override;
 

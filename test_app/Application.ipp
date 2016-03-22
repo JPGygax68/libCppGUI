@@ -36,6 +36,10 @@ int Application<WinT>::run()
         {
             WinT::dispatch_textinput_event(ev.text);
         }
+        else if (ev.type == SDL_KEYDOWN)
+        {
+            WinT::dispatch_keydown_event(ev.key);
+        }
         else if (ev.type == WinT::redraw_event_id())
         {
             WinT::dispatch_redraw(ev.user.windowID);

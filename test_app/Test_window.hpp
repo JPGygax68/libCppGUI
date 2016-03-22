@@ -14,6 +14,8 @@ using namespace gl;
 #include <cppgui/Label.hpp>
 #include <cppgui/Textbox.hpp>
 
+#include <SDL_keyboard.h>
+
 #include "./Window.hpp"
 
 class Test_window : public Window<Test_window> {
@@ -50,6 +52,16 @@ public:
         using Color_mapper = cppgui::Identity_mapper<Renderer, cppgui::Rgba_norm>;
         using Font_mapper  = cppgui::Default_font_mapper<Renderer>;
 
+        // TODO: move this to a submodule of cppgui
+        struct Keyboard {
+
+            using Keycode = SDL_Keysym;
+
+            static bool is_left     (const Keycode &key) { return key.sym == SDLK_LEFT     ; }
+            static bool is_right    (const Keycode &key) { return key.sym == SDLK_RIGHT    ; }
+            static bool is_backspace(const Keycode &key) { return key.sym == SDLK_BACKSPACE; }
+            static bool is_delete   (const Keycode &key) { return key.sym == SDLK_DELETE   ; }
+        };
     };
 
     Test_window();
@@ -63,6 +75,7 @@ public:
     void mouse_motion(int x, int y);
     void mouse_button(int x, int y, int button, Button_direction dir, int count);
     void text_input(const char32_t *, size_t);
+    void key_down(const SDL_Keysym &);
 
     void closing() override;
 

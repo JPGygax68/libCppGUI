@@ -39,6 +39,8 @@ Test_window::Test_window():
     _textbox.set_position({50, 120});
     //_textbox.set_extents({ 200, 30 });
     _textbox.set_text(U"Abc");
+    
+    _root_widget.set_focus_to(&_textbox);
 
     _root_widget.on_invalidated([this]() { request_redraw(); });
 
@@ -111,6 +113,11 @@ void Test_window::mouse_button(int x, int y, int button, Button_direction dir, i
 void Test_window::text_input(const char32_t *text, size_t size)
 {
     _root_widget.text_input(text, size);
+}
+
+void Test_window::key_down(const SDL_Keysym &key)
+{
+    _root_widget.key_down(key);
 }
 
 void Test_window::closing()
