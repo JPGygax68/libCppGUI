@@ -40,6 +40,10 @@ namespace cppgui {
 
         if (hovered != _hovered_child)
         {
+            /** TODO: this does not account for situations where the pointer enters a
+                widget, then moves on to a zone on a higher Z-level (Z levels not being 
+                implemented yet at the time of writing).
+             */
             if (_hovered_child) _hovered_child->mouse_exit();
             if (hovered) hovered->mouse_enter();
             _hovered_child = hovered;

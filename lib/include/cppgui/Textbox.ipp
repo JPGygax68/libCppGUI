@@ -26,7 +26,12 @@ namespace cppgui {
     {
         if (button == 1 && count == 1)
         {
-            root_widget()->set_focus_to(this);
+            if (root_widget()->focused_widget() != this)
+            {
+                root_widget()->set_focus_to(this);
+            }
+
+            move_caret_to_pointer_position(pos);
         }
         else {
             Widget_t::mouse_click(pos, button, count);
@@ -174,6 +179,29 @@ namespace cppgui {
         else {
             // TODO: "bump"
         }
+    }
+
+    template<class Config, bool With_layout>
+    void Textbox<Config, With_layout>::move_caret_to_pointer_position(const Position &pos)
+    {
+        auto inner_pos = convert_position_to_inner(pos);
+
+        int x = 0;
+        unsigned i;
+        for (i = 0; i < _text.size(); i++)
+        {
+            auto glyph = font()->lookup_glyph(0, _text[i]);
+            auto w = glyph->cbox.bounds.x_max - glyph->cbox.bounds.x_min;
+
+            if (pos.x < x + w / 2) break;
+
+            x += glyph->cbox.adv_x;
+        }
+
+        _caret_offs = x;
+        _caret_pos = i;
+
+        invalidate();
     }
 
     // Layouter aspect ----------------------------------------------

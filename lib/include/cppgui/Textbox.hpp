@@ -59,6 +59,7 @@ namespace cppgui {
         void insert_characters(const char32_t *, size_t);
         void delete_before_caret();
         void delete_after_caret();
+        void move_caret_to_pointer_position(const Position &pos);
 
         const Rasterized_font  *_font = nullptr; // TODO: avoid setting default value
 

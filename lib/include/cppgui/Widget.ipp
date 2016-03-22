@@ -54,6 +54,13 @@ namespace cppgui {
         r->fill_rect(offs.x + b.pos.x, offs.y + b.pos.y, b.ext.w, b.ext.h, color);
     }
 
+    template<class Config, bool With_layout>
+    auto Abstract_widget<Config, With_layout>::convert_position_to_inner(const Position &pos) -> Position
+    {
+        // TODO: subtract border and padding
+        return pos;
+    }
+
     // Default_widget_updater<> aspect ------------------------------
 
     template<class Config, bool With_layout>

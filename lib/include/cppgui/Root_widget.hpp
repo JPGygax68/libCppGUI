@@ -54,6 +54,7 @@ namespace cppgui {
 
         // TODO: request mechanism ?
         void set_focus_to(Widget_t *);
+        auto focused_widget() const { return _focused_widget; }
 
         void push_cursor(Cursor_handle);
         void pop_cursor();

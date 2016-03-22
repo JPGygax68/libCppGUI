@@ -112,6 +112,7 @@ namespace cppgui {
 
         auto rgba_to_native(Renderer *, const Rgba_norm &) -> Native_color;
         void fill(Renderer *r, const Position &offs, const Native_color &);
+        auto convert_position_to_inner(const Position &) -> Position;
 
     private:
         Rectangle _rect = {};
