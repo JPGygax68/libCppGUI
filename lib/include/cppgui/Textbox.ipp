@@ -252,17 +252,25 @@ namespace cppgui {
         }
 
         _caret_pos += count;
+        collapse_selection_to_caret();
     }
 
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::delete_before_caret()
     {
-        if (_caret_pos > 0)
+        // TODO: support deleting selection
+        if (have_selection())
+        {
+            delete_selected();
+            invalidate();
+        }
+        else if (_caret_pos > 0)
         {
             auto glyph = _font->lookup_glyph(0, _text[_caret_pos - 1]); // TODO: support font variants ?
             _caret_offs -= glyph->cbox.adv_x;
             _caret_pos --;
             _text = _text.substr(0, _caret_pos) + _text.substr(_caret_pos + 1);
+            collapse_selection_to_caret();
             invalidate();
         }
         else {
@@ -273,9 +281,15 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::delete_after_caret()
     {
-        if (_caret_pos < _text.size())
+        if (have_selection())
+        {
+            delete_selected();
+            invalidate();
+        }
+        else if (_caret_pos < _text.size())
         {
             _text = _text.substr(0, _caret_pos) + _text.substr(_caret_pos + 1);
+            collapse_selection_to_caret();
             invalidate();
         }
         else {
@@ -362,6 +376,15 @@ namespace cppgui {
     {
         _sel_start_pos = _sel_end_pos = _caret_pos;
         _sel_start_offs = _sel_end_offs = _caret_offs;
+    }
+
+    template<class Config, bool With_layout>
+    void cppgui::Textbox<Config, With_layout>::delete_selected()
+    {
+        _text = _text.substr(0, _sel_start_pos) + _text.substr(_sel_end_pos);
+        _caret_pos = _sel_start_pos;
+        _caret_offs = _sel_start_offs;
+        collapse_selection_to_caret();
     }
 
     // Layouter aspect ----------------------------------------------

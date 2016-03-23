@@ -70,6 +70,8 @@ namespace cppgui {
         void internal_select_all();
         void recalc_selection_strip();
         void collapse_selection_to_caret();
+        bool have_selection() const { return _sel_start_pos < _sel_end_pos; }
+        void delete_selected();
 
         const Rasterized_font  *_font = nullptr; // TODO: avoid setting default value
 
