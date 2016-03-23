@@ -64,6 +64,7 @@ namespace cppgui {
         auto get_font_handle(const Rasterized_font *) -> Font_handle;
 
         void mouse_motion(const Position &) override;
+        void mouse_button(const Position &, int button, Key_state) override;
         void mouse_click(const Position &, int button, int count) override;
         void text_input(const char32_t *, size_t) override;
         void key_down(const Keycode &) override;

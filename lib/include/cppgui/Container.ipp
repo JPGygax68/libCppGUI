@@ -65,6 +65,14 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Abstract_container<Config, With_layout>::handle_mouse_button(const Position &pos, int button, Key_state state)
+    {
+        auto child = child_at(pos);
+
+        if (child) child->mouse_button(pos - child->position(), button, state);
+    }
+
+    template<class Config, bool With_layout>
     void Abstract_container<Config, With_layout>::handle_mouse_click(const Position &pos, int button, int count)
     {
         auto child = child_at(pos);

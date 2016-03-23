@@ -105,6 +105,8 @@ void Test_window::mouse_motion(int x, int y)
 
 void Test_window::mouse_button(int x, int y, int button, Button_direction dir, int count)
 {
+    _root_widget.mouse_button({ x, y }, button, dir == down ? cppgui::pressed : cppgui::released);
+
     if (dir == up)
     {
         _root_widget.mouse_click({ x, y, }, button, count);

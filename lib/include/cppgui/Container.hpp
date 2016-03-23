@@ -27,6 +27,7 @@ namespace cppgui {
             from "real" containers (i.e. descendants of Container<>).            
          */
         void handle_mouse_motion(const Position &);
+        void handle_mouse_button(const Position &, int button, Key_state);
         void handle_mouse_click(const Position &, int button, int count);
 
         std::vector<Widget_t*> _children;

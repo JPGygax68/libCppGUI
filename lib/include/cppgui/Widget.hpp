@@ -43,6 +43,8 @@ namespace cppgui {
     using Text_bounding_box = gpc::fonts::bounding_box;
     using Glyph_control_box = gpc::fonts::rasterized_glyph_cbox;
 
+    enum Key_state { pressed, released };
+
     template <class Config, bool With_layout> class Root_widget;
 
     /** Abstract_widget: functionality common to both Root_widget and Widget, i.e. not including the ability
@@ -86,6 +88,7 @@ namespace cppgui {
             coordinates it gets from yet higher up).
          */
         virtual void mouse_motion(const Position &) {}
+        virtual void mouse_button(const Position &, int /*button*/, Key_state) {}
         virtual void mouse_click(const Position &, int button, int count);
         virtual void text_input(const char32_t *, size_t) {}
         virtual void key_down(const Keycode &) {}

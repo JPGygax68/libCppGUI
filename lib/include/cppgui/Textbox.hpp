@@ -35,7 +35,8 @@ namespace cppgui {
 
         void init() override;
 
-        void mouse_click(const Position &, int button, int count) override;
+        void mouse_button(const Position &, int button, Key_state) override;
+        //void mouse_click(const Position &, int button, int count) override;
         void text_input(const char32_t *text, size_t count) override;
         void key_down(const Keycode &) override;
 
