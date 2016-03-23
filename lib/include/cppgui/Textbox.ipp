@@ -21,6 +21,8 @@ namespace cppgui {
         if (font()) // TODO: is there a way to avoid this check ? (i.e. use different set_text() before font is set ?)
         {
             internal_select_all();
+            _caret_pos = _sel_start_pos;
+            _caret_offs = _sel_start_offs;
             invalidate();
         }
     }
@@ -29,6 +31,37 @@ namespace cppgui {
     void Textbox<Config, With_layout>::init()
     {
         internal_select_all();
+    }
+
+    template<class Config, bool With_layout>
+    void Textbox<Config, With_layout>::mouse_motion(const Position &pos)
+    {
+        if (Config::Mouse::is_button_down(1))
+        {
+            auto char_pos = find_character_at_pointer_position(pos);
+            if (char_pos.first != _caret_pos)
+            {
+                auto &new_pos = char_pos.first;
+                auto &new_offs = char_pos.second;
+                if (new_pos < _caret_pos)
+                {
+                    _sel_start_pos = new_pos;
+                    _sel_start_offs = new_offs;
+                    _sel_end_pos = _caret_pos;
+                    _sel_end_offs = _caret_offs;
+                }
+                else {
+                    _sel_end_pos = new_pos;
+                    _sel_end_offs = new_offs;
+                    _sel_start_pos = _caret_pos;
+                    _sel_start_offs = _caret_offs;
+                }
+                invalidate();
+            }
+        }
+        else {
+            Widget_t::mouse_motion(pos);
+        }
     }
 
     template<class Config, bool With_layout>
@@ -46,6 +79,15 @@ namespace cppgui {
         }
         else {
             Widget_t::mouse_button(pos, button, state);
+        }
+    }
+
+    template<class Config, bool With_layout>
+    void Textbox<Config, With_layout>::mouse_click(const Position &, int /*button*/, int count)
+    {
+        if (count == 2) // double-click
+        {
+            select_all();
         }
     }
 
@@ -319,7 +361,29 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Textbox<Config, With_layout>::select_all()
+    {
+        internal_select_all();
+
+        _caret_pos = _sel_end_pos;
+        _caret_offs = _sel_end_offs;
+
+        invalidate();
+    }
+
+    template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::move_caret_to_pointer_position(const Position &pos)
+    {
+        auto char_pos = find_character_at_pointer_position(pos);
+
+        _caret_pos = char_pos.first;
+        _caret_offs = char_pos.second;
+
+        invalidate();
+    }
+
+    template<class Config, bool With_layout>
+    auto Textbox<Config, With_layout>::find_character_at_pointer_position(const Position & pos) -> std::pair<size_t, int>
     {
         auto inner_pos = convert_position_to_inner(pos);
 
@@ -335,10 +399,7 @@ namespace cppgui {
             x += glyph->cbox.adv_x;
         }
 
-        _caret_offs = x;
-        _caret_pos = i;
-
-        invalidate();
+        return { i, x };
     }
 
     template<class Config, bool With_layout>
@@ -348,9 +409,6 @@ namespace cppgui {
         _sel_end_pos   = _text.size();
 
         recalc_selection_strip();
-
-        _caret_pos = _sel_start_pos;
-        _caret_offs = _sel_start_offs;
     }
 
     /** New definition:

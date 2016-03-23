@@ -71,6 +71,11 @@ public:
             static inline bool is_ctrl_down () { return (SDL_GetModState() & KMOD_CTRL ) != 0; }
         };
 
+        struct Mouse {
+
+            static inline bool is_button_down(int button) { return (SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(button)) != 0; }
+        };
+
         struct Cursor {
 
             using Cursor_handle = SDL_Cursor *;

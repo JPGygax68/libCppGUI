@@ -35,8 +35,9 @@ namespace cppgui {
 
         void init() override;
 
+        void mouse_motion(const Position &) override;
         void mouse_button(const Position &, int button, Key_state) override;
-        //void mouse_click(const Position &, int button, int count) override;
+        void mouse_click(const Position &, int button, int count) override;
         void text_input(const char32_t *text, size_t count) override;
         void key_down(const Keycode &) override;
 
@@ -65,7 +66,7 @@ namespace cppgui {
         void insert_characters(const char32_t *, size_t);
         void delete_before_caret();
         void delete_after_caret();
-        void move_caret_to_pointer_position(const Position &pos);
+        void select_all();
 
         // Internal methods
         void internal_select_all();
@@ -73,6 +74,8 @@ namespace cppgui {
         void collapse_selection_to_caret();
         bool have_selection() const { return _sel_start_pos < _sel_end_pos; }
         void delete_selected();
+        void move_caret_to_pointer_position(const Position &pos);
+        auto find_character_at_pointer_position(const Position &pos)->std::pair<size_t, int>;
 
         const Rasterized_font  *_font = nullptr; // TODO: avoid setting default value
 
