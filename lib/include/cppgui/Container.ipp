@@ -34,6 +34,15 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Abstract_container<Config, With_layout>::init_children()
+    {
+        for (auto child : children())
+        {
+            child->init();
+        }
+    }
+
+    template<class Config, bool With_layout>
     void Abstract_container<Config, With_layout>::handle_mouse_motion(const Position &pos)
     {
         auto hovered = child_at(pos);
@@ -61,6 +70,14 @@ namespace cppgui {
         auto child = child_at(pos);
 
         if (child) child->mouse_click(pos - child->position(), button, count);
+    }
+
+    template<class Config, bool With_layout>
+    void Container<Config, With_layout>::init()
+    {
+        init_children();
+
+        Widget_t::init();
     }
 
     template <class Config, bool With_layout>

@@ -27,10 +27,13 @@ namespace cppgui {
         using Textbox_t = typename Textbox<Config, With_layout>;
         using Font_handle = typename Widget_t::Font_handle;
 
+        // TODO: implement "set" and "change" variants
         void set_font(const Rasterized_font *);
         auto font() const { return _font; }
         void set_text(const std::u32string &);
         auto text() const { return _text; }
+
+        void init() override;
 
         void mouse_click(const Position &, int button, int count) override;
         void text_input(const char32_t *text, size_t count) override;
@@ -61,12 +64,15 @@ namespace cppgui {
         void delete_after_caret();
         void move_caret_to_pointer_position(const Position &pos);
 
+        // Internal methods
+        void internal_select_all();
+
         const Rasterized_font  *_font = nullptr; // TODO: avoid setting default value
 
         std::u32string          _text;
         Font_handle             _fnthnd;
-        unsigned int            _caret_pos = 0; // TODO: avoid setting default value
-        int                     _caret_offs = 0; // TODO: extend to selection; avoid default value
+        unsigned int            _caret_pos , _sel_start_pos , _sel_end_pos ;
+        int                     _caret_offs, _sel_start_offs, _sel_end_offs;
     };
 
     // Layouting aspect ---------------------------------------------

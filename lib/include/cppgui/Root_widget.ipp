@@ -16,6 +16,14 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Root_widget<Config, With_layout>::init()
+    {
+        init_children();
+
+        Abstract_widget_t::init();
+    }
+
+    template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::set_focus_to(Widget_t *widget)
     {
         if (_focused_widget) _focused_widget->loosing_focus(); // TODO: support veto-ing loss of focus ?

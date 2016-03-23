@@ -5,6 +5,7 @@
 
 #include <gpc/fonts/rasterized_font.hpp>
 #include <gpc/fonts/bounding_box.hpp>
+#include <gpc/fonts/rasterized_glyph_cbox.hpp>
 #include <gpc/gui/renderer.hpp> // TODO: other source & namespace
 
 #include "./aspects.hpp"
@@ -40,6 +41,7 @@ namespace cppgui {
     };
 
     using Text_bounding_box = gpc::fonts::bounding_box;
+    using Glyph_control_box = gpc::fonts::rasterized_glyph_cbox;
 
     template <class Config, bool With_layout> class Root_widget;
 
@@ -71,6 +73,8 @@ namespace cppgui {
         // TODO: color and other style definitions belong into stylesheets
         static auto button_face_color        () { return Rgba_norm{ 0.8f, 0.8f, 0.8f, 1 }; }
         static auto button_face_hovered_color() { return Rgba_norm{ 0.9f, 0.9f, 0.9f, 1 }; }
+
+        virtual void init() {} // TODO: implement as many checks as possible (debug mode only)
 
         virtual auto root_widget() -> Root_widget_t * = 0;
 
@@ -113,6 +117,8 @@ namespace cppgui {
         auto rgba_to_native(Renderer *, const Rgba_norm &) -> Native_color;
         void fill(Renderer *r, const Position &offs, const Native_color &);
         auto convert_position_to_inner(const Position &) -> Position;
+        auto advance_to_glyph_at(const Rasterized_font *, const std::u32string &text, size_t from, size_t to, Position &pos) 
+            -> const Glyph_control_box *;
 
     private:
         Rectangle _rect = {};

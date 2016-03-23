@@ -1,5 +1,27 @@
+23-03-2016
+==========
+
+Right now, setting the value of a widget (e.g. "text" on a Textbox) requires a a check (or possibly more later on) to find out whether or not the rasterized font is available.
+
+What is missing at this time is an awareness about whether or not a widget is "live"; or, if maintaining that state turns out to be avoidable, a distinction between *initializing* values versus *updating* them (possibly via overloaded versions of the property setters ?).
+
+I do think, however, that a one-time initialization method is required, to be called after de-serializing or programmatically definining the UI.
+If layouting is enabled, the corresponding layout() on the root widget would need to occur immediately before that.
+
+From the above follows a rule:
+
+THE LAYOUT OF A WIDGET *SHOULD NOT* DEPEND ON ITS VALUE (OR SET OF VALUES).
+
+The reason is that this would make it harder to predict the visual appearance of a UI right when it first appears, which is already quite a bit uncertain as soon as font sizes etc. are no longer fixed.
+
+==> TODO: implement:
+
+  1) a virtual method initialize()
+  2) property setters that do not trigger invalidation or layout recalculation
+      - try to find names that express the difference, rather than employing overloads or prefixed versions of existing names
+  
 14-03-2016
-----------
+==========
 
 How to implement trigger_redraw() in a way that will get optimal run-time behaviour on any possible combination of backends ? Brainstorming.
 

@@ -21,6 +21,8 @@ namespace cppgui {
         void _add_child(Widget_t *);
         auto child_at(const Position &) -> Widget_t *;
 
+        void init_children();
+
         /** The handle_mouse_xxxx() methods are intended as "delegates" to be called
             from "real" containers (i.e. descendants of Container<>).            
          */
@@ -61,9 +63,12 @@ namespace cppgui {
     {
     public:
         using Renderer = typename Config::Renderer;
+        using Widget_t = typename Widget<Config, With_layout>;
         //template <class Aspect_parent> using Layouter_t = Container_layouter::Aspect<Aspect_parent>;
 
         void add_child(Widget<Config, With_layout> *); // TODO: really need to override ?
+
+        void init() override;
 
         void mouse_motion(const Position &) override;
         void mouse_click(const Position &, int button, int count) override;

@@ -42,7 +42,7 @@ namespace cppgui {
         using Renderer = typename Config::Renderer;
         using Keycode  = typename Config::Keyboard::Keycode;
         using Widget_t = typename Widget<Config, With_layout>;
-        //using Abstract_widget_t = typename Abstract_widget<Config, With_layout, Nil_aspect, Nil_aspect>;
+        using Abstract_widget_t = typename Abstract_widget<Config, With_layout>;
         //using Abstract_container_t = Abstract_container<Config, With_layout>;
         using Font_mapper = typename Config::Font_mapper;
         using Font_handle = typename Renderer::font_handle;
@@ -51,6 +51,8 @@ namespace cppgui {
         Root_widget(Renderer *);
 
         void add_child(Widget_t *);
+
+        void init() override;
 
         // TODO: request mechanism ?
         void set_focus_to(Widget_t *);

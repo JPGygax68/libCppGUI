@@ -8,7 +8,7 @@ namespace cppgui {
         if (font != _font)
         {
             _font = font;
-            static_cast<Textbox_t*>(this)->font_changed();
+            font_changed();
             _fnthnd = root_widget()->get_font_handle(_font);
         }
     }
@@ -17,8 +17,18 @@ namespace cppgui {
     void Textbox<Config, With_layout>::set_text(const std::u32string &text)
     {
         _text = text;
-        invalidate();
-        // TODO: reposition caret
+
+        if (font()) // TODO: is there a way to avoid this check ? (i.e. use different set_text() before font is set ?)
+        {
+            internal_select_all();
+            invalidate();
+        }
+    }
+
+    template<class Config, bool With_layout>
+    void Textbox<Config, With_layout>::init()
+    {
+        internal_select_all();
     }
 
     template<class Config, bool With_layout>
@@ -87,11 +97,17 @@ namespace cppgui {
 
         auto pos = offs + position() + _txpos;
 
+        // Selection background
+        // TODO: color from stylesheet
+        r->fill_rect(pos.x + _sel_start_offs, pos.y - _ascent, _sel_end_offs, _ascent - _descent, rgba_to_native(r, { 0.2f, 0.5f, 1, 0.5f }));
+
+        // Text
         if (!_text.empty())
         {
             r->render_text(_fnthnd, pos.x, pos.y, _text.data(), _text.size());
         }
 
+        // Caret
         r->fill_rect(pos.x + _caret_offs, pos.y - _ascent, 2, _ascent - _descent, rgba_to_native(r, { 0, 0.3f, 0.8f, 0.5f })); // TODO: width, color
     }
 
@@ -202,6 +218,36 @@ namespace cppgui {
         _caret_pos = i;
 
         invalidate();
+    }
+
+    template<class Config, bool With_layout>
+    void Textbox<Config, With_layout>::internal_select_all()
+    {
+        _sel_start_pos = 0;
+        _sel_end_pos   = _text.size();
+
+        // TODO: support vertical scripts
+        Position pos = { 0, 0 };
+        const Glyph_control_box *cbox;
+        if (_sel_start_pos > 0)
+        {
+            cbox = advance_to_glyph_at(font(), _text, 0, _sel_start_pos, pos);
+            _sel_start_offs = pos.x + cbox->bounds.x_min;
+        }
+        else {
+            _sel_start_offs = 0;
+        }
+        if (_sel_end_pos > _sel_start_pos)
+        {
+            cbox = advance_to_glyph_at(font(), _text, _sel_start_pos, _sel_end_pos - 1, pos);
+            _sel_end_offs = pos.x + cbox->bounds.x_max;
+        }
+        else {
+            _sel_end_offs = _sel_start_offs;
+        }
+
+        _caret_pos = _sel_start_pos;
+        _caret_offs = _sel_start_offs;
     }
 
     // Layouter aspect ----------------------------------------------

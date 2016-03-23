@@ -61,6 +61,25 @@ namespace cppgui {
         return pos;
     }
 
+    template<class Config, bool With_layout>
+    auto Abstract_widget<Config, With_layout>::advance_to_glyph_at(const Rasterized_font *font, const std::u32string &text, size_t from, size_t to, Position &pos) 
+        -> const Glyph_control_box *
+    {
+        assert(to >= from);
+
+        const Glyph_control_box *cbox = nullptr;
+
+        for (auto i = from; ; i++)
+        {
+            cbox = & font->lookup_glyph(0, text[i])->cbox;
+            if (i == to) break;
+            pos.x += cbox->adv_x;
+            pos.y += cbox->adv_y;
+        }
+
+        return cbox;
+    }
+
     // Default_widget_updater<> aspect ------------------------------
 
     template<class Config, bool With_layout>
