@@ -57,8 +57,10 @@ namespace cppgui {
 
         // Actions
         // TODO: may need to be made public again
-        void move_cursor_left (bool extend_sel);
-        void move_cursor_right(bool extend_sel);
+        void move_cursor_left    (bool extend_sel);
+        void move_cursor_right   (bool extend_sel);
+        void move_cursor_to_start(bool extend_sel);
+        void move_cursor_to_end  (bool extend_sel);
         void insert_characters(const char32_t *, size_t);
         void delete_before_caret();
         void delete_after_caret();

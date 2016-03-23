@@ -58,15 +58,17 @@ public:
 
             using Keycode = SDL_Keysym;
 
-            static bool is_left     (const Keycode &key) { return key.sym == SDLK_LEFT     ; }
-            static bool is_right    (const Keycode &key) { return key.sym == SDLK_RIGHT    ; }
-            static bool is_backspace(const Keycode &key) { return key.sym == SDLK_BACKSPACE; }
-            static bool is_delete   (const Keycode &key) { return key.sym == SDLK_DELETE   ; }
+            static inline bool is_left     (const Keycode &key) { return key.sym == SDLK_LEFT     ; }
+            static inline bool is_right    (const Keycode &key) { return key.sym == SDLK_RIGHT    ; }
+            static inline bool is_backspace(const Keycode &key) { return key.sym == SDLK_BACKSPACE; }
+            static inline bool is_delete   (const Keycode &key) { return key.sym == SDLK_DELETE   ; }
+            static inline bool is_home     (const Keycode &key) { return key.sym == SDLK_HOME     ; }
+            static inline bool is_end      (const Keycode &key) { return key.sym == SDLK_END      ; }
 
             // Modifiers 
 
-            static bool is_shift_down() { return (SDL_GetModState() & KMOD_SHIFT) != 0; }
-            static bool is_ctrl_down () { return (SDL_GetModState() & KMOD_CTRL ) != 0; }
+            static inline bool is_shift_down() { return (SDL_GetModState() & KMOD_SHIFT) != 0; }
+            static inline bool is_ctrl_down () { return (SDL_GetModState() & KMOD_CTRL ) != 0; }
         };
 
         struct Cursor {

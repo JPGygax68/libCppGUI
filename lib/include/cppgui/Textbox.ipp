@@ -58,10 +58,12 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::key_down(const Keycode &key)
     {
-        if      (Keyboard::is_left     (key)) move_cursor_left   ( Config::Keyboard::is_shift_down() );
-        else if (Keyboard::is_right    (key)) move_cursor_right  ( Config::Keyboard::is_shift_down() );
-        else if (Keyboard::is_backspace(key)) delete_before_caret();
-        else if (Keyboard::is_delete   (key)) delete_after_caret ();
+        if      (Keyboard::is_left     (key)) move_cursor_left    (Config::Keyboard::is_shift_down());
+        else if (Keyboard::is_right    (key)) move_cursor_right   (Config::Keyboard::is_shift_down());
+        else if (Keyboard::is_home     (key)) move_cursor_to_start(Config::Keyboard::is_shift_down());
+        else if (Keyboard::is_end      (key)) move_cursor_to_end  (Config::Keyboard::is_shift_down());
+        else if (Keyboard::is_backspace(key)) delete_before_caret ();
+        else if (Keyboard::is_delete   (key)) delete_after_caret  ();
     }
 
     template<class Config, bool With_layout>
@@ -162,7 +164,7 @@ namespace cppgui {
         {
             auto glyph = font()->lookup_glyph(0, _text[_caret_pos]); // TODO: support font variants ?
             _caret_pos ++;
-            _caret_offs += glyph->cbox.adv_x; // TODO: support vertical advanc
+            _caret_offs += glyph->cbox.adv_x; // TODO: support vertical advance
             if (extend_sel)
             {
                 if (_caret_pos == _sel_end_pos + 1)
@@ -175,6 +177,58 @@ namespace cppgui {
                     _sel_start_pos = _caret_pos;
                     _sel_start_offs = _caret_offs;
                 }
+            }
+            else {
+                collapse_selection_to_caret();
+            }
+            invalidate();
+        }
+        else {
+            // TODO: produce warning "bump" sound or effect
+        }
+    }
+
+    template<class Config, bool With_layout>
+    void Textbox<Config, With_layout>::move_cursor_to_start(bool extend_sel)
+    {
+        if (_caret_pos > 0)
+        {
+            while (_caret_pos > 0)
+            {
+                _caret_pos--;
+                auto glyph = font()->lookup_glyph(0, _text[_caret_pos]); // TODO: support font variants ?
+                _caret_offs -= glyph->cbox.adv_x; // TODO: support vertical advance
+            }
+            if (extend_sel)
+            {
+                _sel_start_pos = _caret_pos;
+                _sel_start_offs = _caret_offs;
+            }
+            else {
+                collapse_selection_to_caret();
+            }
+            invalidate();
+        }
+        else {
+            // TODO: produce warning "bump" sound or effect
+        }
+    }
+
+    template<class Config, bool With_layout>
+    void Textbox<Config, With_layout>::move_cursor_to_end(bool extend_sel)
+    {
+        if (_caret_pos < _text.size())
+        {
+            while (_caret_pos < _text.size())
+            {
+                auto glyph = font()->lookup_glyph(0, _text[_caret_pos]); // TODO: support font variants ?
+                _caret_pos++;
+                _caret_offs += glyph->cbox.adv_x; // TODO: support vertical advanc
+            }
+            if (extend_sel)
+            {
+                _sel_end_pos = _caret_pos;
+                _sel_end_offs = _caret_offs;
             }
             else {
                 collapse_selection_to_caret();
