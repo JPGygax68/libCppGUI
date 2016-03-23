@@ -58,8 +58,8 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::key_down(const Keycode &key)
     {
-        if      (Keyboard::is_left     (key)) move_cursor_left   ();
-        else if (Keyboard::is_right    (key)) move_cursor_right  ();
+        if      (Keyboard::is_left     (key)) move_cursor_left   ( Config::Keyboard::is_shift_down() );
+        else if (Keyboard::is_right    (key)) move_cursor_right  ( Config::Keyboard::is_shift_down() );
         else if (Keyboard::is_backspace(key)) delete_before_caret();
         else if (Keyboard::is_delete   (key)) delete_after_caret ();
     }
@@ -99,7 +99,7 @@ namespace cppgui {
 
         // Selection background
         // TODO: color from stylesheet
-        r->fill_rect(pos.x + _sel_start_offs, pos.y - _ascent, _sel_end_offs, _ascent - _descent, rgba_to_native(r, { 0.2f, 0.5f, 1, 0.5f }));
+        r->fill_rect(pos.x + _sel_start_offs, pos.y - _ascent, _sel_end_offs - _sel_start_offs, _ascent - _descent, rgba_to_native(r, { 0.2f, 0.5f, 1, 0.5f }));
 
         // Text
         if (!_text.empty())
@@ -125,13 +125,29 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::move_cursor_left()
+    void Textbox<Config, With_layout>::move_cursor_left(bool extend_sel)
     {
         if (_caret_pos > 0)
         {
-            _caret_pos --;
+            _caret_pos--;
             auto glyph = font()->lookup_glyph(0, _text[_caret_pos]); // TODO: support font variants ?
-            _caret_offs -= glyph->cbox.adv_x; // TODO: support vertical advanc
+            _caret_offs -= glyph->cbox.adv_x; // TODO: support vertical advance
+            if (extend_sel)
+            {
+                if (_caret_pos == _sel_start_pos - 1)
+                {
+                    _sel_start_pos = _caret_pos;
+                    _sel_start_offs = _caret_offs;
+                }
+                else if (_caret_pos == _sel_end_pos - 1)
+                {
+                    _sel_end_pos = _caret_pos;
+                    _sel_end_offs = _caret_offs;
+                }
+            }
+            else {
+                collapse_selection_to_caret();
+            }
             invalidate();
         }
         else {
@@ -140,13 +156,29 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::move_cursor_right()
+    void Textbox<Config, With_layout>::move_cursor_right(bool extend_sel)
     {
         if (_caret_pos < _text.size())
         {
             auto glyph = font()->lookup_glyph(0, _text[_caret_pos]); // TODO: support font variants ?
-            _caret_pos++;
+            _caret_pos ++;
             _caret_offs += glyph->cbox.adv_x; // TODO: support vertical advanc
+            if (extend_sel)
+            {
+                if (_caret_pos == _sel_end_pos + 1)
+                {
+                    _sel_end_pos = _caret_pos;
+                    _sel_end_offs = _caret_offs;
+                }
+                else if (_caret_pos == _sel_start_pos + 1)
+                {
+                    _sel_start_pos = _caret_pos;
+                    _sel_start_offs = _caret_offs;
+                }
+            }
+            else {
+                collapse_selection_to_caret();
+            }
             invalidate();
         }
         else {
@@ -226,28 +258,56 @@ namespace cppgui {
         _sel_start_pos = 0;
         _sel_end_pos   = _text.size();
 
+        recalc_selection_strip();
+
+        _caret_pos = _sel_start_pos;
+        _caret_offs = _sel_start_offs;
+    }
+
+    /** New definition:
+        Computes the graphical span from the insertion point of the first selected
+        character to the insertion point after the last selected character.
+        Old definition:
+        Computes the graphical span from the left edge of the first selected character
+        to the right edge of the last selected character.
+
+        Must be called when _sel_start_pos and _sel_end_pos have been changed (which
+        usually happens together).
+     */
+    template<class Config, bool With_layout>
+    void Textbox<Config, With_layout>::recalc_selection_strip()
+    {
         // TODO: support vertical scripts
+
         Position pos = { 0, 0 };
         const Glyph_control_box *cbox;
+
         if (_sel_start_pos > 0)
         {
             cbox = advance_to_glyph_at(font(), _text, 0, _sel_start_pos, pos);
-            _sel_start_offs = pos.x + cbox->bounds.x_min;
+            //_sel_start_offs = pos.x + cbox->bounds.x_min;
+            _sel_start_offs = pos.x;
         }
         else {
             _sel_start_offs = 0;
         }
+
         if (_sel_end_pos > _sel_start_pos)
         {
             cbox = advance_to_glyph_at(font(), _text, _sel_start_pos, _sel_end_pos - 1, pos);
-            _sel_end_offs = pos.x + cbox->bounds.x_max;
+            //_sel_end_offs = pos.x + cbox->bounds.x_max;
+            _sel_end_offs = pos.x + cbox->adv_x;
         }
         else {
             _sel_end_offs = _sel_start_offs;
         }
+    }
 
-        _caret_pos = _sel_start_pos;
-        _caret_offs = _sel_start_offs;
+    template<class Config, bool With_layout>
+    void Textbox<Config, With_layout>::collapse_selection_to_caret()
+    {
+        _sel_start_pos = _sel_end_pos = _caret_pos;
+        _sel_start_offs = _sel_end_offs = _caret_offs;
     }
 
     // Layouter aspect ----------------------------------------------

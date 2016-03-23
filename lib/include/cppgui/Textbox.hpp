@@ -57,8 +57,8 @@ namespace cppgui {
 
         // Actions
         // TODO: may need to be made public again
-        void move_cursor_left();
-        void move_cursor_right();
+        void move_cursor_left (bool extend_sel);
+        void move_cursor_right(bool extend_sel);
         void insert_characters(const char32_t *, size_t);
         void delete_before_caret();
         void delete_after_caret();
@@ -66,6 +66,8 @@ namespace cppgui {
 
         // Internal methods
         void internal_select_all();
+        void recalc_selection_strip();
+        void collapse_selection_to_caret();
 
         const Rasterized_font  *_font = nullptr; // TODO: avoid setting default value
 

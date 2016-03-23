@@ -62,6 +62,11 @@ public:
             static bool is_right    (const Keycode &key) { return key.sym == SDLK_RIGHT    ; }
             static bool is_backspace(const Keycode &key) { return key.sym == SDLK_BACKSPACE; }
             static bool is_delete   (const Keycode &key) { return key.sym == SDLK_DELETE   ; }
+
+            // Modifiers 
+
+            static bool is_shift_down() { return (SDL_GetModState() & KMOD_SHIFT) != 0; }
+            static bool is_ctrl_down () { return (SDL_GetModState() & KMOD_CTRL ) != 0; }
         };
 
         struct Cursor {
