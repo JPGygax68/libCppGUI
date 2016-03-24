@@ -75,7 +75,7 @@ namespace cppgui {
         void internal_select_all();
         void recalc_selection_strip();
         void collapse_selection_to_caret();
-        bool have_selection() const { return _sel_start_pos < _sel_end_pos; }
+        bool have_selection() const { return _sel_start_char_idx < _sel_end_char_idx; }
         void delete_selected();
         void move_caret_to_pointer_position(const Position &pos);
         auto find_character_at_pointer_position(const Position &pos)->std::pair<size_t, int>;
@@ -85,9 +85,10 @@ namespace cppgui {
 
         std::u32string          _text;
         Font_handle             _fnthnd;
-        unsigned int            _caret_pos , _sel_start_pos , _sel_end_pos ;
-        int                     _caret_offs, _sel_start_offs, _sel_end_offs;
-        unsigned int            _first_vis_char = 0;
+        unsigned int            _caret_char_idx , _sel_start_char_idx , _sel_end_char_idx ;
+        int                     _caret_pixel_pos, _sel_start_pixel_pos, _sel_end_pixel_pos;
+        unsigned int            _first_vis_char_idx = 0;
+        int                     _scroll_offs = 0;
     };
 
     // Layouting aspect ---------------------------------------------

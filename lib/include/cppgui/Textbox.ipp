@@ -27,8 +27,8 @@ namespace cppgui {
         if (font()) // TODO: is there a way to avoid this check ? (i.e. use different set_text() before font is set ?)
         {
             internal_select_all();
-            _caret_pos = _sel_start_pos;
-            _caret_offs = _sel_start_offs;
+            _caret_char_idx = _sel_start_char_idx;
+            _caret_pixel_pos = _sel_start_pixel_pos;
             bring_caret_into_view();
             invalidate();
         }
@@ -37,9 +37,9 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::init()
     {
-        _caret_pos = 0;
-        _caret_offs = 0;
-        _first_vis_char = 0;
+        _caret_char_idx = 0;
+        _caret_pixel_pos = 0;
+        _first_vis_char_idx = 0;
         internal_select_all();
     }
 
@@ -49,22 +49,22 @@ namespace cppgui {
         if (Config::Mouse::is_button_down(1))
         {
             auto char_pos = find_character_at_pointer_position(pos);
-            if (char_pos.first != _caret_pos)
+            if (char_pos.first != _caret_char_idx)
             {
                 auto &new_pos = char_pos.first;
                 auto &new_offs = char_pos.second;
-                if (new_pos < _caret_pos)
+                if (new_pos < _caret_char_idx)
                 {
-                    _sel_start_pos = new_pos;
-                    _sel_start_offs = new_offs;
-                    _sel_end_pos = _caret_pos;
-                    _sel_end_offs = _caret_offs;
+                    _sel_start_char_idx = new_pos;
+                    _sel_start_pixel_pos = new_offs;
+                    _sel_end_char_idx = _caret_char_idx;
+                    _sel_end_pixel_pos = _caret_pixel_pos;
                 }
                 else {
-                    _sel_end_pos = new_pos;
-                    _sel_end_offs = new_offs;
-                    _sel_start_pos = _caret_pos;
-                    _sel_start_offs = _caret_offs;
+                    _sel_end_char_idx = new_pos;
+                    _sel_end_pixel_pos = new_offs;
+                    _sel_start_char_idx = _caret_char_idx;
+                    _sel_start_pixel_pos = _caret_pixel_pos;
                 }
                 invalidate();
             }
@@ -177,16 +177,21 @@ namespace cppgui {
         // Selection background
         auto bg_clr = Text::selected_text_background_color(disabled(), has_focus());
 
-        r->fill_rect(pos.x + _sel_start_offs, pos.y - _ascent, _sel_end_offs - _sel_start_offs, _ascent - _descent, rgba_to_native(r, bg_clr));
+        r->fill_rect(pos.x + _scroll_offs + _sel_start_pixel_pos, pos.y - _ascent, 
+            _sel_end_pixel_pos - _sel_start_pixel_pos, _ascent - _descent, rgba_to_native(r, bg_clr));
 
         // Text
         if (!_text.empty())
         {
-            r->render_text(_fnthnd, pos.x, pos.y, _text.data() + _first_vis_char, _text.size() - _first_vis_char, _inner_rect.ext.w);
+            r->render_text(_fnthnd, pos.x, pos.y, _text.data() + _first_vis_char_idx, _text.size() - _first_vis_char_idx, _inner_rect.ext.w);
         }
 
         // Caret
-        r->fill_rect(pos.x + _caret_offs, pos.y - _ascent, 1, _ascent - _descent, rgba_to_native(r, Text::caret_color())); // TODO: width
+        if (has_focus())
+        {
+            r->fill_rect(pos.x + _scroll_offs + _caret_pixel_pos, pos.y - _ascent, 
+                1, _ascent - _descent, rgba_to_native(r, Text::caret_color())); // TODO: width from stylesheet
+        }
 
         r->cancel_clipping();
     }
@@ -207,22 +212,22 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::move_cursor_left(bool extend_sel)
     {
-        if (_caret_pos > 0)
+        if (_caret_char_idx > 0)
         {
-            _caret_pos--;
-            auto glyph = font()->lookup_glyph(0, _text[_caret_pos]); // TODO: support font variants ?
-            _caret_offs -= glyph->cbox.adv_x; // TODO: support vertical advance
+            _caret_char_idx--;
+            auto glyph = font()->lookup_glyph(0, _text[_caret_char_idx]); // TODO: support font variants ?
+            _caret_pixel_pos -= glyph->cbox.adv_x; // TODO: support vertical advance
             if (extend_sel)
             {
-                if (_caret_pos == _sel_start_pos - 1)
+                if (_caret_char_idx == _sel_start_char_idx - 1)
                 {
-                    _sel_start_pos = _caret_pos;
-                    _sel_start_offs = _caret_offs;
+                    _sel_start_char_idx = _caret_char_idx;
+                    _sel_start_pixel_pos = _caret_pixel_pos;
                 }
-                else if (_caret_pos == _sel_end_pos - 1)
+                else if (_caret_char_idx == _sel_end_char_idx - 1)
                 {
-                    _sel_end_pos = _caret_pos;
-                    _sel_end_offs = _caret_offs;
+                    _sel_end_char_idx = _caret_char_idx;
+                    _sel_end_pixel_pos = _caret_pixel_pos;
                 }
             }
             else {
@@ -239,22 +244,22 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::move_cursor_right(bool extend_sel)
     {
-        if (_caret_pos < _text.size())
+        if (_caret_char_idx < _text.size())
         {
-            auto glyph = font()->lookup_glyph(0, _text[_caret_pos]); // TODO: support font variants ?
-            _caret_pos ++;
-            _caret_offs += glyph->cbox.adv_x; // TODO: support vertical advance
+            auto glyph = font()->lookup_glyph(0, _text[_caret_char_idx]); // TODO: support font variants ?
+            _caret_char_idx ++;
+            _caret_pixel_pos += glyph->cbox.adv_x; // TODO: support vertical advance
             if (extend_sel)
             {
-                if (_caret_pos == _sel_end_pos + 1)
+                if (_caret_char_idx == _sel_end_char_idx + 1)
                 {
-                    _sel_end_pos = _caret_pos;
-                    _sel_end_offs = _caret_offs;
+                    _sel_end_char_idx = _caret_char_idx;
+                    _sel_end_pixel_pos = _caret_pixel_pos;
                 }
-                else if (_caret_pos == _sel_start_pos + 1)
+                else if (_caret_char_idx == _sel_start_char_idx + 1)
                 {
-                    _sel_start_pos = _caret_pos;
-                    _sel_start_offs = _caret_offs;
+                    _sel_start_char_idx = _caret_char_idx;
+                    _sel_start_pixel_pos = _caret_pixel_pos;
                 }
             }
             else {
@@ -271,18 +276,18 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::move_cursor_to_start(bool extend_sel)
     {
-        if (_caret_pos > 0)
+        if (_caret_char_idx > 0)
         {
-            while (_caret_pos > 0)
+            while (_caret_char_idx > 0)
             {
-                _caret_pos--;
-                auto glyph = font()->lookup_glyph(0, _text[_caret_pos]); // TODO: support font variants ?
-                _caret_offs -= glyph->cbox.adv_x; // TODO: support vertical advance
+                _caret_char_idx--;
+                auto glyph = font()->lookup_glyph(0, _text[_caret_char_idx]); // TODO: support font variants ?
+                _caret_pixel_pos -= glyph->cbox.adv_x; // TODO: support vertical advance
             }
             if (extend_sel)
             {
-                _sel_start_pos = _caret_pos;
-                _sel_start_offs = _caret_offs;
+                _sel_start_char_idx = _caret_char_idx;
+                _sel_start_pixel_pos = _caret_pixel_pos;
             }
             else {
                 collapse_selection_to_caret();
@@ -298,18 +303,18 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::move_cursor_to_end(bool extend_sel)
     {
-        if (_caret_pos < _text.size())
+        if (_caret_char_idx < _text.size())
         {
-            while (_caret_pos < _text.size())
+            while (_caret_char_idx < _text.size())
             {
-                auto glyph = font()->lookup_glyph(0, _text[_caret_pos]); // TODO: support font variants ?
-                _caret_pos++;
-                _caret_offs += glyph->cbox.adv_x; // TODO: support vertical advanc
+                auto glyph = font()->lookup_glyph(0, _text[_caret_char_idx]); // TODO: support font variants ?
+                _caret_char_idx++;
+                _caret_pixel_pos += glyph->cbox.adv_x; // TODO: support vertical advanc
             }
             if (extend_sel)
             {
-                _sel_end_pos = _caret_pos;
-                _sel_end_offs = _caret_offs;
+                _sel_end_char_idx = _caret_char_idx;
+                _sel_end_pixel_pos = _caret_pixel_pos;
             }
             else {
                 collapse_selection_to_caret();
@@ -325,15 +330,15 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::insert_characters(const char32_t * text, size_t count)
     {
-        _text = _text.substr(0, _caret_pos) + std::u32string{ text, count } + _text.substr(_caret_pos); // TODO: support selection
+        _text = _text.substr(0, _caret_char_idx) + std::u32string{ text, count } + _text.substr(_caret_char_idx); // TODO: support selection
 
         for (size_t i = 0; i < count; i++)
         {
             auto glyph = _font->lookup_glyph(0, text[i]); // TODO: support font variants ?
-            _caret_offs += glyph->cbox.adv_x;
+            _caret_pixel_pos += glyph->cbox.adv_x;
         }
 
-        _caret_pos += count;
+        _caret_char_idx += count;
         collapse_selection_to_caret();
         bring_caret_into_view();
     }
@@ -347,12 +352,12 @@ namespace cppgui {
             delete_selected();
             invalidate();
         }
-        else if (_caret_pos > 0)
+        else if (_caret_char_idx > 0)
         {
-            auto glyph = _font->lookup_glyph(0, _text[_caret_pos - 1]); // TODO: support font variants ?
-            _caret_offs -= glyph->cbox.adv_x;
-            _caret_pos --;
-            _text = _text.substr(0, _caret_pos) + _text.substr(_caret_pos + 1);
+            auto glyph = _font->lookup_glyph(0, _text[_caret_char_idx - 1]); // TODO: support font variants ?
+            _caret_pixel_pos -= glyph->cbox.adv_x;
+            _caret_char_idx --;
+            _text = _text.substr(0, _caret_char_idx) + _text.substr(_caret_char_idx + 1);
             collapse_selection_to_caret();
             bring_caret_into_view();
             invalidate();
@@ -370,9 +375,9 @@ namespace cppgui {
             delete_selected();
             invalidate();
         }
-        else if (_caret_pos < _text.size())
+        else if (_caret_char_idx < _text.size())
         {
-            _text = _text.substr(0, _caret_pos) + _text.substr(_caret_pos + 1);
+            _text = _text.substr(0, _caret_char_idx) + _text.substr(_caret_char_idx + 1);
             collapse_selection_to_caret();
             invalidate();
         }
@@ -386,8 +391,8 @@ namespace cppgui {
     {
         internal_select_all();
 
-        _caret_pos = _sel_end_pos;
-        _caret_offs = _sel_end_offs;
+        _caret_char_idx = _sel_end_char_idx;
+        _caret_pixel_pos = _sel_end_pixel_pos;
         bring_caret_into_view();
 
         invalidate();
@@ -398,8 +403,8 @@ namespace cppgui {
     {
         auto char_pos = find_character_at_pointer_position(pos);
 
-        _caret_pos = char_pos.first;
-        _caret_offs = char_pos.second;
+        _caret_char_idx = char_pos.first;
+        _caret_pixel_pos = char_pos.second;
         bring_caret_into_view();
 
         invalidate();
@@ -428,34 +433,28 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::bring_caret_into_view()
     {
-        // TODO:
-        if (_caret_offs < 0)
+        while ((_scroll_offs + _caret_pixel_pos) < 0)
         {
-            while (_caret_offs < 0)
-            {
-                assert(_first_vis_char > 0);
-                _first_vis_char --;
-                auto glyph = font()->lookup_glyph(0, _text[_first_vis_char]);
-                _caret_offs += glyph->cbox.adv_x, _sel_start_offs += glyph->cbox.adv_x, _sel_end_offs += glyph->cbox.adv_x;
-            }
+            assert(_first_vis_char_idx > 0);
+            _first_vis_char_idx --;
+            auto glyph = font()->lookup_glyph(0, _text[_first_vis_char_idx]);
+            _scroll_offs += glyph->cbox.adv_x;
         }
-        else if (_caret_offs > (int) _inner_rect.ext.w)
+
+        while ((_scroll_offs + _caret_pixel_pos) > (int) _inner_rect.ext.w)
         {
-            while (_caret_offs > (int) _inner_rect.ext.w)
-            {
-                assert(_first_vis_char < (_text.size() - 1));
-                auto glyph = font()->lookup_glyph(0, _text[_first_vis_char]);
-                _first_vis_char ++;
-                _caret_offs -= glyph->cbox.adv_x, _sel_start_offs -= glyph->cbox.adv_x, _sel_end_offs -= glyph->cbox.adv_x;
-            }
+            assert(_first_vis_char_idx < (_text.size() - 1));
+            auto glyph = font()->lookup_glyph(0, _text[_first_vis_char_idx]);
+            _first_vis_char_idx ++;
+            _scroll_offs -= glyph->cbox.adv_x;
         }
     }
 
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::internal_select_all()
     {
-        _sel_start_pos = 0;
-        _sel_end_pos   = _text.size();
+        _sel_start_char_idx = 0;
+        _sel_end_char_idx   = _text.size();
 
         recalc_selection_strip();
     }
@@ -467,7 +466,7 @@ namespace cppgui {
         Computes the graphical span from the left edge of the first selected character
         to the right edge of the last selected character.
 
-        Must be called when _sel_start_pos and _sel_end_pos have been changed (which
+        Must be called when _sel_start_char_idx and _sel_end_char_idx have been changed (which
         usually happens together).
      */
     template<class Config, bool With_layout>
@@ -478,40 +477,40 @@ namespace cppgui {
         Position pos = { 0, 0 };
         const Glyph_control_box *cbox;
 
-        if (_sel_start_pos > 0)
+        if (_sel_start_char_idx > 0)
         {
-            cbox = advance_to_glyph_at(font(), _text, 0, _sel_start_pos, pos);
-            //_sel_start_offs = pos.x + cbox->bounds.x_min;
-            _sel_start_offs = pos.x;
+            cbox = advance_to_glyph_at(font(), _text, 0, _sel_start_char_idx, pos);
+            //_sel_start_pixel_pos = pos.x + cbox->bounds.x_min;
+            _sel_start_pixel_pos = pos.x;
         }
         else {
-            _sel_start_offs = 0;
+            _sel_start_pixel_pos = 0;
         }
 
-        if (_sel_end_pos > _sel_start_pos)
+        if (_sel_end_char_idx > _sel_start_char_idx)
         {
-            cbox = advance_to_glyph_at(font(), _text, _sel_start_pos, _sel_end_pos - 1, pos);
-            //_sel_end_offs = pos.x + cbox->bounds.x_max;
-            _sel_end_offs = pos.x + cbox->adv_x;
+            cbox = advance_to_glyph_at(font(), _text, _sel_start_char_idx, _sel_end_char_idx - 1, pos);
+            //_sel_end_pixel_pos = pos.x + cbox->bounds.x_max;
+            _sel_end_pixel_pos = pos.x + cbox->adv_x;
         }
         else {
-            _sel_end_offs = _sel_start_offs;
+            _sel_end_pixel_pos = _sel_start_pixel_pos;
         }
     }
 
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::collapse_selection_to_caret()
     {
-        _sel_start_pos = _sel_end_pos = _caret_pos;
-        _sel_start_offs = _sel_end_offs = _caret_offs;
+        _sel_start_char_idx = _sel_end_char_idx = _caret_char_idx;
+        _sel_start_pixel_pos = _sel_end_pixel_pos = _caret_pixel_pos;
     }
 
     template<class Config, bool With_layout>
     void cppgui::Textbox<Config, With_layout>::delete_selected()
     {
-        _text = _text.substr(0, _sel_start_pos) + _text.substr(_sel_end_pos);
-        _caret_pos = _sel_start_pos;
-        _caret_offs = _sel_start_offs;
+        _text = _text.substr(0, _sel_start_char_idx) + _text.substr(_sel_end_char_idx);
+        _caret_char_idx = _sel_start_char_idx;
+        _caret_pixel_pos = _sel_start_pixel_pos;
         collapse_selection_to_caret();
         bring_caret_into_view();
     }
