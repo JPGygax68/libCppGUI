@@ -31,6 +31,7 @@ namespace cppgui {
         void set_font(const Rasterized_font *);
         auto font() const { return _font; }
         void set_text(const std::u32string &);
+        void change_text(const std::u32string &);
         auto text() const { return _text; }
 
         void init() override;
@@ -52,7 +53,9 @@ namespace cppgui {
     public: // for access by Layouter aspect
         int                     _ascent, _descent; // TODO: support vertical writing
         int                     _mean_char_width;
+        Rectangle               _inner_rect;
         Position                _txpos;
+        //int                     _txmaxlen;
 
     private:
         void font_changed();
@@ -76,6 +79,7 @@ namespace cppgui {
         void delete_selected();
         void move_caret_to_pointer_position(const Position &pos);
         auto find_character_at_pointer_position(const Position &pos)->std::pair<size_t, int>;
+        void bring_caret_into_view();
 
         const Rasterized_font  *_font = nullptr; // TODO: avoid setting default value
 
@@ -83,6 +87,7 @@ namespace cppgui {
         Font_handle             _fnthnd;
         unsigned int            _caret_pos , _sel_start_pos , _sel_end_pos ;
         int                     _caret_offs, _sel_start_offs, _sel_end_offs;
+        unsigned int            _first_vis_char = 0;
     };
 
     // Layouting aspect ---------------------------------------------

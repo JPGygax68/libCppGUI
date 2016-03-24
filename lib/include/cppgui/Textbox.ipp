@@ -17,12 +17,19 @@ namespace cppgui {
     void Textbox<Config, With_layout>::set_text(const std::u32string &text)
     {
         _text = text;
+    }
+
+    template<class Config, bool With_layout>
+    void Textbox<Config, With_layout>::change_text(const std::u32string &text)
+    {
+        set_text(text);
 
         if (font()) // TODO: is there a way to avoid this check ? (i.e. use different set_text() before font is set ?)
         {
             internal_select_all();
             _caret_pos = _sel_start_pos;
             _caret_offs = _sel_start_offs;
+            bring_caret_into_view();
             invalidate();
         }
     }
@@ -30,6 +37,9 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::init()
     {
+        _caret_pos = 0;
+        _caret_offs = 0;
+        _first_vis_char = 0;
         internal_select_all();
     }
 
@@ -162,18 +172,23 @@ namespace cppgui {
 
         auto pos = offs + position() + _txpos;
 
+        r->set_clipping_rect(_inner_rect.pos.x, _inner_rect.pos.y, _inner_rect.ext.w, _inner_rect.ext.h);
+
         // Selection background
-        // TODO: color from stylesheet
-        r->fill_rect(pos.x + _sel_start_offs, pos.y - _ascent, _sel_end_offs - _sel_start_offs, _ascent - _descent, rgba_to_native(r, { 0.2f, 0.5f, 1, 0.5f }));
+        auto bg_clr = Text::selected_text_background_color(disabled(), has_focus());
+
+        r->fill_rect(pos.x + _sel_start_offs, pos.y - _ascent, _sel_end_offs - _sel_start_offs, _ascent - _descent, rgba_to_native(r, bg_clr));
 
         // Text
         if (!_text.empty())
         {
-            r->render_text(_fnthnd, pos.x, pos.y, _text.data(), _text.size());
+            r->render_text(_fnthnd, pos.x, pos.y, _text.data() + _first_vis_char, _text.size() - _first_vis_char, _inner_rect.ext.w);
         }
 
         // Caret
-        r->fill_rect(pos.x + _caret_offs, pos.y - _ascent, 2, _ascent - _descent, rgba_to_native(r, { 0, 0.3f, 0.8f, 0.5f })); // TODO: width, color
+        r->fill_rect(pos.x + _caret_offs, pos.y - _ascent, 1, _ascent - _descent, rgba_to_native(r, Text::caret_color())); // TODO: width
+
+        r->cancel_clipping();
     }
 
     template<class Config, bool With_layout>
@@ -213,6 +228,7 @@ namespace cppgui {
             else {
                 collapse_selection_to_caret();
             }
+            bring_caret_into_view();
             invalidate();
         }
         else {
@@ -244,6 +260,7 @@ namespace cppgui {
             else {
                 collapse_selection_to_caret();
             }
+            bring_caret_into_view();
             invalidate();
         }
         else {
@@ -270,6 +287,7 @@ namespace cppgui {
             else {
                 collapse_selection_to_caret();
             }
+            bring_caret_into_view();
             invalidate();
         }
         else {
@@ -296,6 +314,7 @@ namespace cppgui {
             else {
                 collapse_selection_to_caret();
             }
+            bring_caret_into_view();
             invalidate();
         }
         else {
@@ -316,6 +335,7 @@ namespace cppgui {
 
         _caret_pos += count;
         collapse_selection_to_caret();
+        bring_caret_into_view();
     }
 
     template<class Config, bool With_layout>
@@ -334,6 +354,7 @@ namespace cppgui {
             _caret_pos --;
             _text = _text.substr(0, _caret_pos) + _text.substr(_caret_pos + 1);
             collapse_selection_to_caret();
+            bring_caret_into_view();
             invalidate();
         }
         else {
@@ -367,6 +388,7 @@ namespace cppgui {
 
         _caret_pos = _sel_end_pos;
         _caret_offs = _sel_end_offs;
+        bring_caret_into_view();
 
         invalidate();
     }
@@ -378,6 +400,7 @@ namespace cppgui {
 
         _caret_pos = char_pos.first;
         _caret_offs = char_pos.second;
+        bring_caret_into_view();
 
         invalidate();
     }
@@ -400,6 +423,32 @@ namespace cppgui {
         }
 
         return { i, x };
+    }
+
+    template<class Config, bool With_layout>
+    void Textbox<Config, With_layout>::bring_caret_into_view()
+    {
+        // TODO:
+        if (_caret_offs < 0)
+        {
+            while (_caret_offs < 0)
+            {
+                assert(_first_vis_char > 0);
+                _first_vis_char --;
+                auto glyph = font()->lookup_glyph(0, _text[_first_vis_char]);
+                _caret_offs += glyph->cbox.adv_x, _sel_start_offs += glyph->cbox.adv_x, _sel_end_offs += glyph->cbox.adv_x;
+            }
+        }
+        else if (_caret_offs > (int) _inner_rect.ext.w)
+        {
+            while (_caret_offs > (int) _inner_rect.ext.w)
+            {
+                assert(_first_vis_char < (_text.size() - 1));
+                auto glyph = font()->lookup_glyph(0, _text[_first_vis_char]);
+                _first_vis_char ++;
+                _caret_offs -= glyph->cbox.adv_x, _sel_start_offs -= glyph->cbox.adv_x, _sel_end_offs -= glyph->cbox.adv_x;
+            }
+        }
     }
 
     template<class Config, bool With_layout>
@@ -464,6 +513,7 @@ namespace cppgui {
         _caret_pos = _sel_start_pos;
         _caret_offs = _sel_start_offs;
         collapse_selection_to_caret();
+        bring_caret_into_view();
     }
 
     // Layouter aspect ----------------------------------------------
@@ -473,6 +523,7 @@ namespace cppgui {
     inline auto Textbox_layouter<Config, true>::Aspect<Aspect_parent>::minimal_size() -> Extents
     {
         // TODO: replace "10" with const
+        // TODO: adjust for border, padding
         return { (unsigned) (10 * p()->_mean_char_width), (unsigned) (p()->_ascent - p()->_descent) };
     };
 
@@ -480,7 +531,10 @@ namespace cppgui {
     template<class Aspect_parent>
     inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
+        // TODO: adjust for border, padding
+        p()->_inner_rect = p()->rectangle();
         p()->_txpos = {0, p()->_ascent };
+        //p()->_txmaxlen = p()->extents().w;
     }
 
 } // ns cppgui

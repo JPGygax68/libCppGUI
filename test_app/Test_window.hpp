@@ -53,6 +53,8 @@ public:
         using Color_mapper = cppgui::Identity_mapper<Renderer, cppgui::Rgba_norm>;
         using Font_mapper  = cppgui::Default_font_mapper<Renderer>;
 
+        using Styler = cppgui::Static_styler<cppgui::Default_stylesheet>;
+
         // TODO: move this to a submodule of cppgui
         struct Keyboard {
 

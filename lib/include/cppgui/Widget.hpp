@@ -10,12 +10,10 @@
 
 #include "./aspects.hpp"
 
+#include "./Stylesheet.hpp"
 #include "./Full_resource_mapper.hpp"
 
 namespace cppgui {
-
-    using Rgba_norm       = gpc::gui::rgba_norm;
-    using Rasterized_font = gpc::fonts::rasterized_font; // TODO: use typedef/struct that encompasses variant, too
 
     struct Position {
         int x, y;
@@ -52,7 +50,8 @@ namespace cppgui {
      */
     template <class Config, bool With_layout>
     class Abstract_widget:
-        public Config::Color_mapper
+        public Config::Color_mapper,
+        public Config::Styler
         //public Config::Font_mapper
         //public Config::Cursor
     {
@@ -98,6 +97,9 @@ namespace cppgui {
         virtual void mouse_exit() {}        // TODO: provide "exit point" parameter ?
         virtual void gained_focus() {}
         virtual void loosing_focus() {}
+
+        bool has_focus() { return root_widget()->focused_widget() == this; }
+        bool disabled() const { return false; } // TODO!!!
 
         /** TODO: Having a virtual function to update render resources is imperfect
             in the sense that it is not always necessary to defer the mapping of render
