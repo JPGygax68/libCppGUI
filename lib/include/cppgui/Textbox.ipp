@@ -422,7 +422,7 @@ namespace cppgui {
             auto glyph = font()->lookup_glyph(0, _text[i]);
             auto w = glyph->cbox.bounds.x_max - glyph->cbox.bounds.x_min;
 
-            if (pos.x < x + w / 2) break;
+            if (pos.x < _scroll_offs + x + w / 2) break;
 
             x += glyph->cbox.adv_x;
         }
