@@ -557,8 +557,6 @@ namespace cppgui {
             p()->_descent = bbox.y_min;
             p()->_mean_char_width = (bbox.width() + 1) / 2;
         }
-
-        this->invalidate();
     }
 
     template <class Config>

@@ -14,6 +14,7 @@ using namespace gl;
 #include <cppgui/Label.hpp>
 #include <cppgui/Textbox.hpp>
 #include <cppgui/Button.hpp>
+#include <cppgui/Stack.hpp>
 
 #include <SDL_keyboard.h>
 #include <SDL_mouse.h>
@@ -31,6 +32,7 @@ public:
     using Button = cppgui::Button<Widget_config, true>;
     using Root_widget = cppgui::Root_widget<Widget_config, true>;
     using Textbox = cppgui::Textbox<Widget_config, true>;
+    using Stack = cppgui::Stack<Widget_config, true>;
 
     struct Widget_config {
 
@@ -41,6 +43,8 @@ public:
         using Widget_updater = cppgui::Default_widget_updater<Widget_config, true>::Aspect<Aspect_parent>;
         template <class Aspect_parent>
         using Abstract_container_updater = cppgui::Default_abstract_container_updater<Widget_config, true>::Aspect<Aspect_parent>;
+        template <class Aspect_parent>
+        using Container_updater = cppgui::Default_Container_updater<Widget_config, true>::Aspect<Aspect_parent>;
         template <class Aspect_parent>
         using Root_widget_updater = cppgui::Default_root_widget_updater<Widget_config, true>::Aspect<Aspect_parent>;
         template <class Aspect_parent>
@@ -134,6 +138,8 @@ private:
     Label                       _label;
     Button                      _button;
     Textbox                     _textbox;
+    std::vector<Button>         _button_list;
+    Stack                       _stack;
     
     Widget_config::Renderer    *_renderer;
     //bool                        _gfxres_ok = false;

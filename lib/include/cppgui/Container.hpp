@@ -15,10 +15,11 @@ namespace cppgui {
     public:
         using Widget_t = Widget<Config, With_layout>;
 
+        void add_child(Widget_t *);
+
         auto& children() { return _children; }
 
     protected:
-        void _add_child(Widget_t *);
         auto child_at(const Position &) -> Widget_t *;
 
         void init_children_resources();
@@ -63,18 +64,18 @@ namespace cppgui {
         void layout_children();
     };
 
-
     // Container base class: descended from Widget
 
     template <class Config, bool With_layout>
-    class Container: public Widget<Config, With_layout>, public Abstract_container<Config, With_layout>
+    class Container: public Widget<Config, With_layout>, 
+        public Config::template Container_updater< Abstract_container<Config, With_layout> >
     {
     public:
         using Renderer = typename Config::Renderer;
         using Widget_t = typename Widget<Config, With_layout>;
         //template <class Aspect_parent> using Layouter_t = Container_layouter::Aspect<Aspect_parent>;
 
-        void add_child(Widget<Config, With_layout> *); // TODO: really need to override ?
+        // void add_child(Widget_t *); // TODO: really need to override ?
 
         void init() override;
 
@@ -83,6 +84,17 @@ namespace cppgui {
 
         //void update_render_resources(Renderer *) override;
         void render(Renderer *, const Position &) override;
+    };
+
+    template <class Config, bool With_layout> struct Default_Container_updater {
+
+        template <class Aspect_parent> struct Aspect: public Aspect_parent {
+
+            class Container_t: public Container<Config, true> { friend struct Aspect; };
+            auto p() { return static_cast<Container_t*>(this); }
+
+            auto _root_widget() { return p()->root_widget(); }
+        };
     };
 
 } // ns cppgui

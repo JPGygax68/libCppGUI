@@ -23,10 +23,8 @@ namespace cppgui {
     struct Rectangle {
         Position pos;
         Extents  ext;
-        bool contains(const Position &p) const
-        { 
-            return ext.contains(p - pos);
-        }
+        bool contains(const Position &p) const { return ext.contains(p - pos); }
+        auto offset(const Position &offs) const -> Rectangle { return { pos.x + offs.x, pos.y + offs.y, ext.w, ext.h }; }
     };
 
     using Rasterized_font   = gpc::fonts::rasterized_font;

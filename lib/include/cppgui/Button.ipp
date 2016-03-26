@@ -24,6 +24,8 @@ namespace cppgui {
     void Button<Config, With_layout>::render(Renderer *r, const Position &offs)
     {
         fill(r, offs, rgba_to_native(r, face_color()));
+        auto border_ntvclr = rgba_to_native(r, border_color());
+        draw_borders(r, rectangle(), offs, border_width(), border_ntvclr, border_ntvclr, border_ntvclr, border_ntvclr);
 
         auto pos = offs + position();
         r->render_text(_fnthnd, pos.x + _label_origin.x, pos.y + _label_origin.y, _label.data(), _label.size());
@@ -41,6 +43,30 @@ namespace cppgui {
         }
     }
 
+    template<class Config, bool With_layout>
+    auto Button<Config, With_layout>::border_color() -> Color
+    {
+        if (hovered())
+        {
+            return {0.3f, 0.3f, 0.3f, 1};
+        }
+        else {
+            return {0.1f, 0.1f, 0.1f, 1};
+        }
+    }
+
+    template<class Config, bool With_layout>
+    auto Button<Config, With_layout>::border_width() -> int
+    {
+        if (/*is_default()*/ false) 
+        {
+            return 2;
+        }
+        else {
+            return 1;
+        }
+    }
+
     // Layouter -----------------------------------------------------
 
     template<class Config>
@@ -54,8 +80,11 @@ namespace cppgui {
     template<class Aspect_parent>
     inline auto Button_layouter<Config, true>::Aspect<Aspect_parent>::minimal_size() -> Extents
     {
-        // TODO: margin, padding!
-        return { (unsigned int) _bbox.width(), (unsigned int) _bbox.height() };
+        // TODO: adjust bounding box so that it always has room for a descender (even
+        // if current label does not need it) ?
+        return { 
+            (unsigned int) (_bbox.width () + 2 * minimal_padding()), 
+            (unsigned int) (_bbox.height() + 2 * minimal_padding()) };
     }
 
     template<class Config>
@@ -70,6 +99,13 @@ namespace cppgui {
             (int) ((ext.w - _bbox.width ()) / 2 - _bbox.x_min),
             (int) ((ext.h - _bbox.height()) / 2 + _bbox.y_max)
         };
+    }
+
+    template<class Config>
+    template<class Aspect_parent>
+    inline auto cppgui::Button_layouter<Config, true>::Aspect<Aspect_parent>::minimal_padding() -> int
+    {
+        return 5;
     }
 
     template<class Config>

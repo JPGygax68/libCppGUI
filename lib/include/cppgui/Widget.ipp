@@ -46,12 +46,42 @@ namespace cppgui {
         return get_resource(r, color);
     }
 
+    template<class Config, bool With_layout>
+    void Abstract_widget<Config, With_layout>::fill_rect(Renderer *r, const Rectangle &rect, const Native_color &color)
+    {
+        r->fill_rect(rect.pos.x, rect.pos.y, rect.ext.w, rect.ext.h, color);
+    }
+
+    template<class Config, bool With_layout>
+    void Abstract_widget<Config, With_layout>::fill_rect(Renderer * r, const Rectangle & rect, const Position & offs, const Native_color &color)
+    {
+        r->fill_rect(rect.pos.x + offs.x, rect.pos.y + offs.y, rect.ext.w, rect.ext.h, color);
+    }
+
+    template<class Config, bool With_layout>
+    void Abstract_widget<Config, With_layout>::fill_rect(Renderer * r, const Position & pos, const Extents & ext, const Native_color &color)
+    {
+        r->fill_rect(pos.x, pos.y, ext.w, ext.h, color);
+    }
+
     template <class Config, bool With_layout>
     inline void Abstract_widget<Config, With_layout>::fill(Renderer *r, const Position &offs, const Native_color &color)
     {
-        auto b{ rectangle() };
+        fill_rect(r, rectangle(), offs, color);
 
-        r->fill_rect(offs.x + b.pos.x, offs.y + b.pos.y, b.ext.w, b.ext.h, color);
+        //auto b{ rectangle() };
+        //r->fill_rect(offs.x + b.pos.x, offs.y + b.pos.y, b.ext.w, b.ext.h, color);
+    }
+
+    template<class Config, bool With_layout>
+    void Abstract_widget<Config, With_layout>::draw_borders(Renderer *r, const Rectangle & rect, const Position & offs, 
+        unsigned int width, const Color & top, const Color & right, const Color & bottom, const Color & left)
+    {
+        // TODO: this painting procedure does a "wrap" in clockwise fashion, without regard for corners
+        fill_rect(r, offs + rect.pos + Position{(int) width, 0}, {rect.ext.w - width, width}, top);
+        fill_rect(r, offs + rect.pos + Position{(int) (rect.ext.w - width), 0}, {width, rect.ext.h}, right);
+        fill_rect(r, offs + rect.pos + Position{0, (int) (rect.ext.h - width)}, {rect.ext.w - width, width}, bottom);
+        fill_rect(r, offs + rect.pos, {width, rect.ext.h}, left);
     }
 
     template<class Config, bool With_layout>
@@ -126,13 +156,6 @@ namespace cppgui {
     void Widget<Config, With_layouting>::mouse_click(const Position &pos, int button, int count)
     {
         if (_click_hndlr) _click_hndlr(pos, button, count);
-    }
-
-    template<class Config, bool With_layout>
-    void Widget<Config, With_layout>::init()
-    {
-        this->init_layout();
-        this->init();
     }
 
 } // ns cppgui

@@ -87,7 +87,12 @@ namespace cppgui {
 
     protected:
         auto rgba_to_native(Renderer *, const Color &) -> Native_color;
+        void fill_rect(Renderer *r, const Rectangle &rect, const Native_color &);
+        void fill_rect(Renderer *r, const Rectangle &rect, const Position &offs, const Native_color &);
+        void fill_rect(Renderer *r, const Position &pos, const Extents &ext, const Native_color &);
         void fill(Renderer *r, const Position &offs, const Native_color &);
+        void draw_borders(Renderer *, const Rectangle &rect, const Position &offs, 
+            unsigned int width, const Color &top, const Color &right, const Color &bottom, const Color &left);
         auto convert_position_to_inner(const Position &) -> Position;
         auto advance_to_glyph_at(const Rasterized_font *, const std::u32string &text, size_t from, size_t to, Position &pos) 
             -> const Glyph_control_box *;
@@ -135,7 +140,7 @@ namespace cppgui {
 
         void on_click(Click_handler);
 
-        void init();
+        // void init();
 
         // TODO: should the following be protected ?
         bool hovered() const { return _hovered; }

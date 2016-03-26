@@ -4,8 +4,6 @@
 
 namespace cppgui {
 
-    template <class Config, bool With_layout> class Textbox;
-
     template <class Config, bool With_layout>
     struct Textbox_layouter {
 
@@ -109,7 +107,7 @@ namespace cppgui {
 
         template <class Aspect_parent> struct Aspect : public Aspect_parent {
         
-            class Textbox_t: public Textbox<Config, true> { friend class Aspect; };
+            class Textbox_t: public Textbox<Config, true> { friend struct Aspect; };
 
             auto p() { return static_cast<Textbox_t*>(this); }
 

@@ -5,9 +5,10 @@
 namespace cppgui {
 
     template <class Config, bool With_layout>
-    inline void Abstract_container<Config, With_layout>::_add_child(Widget<Config, With_layout> *child)
+    inline void Abstract_container<Config, With_layout>::add_child(Widget_t *child)
     {
         _children.push_back(child);
+        child->added_to_container(this);
     }
 
     template<class Config, bool With_layout>
@@ -16,21 +17,6 @@ namespace cppgui {
         auto child = std::find_if(std::begin(_children), std::end(_children), [&](auto child) { return child->rectangle().contains(pos); });
 
         return child != std::end(_children) ? *child : nullptr;
-
-        /*
-        Widget<Config, With_layout> *target = nullptr;
-
-        for (auto child : _children)
-        {
-            if (child->rectangle().contains(pos))
-            {
-                child->mouse_motion(pos - child->position());
-                target = child;
-            }
-        }
-
-        return target;
-        */
     }
 
     template<class Config, bool With_layout>
@@ -80,6 +66,14 @@ namespace cppgui {
         if (child) child->mouse_click(pos - child->position(), button, count);
     }
 
+    /*
+    template<class Config, bool With_layout>
+    void Container<Config, With_layout>::add_child(Widget_t *child)
+    {
+        _add_child(child);
+    }
+    */
+
     template<class Config, bool With_layout>
     void Container<Config, With_layout>::init()
     {
@@ -111,12 +105,16 @@ namespace cppgui {
         }
     }
 
+    // Updater aspect -----------------------------------------------
+
     template<class Config, bool With_layout>
     template<class Aspect_parent>
     inline void Default_abstract_container_updater<Config, With_layout>::Aspect<Aspect_parent>::child_invalidated(Widget_t *)
     {
         // TODO
     }
+
+    // Layouter aspect ----------------------------------------------
 
     template<class Config>
     void Abstract_container_layouter<Config, true>::init_children_layout()

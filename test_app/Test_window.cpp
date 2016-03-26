@@ -3,6 +3,7 @@
 #include "./Window.ipp"
 #include "./cppgui/Label.hpp"
 #include "./cppgui/Textbox.hpp"
+#include "./cppgui/Stack.hpp"
 
 #include "./Test_window.hpp"
 
@@ -12,6 +13,7 @@
 #include <cppgui/Label.ipp>
 #include <cppgui/Textbox.ipp>
 #include <cppgui/Container.ipp>
+#include <cppgui/Stack.ipp>
 #include <cppgui/Root_widget.ipp>
 
 #include <gpc/gl/wrappers.hpp>
@@ -38,13 +40,23 @@ Test_window::Test_window():
     
     _button.set_font(&Fonts::default_font());
     _button.set_position({50, 160});
+    _button.set_extents({200, 30});
     _button.set_label(U"Click Me!");
 
     _root_widget.add_child(&_label);
     _root_widget.add_child(&_textbox);
     _root_widget.add_child(&_button);
+    _root_widget.add_child(&_stack);
 
-    //_root_widget.set_focus_to(&_textbox);
+    _button_list.resize(8);
+    for (auto i = 0U; i < _button_list.size(); i ++)
+    {
+        _button_list[i].set_font(&Fonts::default_font());
+        _button_list[i].set_label(std::u32string{U"This is button #"} + char32_t(U'1' + i));
+        _stack.add_child(&_button_list[i]);
+    }
+
+    _root_widget.set_focus_to(&_textbox);
 
     _root_widget.on_invalidated([this]() { request_redraw(); });
 

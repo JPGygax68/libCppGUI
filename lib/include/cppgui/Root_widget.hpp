@@ -36,7 +36,7 @@ namespace cppgui {
 
         Root_widget(Renderer *);
 
-        void add_child(Widget_t *);
+        //void add_child(Widget_t *);
 
         void init() override;
 

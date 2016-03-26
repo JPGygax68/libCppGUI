@@ -8,12 +8,14 @@ namespace cppgui {
         _renderer = r;
     }
 
+    /*
     template<class Config, bool WithLayout>
     void Root_widget<Config, WithLayout>::add_child(Widget<Config, WithLayout> *child)
     {
         _add_child(child);
         child->added_to_container(static_cast<Abstract_container_t*>(this));
     }
+    */
 
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::init()

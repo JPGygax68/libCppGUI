@@ -11,6 +11,7 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Textbox.hpp                      include/cppgui/Textbox.ipp
     include/cppgui/Box.hpp                          include/cppgui/Box.ipp
     include/cppgui/Container.hpp                    include/cppgui/Container.ipp
+    include/cppgui/Stack.hpp                        include/cppgui/Stack.ipp
     include/cppgui/Root_widget.hpp                  include/cppgui/Root_widget.ipp
     include/cppgui/Resource_mapper.hpp              include/cppgui/Resource_mapper.ipp
     include/cppgui/Cheap_resource_mapper.hpp        include/cppgui/Cheap_resource_mapper.ipp

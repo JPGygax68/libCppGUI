@@ -36,6 +36,8 @@ namespace cppgui {
         // Styling
         // TODO: make into aspect ?
         auto face_color() -> Color;
+        auto border_color() -> Color;
+        auto border_width() -> int;
 
         const Rasterized_font  *_font = nullptr;
         std::u32string          _label;
@@ -60,6 +62,9 @@ namespace cppgui {
             // TODO
             // void change_font(const Rasterized_font *);
             // void change_label(const std::u32string &);
+
+            // Extra properties
+            auto minimal_padding() -> int; // THIS *INCLUDES* THE BORDER WIDTH (unlike the CSS box model!)
 
             // Interface with main class (Button)
 
