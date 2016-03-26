@@ -62,8 +62,8 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    auto Abstract_widget<Config, With_layout>::advance_to_glyph_at(const Rasterized_font *font, const std::u32string &text, size_t from, size_t to, Position &pos) 
-        -> const Glyph_control_box *
+    auto Abstract_widget<Config, With_layout>::advance_to_glyph_at(const Rasterized_font *font, const std::u32string &text, 
+        size_t from, size_t to, Position &pos) -> const Glyph_control_box *
     {
         assert(to >= from);
 

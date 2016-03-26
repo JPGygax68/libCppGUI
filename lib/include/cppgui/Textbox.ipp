@@ -178,7 +178,7 @@ namespace cppgui {
         r->set_clipping_rect(_inner_rect.pos.x, _inner_rect.pos.y, _inner_rect.ext.w, _inner_rect.ext.h);
 
         // Selection background
-        auto bg_clr = Text::selected_text_background_color(disabled(), has_focus());
+        auto bg_clr = selected_text_background_color(disabled(), has_focus());
 
         r->fill_rect(pos.x + _scroll_offs + _sel_start_pixel_pos, pos.y - _ascent, 
             _sel_end_pixel_pos - _sel_start_pixel_pos, _ascent - _descent, rgba_to_native(r, bg_clr));
@@ -193,7 +193,7 @@ namespace cppgui {
         if (has_focus())
         {
             r->fill_rect(pos.x + _scroll_offs + _caret_pixel_pos, pos.y - _ascent, 
-                1, _ascent - _descent, rgba_to_native(r, Text::caret_color())); // TODO: width from stylesheet
+                1, _ascent - _descent, rgba_to_native(r, caret_color())); // TODO: width from stylesheet
         }
 
         r->cancel_clipping();

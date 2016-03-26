@@ -22,12 +22,6 @@ Test_window::Test_window():
     Window<Test_window>("Test window"),
     _root_widget{ _renderer }
 {
-    // TODO: for now this must come first so that the resource mappers are available
-    //  when set_font() etc. are called
-    _root_widget.add_child(&_label);
-    _root_widget.add_child(&_textbox);
-    _root_widget.add_child(&_button);
-
     _label.set_font(&Fonts::default_font());
     _label.set_text(U"Hello World!");
     _label.on_click([](const cppgui::Position &pos, int button, int clicks) {
@@ -43,8 +37,12 @@ Test_window::Test_window():
     _textbox.set_text(U"Abc1234567890");
     
     _button.set_font(&Fonts::default_font());
-    _button.set_position({50, 150});
+    _button.set_position({50, 160});
     _button.set_label(U"Click Me!");
+
+    _root_widget.add_child(&_label);
+    _root_widget.add_child(&_textbox);
+    _root_widget.add_child(&_button);
 
     //_root_widget.set_focus_to(&_textbox);
 

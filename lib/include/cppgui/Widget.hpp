@@ -44,8 +44,8 @@ namespace cppgui {
         void set_extents(const Extents &);
 
         // TODO: color and other style definitions belong into stylesheets
-        static auto button_face_color        () { return Rgba_norm{ 0.8f, 0.8f, 0.8f, 1 }; }
-        static auto button_face_hovered_color() { return Rgba_norm{ 0.9f, 0.9f, 0.9f, 1 }; }
+        //static auto button_face_color        () { return Rgba_norm{ 0.8f, 0.8f, 0.8f, 1 }; }
+        //static auto button_face_hovered_color() { return Rgba_norm{ 0.9f, 0.9f, 0.9f, 1 }; }
 
         virtual void init() {}
 

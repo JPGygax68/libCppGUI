@@ -23,7 +23,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Button<Config, With_layout>::render(Renderer *r, const Position &offs)
     {
-        fill(r, offs, rgba_to_native(r, hovered() ? button_face_hovered_color() : button_face_color()));
+        fill(r, offs, rgba_to_native(r, button_face_color(hovered(), has_focus(), false, false))); // TODO: "pressed" and "disabled" parameters
 
         auto pos = offs + position();
         r->render_text(_fnthnd, pos.x + _label_origin.x, pos.y + _label_origin.y, _label.data(), _label.size());
@@ -55,7 +55,7 @@ namespace cppgui {
         auto ext = p()->extents();
 
         p()->_label_origin = {
-            (int) ((ext.w - _bbox.width()) / 2 - _bbox.x_min),
+            (int) ((ext.w - _bbox.width ()) / 2 - _bbox.x_min),
             (int) ((ext.h - _bbox.height()) / 2 + _bbox.y_max)
         };
     }
