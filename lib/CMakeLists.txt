@@ -4,7 +4,9 @@ add_library( ${PROJECT_NAME} STATIC
 
     src/dummy.cpp
 
+    include/cppgui/basic_types.hpp
     include/cppgui/Widget.hpp                       include/cppgui/Widget.ipp
+    include/cppgui/Button.hpp                       include/cppgui/Button.ipp
     include/cppgui/Label.hpp                        include/cppgui/Label.ipp
     include/cppgui/Textbox.hpp                      include/cppgui/Textbox.ipp
     include/cppgui/Box.hpp                          include/cppgui/Box.ipp
@@ -13,6 +15,8 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Resource_mapper.hpp              include/cppgui/Resource_mapper.ipp
     include/cppgui/Cheap_resource_mapper.hpp        include/cppgui/Cheap_resource_mapper.ipp
     include/cppgui/Full_resource_mapper.hpp         include/cppgui/Full_resource_mapper.ipp
+    include/cppgui/layouting.hpp                    include/cppgui/layouting.ipp
+    include/cppgui/Stylesheet.hpp
     include/cppgui/aspects.hpp
 )
 

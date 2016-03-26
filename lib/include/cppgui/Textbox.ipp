@@ -5,12 +5,14 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::set_font(const Rasterized_font *font)
     {
+        /* TODO: move this change_font() in layouter aspect
         if (font != _font)
         {
             _font = font;
             font_changed();
-            _fnthnd = root_widget()->get_font_handle(_font);
         }
+        */
+        _font = font;
     }
 
     template<class Config, bool With_layout>
@@ -37,6 +39,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::init()
     {
+        _fnthnd = root_widget()->get_font_handle(_font);
         _caret_char_idx = 0;
         _caret_pixel_pos = 0;
         _first_vis_char_idx = 0;
@@ -194,19 +197,6 @@ namespace cppgui {
         }
 
         r->cancel_clipping();
-    }
-
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::font_changed()
-    {
-        if (font())
-        {
-            // TODO: support other cultures
-            auto bbox = font()->compute_text_extents(0, U"My", 2);
-            _ascent = bbox.y_max;
-            _descent = bbox.y_min;
-            _mean_char_width = (bbox.width() + 1) / 2;
-        }
     }
 
     template<class Config, bool With_layout>
@@ -517,6 +507,42 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
+    template<class Config>
+    template<class Aspect_parent>
+    inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
+    {
+        compute_sizes();
+        this->layout();
+    }
+
+    template<class Config>
+    template<class Aspect_parent>
+    inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::change_font(const Rasterized_font *font)
+    {
+        p()->_font = font;
+        compute_sizes();
+        this->layout();
+    }
+
+    template <class Config>
+    template <class Aspect_parent>
+    inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::compute_sizes()
+    {
+        // TODO: free the font handle
+
+        if (p()->_font)
+        {
+            p()->_fnthnd = p()->root_widget()->get_font_handle(p()->_font);
+            // TODO: support other cultures
+            auto bbox = p()->_font->compute_text_extents(0, U"My", 2);
+            p()->_ascent = bbox.y_max;
+            p()->_descent = bbox.y_min;
+            p()->_mean_char_width = (bbox.width() + 1) / 2;
+        }
+
+        this->invalidate();
+    }
+
     template <class Config>
     template <class Aspect_parent>
     inline auto Textbox_layouter<Config, true>::Aspect<Aspect_parent>::minimal_size() -> Extents
@@ -524,7 +550,7 @@ namespace cppgui {
         // TODO: replace "10" with const
         // TODO: adjust for border, padding
         return { (unsigned) (10 * p()->_mean_char_width), (unsigned) (p()->_ascent - p()->_descent) };
-    };
+    }
 
     template<class Config>
     template<class Aspect_parent>

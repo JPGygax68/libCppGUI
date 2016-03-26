@@ -18,7 +18,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::init()
     {
-        init_children();
+        init_children_resources();
 
         Abstract_widget_t::init();
     }
@@ -112,18 +112,20 @@ namespace cppgui {
 
     template <class Config>
     template<class Aspect_parent>
+    inline void Root_widget_layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
+    {
+        auto p = static_cast<Root_widget_t*>(this);
+
+        p->init_children_layout();
+    }
+
+    template <class Config>
+    template<class Aspect_parent>
     inline void Root_widget_layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
         auto p = static_cast<Root_widget_t*>(this);
 
-        p->layout_children();
-
-        /*
-        for (auto child : p->children())
-        {
-            child->layout();
-        }
-        */
+        p->layout_children(); 
     }
 
 } // ns cppgui

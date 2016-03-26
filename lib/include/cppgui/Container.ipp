@@ -34,7 +34,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::init_children()
+    void Abstract_container<Config, With_layout>::init_children_resources()
     {
         for (auto child : children())
         {
@@ -83,7 +83,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Container<Config, With_layout>::init()
     {
-        init_children();
+        init_children_resources();
 
         Widget_t::init();
     }
@@ -119,11 +119,18 @@ namespace cppgui {
     }
 
     template<class Config>
+    void Abstract_container_layouter<Config, true>::init_children_layout()
+    {
+        for (auto child : p()->children())
+        {
+            child->init_layout();
+        }
+    }
+
+    template<class Config>
     inline void Abstract_container_layouter<Config, true>::layout_children()
     {
-        auto p = static_cast<Abstract_container<Config, true>*>(this);
-
-        for (auto child : p->children())
+        for (auto child : p()->children())
         {
             // EXPERIMENTAL: obtain minimum size and extend accordingly
             auto min_ext = child->minimal_size(), cur_ext = child->extents();

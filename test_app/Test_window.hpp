@@ -13,6 +13,7 @@ using namespace gl;
 #include <cppgui/Root_widget.hpp>
 #include <cppgui/Label.hpp>
 #include <cppgui/Textbox.hpp>
+#include <cppgui/Button.hpp>
 
 #include <SDL_keyboard.h>
 #include <SDL_mouse.h>
@@ -27,6 +28,7 @@ public:
 
     using Widget = cppgui::Widget<Widget_config, true>;
     using Label = cppgui::Label<Widget_config, true>;
+    using Button = cppgui::Button<Widget_config, true>;
     using Root_widget = cppgui::Root_widget<Widget_config, true>;
     using Textbox = cppgui::Textbox<Widget_config, true>;
 
@@ -130,6 +132,7 @@ public:
 private:
     Root_widget                 _root_widget;
     Label                       _label;
+    Button                      _button;
     Textbox                     _textbox;
     
     Widget_config::Renderer    *_renderer;

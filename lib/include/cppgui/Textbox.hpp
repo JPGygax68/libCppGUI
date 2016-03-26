@@ -57,9 +57,7 @@ namespace cppgui {
         Position                _txpos;
         //int                     _txmaxlen;
 
-    private:
-        void font_changed();
-
+    protected:
         // Actions
         // TODO: may need to be made public again
         void move_cursor_left    (bool extend_sel);
@@ -72,6 +70,8 @@ namespace cppgui {
         void select_all();
 
         // Internal methods
+        // TODO: most or all of this actually belongs to a yet-to-be-created "Textfield" class
+        //      that can then 
         void internal_select_all();
         void recalc_selection_strip();
         void collapse_selection_to_caret();
@@ -104,10 +104,15 @@ namespace cppgui {
 
         template <class Aspect_parent> struct Aspect : public Aspect_parent {
         
-            using Textbox_t = Textbox<Config, true>;
+            class Textbox_t: public Textbox<Config, true> { friend class Aspect; };
 
             auto p() { return static_cast<Textbox_t*>(this); }
 
+            void change_font(const Rasterized_font *);
+
+            void compute_sizes();
+
+            void init_layout() override;
             auto minimal_size() -> Extents override;
             void layout() override;
         };

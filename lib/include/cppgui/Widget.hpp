@@ -3,43 +3,15 @@
 #include <cassert>
 #include <type_traits>
 
-#include <gpc/fonts/rasterized_font.hpp>
-#include <gpc/fonts/bounding_box.hpp>
-#include <gpc/fonts/rasterized_glyph_cbox.hpp>
 #include <gpc/gui/renderer.hpp> // TODO: other source & namespace
 
+#include "./basic_types.hpp"
 #include "./aspects.hpp"
 
 #include "./Stylesheet.hpp"
 #include "./Full_resource_mapper.hpp"
 
 namespace cppgui {
-
-    struct Position {
-        int x, y;
-        auto operator + (const Position &offs) const { return Position{ x + offs.x, y + offs.y }; }
-        auto operator - (const Position &offs) const { return Position{ x - offs.x, y - offs.y }; }
-    };
-
-    struct Extents {
-        unsigned int w, h;
-        bool contains(const Position &pos) const { 
-            return pos.x >= 0 && pos.y >= 0 
-                && (unsigned int) pos.x < w && (unsigned int) pos.y < h; 
-        }
-    };
-
-    struct Rectangle {
-        Position pos;
-        Extents  ext;
-        bool contains(const Position &p) const
-        { 
-            return ext.contains(p - pos);
-        }
-    };
-
-    using Text_bounding_box = gpc::fonts::bounding_box;
-    using Glyph_control_box = gpc::fonts::rasterized_glyph_cbox;
 
     enum Key_state { pressed, released };
 
@@ -75,7 +47,7 @@ namespace cppgui {
         static auto button_face_color        () { return Rgba_norm{ 0.8f, 0.8f, 0.8f, 1 }; }
         static auto button_face_hovered_color() { return Rgba_norm{ 0.9f, 0.9f, 0.9f, 1 }; }
 
-        virtual void init() {} // TODO: implement as many checks as possible (debug mode only)
+        virtual void init() {}
 
         virtual auto root_widget() -> Root_widget_t * = 0;
 
@@ -114,11 +86,6 @@ namespace cppgui {
         virtual void render(Renderer *, const Position &offs) = 0;
 
     protected:
-        //using Config::Color_mapper::get_resource;
-        //using Config::Font_mapper::get_resource;
-        //using Config::Color_mapper::release_resource;
-        //using Config::Font_mapper::release_resource;
-
         auto rgba_to_native(Renderer *, const Rgba_norm &) -> Native_color;
         void fill(Renderer *r, const Position &offs, const Native_color &);
         auto convert_position_to_inner(const Position &) -> Position;
@@ -133,13 +100,21 @@ namespace cppgui {
 
     template <bool With_layout> struct Widget_layouter {
 
-        template <class Aspect_parent> struct Aspect {};
+        template <class Aspect_parent> struct Aspect {
+            void init_layout() {}
+        };
     };
 
     template <> struct Widget_layouter<true> {
 
         template <class Aspect_parent> struct Aspect: public Aspect_parent {
 
+            /** It is up to the implementation to guarantee that any internal state/data
+                needed for layouting (including computing/returning the minimal_size())
+                is kept up to date.
+             */
+
+            virtual void init_layout() = 0;
             virtual auto minimal_size() -> Extents = 0;
             virtual void layout() = 0;
         };
@@ -159,6 +134,8 @@ namespace cppgui {
         using Click_handler = typename Abstract_widget::Click_handler;
 
         void on_click(Click_handler);
+
+        void init();
 
         // TODO: should the following be protected ?
         bool hovered() const { return _hovered; }

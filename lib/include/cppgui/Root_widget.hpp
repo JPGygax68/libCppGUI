@@ -11,23 +11,9 @@ namespace cppgui {
 
     extern int dummy;
 
-    // Layouting aspect for Root_widget
-
     template <class Config, bool With_layout> struct Root_widget_layouter {
 
         template <class Aspect_parent> struct Aspect {};
-    };
-
-    template <class Config> struct Root_widget_layouter<Config, true> {
-
-        template <class Aspect_parent> struct Aspect: public Aspect_parent {
-
-            using Root_widget_t = Root_widget<Config, true>;
-            //using Abstract_container_t = typename Abstract_container<Config, true>;
-
-            virtual auto minimal_size() -> Extents { return {0, 0}; }
-            virtual void layout();
-        };
     };
 
     // Root widget
@@ -126,6 +112,21 @@ namespace cppgui {
             Invalidated_handler _on_invalidated;
         };
 
+    };
+
+    // Layouting aspect
+
+    template <class Config> struct Root_widget_layouter<Config, true> {
+
+        template <class Aspect_parent> struct Aspect: public Aspect_parent {
+
+            using Root_widget_t = Root_widget<Config, true>;
+            //using Abstract_container_t = typename Abstract_container<Config, true>;
+
+            virtual void init_layout();
+            virtual auto minimal_size() -> Extents { return {0, 0}; }
+            virtual void layout();
+        };
     };
 
 } // ns cppgui

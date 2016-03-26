@@ -21,7 +21,7 @@ namespace cppgui {
         void _add_child(Widget_t *);
         auto child_at(const Position &) -> Widget_t *;
 
-        void init_children();
+        void init_children_resources();
 
         /** The handle_mouse_xxxx() methods are intended as "delegates" to be called
             from "real" containers (i.e. descendants of Container<>).            
@@ -42,8 +42,10 @@ namespace cppgui {
         template <class Aspect_parent> struct Aspect : public Aspect_parent {
 
             using Widget_t = Widget<Config, With_layout>;
-            using Container_t = Container<Config, With_layout>;
+            class Container_t: public Container<Config, true> { friend struct Aspect; };
             using Root_widget_t = Root_widget<Config, With_layout>;
+
+            auto p() { return static_cast<Container_t*>(this); }
 
             virtual void child_invalidated(Widget_t *);
 
@@ -53,6 +55,11 @@ namespace cppgui {
 
     template <class Config> struct Abstract_container_layouter<Config, true> {
 
+        class Container_t: public Container<Config, true> { friend struct Aspect; };
+
+        auto p() { return static_cast<Container_t*>(this); }
+
+        void init_children_layout();
         void layout_children();
     };
 

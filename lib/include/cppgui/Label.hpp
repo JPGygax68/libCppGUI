@@ -15,16 +15,6 @@ namespace cppgui {
         CPPGUI_DEFINE_ASPECT(Aspect) {};
     };
 
-    template <class Config>
-    struct Label_layouter<Config, true> {
-
-        CPPGUI_DEFINE_ASPECT(Aspect)
-        {
-            auto minimal_size()->Extents override;
-            void layout() override;
-        };
-    };
-    
     template <class Config, bool With_layout> class Root_widget;
 
     /** Label, without layouting.
@@ -42,18 +32,32 @@ namespace cppgui {
         void set_text(const std::u32string &);
         auto text() const { return _text; }
 
+        void init() override;
+
         //void update_render_resources(Renderer *) override;
-        void render(Renderer *, const Position &) override;
-
-        // Interface to layouter aspect
-
-        auto& text_position() { return _txpos; }
+        void render(Renderer *, const Position &offset) override;
 
     protected:
-        const gpc::fonts::rasterized_font  *_font = nullptr;
-        std::u32string                      _text;
-        Position                            _txpos;
-        Font_handle                         _fnthnd;
+        const Rasterized_font  *_font = nullptr;
+        std::u32string          _text;
+        Position                _txpos;
+        Font_handle             _fnthnd;
+    };
+
+    template <class Config>
+    struct Label_layouter<Config, true> {
+
+        CPPGUI_DEFINE_ASPECT(Aspect)
+        {
+            void init_layout() override;
+            auto minimal_size() -> Extents override;
+            void layout() override;
+
+            class Label_t: public Label<Config, true> { friend struct Aspect; };
+
+        private:
+            auto p() { return static_cast<Label_t*>(this); }
+        };
     };
 
 } // ns cppgui

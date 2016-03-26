@@ -8,6 +8,7 @@
 
 #include <cppgui/Full_resource_mapper.ipp>
 #include <cppgui/Widget.ipp>
+#include <cppgui/Button.ipp>
 #include <cppgui/Label.ipp>
 #include <cppgui/Textbox.ipp>
 #include <cppgui/Container.ipp>
@@ -25,6 +26,7 @@ Test_window::Test_window():
     //  when set_font() etc. are called
     _root_widget.add_child(&_label);
     _root_widget.add_child(&_textbox);
+    _root_widget.add_child(&_button);
 
     _label.set_font(&Fonts::default_font());
     _label.set_text(U"Hello World!");
@@ -40,10 +42,15 @@ Test_window::Test_window():
     //_textbox.set_extents({ 200, 30 });
     _textbox.set_text(U"Abc1234567890");
     
-    _root_widget.set_focus_to(&_textbox);
+    _button.set_font(&Fonts::default_font());
+    _button.set_position({50, 150});
+    _button.set_label(U"Click Me!");
+
+    //_root_widget.set_focus_to(&_textbox);
 
     _root_widget.on_invalidated([this]() { request_redraw(); });
 
+    _root_widget.init_layout();
     _root_widget.layout();
     _root_widget.init();
 }

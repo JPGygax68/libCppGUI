@@ -128,4 +128,11 @@ namespace cppgui {
         if (_click_hndlr) _click_hndlr(pos, button, count);
     }
 
+    template<class Config, bool With_layout>
+    void Widget<Config, With_layout>::init()
+    {
+        this->init_layout();
+        this->init();
+    }
+
 } // ns cppgui
