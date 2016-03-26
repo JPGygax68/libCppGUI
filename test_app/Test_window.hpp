@@ -52,10 +52,10 @@ public:
         // We override the color mapper
         // TODO: this should not be necessary, the identity mapper should be chosen automatically
         // according to a static boolean set in the renderer class
-        using Color_mapper = cppgui::Identity_mapper<Renderer, cppgui::Rgba_norm>;
+        using Color_mapper = cppgui::Identity_mapper<Renderer, cppgui::Color>;
         using Font_mapper  = cppgui::Default_font_mapper<Renderer>;
 
-        using Styler = cppgui::Static_styler<cppgui::Default_stylesheet>;
+        //using Styler = cppgui::Static_styler<cppgui::Default_stylesheet>;
 
         // TODO: move this to a submodule of cppgui
         struct Keyboard {

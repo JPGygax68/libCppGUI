@@ -81,6 +81,11 @@ namespace cppgui {
         auto find_character_at_pointer_position(const Position &pos)->std::pair<size_t, int>;
         void bring_caret_into_view();
 
+        // Styling
+        // TODO: make into aspect ?
+        auto selected_text_background_color() -> Color;
+        auto caret_color() -> Color;
+
         const Rasterized_font  *_font = nullptr; // TODO: avoid setting default value
 
         std::u32string          _text;

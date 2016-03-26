@@ -33,6 +33,10 @@ namespace cppgui {
         void render(Renderer *, const Position &) override;
 
     protected:
+        // Styling
+        // TODO: make into aspect ?
+        auto face_color() -> Color;
+
         const Rasterized_font  *_font = nullptr;
         std::u32string          _label;
         Position                _label_origin;

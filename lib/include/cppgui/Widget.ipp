@@ -41,7 +41,7 @@ namespace cppgui {
 #endif
 
     template <class Config, bool With_layout>
-    inline auto Abstract_widget<Config, With_layout>::rgba_to_native(Renderer *r, const Rgba_norm &color) -> Native_color
+    inline auto Abstract_widget<Config, With_layout>::rgba_to_native(Renderer *r, const Color &color) -> Native_color
     {
         return get_resource(r, color);
     }

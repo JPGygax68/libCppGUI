@@ -178,7 +178,7 @@ namespace cppgui {
         r->set_clipping_rect(_inner_rect.pos.x, _inner_rect.pos.y, _inner_rect.ext.w, _inner_rect.ext.h);
 
         // Selection background
-        auto bg_clr = selected_text_background_color(disabled(), has_focus());
+        auto bg_clr = selected_text_background_color();
 
         r->fill_rect(pos.x + _scroll_offs + _sel_start_pixel_pos, pos.y - _ascent, 
             _sel_end_pixel_pos - _sel_start_pixel_pos, _ascent - _descent, rgba_to_native(r, bg_clr));
@@ -438,6 +438,24 @@ namespace cppgui {
             _first_vis_char_idx ++;
             _scroll_offs -= glyph->cbox.adv_x;
         }
+    }
+
+    template<class Config, bool With_layout>
+    auto Textbox<Config, With_layout>::selected_text_background_color() -> Color
+    {
+        if (has_focus())
+        {
+            return { 0.4f, 0.7f, 1, 1 };
+        }
+        else {
+            return { 0.8f, 0.8f, 0.8f, 1 };
+        }
+    }
+
+    template<class Config, bool With_layout>
+    auto Textbox<Config, With_layout>::caret_color() -> Color
+    {
+        return Color{0, 0, 0, 1};
     }
 
     template<class Config, bool With_layout>

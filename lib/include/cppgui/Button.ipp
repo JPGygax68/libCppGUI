@@ -23,10 +23,22 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Button<Config, With_layout>::render(Renderer *r, const Position &offs)
     {
-        fill(r, offs, rgba_to_native(r, button_face_color(hovered(), has_focus(), false, false))); // TODO: "pressed" and "disabled" parameters
+        fill(r, offs, rgba_to_native(r, face_color()));
 
         auto pos = offs + position();
         r->render_text(_fnthnd, pos.x + _label_origin.x, pos.y + _label_origin.y, _label.data(), _label.size());
+    }
+
+    template<class Config, bool With_layout>
+    auto Button<Config, With_layout>::face_color() -> Color
+    {
+        if (hovered())
+        {
+            return {0.8f, 0.8f, 0.8f, 1};
+        }
+        else {
+            return {0.7f, 0.7f, 0.7f, 1};
+        }
     }
 
     // Layouter -----------------------------------------------------

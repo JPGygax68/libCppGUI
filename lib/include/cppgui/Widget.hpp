@@ -8,7 +8,7 @@
 #include "./basic_types.hpp"
 #include "./aspects.hpp"
 
-#include "./Stylesheet.hpp"
+//#include "./Stylesheet.hpp"
 #include "./Full_resource_mapper.hpp"
 
 namespace cppgui {
@@ -22,8 +22,8 @@ namespace cppgui {
      */
     template <class Config, bool With_layout>
     class Abstract_widget:
-        public Config::Color_mapper,
-        public Config::Styler
+        public Config::Color_mapper
+        //public Config::Styler
         //public Config::Font_mapper
         //public Config::Cursor
     {
@@ -44,8 +44,8 @@ namespace cppgui {
         void set_extents(const Extents &);
 
         // TODO: color and other style definitions belong into stylesheets
-        //static auto button_face_color        () { return Rgba_norm{ 0.8f, 0.8f, 0.8f, 1 }; }
-        //static auto button_face_hovered_color() { return Rgba_norm{ 0.9f, 0.9f, 0.9f, 1 }; }
+        //static auto button_face_color        () { return Color{ 0.8f, 0.8f, 0.8f, 1 }; }
+        //static auto button_face_hovered_color() { return Color{ 0.9f, 0.9f, 0.9f, 1 }; }
 
         virtual void init() {}
 
@@ -86,7 +86,7 @@ namespace cppgui {
         virtual void render(Renderer *, const Position &offs) = 0;
 
     protected:
-        auto rgba_to_native(Renderer *, const Rgba_norm &) -> Native_color;
+        auto rgba_to_native(Renderer *, const Color &) -> Native_color;
         void fill(Renderer *r, const Position &offs, const Native_color &);
         auto convert_position_to_inner(const Position &) -> Position;
         auto advance_to_glyph_at(const Rasterized_font *, const std::u32string &text, size_t from, size_t to, Position &pos) 
