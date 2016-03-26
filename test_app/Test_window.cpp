@@ -55,6 +55,7 @@ Test_window::Test_window():
         _button_list[i].set_label(std::u32string{U"This is button #"} + char32_t(U'1' + i));
         _stack.add_child(&_button_list[i]);
     }
+    _stack.set_position({50, 250});
 
     _root_widget.set_focus_to(&_textbox);
 

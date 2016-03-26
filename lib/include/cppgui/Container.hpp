@@ -4,13 +4,13 @@
 
 namespace cppgui {
 
-    template <class Config, bool With_layout> struct Abstract_container_layouter {};
+    template <class Config, bool With_layout> struct Abstract_container_Layouter {};
 
     /** Container functionality (ability to contain Widgets).
      */
     template <class Config, bool With_layout>
     class Abstract_container: public Config::template Abstract_container_updater<Nil_struct>,
-        public Abstract_container_layouter<Config, With_layout>
+        public Abstract_container_Layouter<Config, With_layout>
     {
     public:
         using Widget_t = Widget<Config, With_layout>;
@@ -54,7 +54,7 @@ namespace cppgui {
         };
     };
 
-    template <class Config> struct Abstract_container_layouter<Config, true> {
+    template <class Config> struct Abstract_container_Layouter<Config, true> {
 
         class Container_t: public Container<Config, true> { friend struct Aspect; };
 
@@ -66,16 +66,23 @@ namespace cppgui {
 
     // Container base class: descended from Widget
 
+    // Forward-declare layouter aspect
+
     template <class Config, bool With_layout>
-    class Container: public Widget<Config, With_layout>, 
-        public Config::template Container_updater< Abstract_container<Config, With_layout> >
+    struct Container_Layouter {
+
+        template <class Aspect_parent> struct Aspect: public Aspect_parent {};
+    };
+
+    template <class Config, bool With_layout>
+    class Container: 
+        public Container_Layouter<Config, With_layout>::template Aspect < Widget<Config, With_layout> >, 
+        public Config::template Container_Container_updater< Abstract_container<Config, With_layout> >
     {
     public:
         using Renderer = typename Config::Renderer;
         using Widget_t = typename Widget<Config, With_layout>;
         //template <class Aspect_parent> using Layouter_t = Container_layouter::Aspect<Aspect_parent>;
-
-        // void add_child(Widget_t *); // TODO: really need to override ?
 
         void init() override;
 
@@ -86,7 +93,7 @@ namespace cppgui {
         void render(Renderer *, const Position &) override;
     };
 
-    template <class Config, bool With_layout> struct Default_Container_updater {
+    template <class Config, bool With_layout> struct Default_Container_Container_updater {
 
         template <class Aspect_parent> struct Aspect: public Aspect_parent {
 
@@ -94,6 +101,25 @@ namespace cppgui {
             auto p() { return static_cast<Container_t*>(this); }
 
             auto _root_widget() { return p()->root_widget(); }
+        };
+    };
+
+    // Layouter aspect
+
+    template <class Config>
+    struct Container_Layouter<Config, true> {
+
+        template <class Aspect_parent> struct Aspect : public Aspect_parent {
+
+            class Container_t: public Container<Config, true> { friend struct Aspect; };
+
+            auto p() { return static_cast<Container_t*>(this); }
+
+            //void compute_sizes();
+
+            void init_layout() override;
+            //auto minimal_size() -> Extents override;
+            //void layout() override;
         };
     };
 

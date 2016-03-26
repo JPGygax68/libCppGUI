@@ -85,7 +85,7 @@ namespace cppgui {
     template <class Config, bool With_layout>
     void Container<Config, With_layout>::mouse_motion(const Position &pos)
     {
-        handle_mouse_motion(pos - position());
+        handle_mouse_motion(pos);
     }
 
     template<class Config, bool With_layout>
@@ -117,7 +117,7 @@ namespace cppgui {
     // Layouter aspect ----------------------------------------------
 
     template<class Config>
-    void Abstract_container_layouter<Config, true>::init_children_layout()
+    void Abstract_container_Layouter<Config, true>::init_children_layout()
     {
         for (auto child : p()->children())
         {
@@ -126,7 +126,7 @@ namespace cppgui {
     }
 
     template<class Config>
-    inline void Abstract_container_layouter<Config, true>::layout_children()
+    inline void Abstract_container_Layouter<Config, true>::layout_children()
     {
         for (auto child : p()->children())
         {
@@ -136,5 +136,18 @@ namespace cppgui {
             child->layout();
         }
     }
+
+    // Container Layouter aspect ------------------------------------
+
+    template <class Config>
+    template<class Aspect_parent>
+    inline void Container_Layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
+    {
+        for (auto child: p()->children())
+        {
+            child->init_layout();
+        }
+    }
+
 
 } // ns cppgui

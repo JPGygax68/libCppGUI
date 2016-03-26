@@ -85,7 +85,7 @@ namespace cppgui {
         };
     };
 
-    // Default implementation for Container_updater aspect
+    // Default implementation for Container_Container_updater aspect
 
     template <class Config, bool With_layout>
     struct Default_root_widget_container_updater {

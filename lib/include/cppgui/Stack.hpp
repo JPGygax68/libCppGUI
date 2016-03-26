@@ -30,11 +30,14 @@ namespace cppgui {
 
             auto p() { return static_cast<Stack_t*>(this); }
 
-            void compute_sizes();
+            //void compute_sizes();
 
-            void init_layout() override;
+            //void init_layout() override;
             auto minimal_size() -> Extents override;
             void layout() override;
+
+        private:
+            Extents _min_exts;
         };
     };
 
