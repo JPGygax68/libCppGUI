@@ -21,7 +21,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Button<Config, With_layout>::render(Renderer *r, const Position &offs)
+    void Button<Config, With_layout>::render(Canvas_t *r, const Position &offs)
     {
         fill(r, offs, rgba_to_native(r, face_color()));
         auto border_ntvclr = rgba_to_native(r, border_color());

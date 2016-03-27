@@ -87,6 +87,7 @@ namespace cppgui {
     public:
         using Renderer = typename Config::Renderer;
         using Widget_t = typename Widget<Config, With_layout>;
+        using Canvas_t = typename Widget_t::Canvas_t;
         //template <class Aspect_parent> using Layouter_t = Container_layouter::Aspect<Aspect_parent>;
 
         void init() override;
@@ -97,7 +98,7 @@ namespace cppgui {
         void mouse_exit() override;
 
         //void update_render_resources(Renderer *) override;
-        void render(Renderer *, const Position &) override;
+        void render(Canvas_t *, const Position &) override;
     };
 
     template <class Config, bool With_layout> struct Default_Container_Container_updater {

@@ -15,6 +15,7 @@ using namespace gl;
 #include <cppgui/Textbox.hpp>
 #include <cppgui/Button.hpp>
 #include <cppgui/Stack.hpp>
+#include <cppgui/Canvas.hpp>
 
 #include <SDL_keyboard.h>
 #include <SDL_mouse.h>
@@ -33,10 +34,11 @@ public:
     using Root_widget = cppgui::Root_widget<Widget_config, true>;
     using Textbox = cppgui::Textbox<Widget_config, true>;
     using Stack = cppgui::Stack<Widget_config, true>;
+    using Canvas_t = cppgui::Canvas<Renderer>;
 
     struct Widget_config {
 
-        using Renderer = Renderer;
+        using Renderer = typename Renderer;
         using Font_handle = Renderer::font_handle;
 
         template <class Aspect_parent>
@@ -141,6 +143,6 @@ private:
     std::vector<Button>         _button_list;
     Stack                       _stack;
     
-    Widget_config::Renderer    *_renderer;
+    Canvas_t                   *_canvas;
     //bool                        _gfxres_ok = false;
 };

@@ -26,6 +26,8 @@ namespace cppgui {
         using Renderer = typename Config::Renderer;
         using Font_handle = typename Renderer::font_handle;
         using Root_widget_t = Root_widget<Config, With_layout>;
+        using Widget_t = Widget<Config, With_layout>;
+        using Canvas_t = typename Widget_t::Canvas_t;
 
         void set_font(const Rasterized_font *); //, Root_widget_t *, Renderer *);
         auto font() const { return _font; }
@@ -35,7 +37,7 @@ namespace cppgui {
         void init() override;
 
         //void update_render_resources(Renderer *) override;
-        void render(Renderer *, const Position &offset) override;
+        void render(Canvas_t *, const Position &offset) override;
 
     protected:
         const Rasterized_font  *_font = nullptr;

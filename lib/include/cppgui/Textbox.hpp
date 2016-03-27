@@ -23,6 +23,7 @@ namespace cppgui {
         using Keycode  = typename Config::Keyboard::Keycode;
         using Widget_t = typename Widget<Config, With_layout>;
         using Textbox_t = typename Textbox<Config, With_layout>;
+        using Canvas_t = typename Widget_t::Canvas_t;
         using Font_handle = typename Widget_t::Font_handle;
 
         // TODO: implement "set" and "change" variants
@@ -46,7 +47,7 @@ namespace cppgui {
         void gained_focus() override;
         void loosing_focus() override;
 
-        void render(Renderer *, const Position &pos) override;
+        void render(Canvas_t *, const Position &pos) override;
 
     public: // for access by Layouter aspect
         int                     _ascent, _descent; // TODO: support vertical writing

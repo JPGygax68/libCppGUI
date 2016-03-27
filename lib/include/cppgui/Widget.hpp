@@ -15,6 +15,8 @@ namespace cppgui {
 
     enum Key_state { pressed, released };
 
+    template <class Renderer> class Canvas;
+
     template <class Config, bool With_layout> class Root_widget;
 
     /** Abstract_widget: functionality common to both Root_widget and Widget, i.e. not including the ability
@@ -32,9 +34,9 @@ namespace cppgui {
         using Keycode           = typename Keyboard::Keycode;
         using Abstract_widget_t = Abstract_widget;
         using Root_widget_t     = Root_widget<Config, With_layout>;
-        using Renderer          = typename Config::Renderer;
-        using Native_color      = typename Renderer::native_color;
-        using Font_handle       = typename Renderer::font_handle;
+        using Canvas_t          = typename Canvas<typename Config::Renderer>;
+        using Native_color      = typename Canvas_t::Native_color;
+        using Font_handle       = typename Canvas_t::Font_handle;
         using Click_handler     = std::function<void(const Position &, int button, int clicks)>; // TODO: support return value ?
 
         auto rectangle() const { return _rect; }
@@ -77,21 +79,21 @@ namespace cppgui {
             in the sense that it is not always necessary to defer the mapping of render
             resources until pre-render time. In fact, in most cases
          */
-        //virtual void update_render_resources(Renderer *) {}
-        //void cleanup_render_resources(Renderer *);
+        //virtual void update_render_resources(Canvas_t *) {}
+        //void cleanup_render_resources(Canvas_t *);
 
         /** Convention: the provided position is an offset to be added to the widget's
             own coordinates.
          */
-        virtual void render(Renderer *, const Position &offs) = 0;
+        virtual void render(Canvas_t *, const Position &offs) = 0;
 
     protected:
-        auto rgba_to_native(Renderer *, const Color &) -> Native_color;
-        void fill_rect(Renderer *r, const Rectangle &rect, const Native_color &);
-        void fill_rect(Renderer *r, const Rectangle &rect, const Position &offs, const Native_color &);
-        void fill_rect(Renderer *r, const Position &pos, const Extents &ext, const Native_color &);
-        void fill(Renderer *r, const Position &offs, const Native_color &);
-        void draw_borders(Renderer *, const Rectangle &rect, const Position &offs, 
+        auto rgba_to_native(Canvas_t *, const Color &) -> Native_color;
+        void fill_rect(Canvas_t *r, const Rectangle &rect, const Native_color &);
+        void fill_rect(Canvas_t *r, const Rectangle &rect, const Position &offs, const Native_color &);
+        void fill_rect(Canvas_t *r, const Position &pos, const Extents &ext, const Native_color &);
+        void fill(Canvas_t *r, const Position &offs, const Native_color &);
+        void draw_borders(Canvas_t *, const Rectangle &rect, const Position &offs, 
             unsigned int width, const Color &top, const Color &right, const Color &bottom, const Color &left);
         auto convert_position_to_inner(const Position &) -> Position;
         auto advance_to_glyph_at(const Rasterized_font *, const std::u32string &text, size_t from, size_t to, Position &pos) 

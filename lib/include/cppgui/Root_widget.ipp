@@ -3,9 +3,9 @@
 namespace cppgui {
 
     template<class Config, bool With_layout>
-    Root_widget<Config, With_layout>::Root_widget(Renderer *r)
+    Root_widget<Config, With_layout>::Root_widget(Canvas_t *r)
     {
-        _renderer = r;
+        _canvas = r;
     }
 
     /*
@@ -57,7 +57,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     auto Root_widget<Config, With_layout>::get_font_handle(const Rasterized_font *font) -> Font_handle
     {
-        return _font_mapper.get_resource(_renderer, font);
+        return _font_mapper.get_resource(_canvas, font);
     }
 
     template<class Config, bool WithLayout>
@@ -107,7 +107,7 @@ namespace cppgui {
     }
 
     template<class Config, bool WithLayout>
-    inline void Root_widget<Config, WithLayout>::render(Renderer *r, const Position &offs)
+    inline void Root_widget<Config, WithLayout>::render(Canvas_t *r, const Position &offs)
     {
         auto pos = offs + position();
 

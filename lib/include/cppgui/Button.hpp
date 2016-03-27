@@ -23,6 +23,7 @@ namespace cppgui {
         using Renderer = typename Config::Renderer;
         using Font_handle = typename Renderer::font_handle;
         using Widget_t = Widget<Config, With_layout>;
+        using Canvas_t = typename Widget_t::Canvas_t;
 
         void set_font(const Rasterized_font *);
         auto font() const { return _font; }
@@ -32,7 +33,7 @@ namespace cppgui {
         void init() override;
 
         //void update_render_resources(Renderer *) override;
-        void render(Renderer *, const Position &) override;
+        void render(Canvas_t *, const Position &) override;
 
         // TODO: visual feedback on mouse down / up
 

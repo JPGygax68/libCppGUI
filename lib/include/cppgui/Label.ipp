@@ -23,7 +23,7 @@ namespace cppgui {
     }
 
     template<class Config, bool WithLayout>
-    inline void Label<Config, WithLayout>::render(Renderer *r, const Position &offs)
+    inline void Label<Config, WithLayout>::render(Canvas_t *r, const Position &offs)
     {
         // fill(r, offs, rgba_to_native(r, button_face_color()); 
 

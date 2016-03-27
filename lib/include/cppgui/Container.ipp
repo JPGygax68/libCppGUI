@@ -113,7 +113,7 @@ namespace cppgui {
     }
 
     template <class Config, bool With_layout>
-    void Container<Config, With_layout>::render(Renderer *r, const Position &offs)
+    void Container<Config, With_layout>::render(Canvas_t *r, const Position &offs)
     {
         auto pos = offs + position();
 

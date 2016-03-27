@@ -8,6 +8,7 @@
 #include "./Test_window.hpp"
 
 #include <cppgui/Full_resource_mapper.ipp>
+#include <cppgui/Canvas.ipp>
 #include <cppgui/Widget.ipp>
 #include <cppgui/Button.ipp>
 #include <cppgui/Label.ipp>
@@ -22,7 +23,7 @@
 
 Test_window::Test_window():
     Window<Test_window>("Test window"),
-    _root_widget{ _renderer }
+    _root_widget{ _canvas }
 {
     _label.set_font(&Fonts::default_font());
     _label.set_text(U"Hello World!");
@@ -78,17 +79,17 @@ void Test_window::init_graphics()
     if (!ctx) throw std::runtime_error("Test_window::init(): failed to create OpenGL context");
     SDL_GL_MakeCurrent(sdl_pointer(), ctx);
     glbinding::Binding::initialize();
-    _renderer = new Renderer{};
-    _renderer->init();
+    _canvas = new Canvas_t{};
+    _canvas->init();
     GL(ClearColor, 0.0f, 0.5f, 1.0f, 1.0f);
 }
 
 void Test_window::cleanup_graphics()
 {
-    assert(_renderer);
+    assert(_canvas);
     // TODO: renderer cleanup ?
-    //_root_widget.cleanup_render_resources(_renderer);
-    delete _renderer;
+    //_root_widget.cleanup_render_resources(_canvas);
+    delete _canvas;
 }
 
 void Test_window::redraw()
@@ -97,15 +98,15 @@ void Test_window::redraw()
 
     /* if (!_gfxres_ok)
     {
-        _label.update_render_resources(_renderer);
+        _label.update_render_resources(_canvas);
         _gfxres_ok = true;
     } */
 
     //GL(Clear, GL_COLOR_BUFFER_BIT);
-    _renderer->enter_context();
-    //_label.render(_renderer, {0, 0});
-    _root_widget.render(_renderer, { 0, 0 });
-    _renderer->leave_context();
+    _canvas->enter_context();
+    //_label.render(_canvas, {0, 0});
+    _root_widget.render(_canvas, { 0, 0 });
+    _canvas->leave_context();
     SDL_GL_SwapWindow(sdl_pointer());
 }
 
@@ -113,7 +114,7 @@ void Test_window::size_changed(int w, int h)
 {
     _root_widget.set_extents({ (unsigned)w, (unsigned)h });
     _label.layout();
-    _renderer->define_viewport(0, 0, w, h);
+    _canvas->define_viewport(0, 0, w, h);
 }
 
 void Test_window::mouse_motion(int x, int y)
@@ -144,7 +145,7 @@ void Test_window::key_down(const SDL_Keysym &key)
 void Test_window::closing()
 {
     cleanup_graphics();
-    //_label.cleanup_render_resources(_renderer);
-    //_root_widget.cleanup_render_resources(_renderer);
+    //_label.cleanup_render_resources(_canvas);
+    //_root_widget.cleanup_render_resources(_canvas);
     // TODO: release all resources of all backends
 }

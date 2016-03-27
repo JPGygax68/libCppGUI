@@ -5,6 +5,7 @@ add_library( ${PROJECT_NAME} STATIC
     src/dummy.cpp
 
     include/cppgui/basic_types.hpp
+    include/cppgui/Canvas.hpp                       include/cppgui/Canvas.ipp
     include/cppgui/Widget.hpp                       include/cppgui/Widget.ipp
     include/cppgui/Button.hpp                       include/cppgui/Button.ipp
     include/cppgui/Label.hpp                        include/cppgui/Label.ipp

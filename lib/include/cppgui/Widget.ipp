@@ -34,7 +34,7 @@ namespace cppgui {
 #ifdef NOT_DEFINED
 
     template <class Config, bool With_layout>
-    inline void Abstract_widget<Config, With_layout>::cleanup_render_resources(Renderer *r)
+    inline void Abstract_widget<Config, With_layout>::cleanup_render_resources(Canvas_t *r)
     {
         Config::Color_mapper::release_all_resources(r);
         Config::Font_mapper ::release_all_resources(r);
@@ -43,31 +43,31 @@ namespace cppgui {
 #endif
 
     template <class Config, bool With_layout>
-    inline auto Abstract_widget<Config, With_layout>::rgba_to_native(Renderer *r, const Color &color) -> Native_color
+    inline auto Abstract_widget<Config, With_layout>::rgba_to_native(Canvas_t *r, const Color &color) -> Native_color
     {
         return get_resource(r, color);
     }
 
     template<class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::fill_rect(Renderer *r, const Rectangle &rect, const Native_color &color)
+    void Abstract_widget<Config, With_layout>::fill_rect(Canvas_t *r, const Rectangle &rect, const Native_color &color)
     {
         r->fill_rect(rect.pos.x, rect.pos.y, rect.ext.w, rect.ext.h, color);
     }
 
     template<class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::fill_rect(Renderer * r, const Rectangle & rect, const Position & offs, const Native_color &color)
+    void Abstract_widget<Config, With_layout>::fill_rect(Canvas_t * r, const Rectangle & rect, const Position & offs, const Native_color &color)
     {
         r->fill_rect(rect.pos.x + offs.x, rect.pos.y + offs.y, rect.ext.w, rect.ext.h, color);
     }
 
     template<class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::fill_rect(Renderer * r, const Position & pos, const Extents & ext, const Native_color &color)
+    void Abstract_widget<Config, With_layout>::fill_rect(Canvas_t * r, const Position & pos, const Extents & ext, const Native_color &color)
     {
         r->fill_rect(pos.x, pos.y, ext.w, ext.h, color);
     }
 
     template <class Config, bool With_layout>
-    inline void Abstract_widget<Config, With_layout>::fill(Renderer *r, const Position &offs, const Native_color &color)
+    inline void Abstract_widget<Config, With_layout>::fill(Canvas_t *r, const Position &offs, const Native_color &color)
     {
         fill_rect(r, rectangle(), offs, color);
 
@@ -76,7 +76,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::draw_borders(Renderer *r, const Rectangle & rect, const Position & offs, 
+    void Abstract_widget<Config, With_layout>::draw_borders(Canvas_t *r, const Rectangle & rect, const Position & offs, 
         unsigned int width, const Color & top, const Color & right, const Color & bottom, const Color & left)
     {
         // TODO: this painting procedure does a "wrap" in clockwise fashion, without regard for corners

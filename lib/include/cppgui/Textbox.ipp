@@ -169,7 +169,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    inline void Textbox<Config, With_layout>::render(Renderer *r, const Position &offs)
+    inline void Textbox<Config, With_layout>::render(Canvas_t *r, const Position &offs)
     {
         fill(r, offs, rgba_to_native(r, {1, 1, 1, 1})); // TODO: (VERY MUCH) PROVISIONAL, GET REAL COLOR!
 
