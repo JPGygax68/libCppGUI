@@ -1,6 +1,14 @@
+#include <iostream> // TODO: remove!
+
 #include "./Stack.hpp"
 
 namespace cppgui {
+
+    template<class Config, bool With_layout>
+    inline void Stack<Config, With_layout>::mouse_wheel(const Position & dist)
+    {
+        std::cout << "Stack::mouse_wheel(" << dist.x << ", " << dist.y << ")" << std::endl;
+    }
 
     // Layouter aspect ----------------------------------------------
 

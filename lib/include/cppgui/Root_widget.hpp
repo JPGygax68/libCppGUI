@@ -53,6 +53,7 @@ namespace cppgui {
         void mouse_motion(const Position &) override;
         void mouse_button(const Position &, int button, Key_state) override;
         void mouse_click(const Position &, int button, int count) override;
+        void mouse_wheel(const Position &) override;
         void text_input(const char32_t *, size_t) override;
         void key_down(const Keycode &) override;
         //void key_up(const Keycode &) override;
@@ -107,7 +108,7 @@ namespace cppgui {
 
             void lock() { _must_update = false; }
 
-            void unlock() { if (_on_invalidated) _on_invalidated(); }
+            void unlock() { if (_on_invalidated && _must_update) _on_invalidated(); }
 
         private:
             Invalidated_handler _on_invalidated;

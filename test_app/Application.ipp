@@ -32,6 +32,10 @@ int Application<WinT>::run()
         {
             WinT::dispatch_mousebutton_event(ev.button);
         }
+        else if (ev.type == SDL_MOUSEWHEEL)
+        {
+            WinT::dispatch_mousewheel_event(ev.wheel);
+        }
         else if (ev.type == SDL_TEXTINPUT)
         {
             WinT::dispatch_textinput_event(ev.text);

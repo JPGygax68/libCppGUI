@@ -8,6 +8,7 @@ struct SDL_Window;
 struct SDL_WindowEvent;
 struct SDL_MouseMotionEvent;
 struct SDL_MouseButtonEvent;
+struct SDL_MouseWheelEvent;
 struct SDL_TextInputEvent;
 struct SDL_KeyboardEvent;
 struct SDL_Keysym;
@@ -47,6 +48,7 @@ public:
     static void dispatch_window_event(SDL_WindowEvent &ev);
     static void dispatch_mousemotion_event(SDL_MouseMotionEvent &ev);
     static void dispatch_mousebutton_event(SDL_MouseButtonEvent &ev);
+    static void dispatch_mousewheel_event(SDL_MouseWheelEvent &ev);
     static void dispatch_textinput_event(SDL_TextInputEvent &ev);
     static void dispatch_keydown_event(SDL_KeyboardEvent &ev);
     static void dispatch_redraw(uint32_t win_id);
@@ -63,6 +65,7 @@ private:
     void handle_window_event(SDL_WindowEvent &ev);
     void handle_mousemotion_event(SDL_MouseMotionEvent &ev);
     void handle_mousebutton_event(SDL_MouseButtonEvent &ev);
+    void handle_mousewheel_event(SDL_MouseWheelEvent &ev);
     void handle_textinput_event(SDL_TextInputEvent &ev);
     void handle_keydown_event(SDL_KeyboardEvent &ev);
 

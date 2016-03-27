@@ -132,6 +132,11 @@ void Test_window::mouse_button(int x, int y, int button, Button_direction dir, i
     }
 }
 
+void Test_window::mouse_wheel(int x, int y)
+{
+    _root_widget.mouse_wheel({x, y});
+}
+
 void Test_window::text_input(const char32_t *text, size_t size)
 {
     _root_widget.text_input(text, size);

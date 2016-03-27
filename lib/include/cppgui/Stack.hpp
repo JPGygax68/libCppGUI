@@ -17,6 +17,8 @@ namespace cppgui {
     template<class Config, bool With_layout>
     class Stack: public Stack_layouter<Config, With_layout>::template Aspect< Container<Config, With_layout> >
     {
+    public:
+        void mouse_wheel(const Position &dist);
     };
 
     // Layouter aspect

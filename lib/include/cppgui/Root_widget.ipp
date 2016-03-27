@@ -37,6 +37,7 @@ namespace cppgui {
     void Root_widget<Config, With_layout>::push_cursor(Cursor_handle cursor)
     {
         _cursor_stack.push( Config::Cursor::get_current_cursor() );
+
         Config::Cursor::set_cursor(cursor);
     }
 
@@ -82,6 +83,12 @@ namespace cppgui {
         this->lock();
         container_mouse_click(pos, button, count);
         this->unlock();
+    }
+
+    template<class Config, bool With_layout>
+    void Root_widget<Config, With_layout>::mouse_wheel(const Position &dir)
+    {
+        container_mouse_wheel(dir);
     }
 
     template<class Config, bool With_layout>

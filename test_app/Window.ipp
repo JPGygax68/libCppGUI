@@ -78,6 +78,12 @@ void Window<Impl>::dispatch_mousebutton_event(SDL_MouseButtonEvent & ev)
 }
 
 template<class Impl>
+void Window<Impl>::dispatch_mousewheel_event(SDL_MouseWheelEvent & ev)
+{
+    window_map()[ev.windowID]->handle_mousewheel_event(ev);
+}
+
+template<class Impl>
 void Window<Impl>::dispatch_textinput_event(SDL_TextInputEvent & ev)
 {
     window_map()[ev.windowID]->handle_textinput_event(ev);
@@ -138,6 +144,13 @@ void Window<Impl>::handle_mousebutton_event(SDL_MouseButtonEvent & ev)
 {
     auto dir = ev.state == SDL_PRESSED ? down : up;
     static_cast<Impl*>(this)->mouse_button(ev.x, ev.y, ev.button, dir, ev.clicks);
+}
+
+template<class Impl>
+void Window<Impl>::handle_mousewheel_event(SDL_MouseWheelEvent & ev)
+{
+    // TODO: handle ev.direction
+    static_cast<Impl*>(this)->mouse_wheel(ev.x, ev.y);
 }
 
 template<class Impl>

@@ -67,6 +67,12 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Abstract_container<Config, With_layout>::container_mouse_wheel(const Position &dist)
+    {
+        if (_hovered_child) _hovered_child->mouse_wheel(dist);
+    }
+
+    template<class Config, bool With_layout>
     void Abstract_container<Config, With_layout>::container_mouse_exit()
     {
         // We must propagate the exit to any currently hovered child

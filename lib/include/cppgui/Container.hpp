@@ -30,6 +30,7 @@ namespace cppgui {
         void container_mouse_motion(const Position &);
         void container_mouse_button(const Position &, int button, Key_state);
         void container_mouse_click(const Position &, int button, int count);
+        void container_mouse_wheel(const Position &dist);
         void container_mouse_exit();
 
         std::vector<Widget_t*> _children;
