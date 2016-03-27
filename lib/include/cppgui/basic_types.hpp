@@ -10,6 +10,7 @@ namespace cppgui {
         int x, y;
         auto operator + (const Position &offs) const { return Position{ x + offs.x, y + offs.y }; }
         auto operator - (const Position &offs) const { return Position{ x - offs.x, y - offs.y }; }
+        auto& operator += (const Position &offs) { x += offs.x, y += offs.y; return *this; }
     };
 
     struct Extents {

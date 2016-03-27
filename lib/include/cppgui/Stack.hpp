@@ -34,6 +34,8 @@ namespace cppgui {
         void scroll_up  ();
         void scroll_down();
 
+        Rectangle   _inner_rect; // TODO: does this belong into Container instead ?
+
         unsigned    _first_visible_item = 0;
         int         _children_offset = 0;
         Position    _last_mouse_pos = {};

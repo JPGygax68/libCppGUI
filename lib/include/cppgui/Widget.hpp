@@ -39,9 +39,9 @@ namespace cppgui {
         using Font_handle       = typename Canvas_t::Font_handle;
         using Click_handler     = std::function<void(const Position &, int button, int clicks)>; // TODO: support return value ?
 
-        auto rectangle() const { return _rect; }
-        auto position() const { return _rect.pos; }
-        auto extents() const { return _rect.ext; }
+        auto& rectangle() const { return _rect; }
+        auto& position() const { return _rect.pos; }
+        auto& extents() const { return _rect.ext; }
         void set_position(const Position &);
         void set_extents(const Extents &);
 

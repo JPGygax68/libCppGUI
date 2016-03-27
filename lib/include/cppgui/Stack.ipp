@@ -36,12 +36,19 @@ namespace cppgui {
     {
         fill(cv, offs, background_color());
 
-        auto pos = offs + position() + Position{0, _children_offset};
+        auto pos = offs + position();
 
+        cv->set_clipping_rect(pos.x + _inner_rect.pos.x, pos.y + _inner_rect.pos.y, _inner_rect.ext.w, _inner_rect.ext.h);
+
+        pos += Position{0, _children_offset};
+
+        // TODO: optimize - do not render outside the clipping rect
         for (auto i = _first_visible_item; i < children().size(); i++)
         {
             children()[i]->render(cv, pos);
         }
+
+        cv->cancel_clipping();
     }
 
     template<class Config, bool With_layout>
@@ -59,13 +66,21 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Stack<Config, With_layout>::scroll_down()
     {
-        // TODO: real check: whether last item is fully visible
-        if (_first_visible_item < (children().size() - 1))
+        if (!children().empty())
         {
-            _first_visible_item ++;
-            _children_offset = paper_margin() - children()[_first_visible_item]->position().y;
-            mouse_motion(_last_mouse_pos); // TODO: might result in an extra invalidate()
-            invalidate();
+            auto last_child = children().back();
+
+            if (last_child->position().y + _children_offset + last_child->extents().h > _inner_rect.pos.y + _inner_rect.ext.h)
+            //if (_first_visible_item < (children().size() - 1))
+            {
+                _first_visible_item ++;
+                _children_offset = paper_margin() - children()[_first_visible_item]->position().y;
+                // TODO: if first visible child can be partially displayed, we need "bring into view" functionality
+                //int empty_space = _inner_rect.pos.y + _inner_rect.ext.h - (last_child->position().y + _children_offset + last_child->extents().h);
+                //if (empty_space > 0) _children_offset += empty_space;
+                mouse_motion(_last_mouse_pos); // TODO: might result in an extra invalidate()
+                invalidate();
+            }
         }
     }
 
@@ -122,6 +137,11 @@ namespace cppgui {
         }
 
         y -= 1;
+
+        p()->_inner_rect = { 
+            (int) paper_margin(), (int) paper_margin(), 
+            p()->extents().w - 2 * paper_margin(), p()->extents().h - 2 * paper_margin()
+        };
     }
 
 } // ns cppgui
