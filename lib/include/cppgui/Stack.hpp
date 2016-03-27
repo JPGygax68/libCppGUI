@@ -36,6 +36,7 @@ namespace cppgui {
 
         unsigned    _first_visible_item = 0;
         int         _children_offset = 0;
+        Position    _last_mouse_pos = {};
     };
 
     // Layouter aspect

@@ -1,4 +1,9 @@
-23-03-2016
+2016-03-27
+==========
+
+- Silly problem: when scrolling with the wheel and the mouse cursor passes onto another child widget without being moved, the highlight does not change until the user actually moves the mouse
+
+2016-03-23
 ==========
 
 Right now, setting the value of a widget (e.g. "text" on a Textbox) requires a a check (or possibly more later on) to find out whether or not the rasterized font is available.
@@ -20,7 +25,7 @@ The reason is that this would make it harder to predict the visual appearance of
   2) property setters that do not trigger invalidation or layout recalculation
       - try to find names that express the difference, rather than employing overloads or prefixed versions of existing names
   
-14-03-2016
+2016-03-14
 ==========
 
 How to implement trigger_redraw() in a way that will get optimal run-time behaviour on any possible combination of backends ? Brainstorming.

@@ -10,6 +10,8 @@ namespace cppgui {
         // TODO: handle elements that are not "children"
 
         Container_t::mouse_motion(pos + Position{0, - _children_offset});
+
+        _last_mouse_pos = pos;
     }
 
     template<class Config, bool With_layout>
@@ -49,6 +51,7 @@ namespace cppgui {
         {
             _first_visible_item --;
             _children_offset = paper_margin() - children()[_first_visible_item]->position().y;
+            mouse_motion(_last_mouse_pos); // TODO: might result in an extra invalidate()
             invalidate();
         }
     }
@@ -61,6 +64,7 @@ namespace cppgui {
         {
             _first_visible_item ++;
             _children_offset = paper_margin() - children()[_first_visible_item]->position().y;
+            mouse_motion(_last_mouse_pos); // TODO: might result in an extra invalidate()
             invalidate();
         }
     }

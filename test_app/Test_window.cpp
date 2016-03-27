@@ -57,6 +57,7 @@ Test_window::Test_window():
         _stack.add_child(&_button_list[i]);
     }
     _stack.set_position({50, 250});
+    _stack.set_extents({200, 200});
 
     _root_widget.set_focus_to(&_textbox);
 

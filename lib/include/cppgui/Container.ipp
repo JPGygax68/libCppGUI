@@ -149,7 +149,10 @@ namespace cppgui {
         {
             // EXPERIMENTAL: obtain minimum size and extend accordingly
             auto min_ext = child->minimal_size(), cur_ext = child->extents();
-            child->set_extents({ std::max(min_ext.w, cur_ext.w), std::max(min_ext.h, cur_ext.h) });
+            if (child->extents().w == 0 && child->extents().h == 0)
+            {
+                child->set_extents({ std::max(min_ext.w, cur_ext.w), std::max(min_ext.h, cur_ext.h) });
+            }
             child->layout();
         }
     }
