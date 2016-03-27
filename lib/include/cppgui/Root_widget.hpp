@@ -68,7 +68,7 @@ namespace cppgui {
     // Default implementation for Widget_updater aspect
 
     template <class Config, bool With_layout>
-    struct Default_root_widget_updater {
+    struct Default_Root_widget_Updater {
 
         template <class Aspect_parent>
         struct Aspect : public Aspect_parent {
@@ -79,16 +79,13 @@ namespace cppgui {
             void invalidate();
 
             auto root_widget() -> Root_widget_t * override { return static_cast<Root_widget_t*>(this); }
-
-        private:
-            Invalidated_handler _on_invalidated;
         };
     };
 
     // Default implementation for Container_Container_updater aspect
 
     template <class Config, bool With_layout>
-    struct Default_root_widget_container_updater {
+    struct Default_Root_widget_Container_updater {
 
         template <class Aspect_parent> struct Aspect : public Aspect_parent {
             
@@ -97,19 +94,23 @@ namespace cppgui {
             using Invalidated_handler = std::function<void()>;
             using Root_widget_t = Root_widget<Config, With_layout>;
 
-            void on_invalidated(Invalidated_handler handler) { _on_invalidated = handler; }
+            // Container_updater contract
 
-            void child_invalidated(Widget_t *) override {
-
-                // TODO: protect against multiple invalidations resulting from a single input event
-                // TODO: protect against invalidation during setup ?
-                if (_on_invalidated) _on_invalidated();
-            }
+            void child_invalidated(Widget_t *) override { _must_update = true; }
 
             auto container_root_widget() -> Root_widget_t * override { return static_cast<Root_widget_t*>(this); }
 
+            // Specific functionality 
+
+            void on_invalidated(Invalidated_handler handler) { _on_invalidated = handler; }
+
+            void lock() { _must_update = false; }
+
+            void unlock() { if (_on_invalidated) _on_invalidated(); }
+
         private:
             Invalidated_handler _on_invalidated;
+            bool                _must_update;
         };
 
     };

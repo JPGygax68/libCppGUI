@@ -63,19 +63,25 @@ namespace cppgui {
     template<class Config, bool WithLayout>
     void Root_widget<Config, WithLayout>::mouse_motion(const Position &pos)
     {
+        this->lock();
         container_mouse_motion(pos); // Abstract_container TODO: better name ?
+        this->unlock();
     }
 
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::mouse_button(const Position &pos, int button, Key_state state)
     {
+        this->lock();
         container_mouse_button(pos, button, state); // Abstract_container TODO: better name ?
+        this->unlock();
     }
 
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::mouse_click(const Position &pos, int button, int count)
     {
+        this->lock();
         container_mouse_click(pos, button, count);
+        this->unlock();
     }
 
     template<class Config, bool With_layout>
@@ -83,7 +89,9 @@ namespace cppgui {
     {
         if (_focused_widget)
         {
+            this->lock();
             _focused_widget->text_input(text, size);
+            this->unlock();
         }
     }
 
@@ -92,7 +100,9 @@ namespace cppgui {
     {
         if (_focused_widget)
         {
+            this->lock();
             _focused_widget->key_down(key);
+            this->unlock();
         }
     }
 

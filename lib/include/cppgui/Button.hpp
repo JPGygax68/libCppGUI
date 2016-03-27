@@ -34,9 +34,11 @@ namespace cppgui {
         //void update_render_resources(Renderer *) override;
         void render(Renderer *, const Position &) override;
 
+        // TODO: visual feedback on mouse down / up
+
         // TODO: TEMPORARY, REMOVE!!
-        void mouse_enter() override { std::cout << "Button::mouse_enter() " << std::endl; Widget_t::mouse_enter(); }
-        void mouse_exit () override { std::cout << "Button::mouse_exit() "  << std::endl; Widget_t::mouse_exit (); }
+        //void mouse_enter() override { std::cout << "Button::mouse_enter() " << std::endl; Widget_t::mouse_enter(); }
+        //void mouse_exit () override { std::cout << "Button::mouse_exit() "  << std::endl; Widget_t::mouse_exit (); }
 
     protected:
         // Styling
