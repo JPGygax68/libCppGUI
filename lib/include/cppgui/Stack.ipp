@@ -7,7 +7,44 @@ namespace cppgui {
     template<class Config, bool With_layout>
     inline void Stack<Config, With_layout>::mouse_wheel(const Position & dist)
     {
-        std::cout << "Stack::mouse_wheel(" << dist.x << ", " << dist.y << ")" << std::endl;
+        // std::cout << "Stack::mouse_wheel(" << dist.x << ", " << dist.y << ")" << std::endl;
+
+        if      (dist.y < 0) scroll_down(); // TODO: use amount as parameter
+        else if (dist.y > 0) scroll_up  (); // TODO: use amount as parameter
+    }
+
+    template<class Config, bool With_layout>
+    void Stack<Config, With_layout>::render(Canvas_t *cv, const Position &offs)
+    {
+        auto pos = offs + position() + Position{0, _children_offset};
+
+        for (auto i = _first_visible_item; i < children().size(); i++)
+        {
+            children()[i]->render(cv, pos);
+        }
+    }
+
+    template<class Config, bool With_layout>
+    void Stack<Config, With_layout>::scroll_up()
+    {
+        if (_first_visible_item > 0)
+        {
+            _first_visible_item --;
+            _children_offset += children()[_first_visible_item]->extents().h;
+            invalidate();
+        }
+    }
+
+    template<class Config, bool With_layout>
+    void Stack<Config, With_layout>::scroll_down()
+    {
+        // TODO: real check: whether last item is fully visible
+        if (_first_visible_item < (children().size() - 1))
+        {
+            _children_offset -= children()[_first_visible_item]->extents().h;
+            _first_visible_item ++;
+            invalidate();
+        }
     }
 
     // Layouter aspect ----------------------------------------------

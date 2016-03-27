@@ -18,7 +18,20 @@ namespace cppgui {
     class Stack: public Stack_layouter<Config, With_layout>::template Aspect< Container<Config, With_layout> >
     {
     public:
+        using Container_t = Container<Config, With_layout>;
+        using Canvas_t = typename Container_t::Canvas_t;
+
         void mouse_wheel(const Position &dist);
+
+        void render(Canvas_t *, const Position &) override;
+
+    protected:
+        // Actions
+        void scroll_up  ();
+        void scroll_down();
+
+        unsigned    _first_visible_item = 0;
+        int         _children_offset = 0;
     };
 
     // Layouter aspect
