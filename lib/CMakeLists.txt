@@ -20,7 +20,7 @@ foreach(size IN ITEMS 24)
             input=${CMAKE_CURRENT_SOURCE_DIR}/data/fonts/${font_file}.ttf
             size=${size}
             output="${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont"
-            range=all
+            range=geometric-shapes
     )
 
     add_custom_command(
@@ -57,6 +57,8 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/layouting.hpp                    include/cppgui/layouting.ipp
     #include/cppgui/Stylesheet.hpp
     include/cppgui/aspects.hpp
+
+    ${FONT_HEADERS}
 )
 
 if (NOT TARGET libGPCFonts)

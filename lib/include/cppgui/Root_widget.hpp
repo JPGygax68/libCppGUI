@@ -13,7 +13,7 @@ namespace cppgui {
 
     template <class Config, bool With_layout> struct Root_widget_layouter {
 
-        template <class Aspect_parent> struct Aspect {};
+        template <class Aspect_parent> struct Aspect: public Aspect_parent {};
     };
 
     // Root widget
@@ -30,14 +30,14 @@ namespace cppgui {
         using Widget_t = typename Widget<Config, With_layout>;
         using Abstract_widget_t = typename Abstract_widget<Config, With_layout>;
         using Canvas_t = typename Abstract_widget_t::Canvas_t;
-        //using Abstract_container_t = Abstract_container<Config, With_layout>;
+        using Abstract_container_t = Abstract_container<Config, With_layout>;
         using Font_mapper = typename Config::Font_mapper;
         using Font_handle = typename Canvas_t::Font_handle;
         using Cursor_handle = typename Config::Cursor::Cursor_handle;
 
         Root_widget(Canvas_t *);
 
-        //void add_child(Widget_t *);
+        using Abstract_container_t::add_child;
 
         void init() override;
 

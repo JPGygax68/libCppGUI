@@ -15,11 +15,12 @@ namespace cppgui {
     public:
         using Widget_t = Widget<Config, With_layout>;
 
-        void add_child(Widget_t *);
-
         auto& children() { return _children; }
 
     protected:
+
+        void add_child(Widget_t *);
+
         auto child_at(const Position &) -> Widget_t *;
 
         void init_children_resources();
@@ -95,6 +96,7 @@ namespace cppgui {
 
         void mouse_motion(const Position &) override;
         void mouse_click(const Position &, int button, int count) override;
+        void mouse_wheel(const Position &) override;
 
         void mouse_exit() override;
 
@@ -136,7 +138,7 @@ namespace cppgui {
 
             void init_layout() override;
             //auto minimal_size() -> Extents override;
-            //void layout() override;
+            void layout() override;
         };
     };
 

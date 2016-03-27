@@ -112,6 +112,12 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Container<Config, With_layout>::mouse_wheel(const Position &dist)
+    {
+        container_mouse_wheel(dist);
+    }
+
+    template<class Config, bool With_layout>
     void Container<Config, With_layout>::mouse_exit()
     {
         container_mouse_exit();
@@ -167,6 +173,13 @@ namespace cppgui {
         {
             child->init_layout();
         }
+    }
+
+    template <class Config>
+    template<class Aspect_parent>
+    inline void Container_Layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    {
+        p()->layout_children();
     }
 
     // Container_updater aspect -------------------------------------
