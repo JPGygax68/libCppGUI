@@ -42,7 +42,7 @@ public:
         template <class Aspect_parent>
         using Widget_updater = cppgui::Default_widget_updater<Widget_config, true>::Aspect<Aspect_parent>;
         template <class Aspect_parent>
-        using Abstract_container_updater = cppgui::Default_abstract_container_updater<Widget_config, true>::Aspect<Aspect_parent>;
+        using Abstract_container_Container_updater = cppgui::Default_Abstract_container_Container_updater<Widget_config, true>::Aspect<Aspect_parent>;
         template <class Aspect_parent>
         using Container_Container_updater = cppgui::Default_Container_Container_updater<Widget_config, true>::Aspect<Aspect_parent>;
         template <class Aspect_parent>

@@ -106,7 +106,7 @@ namespace cppgui {
                 if (_on_invalidated) _on_invalidated();
             }
 
-            auto _root_widget() -> Root_widget_t * override { return static_cast<Root_widget_t*>(this); }
+            auto container_root_widget() -> Root_widget_t * override { return static_cast<Root_widget_t*>(this); }
 
         private:
             Invalidated_handler _on_invalidated;

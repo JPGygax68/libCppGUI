@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream> // TODO: REMOVE!
+
 #include "./layouting.hpp"
 
 #include "./Widget.hpp"
@@ -20,7 +22,7 @@ namespace cppgui {
     public:
         using Renderer = typename Config::Renderer;
         using Font_handle = typename Renderer::font_handle;
-        using Root_widget_t = Root_widget<Config, With_layout>;
+        using Widget_t = Widget<Config, With_layout>;
 
         void set_font(const Rasterized_font *);
         auto font() const { return _font; }
@@ -31,6 +33,10 @@ namespace cppgui {
 
         //void update_render_resources(Renderer *) override;
         void render(Renderer *, const Position &) override;
+
+        // TODO: TEMPORARY, REMOVE!!
+        void mouse_enter() override { std::cout << "Button::mouse_enter() " << std::endl; Widget_t::mouse_enter(); }
+        void mouse_exit () override { std::cout << "Button::mouse_exit() "  << std::endl; Widget_t::mouse_exit (); }
 
     protected:
         // Styling

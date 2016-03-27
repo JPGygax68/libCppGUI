@@ -191,7 +191,7 @@ namespace cppgui {
 
             auto container() const { return _container; }
 
-            auto root_widget() -> Root_widget_t * override { return _container->_root_widget(); }
+            auto root_widget() -> Root_widget_t * override { return _container->container_root_widget(); }
 
         private:
             Abstract_container_t *_container;

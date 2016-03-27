@@ -29,7 +29,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::handle_mouse_motion(const Position &pos)
+    void Abstract_container<Config, With_layout>::container_mouse_motion(const Position &pos)
     {
         auto hovered = child_at(pos);
 
@@ -51,7 +51,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::handle_mouse_button(const Position &pos, int button, Key_state state)
+    void Abstract_container<Config, With_layout>::container_mouse_button(const Position &pos, int button, Key_state state)
     {
         auto child = child_at(pos);
 
@@ -59,11 +59,22 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::handle_mouse_click(const Position &pos, int button, int count)
+    void Abstract_container<Config, With_layout>::container_mouse_click(const Position &pos, int button, int count)
     {
         auto child = child_at(pos);
 
         if (child) child->mouse_click(pos - child->position(), button, count);
+    }
+
+    template<class Config, bool With_layout>
+    void Abstract_container<Config, With_layout>::container_mouse_exit()
+    {
+        // We must propagate the exit to any currently hovered child
+        if (_hovered_child)
+        {
+            _hovered_child->mouse_exit();
+            _hovered_child = nullptr;
+        }
     }
 
     /*
@@ -85,13 +96,20 @@ namespace cppgui {
     template <class Config, bool With_layout>
     void Container<Config, With_layout>::mouse_motion(const Position &pos)
     {
-        handle_mouse_motion(pos);
+        container_mouse_motion(pos);
     }
 
     template<class Config, bool With_layout>
     void Container<Config, With_layout>::mouse_click(const Position &pos, int button, int count)
     {
-        handle_mouse_click(pos - position(), button, count);
+        container_mouse_click(pos - position(), button, count);
+    }
+
+    template<class Config, bool With_layout>
+    void Container<Config, With_layout>::mouse_exit()
+    {
+        container_mouse_exit();
+        Widget_t::mouse_exit();
     }
 
     template <class Config, bool With_layout>
@@ -103,15 +121,6 @@ namespace cppgui {
         {
             child->render(r, pos);
         }
-    }
-
-    // Updater aspect -----------------------------------------------
-
-    template<class Config, bool With_layout>
-    template<class Aspect_parent>
-    inline void Default_abstract_container_updater<Config, With_layout>::Aspect<Aspect_parent>::child_invalidated(Widget_t *)
-    {
-        // TODO
     }
 
     // Layouter aspect ----------------------------------------------
@@ -147,6 +156,15 @@ namespace cppgui {
         {
             child->init_layout();
         }
+    }
+
+    // Container_updater aspect -------------------------------------
+
+    template<class Config, bool With_layout>
+    template<class Aspect_parent>
+    inline void Default_Container_Container_updater<Config, With_layout>::Aspect<Aspect_parent>::child_invalidated(Widget_t *)
+    {
+        p()->container()->child_invalidated(p());
     }
 
 

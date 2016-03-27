@@ -63,19 +63,19 @@ namespace cppgui {
     template<class Config, bool WithLayout>
     void Root_widget<Config, WithLayout>::mouse_motion(const Position &pos)
     {
-        handle_mouse_motion(pos); // Abstract_container TODO: better name ?
+        container_mouse_motion(pos); // Abstract_container TODO: better name ?
     }
 
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::mouse_button(const Position &pos, int button, Key_state state)
     {
-        handle_mouse_button(pos, button, state); // Abstract_container TODO: better name ?
+        container_mouse_button(pos, button, state); // Abstract_container TODO: better name ?
     }
 
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::mouse_click(const Position &pos, int button, int count)
     {
-        handle_mouse_click(pos, button, count);
+        container_mouse_click(pos, button, count);
     }
 
     template<class Config, bool With_layout>

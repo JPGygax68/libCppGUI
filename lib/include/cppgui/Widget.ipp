@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream> // TODO: REMOVE!!
+
 #include "./Widget.hpp"
 #include "./Container.hpp"
 #include "Root_widget.hpp"
@@ -141,6 +143,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     inline void Widget<Config, With_layout>::mouse_enter()
     {
+        std::cout << "Widget::mouse_enter()" << std::endl;
         _hovered = true;
         invalidate();
     }
