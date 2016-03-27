@@ -121,6 +121,8 @@ namespace cppgui {
     template <class Config, bool With_layout>
     void Container<Config, With_layout>::render(Canvas_t *r, const Position &offs)
     {
+        // TODO: paint background, borders
+
         auto pos = offs + position();
 
         for (auto& child : children())

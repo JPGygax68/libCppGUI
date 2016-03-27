@@ -21,6 +21,10 @@ namespace cppgui {
         using Container_t = Container<Config, With_layout>;
         using Canvas_t = typename Container_t::Canvas_t;
 
+        void mouse_motion(const Position &) override;
+        void mouse_click(const Position &, int button, int count) override;
+        // TODO: mouse_button & any other events that carry a mouse position
+
         void mouse_wheel(const Position &dist);
 
         void render(Canvas_t *, const Position &) override;

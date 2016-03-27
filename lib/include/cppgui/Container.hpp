@@ -100,6 +100,10 @@ namespace cppgui {
 
         //void update_render_resources(Renderer *) override;
         void render(Canvas_t *, const Position &) override;
+
+    protected:
+        auto background_color() -> Color { return {1, 1, 0.7f, 1}; }
+        auto paper_margin() -> unsigned int { return 2; }
     };
 
     template <class Config, bool With_layout> struct Default_Container_Container_updater {
