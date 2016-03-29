@@ -13,61 +13,69 @@ struct SDL_TextInputEvent;
 struct SDL_KeyboardEvent;
 struct SDL_Keysym;
 
-/*  We use CRTP ("curiously recurring template pattern") to inject specialization
-    into the template.
+namespace cppgui {
 
-    Impl must provide the following members:
+    namespace sdl {
 
-    void init_graphics()
-        Called when window is being opened, which is upon construction, BEFORE
-        the derived constructor is called! Use this to bind to the graphics subsystem.
-    void size_changed(int w, int h)
-        Called when the size of the window changes (includes window creation).
-        TODO: use Size struct instead of w, h
-    void mouse_motion(const Position &)
-        Called when the user is moving the mouse within the confines of the window.
-    void redraw()
-        Called to draw the contents of the window.
- */
-template <class Impl> class Window {
-    struct Deleter;
+        /*  We use CRTP ("curiously recurring template pattern") to inject specialization
+            into the template.
 
-public:
-    using Pointer = std::unique_ptr<SDL_Window, Deleter>;
-    enum Button_direction { down = 0, up = 1 };
+            Impl must provide the following members:
 
-    static auto redraw_event_id() -> uint32_t &;
+            void init_graphics()
+                Called when window is being opened, which is upon construction, BEFORE
+                the derived constructor is called! Use this to bind to the graphics subsystem.
+            void size_changed(int w, int h)
+                Called when the size of the window changes (includes window creation).
+                TODO: use Size struct instead of w, h
+            void mouse_motion(const Position &)
+                Called when the user is moving the mouse within the confines of the window.
+            void redraw()
+                Called to draw the contents of the window.
+         */
+        template <class Impl> class Window {
+            struct Deleter;
 
-    Window(const std::string &title, int w = 800, int h = 600); // TODO: should probably be made protected
-    ~Window();
+        public:
+            using Pointer = std::unique_ptr<SDL_Window, Deleter>;
+            enum Button_direction { down = 0, up = 1 };
 
-    void request_redraw();
+            static auto redraw_event_id() -> uint32_t &;
 
-    virtual void closing() {};
+            Window(const std::string &title, int w = 800, int h = 600); // TODO: should probably be made protected
+            ~Window();
 
-    static void dispatch_window_event(SDL_WindowEvent &ev);
-    static void dispatch_mousemotion_event(SDL_MouseMotionEvent &ev);
-    static void dispatch_mousebutton_event(SDL_MouseButtonEvent &ev);
-    static void dispatch_mousewheel_event(SDL_MouseWheelEvent &ev);
-    static void dispatch_textinput_event(SDL_TextInputEvent &ev);
-    static void dispatch_keydown_event(SDL_KeyboardEvent &ev);
-    static void dispatch_redraw(uint32_t win_id);
+            void request_redraw();
 
-protected:
-    auto sdl_pointer() -> SDL_Window *;
+            virtual void closing() {};
 
-private:
-    struct Deleter { void operator() (SDL_Window *win); };
-    class Static_init;
+            static void dispatch_window_event(SDL_WindowEvent &ev);
+            static void dispatch_mousemotion_event(SDL_MouseMotionEvent &ev);
+            static void dispatch_mousebutton_event(SDL_MouseButtonEvent &ev);
+            static void dispatch_mousewheel_event(SDL_MouseWheelEvent &ev);
+            static void dispatch_textinput_event(SDL_TextInputEvent &ev);
+            static void dispatch_keydown_event(SDL_KeyboardEvent &ev);
+            static void dispatch_redraw(uint32_t win_id);
 
-    static auto window_map() -> std::map<uint32_t, Window*> &;
+        protected:
+            auto sdl_pointer() -> SDL_Window *;
 
-    void handle_window_event(SDL_WindowEvent &ev);
-    void handle_mousemotion_event(SDL_MouseMotionEvent &ev);
-    void handle_mousebutton_event(SDL_MouseButtonEvent &ev);
-    void handle_mousewheel_event(SDL_MouseWheelEvent &ev);
-    void handle_textinput_event(SDL_TextInputEvent &ev);
-    void handle_keydown_event(SDL_KeyboardEvent &ev);
+        private:
+            struct Deleter { void operator() (SDL_Window *win); };
+            class Static_init;
 
-    Pointer _win;
-};
+            static auto window_map() -> std::map<uint32_t, Window*> &;
+
+            void handle_window_event(SDL_WindowEvent &ev);
+            void handle_mousemotion_event(SDL_MouseMotionEvent &ev);
+            void handle_mousebutton_event(SDL_MouseButtonEvent &ev);
+            void handle_mousewheel_event(SDL_MouseWheelEvent &ev);
+            void handle_textinput_event(SDL_TextInputEvent &ev);
+            void handle_keydown_event(SDL_KeyboardEvent &ev);
+
+            Pointer _win;
+        };
+
+    } // ns sdl
+
+} // ns cppgui
