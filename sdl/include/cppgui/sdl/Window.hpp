@@ -21,6 +21,15 @@ namespace cppgui {
 
     namespace sdl {
 
+        // TODO: split into base class and specialization for OpenGL
+
+        /** Impl = implementation (compile-time inheritance via CRTP)
+
+            Impl must provide:
+            
+            redraw()        must render the whole content
+                            TODO: optimizations to render only changed parts
+         */
         template <class Impl>
         class Window 
         {
@@ -74,7 +83,7 @@ namespace cppgui {
             struct Static_init;
             static Static_init _initializer;
 
-            static auto window_map() -> std::map<uint32_t, Window*> &;
+            static auto window_map() -> std::map<uint32_t, Impl*> &;
 
             Pointer         _win;
         };

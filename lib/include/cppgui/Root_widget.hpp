@@ -18,6 +18,8 @@ namespace cppgui {
 
     // Root widget
 
+    // TODO: confer the ability to render a background ?
+
     template <class Config, bool With_layout>
     class Root_widget: 
         public Root_widget_layouter<Config, With_layout>::template Aspect< Config::template Root_widget_updater< Abstract_widget<Config, With_layout> > >,

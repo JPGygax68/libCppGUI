@@ -13,9 +13,9 @@
 #include <SDL_events.h>
 
 #include "./error_handling.hpp"
+#include "./Application.hpp"
 #include "./Window.hpp"
 
-#include "./Application.hpp"
 
 namespace cppgui {
 
@@ -31,8 +31,8 @@ namespace cppgui {
                 atexit(&SDL_VideoQuit);
 
                 redraw_window = Application<Impl>::register_custom_event([](const SDL_UserEvent &ev) {
-                    
-                    static_cast<Impl*>(window_map()[ev.windowID])->redraw();
+
+                    Window<Impl>::dispatch_redraw(ev.windowID);
                 });
             }
 
@@ -51,7 +51,7 @@ namespace cppgui {
 
             _win.reset(win);
 
-            window_map()[SDL_GetWindowID(win)] = this;
+            window_map()[id()] = static_cast<Impl*>(this);
 
             static_cast<Impl*>(this)->init_graphics();
         }
@@ -96,9 +96,9 @@ namespace cppgui {
         }
 
         template <class Impl>
-        auto Window<Impl>::window_map() -> std::map<uint32_t, Window*> &
+        auto Window<Impl>::window_map() -> std::map<uint32_t, Impl*> &
         {
-            static std::map<uint32_t, Window*> map;
+            static std::map<uint32_t, Impl*> map;
 
             return map;
         }
@@ -137,12 +137,6 @@ namespace cppgui {
         void Window<Impl>::dispatch_keydown_event(SDL_KeyboardEvent & ev)
         {
             window_map()[ev.windowID]->handle_keydown_event(ev);
-        }
-
-        template<class Impl>
-        void Window<Impl>::dispatch_custom_event(uint32_t win_id)
-        {
-            static_cast<Impl*>(window_map()[win_id])->redraw();
         }
 
         template <class Impl>
@@ -225,7 +219,7 @@ namespace cppgui {
             SDL_Event ev;
             ev.type = _initializer.redraw_window;
             SDL_UserEvent &ue = ev.user;
-            ue.windowID = id();
+            ue.windowID = SDL_GetWindowID(_win.get());
             SDL_PushEvent(&ev);
         }
 
