@@ -42,8 +42,8 @@ add_executable( ${PROJECT_NAME}
   main.cpp
 
   Test_window.hpp       Test_window.cpp
-  Application.hpp       Application.ipp
-  Window.hpp            Window.ipp
+  #Application.hpp       Application.ipp
+  #Window.hpp            Window.ipp
   Fonts.hpp             Fonts.cpp 
 
   ${FONT_HEADERS}
