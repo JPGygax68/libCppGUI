@@ -13,61 +13,70 @@ namespace cppgui {
         int Application<WinT>::run()
         {
             SDL_Event ev;
-
-            while (SDL_WaitEvent(&ev))
+            
+            for (;;)
             {
+                if (SDL_WaitEvent(&ev) != 1) throw Error("waiting for event");
+
                 // Custom event ?
-                auto it = _custom_events_map.find(ev.user.type);
-                if (it != _custom_events_map.end())
+                auto it = event_map().find(ev.type);
+                if (it != event_map().end())
                 {
                     it->second(ev.user);
-                    return;
                 }
+                else {
 
-                switch (ev.type)
-                {
-                    case SDL_QUIT: 
-                        return;
-                    case SDL_WINDOWEVENT:
-                        WinT::dispatch_window_event(ev.window);
-                        break;
-                    case SDL_MOUSEMOTION:
-                        WinT::dispatch_mousemotion_event(ev.motion);
-                        break;
-                    case SDL_MOUSEBUTTONDOWN:
-                        WinT::dispatch_mousebutton_event(ev.button);
-                        break;
-                    case SDL_MOUSEBUTTONUP:
-                        WinT::dispatch_mousebutton_event(ev.button);
-                        break;
-                    case SDL_MOUSEWHEEL:
-                        WinT::dispatch_mousewheel_event(ev.wheel);
-                        break;
-                    case SDL_TEXTINPUT:
-                        WinT::dispatch_textinput_event(ev.text);
-                        break;
-                    case SDL_KEYDOWN:
-                        WinT::dispatch_keydown_event(ev.key);
-                        break;
-                    /*
-                    case WinT::redraw_event_id():
-                        WinT::dispatch_redraw(ev.user.windowID);
-                        break;
-                    */
-                    default:
-                        assert(false && "unknown SDL event type");
+                    switch (ev.type)
+                    {
+                        case SDL_QUIT: 
+                            return 1; // TODO: is this the right return value ?
+                        case SDL_WINDOWEVENT:
+                            WinT::dispatch_window_event(ev.window);
+                            break;
+                        case SDL_MOUSEMOTION:
+                            WinT::dispatch_mousemotion_event(ev.motion);
+                            break;
+                        case SDL_MOUSEBUTTONDOWN:
+                            WinT::dispatch_mousebutton_event(ev.button);
+                            break;
+                        case SDL_MOUSEBUTTONUP:
+                            WinT::dispatch_mousebutton_event(ev.button);
+                            break;
+                        case SDL_MOUSEWHEEL:
+                            WinT::dispatch_mousewheel_event(ev.wheel);
+                            break;
+                        case SDL_TEXTINPUT:
+                            WinT::dispatch_textinput_event(ev.text);
+                            break;
+                        case SDL_KEYDOWN:
+                            WinT::dispatch_keydown_event(ev.key);
+                            break;
+                    }
                 }
             }
-
-            return -1;
         }
 
         template<class WinT>
-        auto cppgui::sdl::Application<WinT>::register_custom_event(Custom_event_handler handler) -> uint32_t
+        auto Application<WinT>::register_custom_event(Custom_event_handler handler) -> uint32_t
         {
-            auto id = SDL_RegisterEvents(count);
+            auto id = SDL_RegisterEvents(1);
 
-            _custom_events_map[id] = handler;
+            event_map()[id] = handler;
+
+            return id;
+        }
+
+        template<class WinT>
+        void Application<WinT>::dispatch_redraw(SDL_UserEvent &)
+        {
+        }
+
+        template<class WinT>
+        auto Application<WinT>::event_map() -> std::map<uint32_t, Custom_event_handler>&
+        {
+            static std::map<uint32_t, Custom_event_handler> map;
+
+            return map;
         }
 
     } // ns sdl

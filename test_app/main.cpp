@@ -4,20 +4,19 @@
 
 #include <cppgui/sdl/Application.hpp>
 
-// Explicitly instantiate Application and Window templates
-#include <cppgui/sdl/Application.ipp>
-#include <cppgui/sdl/Window.ipp>
-
 #include "./Test_window.hpp"
 
-Application<Test_window>;
+// Explicitly instantiate Application class template
+#include <cppgui/sdl/Application.ipp>
+#include <cppgui/sdl/Window.ipp>
+template cppgui::sdl::Application<Test_window>;
 
 int main(int /*argc*/, char * /*argv*/[])
 {
     try
     {
         auto win = std::make_unique<Test_window>();
-        Application<Test_window> app;
+        cppgui::sdl::Application<Test_window> app;
 
         app.run();
 

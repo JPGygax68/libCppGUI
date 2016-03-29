@@ -4,7 +4,7 @@
 #include <functional>
 #include <map>
 
-class SDL_UserEvent;
+struct SDL_UserEvent;
 
 namespace cppgui {
 
@@ -13,16 +13,18 @@ namespace cppgui {
         template <class WinT>
         class Application {
         public:
-            using Custom_event_handler = std::function<void(SDL_UserEvent &)>;
+            using Custom_event_handler = std::function<void(const SDL_UserEvent &)>;
 
             int run();
 
-            auto register_custom_event(Custom_event_handler) -> uint32_t;
+            static auto register_custom_event(Custom_event_handler) -> uint32_t;
 
-            void post_custom_event(const SDL_UserEvent &);
+            // void post_custom_event(const SDL_UserEvent &);
 
         private:
-            std::map<uint32_t, Custom_event_handler>   _custom_events_map;
+            void dispatch_redraw(SDL_UserEvent &);
+
+            static auto event_map() -> std::map<uint32_t, Custom_event_handler> &;
         };
 
     } // ns sdl

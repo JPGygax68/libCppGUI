@@ -1,8 +1,11 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <memory>
 #include <map>
+
+#include "error_handling.hpp"
 
 struct SDL_Window;
 struct SDL_WindowEvent;
@@ -12,40 +15,37 @@ struct SDL_MouseWheelEvent;
 struct SDL_TextInputEvent;
 struct SDL_KeyboardEvent;
 struct SDL_Keysym;
+using SDL_GLContext = void *;
 
 namespace cppgui {
 
     namespace sdl {
 
-        /*  We use CRTP ("curiously recurring template pattern") to inject specialization
-            into the template.
-
-            Impl must provide the following members:
-
-            void init_graphics()
-                Called when window is being opened, which is upon construction, BEFORE
-                the derived constructor is called! Use this to bind to the graphics subsystem.
-            void size_changed(int w, int h)
-                Called when the size of the window changes (includes window creation).
-                TODO: use Size struct instead of w, h
-            void mouse_motion(const Position &)
-                Called when the user is moving the mouse within the confines of the window.
-            void redraw()
-                Called to draw the contents of the window.
-         */
-        template <class Impl> class Window {
+        template <class Impl>
+        class Window 
+        {
             struct Deleter;
 
         public:
             using Pointer = std::unique_ptr<SDL_Window, Deleter>;
+            struct Extents { int w, h; };
             enum Button_direction { down = 0, up = 1 };
-
-            static auto redraw_event_id() -> uint32_t &;
 
             Window(const std::string &title, int w = 800, int h = 600); // TODO: should probably be made protected
             ~Window();
 
-            void request_redraw();
+            auto id() -> uint32_t;
+
+            // OpenGL
+
+            auto create_gl_context() -> SDL_GLContext;           
+            static void delete_gl_context(SDL_GLContext);
+            void make_gl_context_current(SDL_GLContext);
+            void gl_swap();
+
+            void invalidate();
+
+            auto client_extents() const -> Extents;
 
             virtual void closing() {};
 
@@ -56,24 +56,27 @@ namespace cppgui {
             static void dispatch_textinput_event(SDL_TextInputEvent &ev);
             static void dispatch_keydown_event(SDL_KeyboardEvent &ev);
             static void dispatch_redraw(uint32_t win_id);
+            static void dispatch_custom_event(uint32_t win_id);
 
         protected:
-            auto sdl_pointer() -> SDL_Window *;
-
-        private:
-            struct Deleter { void operator() (SDL_Window *win); };
-            class Static_init;
-
-            static auto window_map() -> std::map<uint32_t, Window*> &;
-
             void handle_window_event(SDL_WindowEvent &ev);
             void handle_mousemotion_event(SDL_MouseMotionEvent &ev);
             void handle_mousebutton_event(SDL_MouseButtonEvent &ev);
             void handle_mousewheel_event(SDL_MouseWheelEvent &ev);
             void handle_textinput_event(SDL_TextInputEvent &ev);
             void handle_keydown_event(SDL_KeyboardEvent &ev);
+            //void handle_custom_event(SDL_UserEvent &ev);
 
-            Pointer _win;
+        private:
+            Window(const Window &) = delete; // no copy constructor please
+            struct Deleter { void operator() (SDL_Window *win); };
+            
+            struct Static_init;
+            static Static_init _initializer;
+
+            static auto window_map() -> std::map<uint32_t, Window*> &;
+
+            Pointer         _win;
         };
 
     } // ns sdl

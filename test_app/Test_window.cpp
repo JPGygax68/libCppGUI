@@ -67,7 +67,7 @@ Test_window::Test_window():
 
     _root_widget.set_focus_to(&_textbox);
 
-    _root_widget.on_invalidated([this]() { request_redraw(); });
+    _root_widget.on_invalidated([this]() { invalidate(); });
 
     _root_widget.init_layout();
     _root_widget.layout();
@@ -82,9 +82,9 @@ void Test_window::init_graphics()
     std::cout << "Test_window::init()" << std::endl;
 
     SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
-    auto ctx = SDL_GL_CreateContext(sdl_pointer());
+    auto ctx = create_gl_context();
     if (!ctx) throw std::runtime_error("Test_window::init(): failed to create OpenGL context");
-    SDL_GL_MakeCurrent(sdl_pointer(), ctx);
+    make_gl_context_current(ctx);
     glbinding::Binding::initialize();
     _canvas = new Canvas_t{};
     _canvas->init();
@@ -111,10 +111,9 @@ void Test_window::redraw()
 
     //GL(Clear, GL_COLOR_BUFFER_BIT);
     _canvas->enter_context();
-    //_label.render(_canvas, {0, 0});
     _root_widget.render(_canvas, { 0, 0 });
     _canvas->leave_context();
-    SDL_GL_SwapWindow(sdl_pointer());
+    gl_swap();
 }
 
 void Test_window::size_changed(int w, int h)

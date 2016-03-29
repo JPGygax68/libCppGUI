@@ -12,21 +12,35 @@
 #include <SDL.h>
 #include <SDL_events.h>
 
+#include "./error_handling.hpp"
 #include "./Window.hpp"
+
+#include "./Application.hpp"
 
 namespace cppgui {
 
     namespace sdl {
 
-        static class Static_init {
-        public:
+        template <class Impl>
+        struct Window<Impl>::Static_init {
+
             Static_init()
             {
                 //SDL_Init(SDL_INIT_EVERYTHING); //SDL_INIT_VIDEO);
                 if (SDL_VideoInit(nullptr) < 0) throw std::runtime_error("trying to initialize SDL video subsystem");
                 atexit(&SDL_VideoQuit);
+
+                redraw_window = Application<Impl>::register_custom_event([](const SDL_UserEvent &ev) {
+                    
+                    static_cast<Impl*>(window_map()[ev.windowID])->redraw();
+                });
             }
-        } _init;
+
+            uint32_t redraw_window;
+        };
+        
+        template<class Impl>
+        typename Window<Impl>::Static_init Window<Impl>::_initializer;
 
         template <class Impl>
         Window<Impl>::Window(const std::string &title, int w, int h)
@@ -45,14 +59,40 @@ namespace cppgui {
         template <class Impl>
         Window<Impl>::~Window()
         {
-            window_map().erase(SDL_GetWindowID(_win.get()));
+            window_map().erase(id());
         }
 
-        template <class Impl>
-        auto Window<Impl>::redraw_event_id() -> uint32_t &
+        template<class Impl>
+        auto Window<Impl>::id() -> uint32_t
         {
-            static uint32_t id = SDL_RegisterEvents(1);
-            return id;
+            return SDL_GetWindowID(_win.get());
+        }
+
+        template<class Impl>
+        auto Window<Impl>::create_gl_context() -> SDL_GLContext
+        {
+            SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
+            auto ctx = SDL_GL_CreateContext(_win.get());
+            if (!ctx) throw Error("trying to create OpenGL context for a window");
+            return ctx;
+        }
+
+        template<class Impl>
+        void Window<Impl>::delete_gl_context(SDL_GLContext ctx)
+        {
+            SDL_GL_DeleteContext(ctx);
+        }
+
+        template<class Impl>
+        void Window<Impl>::make_gl_context_current(SDL_GLContext ctx)
+        {
+            if (SDL_GL_MakeCurrent(_win.get(), ctx) < 0) throw sdl::Error("trying to make GL context current");
+        }
+
+        template<class Impl>
+        void Window<Impl>::gl_swap()
+        {
+            SDL_GL_SwapWindow(_win.get());
         }
 
         template <class Impl>
@@ -99,16 +139,16 @@ namespace cppgui {
             window_map()[ev.windowID]->handle_keydown_event(ev);
         }
 
-        template <class Impl>
-        void Window<Impl>::dispatch_redraw(uint32_t win_id)
+        template<class Impl>
+        void Window<Impl>::dispatch_custom_event(uint32_t win_id)
         {
             static_cast<Impl*>(window_map()[win_id])->redraw();
         }
 
-        template<class Impl>
-        auto Window<Impl>::sdl_pointer() -> SDL_Window *
+        template <class Impl>
+        void Window<Impl>::dispatch_redraw(uint32_t win_id)
         {
-            return _win.get();
+            static_cast<Impl*>(window_map()[win_id])->redraw();
         }
 
         template <class Impl>
@@ -118,22 +158,21 @@ namespace cppgui {
 
             switch (ev.event)
             {
+            case SDL_WINDOWEVENT_RESIZED: 
+            case SDL_WINDOWEVENT_SIZE_CHANGED: 
+                static_cast<Impl*>(this)->size_changed(ev.data1, ev.data2);
+                invalidate();
+                break;
             case SDL_WINDOWEVENT_SHOWN:
-                request_redraw();
-                break;
             case SDL_WINDOWEVENT_MAXIMIZED:
-                request_redraw();
-                break;
-            case SDL_WINDOWEVENT_SIZE_CHANGED:
-                static_cast<Impl*>(this)->size_changed(ev.data1, ev.data2); // width & height, respectively
-                request_redraw();
+            case SDL_WINDOWEVENT_EXPOSED:
+                invalidate();
                 break;
             case SDL_WINDOWEVENT_CLOSE:
                 static_cast<Impl*>(this)->closing();
                 break;
             }
         }
-
 
         template <class Impl>
         void Window<Impl>::handle_mousemotion_event(SDL_MouseMotionEvent &ev)
@@ -179,15 +218,25 @@ namespace cppgui {
         }
 
         template <class Impl>
-        void Window<Impl>::request_redraw()
+        void Window<Impl>::invalidate()
         {
-            std::cout << "Window::request_redraw()" << std::endl;
+            //std::cout << "Window::request_redraw()" << std::endl;
 
             SDL_Event ev;
-            ev.type = redraw_event_id();
+            ev.type = _initializer.redraw_window;
             SDL_UserEvent &ue = ev.user;
-            ue.windowID = SDL_GetWindowID(_win.get());
+            ue.windowID = id();
             SDL_PushEvent(&ev);
+        }
+
+        template<class Impl>
+        auto Window<Impl>::client_extents() const -> Extents
+        {
+            Extents ext;
+
+            SDL_GetWindowSize(_win.get(), &ext.w, &ext.h);
+
+            return ext;
         }
 
         template <class Impl>
