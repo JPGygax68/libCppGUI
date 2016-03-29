@@ -14,5 +14,6 @@ add_subdirectory(external/libGPCGLUtils/lib)
 add_subdirectory(external/libGPCGUIGLRenderer/lib)
 
 add_subdirectory(lib)
+add_subdirectory(sdl)
 
 add_subdirectory(test_app)

@@ -1,6 +1,5 @@
 #include <iostream>
 
-#include "./Window.ipp"
 #include "./cppgui/Label.hpp"
 #include "./cppgui/Textbox.hpp"
 #include "./cppgui/Stack.hpp"
@@ -17,12 +16,19 @@
 #include <cppgui/Stack.ipp>
 #include <cppgui/Root_widget.ipp>
 
+#include <cppgui/sdl/Window.hpp>
+
 #include <gpc/gl/wrappers.hpp>
 
 #include "./Fonts.hpp"
 
+// Explicitly instantiate cppgui::sdl::Window template
+#include <cppgui/sdl/Window.ipp>
+
+// Class implementation  --------------------------------------------
+
 Test_window::Test_window():
-    Window<Test_window>("Test window"),
+    cppgui::sdl::Window<Test_window>("Test window"),
     _root_widget{ _canvas }
 {
     _label.set_font(&Fonts::default_font());
