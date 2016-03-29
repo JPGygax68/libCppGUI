@@ -17,12 +17,12 @@ using namespace gl;
 #include <cppgui/Stack.hpp>
 #include <cppgui/Canvas.hpp>
 
+#include <cppgui/sdl/Window.hpp>
+
 #include <SDL_keyboard.h>
 #include <SDL_mouse.h>
 
-#include "./Window.hpp"
-
-class Test_window : public Window<Test_window> {
+class Test_window : public cppgui::sdl::Window<Test_window> {
 public:
     using Renderer = gpc::gui::gl::renderer<true>;
 

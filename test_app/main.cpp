@@ -2,12 +2,14 @@
 
 #include <SDL_main.h>
 
-#include "./Test_window.hpp"
-#include "./Application.hpp"
+#include <cppgui/sdl/Application.hpp>
 
 // Explicitly instantiate Application and Window templates
-#include "./Window.ipp"
-#include "./Application.ipp"
+#include <cppgui/sdl/Application.ipp>
+#include <cppgui/sdl/Window.ipp>
+
+#include "./Test_window.hpp"
+
 Application<Test_window>;
 
 int main(int /*argc*/, char * /*argv*/[])
