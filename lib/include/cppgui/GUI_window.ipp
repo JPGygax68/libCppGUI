@@ -4,6 +4,7 @@
 
 namespace cppgui {
 
+
     template<class GUIConfig, class WindowBaseT, template <class> class RendererAdapter>
     GUI_window<GUIConfig, WindowBaseT, RendererAdapter>::GUI_window(const char *title, int w, int h):
         WindowBaseT(title, w, h),

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cppgui/Resource_mapper.hpp>
+#include <cppgui/Default_font_mapper.hpp>
 #include <cppgui/Widget.hpp>
 
 #include "./Keyboard_adapter.hpp"
@@ -9,6 +11,8 @@ namespace cppgui {
 
     namespace sdl {
     
+        /** Defines a default CppGUI configuration struct that will work with SDL.
+         */
         template<class RendererT, bool With_layout>
         struct Default_configuration {
     
@@ -32,16 +36,11 @@ namespace cppgui {
             template <class Aspect_parent> using Root_widget_container_updater = typename 
                 Default_Root_widget_Container_updater<Configuration, With_layout>::template Aspect<Aspect_parent>;
 
-            //using Container   = cppgui::Container<Configuration, true>;
-            //using Root_widget = cppgui::Root_widget<Configuration, true>;
-
             // We override the color mapper
             // TODO: this should not be necessary, the identity mapper should be chosen automatically
             // according to a static boolean set in the renderer class
             using Color_mapper = ::cppgui::Identity_mapper<Renderer, cppgui::Color>;
             using Font_mapper  = ::cppgui::Default_font_mapper<Renderer>;
-
-            //using Styler = cppgui::Static_styler<cppgui::Default_stylesheet>;
 
             using Keyboard = ::cppgui::sdl::Keyboard_adapter;
 

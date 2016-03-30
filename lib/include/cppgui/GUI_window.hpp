@@ -1,11 +1,29 @@
 #pragma once
 
+#include "./Root_widget.hpp"
 #include "./Canvas.hpp"
 
 namespace cppgui {
 
     /** The class template is intended as a convenience: it augments the specified
         implementation of the Window concept with a fully connected root widget.
+
+        IMPORTANT: this template requires explicit instantiation. The best way
+            of doing this is via a typedef, which would then a) be used as the 
+            ancestor of your derived class, and b) explicitly instantiated
+            wherever the derived class is implemented, e.g.:
+                
+           Header:
+
+                using Specialized_GUI_window = cppgui::GUI_window<...>;
+                class My_window: public Specialized_GUI_Window { ... };
+
+           Implementation:
+
+                template Specialized_GUI_window;
+
+                My_window::My_window(...) { ... }
+                ...
      */
     template <
         class GUIConfig,                            // GUI library configuration
@@ -15,7 +33,6 @@ namespace cppgui {
     class GUI_window: public WindowBaseT, 
         public RendererAdapter<GUI_window<GUIConfig, WindowBaseT, RendererAdapter>>
     {
-
     public:
         using Canvas_t = typename Canvas<typename GUIConfig::Renderer>;
         using Root_widget = cppgui::Root_widget<GUIConfig, true>;

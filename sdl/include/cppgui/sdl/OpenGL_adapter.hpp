@@ -26,7 +26,7 @@ namespace cppgui {
             {
                 SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
                 auto ctx = p()->create_gl_context();
-                if (!ctx) throw std::runtime_error("Test_window::init(): failed to create OpenGL context");
+                //if (!ctx) throw std::runtime_error("cppgui::sdl::OpenGL_adapter::init_renderer(): failed to create OpenGL context");
                 p()->make_gl_context_current(ctx);
                 glbinding::Binding::initialize();
                 GL(ClearColor, 0.0f, 0.5f, 1.0f, 1.0f);

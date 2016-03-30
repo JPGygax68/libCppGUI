@@ -1,24 +1,16 @@
 #include <iostream>
 
-#include <cppgui/Full_resource_mapper.ipp>
-#include <cppgui/Canvas.ipp>
-#include <cppgui/Widget.ipp>
-#include <cppgui/Button.ipp>
-#include <cppgui/Label.ipp>
-#include <cppgui/Textbox.ipp>
-#include <cppgui/Container.ipp>
-#include <cppgui/Stack.ipp>
-#include <cppgui/Root_widget.ipp>
+#include <cppgui/all_widgets.ipp>
 #include <cppgui/sdl/Window.ipp>
 #include <cppgui/GUI_window.ipp>
 
-#include "./Test_window.hpp"
-
 #include "./Fonts.hpp"
 
-template cppgui::sdl::Window<Test_window>; // explicit template instantiation required here
+#include "./Test_window.hpp"
 
 // Class implementation  --------------------------------------------
+
+template My_GUI_window; // apparently an explicit instantiation is needed here
 
 Test_window::Test_window(): Parent("Test window")
 {

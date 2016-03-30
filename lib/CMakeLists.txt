@@ -60,6 +60,9 @@ add_library( ${PROJECT_NAME} STATIC
 
     include/cppgui/GUI_window.hpp include/cppgui/GUI_window.ipp
 
+    include/cppgui/all_widgets.hpp
+    include/cppgui/all_widgets.ipp
+
     ${FONT_HEADERS}
 )
 
