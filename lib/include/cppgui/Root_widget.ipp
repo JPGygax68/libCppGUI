@@ -9,8 +9,8 @@ namespace cppgui {
     }
 
     /*
-    template<class Config, bool WithLayout>
-    void Root_widget<Config, WithLayout>::add_child(Widget<Config, WithLayout> *child)
+    template<class GUIConfig, bool WithLayout>
+    void Root_widget<GUIConfig, WithLayout>::add_child(Widget<GUIConfig, WithLayout> *child)
     {
         _add_child(child);
         child->added_to_container(static_cast<Abstract_container_t*>(this));

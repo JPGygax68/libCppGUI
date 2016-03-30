@@ -118,7 +118,7 @@ namespace cppgui {
     template<class Aspect_parent>
     inline void Default_widget_updater<Config, With_layout>::Aspect<Aspect_parent>::invalidate()
     {
-        //auto c = static_cast<Abstract_container<Config, With_layout>*>(this->container());
+        //auto c = static_cast<Abstract_container<GUIConfig, With_layout>*>(this->container());
         //c->child_invalidated(static_cast<Widget_t*>(this));
         auto c = this->container();
         c->child_invalidated(static_cast<Widget_t*>(this));

@@ -18,7 +18,9 @@ namespace cppgui {
         template <typename WindowT>
         struct OpenGL_adapter {
     
-            auto p() { return static_cast<WindowT*>(this); } // TODO: use derived class to gain access to private stuff
+            class Window_t: public WindowT { friend struct OpenGL_adapter; };
+
+            auto p() { return static_cast<Window_t*>(this); }
 
             void init_renderer()
             {

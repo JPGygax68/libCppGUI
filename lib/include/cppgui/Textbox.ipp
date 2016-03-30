@@ -105,8 +105,8 @@ namespace cppgui {
     }
 
     /*
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::mouse_click(const Position &pos, int button, int count)
+    template<class GUIConfig, bool With_layout>
+    void Textbox<GUIConfig, With_layout>::mouse_click(const Position &pos, int button, int count)
     {
         if (button == 1 && count == 1)
         {

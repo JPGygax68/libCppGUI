@@ -74,9 +74,13 @@ namespace cppgui {
             void handle_mousewheel_event(SDL_MouseWheelEvent &ev);
             void handle_textinput_event(SDL_TextInputEvent &ev);
             void handle_keydown_event(SDL_KeyboardEvent &ev);
+            void handle_redraw();
             //void handle_custom_event(SDL_UserEvent &ev);
 
         private:
+            class Window_t: public Impl { friend class Window; };
+            auto p() { return static_cast<Window_t*>(this); }
+
             Window(const Window &) = delete; // no copy constructor please
             struct Deleter { void operator() (SDL_Window *win); };
             

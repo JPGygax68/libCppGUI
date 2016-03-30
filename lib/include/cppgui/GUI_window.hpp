@@ -4,21 +4,30 @@
 
 namespace cppgui {
 
-    template <class Config, class WindowBaseT, template <class> class RendererAdapter>
+    /** The class template is intended as a convenience: it augments the specified
+        implementation of the Window concept with a fully connected root widget.
+     */
+    template <
+        class GUIConfig,                            // GUI library configuration
+        class WindowBaseT,                          // Window "concept" implementation
+        template <class> class RendererAdapter      // "glue" code
+    >
     class GUI_window: public WindowBaseT, 
-        public RendererAdapter<GUI_window<Config, WindowBaseT, RendererAdapter>>
+        public RendererAdapter<GUI_window<GUIConfig, WindowBaseT, RendererAdapter>>
     {
 
     public:
-        using Canvas_t = typename Canvas<typename Config::Renderer>;
-        using Root_widget = cppgui::Root_widget<Config, true>;
-        using Keycode = typename Config::Keyboard::Keycode;
+        using Canvas_t = typename Canvas<typename GUIConfig::Renderer>;
+        using Root_widget = cppgui::Root_widget<GUIConfig, true>;
+        using Keycode = typename GUIConfig::Keyboard::Keycode;
 
         GUI_window(const char *title, int w = 800, int h = 600); // TODO: better defaults
 
         auto& root_widget() { return _root_widget; }
 
-        // Concept implementation
+    protected:
+
+        // Concept implementation (CRTP)
 
         void init_graphics();
         void cleanup_graphics();

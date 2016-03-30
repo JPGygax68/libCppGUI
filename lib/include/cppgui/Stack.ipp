@@ -81,16 +81,16 @@ namespace cppgui {
     // Layouter aspect ----------------------------------------------
 
     /*
-    template<class Config>
+    template<class GUIConfig>
     template<class Aspect_parent>
-    inline void Stack_layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
+    inline void Stack_layouter<GUIConfig, true>::Aspect<Aspect_parent>::init_layout()
     {
         compute_sizes();
     }
 
-    template <class Config>
+    template <class GUIConfig>
     template <class Aspect_parent>
-    inline void Stack_layouter<Config, true>::Aspect<Aspect_parent>::compute_sizes()
+    inline void Stack_layouter<GUIConfig, true>::Aspect<Aspect_parent>::compute_sizes()
     {
         // ...
     }

@@ -27,7 +27,7 @@ namespace cppgui {
         public Config::template Root_widget_container_updater< Abstract_container<Config, With_layout> >
     {
     public:
-        //using Renderer = typename Config::Renderer;
+        //using Renderer = typename GUIConfig::Renderer;
         using Keycode  = typename Config::Keyboard::Keycode;
         using Widget_t = typename Widget<Config, With_layout>;
         using Abstract_widget_t = typename Abstract_widget<Config, With_layout>;
@@ -126,7 +126,7 @@ namespace cppgui {
         template <class Aspect_parent> struct Aspect: public Aspect_parent {
 
             using Root_widget_t = Root_widget<Config, true>;
-            //using Abstract_container_t = typename Abstract_container<Config, true>;
+            //using Abstract_container_t = typename Abstract_container<GUIConfig, true>;
 
             virtual void init_layout();
             virtual auto minimal_size() -> Extents { return {0, 0}; }

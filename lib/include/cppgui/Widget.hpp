@@ -25,9 +25,9 @@ namespace cppgui {
     template <class Config, bool With_layout>
     class Abstract_widget:
         public Config::Color_mapper
-        //public Config::Styler
-        //public Config::Font_mapper
-        //public Config::Cursor
+        //public GUIConfig::Styler
+        //public GUIConfig::Font_mapper
+        //public GUIConfig::Cursor
     {
     public:
         using Keyboard          = typename Config::Keyboard;
@@ -138,7 +138,7 @@ namespace cppgui {
     public:
         using Renderer = typename Config::Renderer;
         using Font_handle = typename Renderer::font_handle;
-        //using Abstract_widget_t = typename Abstract_widget<Config, With_layout, Widget_layouter, Config::Abstract_widget_updater>;
+        //using Abstract_widget_t = typename Abstract_widget<GUIConfig, With_layout, Widget_layouter, GUIConfig::Abstract_widget_updater>;
         using Click_handler = typename Abstract_widget::Click_handler;
 
         void on_click(Click_handler);

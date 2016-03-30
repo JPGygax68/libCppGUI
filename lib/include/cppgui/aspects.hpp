@@ -87,15 +87,15 @@ namespace cppgui {
 
         Typical example:
 
-        template <class Config, bool With_layout>
+        template <class GUIConfig, bool With_layout>
         class My_container:
-            public select_aspect<With_layout, Container_layouter, Nil_layouter>::template aspect<Widget<Config, With_layout>>
+            public select_aspect<With_layout, Container_layouter, Nil_layouter>::template aspect<Widget<GUIConfig, With_layout>>
         {
             //...
         };
 
         Here, Container_layouter and Nil_layouter are the two aspect implementations to choose between, 
-        while Widget<Config, With_layout> is the base class onto which the aspect will be "latched".
+        while Widget<GUIConfig, With_layout> is the base class onto which the aspect will be "latched".
 
     */
 

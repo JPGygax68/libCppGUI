@@ -53,7 +53,7 @@ namespace cppgui {
 
             window_map()[id()] = static_cast<Impl*>(this);
 
-            static_cast<Impl*>(this)->init_graphics();
+            p()->init_graphics();
         }
 
         template <class Impl>
@@ -142,7 +142,7 @@ namespace cppgui {
         template <class Impl>
         void Window<Impl>::dispatch_redraw(uint32_t win_id)
         {
-            static_cast<Impl*>(window_map()[win_id])->redraw();
+            window_map()[win_id]->handle_redraw();
         }
 
         template <class Impl>
@@ -154,7 +154,7 @@ namespace cppgui {
             {
             case SDL_WINDOWEVENT_RESIZED: 
             case SDL_WINDOWEVENT_SIZE_CHANGED: 
-                static_cast<Impl*>(this)->size_changed(ev.data1, ev.data2);
+                p()->size_changed(ev.data1, ev.data2);
                 invalidate();
                 break;
             case SDL_WINDOWEVENT_SHOWN:
@@ -163,7 +163,7 @@ namespace cppgui {
                 invalidate();
                 break;
             case SDL_WINDOWEVENT_CLOSE:
-                static_cast<Impl*>(this)->closing();
+                p()->closing();
                 break;
             }
         }
@@ -173,21 +173,21 @@ namespace cppgui {
         {
             // std::cout << "Window::handle_mousemotion_event()" << std::endl;
 
-            static_cast<Impl*>(this)->mouse_motion(ev.x, ev.y);
+            p()->mouse_motion(ev.x, ev.y);
         }
 
         template<class Impl>
         void Window<Impl>::handle_mousebutton_event(SDL_MouseButtonEvent & ev)
         {
             auto dir = ev.state == SDL_PRESSED ? down : up;
-            static_cast<Impl*>(this)->mouse_button(ev.x, ev.y, ev.button, dir, ev.clicks);
+            p()->mouse_button(ev.x, ev.y, ev.button, dir, ev.clicks);
         }
 
         template<class Impl>
         void Window<Impl>::handle_mousewheel_event(SDL_MouseWheelEvent & ev)
         {
             // TODO: handle ev.direction
-            static_cast<Impl*>(this)->mouse_wheel(ev.x, ev.y);
+            p()->mouse_wheel(ev.x, ev.y);
         }
 
         template<class Impl>
@@ -196,19 +196,25 @@ namespace cppgui {
         #if _MSC_VER == 1900
             std::wstring_convert<std::codecvt_utf8<int32_t>, int32_t> utf32conv;
             auto utf32 = utf32conv.from_bytes(ev.text);
-            static_cast<Impl*>(this)->text_input(reinterpret_cast<const char32_t *>(utf32.data()), utf32.size());
+            p()->text_input(reinterpret_cast<const char32_t *>(utf32.data()), utf32.size());
         #else
             std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> utf32conv;
             auto utf32 = utf32conv.from_bytes(ev.text);
             _text_input_handler(utf32.c_str(), utf32.size());
-            static_cast<Impl*>(this)->text_input(utf32.data(), utf32.size());
+            p()->text_input(utf32.data(), utf32.size());
         #endif
         }
 
         template<class Impl>
         void Window<Impl>::handle_keydown_event(SDL_KeyboardEvent &ev)
         {
-            static_cast<Impl*>(this)->key_down(ev.keysym); // TODO: pass "repeat" too ?
+            p()->key_down(ev.keysym); // TODO: pass "repeat" too ?
+        }
+
+        template<class Impl>
+        void Window<Impl>::handle_redraw()
+        {
+            p()->redraw();
         }
 
         template <class Impl>

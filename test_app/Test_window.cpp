@@ -16,7 +16,7 @@
 
 #include "./Fonts.hpp"
 
-template cppgui::sdl::Window<Test_window>;
+template cppgui::sdl::Window<Test_window>; // explicit template instantiation required here
 
 // Class implementation  --------------------------------------------
 

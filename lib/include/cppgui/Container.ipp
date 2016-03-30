@@ -84,8 +84,8 @@ namespace cppgui {
     }
 
     /*
-    template<class Config, bool With_layout>
-    void Container<Config, With_layout>::add_child(Widget_t *child)
+    template<class GUIConfig, bool With_layout>
+    void Container<GUIConfig, With_layout>::add_child(Widget_t *child)
     {
         _add_child(child);
     }
