@@ -65,7 +65,7 @@ namespace cppgui {
             static void dispatch_textinput_event(SDL_TextInputEvent &ev);
             static void dispatch_keydown_event(SDL_KeyboardEvent &ev);
             static void dispatch_redraw(uint32_t win_id);
-            static void dispatch_custom_event(uint32_t win_id);
+            //static void dispatch_custom_event(uint32_t win_id);
 
         protected:
             void handle_window_event(SDL_WindowEvent &ev);

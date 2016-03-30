@@ -16,14 +16,19 @@ using namespace gl;
 #include <cppgui/Button.hpp>
 #include <cppgui/Stack.hpp>
 #include <cppgui/Canvas.hpp>
+#include <cppgui/GUI_window.hpp>
 
 #include <cppgui/sdl/Window.hpp>
 #include <cppgui/sdl/Default_configuration.hpp>
-#include <cppgui/sdl/Keyboard_adapter.hpp>
-#include <cppgui/sdl/Mouse_adapter.hpp>
+#include <cppgui/sdl/OpenGL_adapter.hpp>
 
-class Test_window : public cppgui::sdl::Window<Test_window> {
+using Renderer = typename gpc::gui::gl::renderer<true>;
+using GUI_configuration = typename cppgui::sdl::Default_configuration<Renderer, true>;
+
+class Test_window: public cppgui::GUI_window<GUI_configuration, cppgui::sdl::Window<Test_window>, cppgui::sdl::OpenGL_adapter>
+{
 public:
+    using Parent = typename cppgui::GUI_window<GUI_configuration, cppgui::sdl::Window<Test_window>, cppgui::sdl::OpenGL_adapter>;
     using Renderer = typename gpc::gui::gl::renderer<true>;
 
     using Widget_config = typename cppgui::sdl::Default_configuration<Renderer, true>;
@@ -38,30 +43,11 @@ public:
 
     Test_window();
 
-    // Concept implementation
-
-    void init_graphics();
-    void cleanup_graphics();
-
-    void redraw();
-
-    void size_changed(int w, int h);
-    void mouse_motion(int x, int y);
-    void mouse_button(int x, int y, int button, Button_direction dir, int count);
-    void mouse_wheel(int x, int y);
-    void text_input(const char32_t *, size_t);
-    void key_down(const SDL_Keysym &);
-
-    void closing();
-
 private:
-    Root_widget                 _root_widget;
+    //Root_widget                 _root_widget;
     Label                       _label;
     Button                      _button;
     Textbox                     _textbox;
     std::vector<Button>         _button_list;
     Stack                       _stack;
-    
-    Canvas_t                   *_canvas;
-    //bool                        _gfxres_ok = false;
 };

@@ -58,11 +58,14 @@ add_library( ${PROJECT_NAME} STATIC
     #include/cppgui/Stylesheet.hpp
     include/cppgui/aspects.hpp
 
+    include/cppgui/GUI_window.hpp include/cppgui/GUI_window.ipp
+
     ${FONT_HEADERS}
 )
 
 if (NOT TARGET libGPCFonts)
     message(FATAL_ERROR "libGPCFonts not defined as a CMake target")
 endif()
+target_link_libraries(${PROJECT_NAME} PRIVATE libGPCFonts)
 
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
