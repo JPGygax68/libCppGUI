@@ -56,7 +56,7 @@ namespace cppgui {
 
             auto client_extents() const -> Extents;
 
-            virtual void closing() {};
+            //virtual void closing() {};
 
             static void dispatch_window_event(SDL_WindowEvent &ev);
             static void dispatch_mousemotion_event(SDL_MouseMotionEvent &ev);

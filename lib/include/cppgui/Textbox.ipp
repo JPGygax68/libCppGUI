@@ -145,7 +145,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::mouse_enter()
     {
-        root_widget()->push_cursor( Config::Cursor::get_ibeam_cursor() );
+        root_widget()->push_cursor( Config::Mouse::get_ibeam_cursor() );
     }
 
     template<class Config, bool With_layout>

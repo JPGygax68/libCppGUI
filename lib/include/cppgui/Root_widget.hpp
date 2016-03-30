@@ -35,7 +35,7 @@ namespace cppgui {
         using Abstract_container_t = Abstract_container<Config, With_layout>;
         using Font_mapper = typename Config::Font_mapper;
         using Font_handle = typename Canvas_t::Font_handle;
-        using Cursor_handle = typename Config::Cursor::Cursor_handle;
+        using Cursor_handle = typename Config::Mouse::Cursor_handle;
 
         Root_widget(Canvas_t *);
 

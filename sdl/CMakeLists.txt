@@ -8,6 +8,9 @@ add_library( ${PROJECT_NAME} STATIC
     
     include/cppgui/sdl/Application.hpp include/cppgui/sdl/Application.ipp
     include/cppgui/sdl/Window.hpp include/cppgui/sdl/Window.ipp
+
+    include/cppgui/sdl/Keyboard_adapter.hpp
+    include/cppgui/sdl/Mouse_adapter.hpp
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)

@@ -36,9 +36,9 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::push_cursor(Cursor_handle cursor)
     {
-        _cursor_stack.push( Config::Cursor::get_current_cursor() );
+        _cursor_stack.push( Config::Mouse::get_current_cursor() );
 
-        Config::Cursor::set_cursor(cursor);
+        Config::Mouse::set_cursor(cursor);
     }
 
     template<class Config, bool With_layout>
@@ -47,10 +47,10 @@ namespace cppgui {
         // All cursors but the top one must be freed after use
         if (_cursor_stack.size() > 1)
         {
-            Config::Cursor::free_cursor( Config::Cursor::get_current_cursor() );
+            Config::Mouse::free_cursor( Config::Mouse::get_current_cursor() );
         }
 
-        Config::Cursor::set_cursor(_cursor_stack.top());
+        Config::Mouse::set_cursor(_cursor_stack.top());
 
         _cursor_stack.pop();
     }

@@ -18,9 +18,8 @@ using namespace gl;
 #include <cppgui/Canvas.hpp>
 
 #include <cppgui/sdl/Window.hpp>
-
-#include <SDL_keyboard.h>
-#include <SDL_mouse.h>
+#include <cppgui/sdl/Keyboard_adapter.hpp>
+#include <cppgui/sdl/Mouse_adapter.hpp>
 
 class Test_window : public cppgui::sdl::Window<Test_window> {
 public:
@@ -63,64 +62,15 @@ public:
 
         //using Styler = cppgui::Static_styler<cppgui::Default_stylesheet>;
 
-        // TODO: move this to a submodule of cppgui
-        struct Keyboard {
+        using Keyboard = cppgui::sdl::Keyboard_adapter;
 
-            using Keycode = SDL_Keysym;
+        using Mouse = cppgui::sdl::Mouse_adapter;
 
-            static inline bool is_left     (const Keycode &key) { return key.sym == SDLK_LEFT     ; }
-            static inline bool is_right    (const Keycode &key) { return key.sym == SDLK_RIGHT    ; }
-            static inline bool is_backspace(const Keycode &key) { return key.sym == SDLK_BACKSPACE; }
-            static inline bool is_delete   (const Keycode &key) { return key.sym == SDLK_DELETE   ; }
-            static inline bool is_home     (const Keycode &key) { return key.sym == SDLK_HOME     ; }
-            static inline bool is_end      (const Keycode &key) { return key.sym == SDLK_END      ; }
-
-            // Modifiers 
-
-            static inline bool is_shift_down() { return (SDL_GetModState() & KMOD_SHIFT) != 0; }
-            static inline bool is_ctrl_down () { return (SDL_GetModState() & KMOD_CTRL ) != 0; }
-        };
-
-        struct Mouse {
-
-            static inline bool is_button_down(int button) { return (SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(button)) != 0; }
-        };
-
-        struct Cursor {
-
-            using Cursor_handle = SDL_Cursor *;
-
-            static auto get_current_cursor() {
-
-                return SDL_GetCursor();
-            }
-
-            static auto get_arrow_cursor() {
-
-                // TODO: do we have to manage this resource ?
-                return SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
-            }
-
-            static auto get_ibeam_cursor() {
-
-                // TODO: do we have to manage this resource ?
-                return SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_IBEAM);
-            }
-
-            static void free_cursor(Cursor_handle cursor) {
-
-                SDL_FreeCursor(cursor);
-            }
-
-            static void set_cursor(Cursor_handle cursor) {
-
-                SDL_SetCursor(cursor);
-            }
-
-        };
     };
 
     Test_window();
+
+    // Concept implementation
 
     void init_graphics();
     void cleanup_graphics();
@@ -134,7 +84,7 @@ public:
     void text_input(const char32_t *, size_t);
     void key_down(const SDL_Keysym &);
 
-    void closing() override;
+    void closing();
 
 private:
     Root_widget                 _root_widget;
