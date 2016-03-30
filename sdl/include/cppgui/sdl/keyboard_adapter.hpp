@@ -7,6 +7,7 @@ namespace cppgui {
     namespace sdl {
 
         struct Keyboard_adapter {
+
             using Keycode = SDL_Keysym;
 
             static inline bool is_left     (const Keycode &key) { return key.sym == SDLK_LEFT     ; }

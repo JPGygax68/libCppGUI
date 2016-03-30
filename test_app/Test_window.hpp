@@ -18,14 +18,15 @@ using namespace gl;
 #include <cppgui/Canvas.hpp>
 
 #include <cppgui/sdl/Window.hpp>
+#include <cppgui/sdl/Default_configuration.hpp>
 #include <cppgui/sdl/Keyboard_adapter.hpp>
 #include <cppgui/sdl/Mouse_adapter.hpp>
 
 class Test_window : public cppgui::sdl::Window<Test_window> {
 public:
-    using Renderer = gpc::gui::gl::renderer<true>;
+    using Renderer = typename gpc::gui::gl::renderer<true>;
 
-    struct Widget_config; // forward declaration so we can do our using's
+    using Widget_config = typename cppgui::sdl::Default_configuration<Renderer, true>;
 
     using Widget = cppgui::Widget<Widget_config, true>;
     using Label = cppgui::Label<Widget_config, true>;
@@ -34,39 +35,6 @@ public:
     using Textbox = cppgui::Textbox<Widget_config, true>;
     using Stack = cppgui::Stack<Widget_config, true>;
     using Canvas_t = cppgui::Canvas<Renderer>;
-
-    struct Widget_config {
-
-        using Renderer = typename Renderer;
-        using Font_handle = Renderer::font_handle;
-
-        template <class Aspect_parent>
-        using Widget_updater = cppgui::Default_widget_updater<Widget_config, true>::Aspect<Aspect_parent>;
-        template <class Aspect_parent>
-        using Abstract_container_Container_updater = cppgui::Default_Abstract_container_Container_updater<Widget_config, true>::Aspect<Aspect_parent>;
-        template <class Aspect_parent>
-        using Container_Container_updater = cppgui::Default_Container_Container_updater<Widget_config, true>::Aspect<Aspect_parent>;
-        template <class Aspect_parent>
-        using Root_widget_updater = cppgui::Default_Root_widget_Updater<Widget_config, true>::Aspect<Aspect_parent>;
-        template <class Aspect_parent>
-        using Root_widget_container_updater = cppgui::Default_Root_widget_Container_updater<Widget_config, true>::Aspect<Aspect_parent>;
-
-        //using Container   = cppgui::Container<Widget_config, true>;
-        //using Root_widget = cppgui::Root_widget<Widget_config, true>;
-
-        // We override the color mapper
-        // TODO: this should not be necessary, the identity mapper should be chosen automatically
-        // according to a static boolean set in the renderer class
-        using Color_mapper = cppgui::Identity_mapper<Renderer, cppgui::Color>;
-        using Font_mapper  = cppgui::Default_font_mapper<Renderer>;
-
-        //using Styler = cppgui::Static_styler<cppgui::Default_stylesheet>;
-
-        using Keyboard = cppgui::sdl::Keyboard_adapter;
-
-        using Mouse = cppgui::sdl::Mouse_adapter;
-
-    };
 
     Test_window();
 

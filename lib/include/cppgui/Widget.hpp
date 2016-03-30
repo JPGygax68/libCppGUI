@@ -182,8 +182,8 @@ namespace cppgui {
 
     template <class Config, bool With_layout>
     struct Default_widget_updater {
-
-        CPPGUI_DEFINE_ASPECT(Aspect)
+        
+        template<class Aspect_parent> struct Aspect: public Aspect_parent
         {
             using Widget_t = Widget<Config, With_layout>;
             using Abstract_container_t = Abstract_container<Config, With_layout>;
