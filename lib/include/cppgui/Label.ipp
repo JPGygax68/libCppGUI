@@ -58,6 +58,8 @@ namespace cppgui {
         auto txb = p()->_font->compute_text_extents(0, p()->_text.data(), p()->_text.size());
         auto ext = extents();
 
+        // TODO: select alignment
+
         p()->_txpos = {
             static_cast<int>((ext.w - txb.width()) / 2),
             static_cast<int>((ext.h - txb.height()) / 2 + txb.y_max)

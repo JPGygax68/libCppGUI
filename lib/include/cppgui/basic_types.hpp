@@ -1,5 +1,7 @@
 #pragma once
 
+#include <gpc/gui/renderer.hpp>
+
 #include <gpc/fonts/rasterized_font.hpp>
 #include <gpc/fonts/bounding_box.hpp>
 #include <gpc/fonts/rasterized_glyph_cbox.hpp>

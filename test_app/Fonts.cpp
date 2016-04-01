@@ -1,13 +1,15 @@
-#include <gpc/fonts/store.hpp>
+#include <cppgui/Font_resources.hpp>
 
 #include "./Fonts.hpp"
 
-auto Fonts::default_font() -> gpc::fonts::rasterized_font &
-{
-    static uint8_t data[] = {
-        #include "LiberationSans-Regular-24.h"
-    };
-    static gpc::fonts::rasterized_font font = gpc::fonts::load(data, sizeof(data));
+// TODO: this is a temporary stopgap. Replace with direct calls to cppgui::Font_resources
 
-    return font;
+auto Fonts::default_font() -> const cppgui::Rasterized_font *
+{
+    return cppgui::Font_resources::liberation_sans<24>::font();
+}
+
+auto Fonts::default_glyph_font() -> const cppgui::Rasterized_font *
+{
+    return cppgui::Font_resources::material_icons<24>::font();
 }

@@ -35,6 +35,7 @@ private:
     Label                       _label;
     Button                      _button;
     Textbox                     _textbox;
+    Checkbox                    _checkbox;
     std::vector<Button>         _button_list;
     Stack                       _stack;
 };

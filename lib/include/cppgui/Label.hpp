@@ -36,7 +36,6 @@ namespace cppgui {
 
         void init() override;
 
-        //void update_render_resources(Renderer *) override;
         void render(Canvas_t *, const Position &offset) override;
 
     protected:

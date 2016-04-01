@@ -9,6 +9,13 @@ namespace cppgui {
 
     namespace sdl {
 
+        /*
+        template <class WinT>
+        auto Application<WinT>::main_window() -> WinT &
+        {
+        }
+        */
+
         template <class WinT>
         int Application<WinT>::run()
         {

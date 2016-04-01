@@ -6,7 +6,7 @@
 namespace cppgui {
 
     /** The class template is intended as a convenience: it augments the specified
-        implementation of the Window concept with a fully connected root widget.
+        implementation of the Window concept with a ready-made root widget.
 
         IMPORTANT: this template requires explicit instantiation. The best way
             of doing this is via a typedef, which would then a) be used as the 
@@ -16,7 +16,7 @@ namespace cppgui {
            Header:
 
                 using Specialized_GUI_window = cppgui::GUI_window<...>;
-                class My_window: public Specialized_GUI_Window { ... };
+                class My_window: public Specialized_GUI_window { ... };
 
            Implementation:
 

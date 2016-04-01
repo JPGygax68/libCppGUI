@@ -9,6 +9,7 @@ if (NOT TARGET gpcbin2c)
     message(FATAL_ERROR "gpcbin2c must be available as a CMake target")
 endif()
 
+if (0)
 set(font_file LiberationSans-Regular)
 
 foreach(size IN ITEMS 14 16 24)
@@ -34,6 +35,7 @@ foreach(size IN ITEMS 14 16 24)
     list(APPEND FONT_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/generated/headers/${font_file}-${size}.h)
 
 endforeach(size)
+endif()
 
 # The main target
 
@@ -46,7 +48,7 @@ add_executable( ${PROJECT_NAME}
   #Window.hpp            Window.ipp
   Fonts.hpp             Fonts.cpp 
 
-  ${FONT_HEADERS}
+  # ${FONT_HEADERS}
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/generated/headers)

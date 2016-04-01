@@ -6,10 +6,8 @@
 
 #include "./Test_window.hpp"
 
-// Explicitly instantiate Application class template
 #include <cppgui/sdl/Application.ipp>
-#include <cppgui/sdl/Window.ipp>
-template cppgui::sdl::Application<Test_window>;
+template class cppgui::sdl::Application<Test_window>;
 
 int main(int /*argc*/, char * /*argv*/[])
 {

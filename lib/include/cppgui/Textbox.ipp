@@ -6,9 +6,9 @@ namespace cppgui {
     void Textbox<Config, With_layout>::set_font(const Rasterized_font *font)
     {
         /* TODO: move this change_font() in layouter aspect
-        if (font != _font)
+        if (font != _label_font)
         {
-            _font = font;
+            _label_font = font;
             font_changed();
         }
         */

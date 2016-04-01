@@ -15,7 +15,13 @@ namespace cppgui {
         public:
             using Custom_event_handler = std::function<void(const SDL_UserEvent &)>;
 
+            // Concept implementation
+
+            //auto main_window() -> WinT &;
+
             int run();
+
+            // Additional methods
 
             static auto register_custom_event(Custom_event_handler) -> uint32_t;
 

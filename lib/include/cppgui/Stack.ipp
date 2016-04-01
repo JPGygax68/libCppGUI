@@ -2,6 +2,8 @@
 
 #include <gpc/fonts/store.hpp>
 
+#include "./Font_resources.hpp"
+
 #include "./Stack.hpp"
 
 namespace cppgui {
@@ -52,13 +54,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     auto Stack<Config, With_layout>::glyph_font() -> const Rasterized_font *
     {
-        // TODO: move this to a separate module
-        static uint8_t data[] = {
-            #include "LiberationSans-Regular-24.h"
-        };
-        static Rasterized_font font = gpc::fonts::load(data, sizeof(data));
-
-        return &font;
+        return Font_resources::liberation_sans<24>::font();
     }
 
         template<class Config, bool With_layout>

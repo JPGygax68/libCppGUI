@@ -11,6 +11,9 @@ endif()
 
 set(font_file LiberationSans-Regular)
 
+# TODO: support for sizes by default, make them configurable
+# TODO: use a CMake custom function (to be provided by GPCFontRasterizer) as soon as available
+
 foreach(size IN ITEMS 24)
 
     add_custom_command(
@@ -20,7 +23,35 @@ foreach(size IN ITEMS 24)
             input=${CMAKE_CURRENT_SOURCE_DIR}/data/fonts/${font_file}.ttf
             size=${size}
             output="${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont"
-            range=geometric-shapes
+            range=all
+    )
+
+    add_custom_command(
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/generated/headers/${font_file}-${size}.h
+        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont
+        COMMAND GPCBin2C ARGS
+            -i "${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont"
+            -o "${CMAKE_CURRENT_BINARY_DIR}/generated/headers/${font_file}-${size}.h"
+    )
+
+    list(APPEND FONT_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/generated/headers/${font_file}-${size}.h)
+
+endforeach(size)
+
+# TODO: support a variety of sizes
+
+set(font_file MaterialIcons-Regular)
+
+foreach(size IN ITEMS 14 24)
+
+    add_custom_command(
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/data/fonts/${font_file}.ttf
+        COMMAND gpcfontrasterizer ARGS
+            input=${CMAKE_CURRENT_SOURCE_DIR}/data/fonts/${font_file}.ttf
+            size=${size}
+            output="${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont"
+            range=$E876
     )
 
     add_custom_command(
@@ -42,21 +73,26 @@ add_library( ${PROJECT_NAME} STATIC
     src/dummy.cpp
 
     include/cppgui/basic_types.hpp
+    include/cppgui/aspects.hpp
+
     include/cppgui/Canvas.hpp                       include/cppgui/Canvas.ipp
     include/cppgui/Widget.hpp                       include/cppgui/Widget.ipp
     include/cppgui/Button.hpp                       include/cppgui/Button.ipp
     include/cppgui/Label.hpp                        include/cppgui/Label.ipp
     include/cppgui/Textbox.hpp                      include/cppgui/Textbox.ipp
+    include/cppgui/Checkbox.hpp                     include/cppgui/Checkbox.ipp
     include/cppgui/Box.hpp                          include/cppgui/Box.ipp
     include/cppgui/Container.hpp                    include/cppgui/Container.ipp
     include/cppgui/Stack.hpp                        include/cppgui/Stack.ipp
     include/cppgui/Root_widget.hpp                  include/cppgui/Root_widget.ipp
+
+    include/cppgui/Font_resources.hpp               src/Font_resources.cpp
+
+    include/cppgui/layouting.hpp                    include/cppgui/layouting.ipp
+
     include/cppgui/Resource_mapper.hpp              include/cppgui/Resource_mapper.ipp
     include/cppgui/Cheap_resource_mapper.hpp        include/cppgui/Cheap_resource_mapper.ipp
     include/cppgui/Full_resource_mapper.hpp         include/cppgui/Full_resource_mapper.ipp
-    include/cppgui/layouting.hpp                    include/cppgui/layouting.ipp
-    #include/cppgui/Stylesheet.hpp
-    include/cppgui/aspects.hpp
 
     include/cppgui/GUI_window.hpp include/cppgui/GUI_window.ipp
 
@@ -66,9 +102,22 @@ add_library( ${PROJECT_NAME} STATIC
     ${FONT_HEADERS}
 )
 
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/generated/headers) # for the fonts
+
+# libGPCFonts
+
 if (NOT TARGET libGPCFonts)
     message(FATAL_ERROR "libGPCFonts not defined as a CMake target")
 endif()
 target_link_libraries(${PROJECT_NAME} PRIVATE libGPCFonts)
+
+# libGPCGUIRenderer
+
+if (NOT TARGET libGPCGUIRenderer)
+    message(FATAL_ERROR "libGPCGUIRenderer not defined as a CMake target")
+endif()
+target_link_libraries(${PROJECT_NAME} PUBLIC libGPCGUIRenderer)
+
+# For consumers
 
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
