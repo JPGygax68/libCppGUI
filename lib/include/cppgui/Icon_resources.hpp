@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include "./basic_types.hpp"
 
 namespace cppgui {
@@ -13,7 +15,7 @@ namespace cppgui {
 
     struct Icon_resources {
     
-        static constexpr auto tick(Font_size size) -> Font_icon;
+        static constexpr auto tick(Font_size size) -> const uint8_t *;
 
     };
 

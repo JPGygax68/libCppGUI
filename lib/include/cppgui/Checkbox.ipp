@@ -9,7 +9,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Checkbox<Config, With_layout>::set_glyph_font_size(unsigned int size)
     {
-        _glyph_font = Font_resources::material_icons<22>::font();
+        _glyph_font = Font_resources::material_icons<24>::font();
     }
 
     template<class Config, bool With_layout>
