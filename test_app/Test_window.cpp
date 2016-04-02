@@ -34,7 +34,8 @@ Test_window::Test_window(): Parent("Test window")
     _button.set_label(U"Click Me!");
 
     _checkbox.set_font(Fonts::default_font());
-    _checkbox.set_glyph_font(Fonts::default_glyph_font());
+    //_checkbox.set_glyph_font(Fonts::default_glyph_font());
+    _checkbox.set_glyph_font_size(22);
     _checkbox.set_position({500, 50});
     _checkbox.set_extents({200, 40});
     _checkbox.set_label(U"Check me!");

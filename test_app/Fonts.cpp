@@ -11,5 +11,5 @@ auto Fonts::default_font() -> const cppgui::Rasterized_font *
 
 auto Fonts::default_glyph_font() -> const cppgui::Rasterized_font *
 {
-    return cppgui::Font_resources::material_icons<24>::font();
+    return cppgui::Font_resources::material_icons<22>::font();
 }

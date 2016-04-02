@@ -76,6 +76,13 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Abstract_widget<Config, With_layout>::draw_borders(Canvas_t *cv, const Rectangle &rect, const Position &offs, 
+        unsigned int width, const Color &color)
+    {
+        draw_borders(cv, rect, offs, width, color, color, color, color);
+    }
+
+    template<class Config, bool With_layout>
     void Abstract_widget<Config, With_layout>::draw_borders(Canvas_t *r, const Rectangle & rect, const Position & offs, 
         unsigned int width, const Color & top, const Color & right, const Color & bottom, const Color & left)
     {

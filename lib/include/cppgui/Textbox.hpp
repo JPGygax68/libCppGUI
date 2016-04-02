@@ -114,7 +114,7 @@ namespace cppgui {
 
             void change_font(const Rasterized_font *);
 
-            void compute_sizes();
+            void compute_label_size();
 
             void init_layout() override;
             auto minimal_size() -> Extents override;

@@ -90,15 +90,25 @@ namespace cppgui {
 
     protected:
         auto rgba_to_native(Canvas_t *, const Color &) -> Native_color;
-        void fill_rect(Canvas_t *r, const Rectangle &rect, const Native_color &);
-        void fill_rect(Canvas_t *r, const Rectangle &rect, const Position &offs, const Native_color &);
-        void fill_rect(Canvas_t *r, const Position &pos, const Extents &ext, const Native_color &);
-        void fill(Canvas_t *r, const Position &offs, const Native_color &);
+        void fill_rect(Canvas_t *, const Rectangle &rect, const Native_color &);
+        void fill_rect(Canvas_t *, const Rectangle &rect, const Position &offs, const Native_color &);
+        void fill_rect(Canvas_t *, const Position &pos, const Extents &ext, const Native_color &);
+        void fill(Canvas_t *, const Position &offs, const Native_color &);
+        void draw_borders(Canvas_t *, const Rectangle &rect, const Position &offs, 
+            unsigned int width, const Color &color);
         void draw_borders(Canvas_t *, const Rectangle &rect, const Position &offs, 
             unsigned int width, const Color &top, const Color &right, const Color &bottom, const Color &left);
         auto convert_position_to_inner(const Position &) -> Position;
         auto advance_to_glyph_at(const Rasterized_font *, const std::u32string &text, size_t from, size_t to, Position &pos) 
             -> const Glyph_control_box *;
+
+        // Experimental & temporary: implement more sophisticated (and flexible!) styling
+        // - May not / should not stay static; make const if possible
+
+        static auto stroke_width() -> int { return 1; }
+        static auto stroke_color() -> Color { return { 0, 0, 0, 1 }; }
+        static auto margin() -> int { return 1; }
+        static auto paper_color() -> Color { return {1, 1, 1, 1}; }
 
     private:
         Rectangle _rect = {};
@@ -200,5 +210,12 @@ namespace cppgui {
             Abstract_container_t *_container;
         };
     };
+
+    // Macro to make aspect implementation slightly less painful
+
+    #define WIDGET_ASPECT_METHOD(class_, aspect) \
+        template<class Config> \
+        template<class Aspect_parent> \
+        auto class_##_##aspect<Config, true>::Aspect<Aspect_parent>
 
 } // ns cppgui

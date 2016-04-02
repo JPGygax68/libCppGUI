@@ -1,6 +1,6 @@
 project (libCppGUI)
 
-# Rasterized fonts (for glyphs) using the GPCFontRasterizer and the GPCBin2C utilities
+# Rasterized fonts using the GPCFontRasterizer and the GPCBin2C utilities
 
 if (NOT TARGET gpcfontrasterizer)
     message(FATAL_ERROR "gpcfontrasterizer must be available as a CMake target")
@@ -42,7 +42,9 @@ endforeach(size)
 
 set(font_file MaterialIcons-Regular)
 
-foreach(size IN ITEMS 14 24)
+set(ICON_FONT_INSTANTIATION_CODE "")
+
+foreach(size IN ITEMS 18 19 20 21 22 23 24)
 
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont
@@ -64,7 +66,15 @@ foreach(size IN ITEMS 14 24)
 
     list(APPEND FONT_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/generated/headers/${font_file}-${size}.h)
 
+    string(TOLOWER "${font_file}" identifier)
+    string(REPLACE "-" "_" identifier ${identifier})
+    set(identifier "${identifier}_${size}")
+
+    set(ICON_FONT_INSTANTIATION_CODE "${ICON_FONT_INSTANTIATION_CODE}\nstatic const uint8_t ${identifier}[] = {\n#include \"${font_file}-${size}.h\"\n};")
+
 endforeach(size)
+
+message("ICON_FONT_INSTANTIATION_CODE:\n${ICON_FONT_INSTANTIATION_CODE}")
 
 # Main target
 
@@ -87,6 +97,7 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Root_widget.hpp                  include/cppgui/Root_widget.ipp
 
     include/cppgui/Font_resources.hpp               src/Font_resources.cpp
+    include/cppgui/Icon_resources.hpp               src/Icon_resources.cpp
 
     include/cppgui/layouting.hpp                    include/cppgui/layouting.ipp
 
@@ -102,6 +113,7 @@ add_library( ${PROJECT_NAME} STATIC
     ${FONT_HEADERS}
 )
 
+target_c
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/generated/headers) # for the fonts
 
 # libGPCFonts

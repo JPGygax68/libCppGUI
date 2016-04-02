@@ -31,6 +31,7 @@ namespace cppgui {
     };
 
     using Rasterized_font   = gpc::fonts::rasterized_font;
+    using Font_size         = unsigned int;
     using Text_bounding_box = gpc::fonts::bounding_box;
     using Glyph_control_box = gpc::fonts::rasterized_glyph_cbox;
     using Color             = gpc::gui::rgba_norm;

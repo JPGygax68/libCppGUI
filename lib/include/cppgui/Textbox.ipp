@@ -529,7 +529,7 @@ namespace cppgui {
     template<class Aspect_parent>
     inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
     {
-        compute_sizes();
+        compute_label_size();
         this->layout();
     }
 
@@ -538,13 +538,13 @@ namespace cppgui {
     inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::change_font(const Rasterized_font *font)
     {
         p()->_font = font;
-        compute_sizes();
+        compute_label_size();
         this->layout();
     }
 
     template <class Config>
     template <class Aspect_parent>
-    inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::compute_sizes()
+    inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::compute_label_size()
     {
         // TODO: free the font handle
 
