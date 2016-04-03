@@ -71,7 +71,7 @@ file(WRITE ${GENERATED_HEADERS_DIR}all_icon_fonts.h "// all_icon_fonts.h  - gene
 file(APPEND ${GENERATED_HEADERS_DIR}all_icon_fonts.h
     "template<std::size_t Size> struct materialicons_regular{ static auto get() -> std::pair<const uint8_t *, std::size_t> { return {nullptr, 0}; } };\n\n")
 
-foreach(size IN ITEMS 15 22)
+foreach(size IN ITEMS 13 20)
 
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont

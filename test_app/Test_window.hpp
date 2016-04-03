@@ -20,7 +20,7 @@ using namespace gl;
 using Renderer = typename gpc::gui::gl::renderer<true>;
 struct GUI_configuration: cppgui::sdl::Default_configuration<GUI_configuration, Renderer, true> {
 
-    using Default_font = typename cppgui::Default_font<24>;
+    using Default_font = typename cppgui::Default_font<16>;
 };
 
 class Test_window;
