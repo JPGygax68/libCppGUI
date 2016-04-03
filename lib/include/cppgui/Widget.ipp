@@ -138,6 +138,13 @@ namespace cppgui {
         _container = cont;
     }
 
+    template<class Config, bool With_layout>
+    template<class Aspect_parent>
+    void Default_widget_updater<Config, With_layout>::Aspect<Aspect_parent>::removed_from_container(Abstract_container_t *cont)
+    {
+        _container = nullptr;
+    }
+
     // Widget<> implementation --------------------------------------
 
     template<class Config, bool With_layouting>

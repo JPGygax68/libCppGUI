@@ -201,6 +201,7 @@ namespace cppgui {
 
             void invalidate();
             void added_to_container(Abstract_container_t *);
+            void removed_from_container(Abstract_container_t *);
 
             auto container() const { return _container; }
 

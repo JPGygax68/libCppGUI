@@ -34,13 +34,14 @@ Test_window::Test_window(): Parent("Test window")
     auto tick_descr = cppgui::Icon_resources<Default_font::size>::tick_descr();
 
     _label.set_font(&dflt_font);
+    _label.set_background_color({1, 1, 1, 1});
     _label.set_text(U"Hello World!");
     _label.on_click([](const cppgui::Position &pos, int button, int clicks) {
         std::cout << "Label was clicked! (pos = " << pos.x << ", " << pos.y 
             << ", button = " << button << ", clicks = " << clicks << ")" << std::endl;
     });
     _label.set_position({ 50, 50 });
-    //_label.set_extents({ 0, 0 }); //200, 50 });
+    _label.set_extents({ 200, 50 });
 
     _textbox.set_font(&dflt_font);
     _textbox.set_position({50, 120});

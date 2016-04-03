@@ -17,6 +17,12 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Label<Config, With_layout>::set_background_color(const Color &clr)
+    {
+        _bkgnd_clr = clr;
+    }
+
+    template<class Config, bool With_layout>
     void Label<Config, With_layout>::init()
     {
         _fnthnd = root_widget()->get_font_handle(_font);
@@ -25,7 +31,7 @@ namespace cppgui {
     template<class Config, bool WithLayout>
     inline void Label<Config, WithLayout>::render(Canvas_t *r, const Position &offs)
     {
-        // fill(r, offs, rgba_to_native(r, button_face_color()); 
+        fill(r, offs, rgba_to_native(r, _bkgnd_clr)); 
 
         auto pos = offs + position();
         r->render_text(_fnthnd, pos.x + _txpos.x, pos.y + _txpos.y, _text.data(), _text.size());

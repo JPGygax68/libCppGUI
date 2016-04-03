@@ -40,6 +40,7 @@ namespace cppgui {
         Root_widget(Canvas_t *);
 
         using Abstract_container_t::add_child;
+        using Abstract_container_t::remove_child;
 
         void init() override;
 

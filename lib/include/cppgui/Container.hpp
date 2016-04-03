@@ -20,6 +20,7 @@ namespace cppgui {
     protected:
 
         void add_child(Widget_t *);
+        void remove_child(Widget_t *);
 
         auto child_at(const Position &) -> Widget_t *;
 
