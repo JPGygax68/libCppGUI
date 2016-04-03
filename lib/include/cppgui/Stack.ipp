@@ -2,13 +2,9 @@
 
 #include <gpc/fonts/store.hpp>
 
-#include "./Font_resources.hpp"
-
 #include "./Stack.hpp"
 
 namespace cppgui {
-
-    #include "all_fonts.h" // TODO: temporary, remove
 
     template<class Config, bool With_layout>
     Stack<Config, With_layout>::Stack()
@@ -62,7 +58,7 @@ namespace cppgui {
 
         if (!ready)
         {
-            auto data = Config::Default_font<Config::Default_font_size>::get();
+            auto data = Config::Default_font::get();
             font = gpc::fonts::load(data.first, data.second);
             ready = true;
         }

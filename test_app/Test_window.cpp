@@ -3,13 +3,13 @@
 
 #include <gpc/fonts/store.hpp>
 
+#include <cppgui/Default_font.hpp>
+
 #include <cppgui/all_widgets.ipp>
 #include <cppgui/sdl/Window.ipp>
 #include <cppgui/GUI_window.ipp>
 
-#include "./Fonts.hpp"
-
-#include "all_fonts.h" // TODO: move back to cppgui module
+//#include "./Fonts.hpp"
 
 #include "./Test_window.hpp"
 
@@ -22,9 +22,10 @@ static cppgui::Rasterized_font  glyph_font;     // TODO: move this to a reusable
 
 Test_window::Test_window(): Parent("Test window")
 {
-    static const size_t font_size = 14;
+    static const auto font_size = cppgui::Default_font::size;
 
-    auto dflt_font_data = liberationsans_regular<font_size>::get();
+    // TODO: doesn't really belong here (could be executed more than once)
+    auto dflt_font_data = cppgui::Default_font::get();
     dflt_font = gpc::fonts::load(dflt_font_data.first, dflt_font_data.second);
 
     auto tick_font_data = cppgui::Icon_resources<font_size>::tick_font_data();
@@ -82,4 +83,3 @@ Test_window::Test_window(): Parent("Test window")
     root_widget().layout();
     root_widget().init();
 }
-

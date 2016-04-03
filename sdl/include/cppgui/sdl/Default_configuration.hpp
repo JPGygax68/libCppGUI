@@ -5,6 +5,7 @@
 #include <cppgui/Widget.hpp>
 #include <cppgui/Container.hpp>
 #include <cppgui/Root_widget.hpp>
+#include <cppgui/Default_font.hpp>
 
 #include "./Keyboard_adapter.hpp"
 #include "./Mouse_adapter.hpp"
@@ -54,9 +55,10 @@ namespace cppgui {
 
             // Default font
 
-            template<std::size_t Size> using Default_font = typename liberationsans_regular<Size>;
+            //template<std::size_t Size> using Default_font = typename liberationsans_regular<Size>;
+            //static const std::size_t Default_font_size = 14;
 
-            static const std::size_t Default_font_size = 14;
+            using Default_font = typename cppgui::Default_font;
         };
 
     } // ns sdl
