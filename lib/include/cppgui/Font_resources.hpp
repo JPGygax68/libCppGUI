@@ -1,11 +1,15 @@
 #pragma once
 
+// TODO: this module is basically obsolete
+
 #include "./basic_types.hpp"
 
 namespace cppgui {
 
     struct Font_resources {
     
+        /*
+        
         // Liberation Sans
 
         template<int Size>
@@ -17,15 +21,7 @@ namespace cppgui {
             static auto font() -> const Rasterized_font *;
         };
 
-        // MaterialIcons
-
-        template<int Size>
-        struct material_icons {};
-
-        template <> struct material_icons<21> { static auto font() -> const Rasterized_font *; };
-        template <> struct material_icons<22> { static auto font() -> const Rasterized_font *; };
-        template <> struct material_icons<23> { static auto font() -> const Rasterized_font *; };
-        template <> struct material_icons<24> { static auto font() -> const Rasterized_font *; };
+        */
     };
 
 } // ns cppgui

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 #include <gpc/gui/renderer.hpp>
 
 #include <gpc/fonts/rasterized_font.hpp>
@@ -8,18 +10,52 @@
 
 namespace cppgui {
 
+    using Offset = int;
+    using Length = unsigned int;
+
     struct Position {
-        int x, y;
-        auto operator + (const Position &offs) const { return Position{ x + offs.x, y + offs.y }; }
-        auto operator - (const Position &offs) const { return Position{ x - offs.x, y - offs.y }; }
-        auto& operator += (const Position &offs) { x += offs.x, y += offs.y; return *this; }
+
+        Offset x, y;
+
+        auto operator + (const Position &delta) const { return Position{ x + delta.x, y + delta.y }; }
+        auto operator - (const Position &delta) const { return Position{ x - delta.x, y - delta.y }; }
+        auto& operator += (const Position &delta) { x += delta.x, y += delta.y; return *this; }
     };
 
+    using Position_delta = Position;
+
+    using Extents_delta = Position; // TODO: define specialized class
+
     struct Extents {
-        unsigned int w, h;
+        
+        Length w, h;
+
         bool contains(const Position &pos) const { 
+
             return pos.x >= 0 && pos.y >= 0 
-                && (unsigned int) pos.x < w && (unsigned int) pos.y < h; 
+                && static_cast<Length>(pos.x) < w && static_cast<Length>(pos.y) < h; 
+        }
+
+        auto operator + (const Extents_delta &delta) const -> Extents {
+
+            assert(static_cast<Offset>(w) + delta.x >= 0);
+            assert(static_cast<Offset>(h) + delta.y >= 0);
+            
+            return { 
+                static_cast<Length>(static_cast<Offset>(w) + delta.x), 
+                static_cast<Length>(static_cast<Offset>(h) + delta.y) 
+            };
+        }
+
+        auto operator - (const Extents_delta &delta) const -> Extents {
+
+            assert(static_cast<Offset>(w) - delta.x >= 0);
+            assert(static_cast<Offset>(h) - delta.y >= 0);
+
+            return { 
+                static_cast<Length>(static_cast<Offset>(w) - delta.x), 
+                static_cast<Length>(static_cast<Offset>(h) - delta.y) 
+            };
         }
     };
 

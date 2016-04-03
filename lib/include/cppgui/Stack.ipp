@@ -8,6 +8,8 @@
 
 namespace cppgui {
 
+    #include "all_fonts.h" // TODO: temporary, remove
+
     template<class Config, bool With_layout>
     Stack<Config, With_layout>::Stack()
     {
@@ -54,10 +56,21 @@ namespace cppgui {
     template<class Config, bool With_layout>
     auto Stack<Config, With_layout>::glyph_font() -> const Rasterized_font *
     {
-        return Font_resources::liberation_sans<24>::font();
+        // TODO: adapt to font size
+        static Rasterized_font font;
+        static bool ready = false;
+
+        if (!ready)
+        {
+            auto data = Config::Default_font<Config::Default_font_size>::get();
+            font = gpc::fonts::load(data.first, data.second);
+            ready = true;
+        }
+
+        return &font;
     }
 
-        template<class Config, bool With_layout>
+    template<class Config, bool With_layout>
     auto Stack<Config, With_layout>::compute_children_total_size() -> Extents
     {
         Extents min_exts {};

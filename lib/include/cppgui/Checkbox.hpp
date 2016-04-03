@@ -3,6 +3,7 @@
 #include <functional>
 
 #include "./Widget.hpp"
+#include "./Icon_resources.hpp"
 
 namespace gpc { namespace fonts {
 
@@ -15,6 +16,8 @@ namespace cppgui {
         template <class Parent_aspect> struct Aspect;
     };
 
+    struct Font_icon_descr;
+
     template <class Config, bool With_layout>
     class Checkbox: public Checkbox_Layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >
     {
@@ -26,9 +29,7 @@ namespace cppgui {
 
         void set_font(const Rasterized_font *font) { _label_font = font; }
         auto font() const { return _label_font; }
-        //void set_glyph_font(const Rasterized_font *font) { _glyph_font = font; }
-        //auto glyph_font() { return _glyph_font; }
-        void set_glyph_font_size(unsigned int size);
+        void set_tick_glyph(const Rasterized_font *, const Font_icon_descr &);
         void set_label(const std::u32string &label) { _label = label; }
         auto label() const { return _label; }
         bool checked() const { return _checked; }
@@ -45,7 +46,8 @@ namespace cppgui {
     protected: // for access by Layouter aspect
         
         const Rasterized_font  *_label_font;
-        const Rasterized_font  *_glyph_font;
+        const Rasterized_font  *_glyph_font;    // TODO: rename to _tick_font ?
+        Font_icon_descr         _tick_descr;
         std::u32string          _label;
         State_change_handler    _state_change_handler;
 
@@ -78,12 +80,13 @@ namespace cppgui {
             
             void compute_em_bounds();
             void compute_label_size();
-            void compute_tick_size();
+            void get_tick_metrics();
 
             Text_bounding_box   _em_bounds;
-            unsigned int        _box_edge;
-            Text_bounding_box   _label_bounds;
             Text_bounding_box   _tick_bounds;
+            Extents             _tick_extents;
+            Length              _box_edge;
+            Text_bounding_box   _label_bounds;
         };
     };
 

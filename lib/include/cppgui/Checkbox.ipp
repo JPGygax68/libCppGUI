@@ -1,15 +1,22 @@
 #include <cassert>
+#include <memory>
+
+#include <gpc/fonts/store.hpp>
 
 #include "./Root_widget.hpp"
+#include "./Icon_resources.hpp"
 
 #include "./Checkbox.hpp"
 
 namespace cppgui {
 
+    static std::unique_ptr<Rasterized_font> glyph_font;
+
     template<class Config, bool With_layout>
-    void Checkbox<Config, With_layout>::set_glyph_font_size(unsigned int size)
+    void Checkbox<Config, With_layout>::set_tick_glyph(const Rasterized_font *font, const Font_icon_descr &descr)
     {
-        _glyph_font = Font_resources::material_icons<24>::font();
+        _glyph_font = font;
+        _tick_descr = descr;
     }
 
     template<class Config, bool With_layout>
@@ -23,13 +30,15 @@ namespace cppgui {
     inline void cppgui::Checkbox<Config, With_layout>::init()
     {
         _fnthnd      = root_widget()->get_font_handle(_label_font);
-        _glyphfnthnd = root_widget()->get_font_handle(Font_resources::material_icons<22>::font());
+        _glyphfnthnd = root_widget()->get_font_handle(_glyph_font);
     }
 
     template<class Config, bool With_layout>
     void Checkbox<Config, With_layout>::render(Canvas_t *cv, const Position & offs)
     {
         auto pos = offs + position();
+
+        fill(cv, offs, {1, 1, 0.5f, 1});
 
         cv->render_text(_fnthnd, pos.x + _label_pos.x, pos.y + _label_pos.y, _label.data(), _label.size());
 
@@ -38,7 +47,7 @@ namespace cppgui {
 
         if (_checked)
         {
-            cv->render_text(_glyphfnthnd, pos.x + _tick_pos.x, pos.y + _tick_pos.y, U"\uE876", 1);
+            cv->render_text(_glyphfnthnd, pos.x + _tick_pos.x, pos.y + _tick_pos.y, &_tick_descr.code_point, 1);
         }
     }
 
@@ -64,7 +73,7 @@ namespace cppgui {
     {
         compute_em_bounds();
         compute_label_size();
-        compute_tick_size();
+        get_tick_metrics();
     }
 
     template <class Config>
@@ -87,11 +96,12 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    void Checkbox_Layouter<Config, true>::Aspect<Aspect_parent>::compute_tick_size()
+    void Checkbox_Layouter<Config, true>::Aspect<Aspect_parent>::get_tick_metrics()
     {
         _tick_bounds = p()->_glyph_font->compute_text_extents(0, U"\uE876", 1);
+        _tick_extents = Extents { _tick_bounds.width(), _tick_bounds.height() } + p()->_tick_descr.extents_delta;
         // Adjustment is necessary
-        _tick_bounds.y_min += 4;
+        //_tick_bounds.y_min += 4;
     }
 
     template <class Config>
@@ -100,7 +110,7 @@ namespace cppgui {
     {
         // TODO: spacing between label and tick
         return { 
-            _label_bounds.width() + _tick_bounds.width(), 
+            _label_bounds.width() + /* spacing() + */ _tick_extents.w, 
             std::max(_label_bounds.height(), _em_bounds.height() + 2 * margin() + 2 * p()->stroke_width() ) 
         };
     }
@@ -109,13 +119,24 @@ namespace cppgui {
     template <class Aspect_parent>
     inline void Checkbox_Layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
-        int baseline = std::max(_label_bounds.y_max, _em_bounds.y_max + stroke_width() + margin() );
+        // TODO: supporting aligning on a baseline ?
+
+        auto baseline = std::max(_label_bounds.y_max, _em_bounds.y_max + stroke_width() + margin() );
+        auto h = static_cast<Length>(baseline + std::max(- _label_bounds.y_min, - _em_bounds.y_min + stroke_width() + margin()));
+        baseline += static_cast<Offset>((p()->extents().h - h) / 2);
 
         p()->_label_pos = { 0,  baseline };
+
         // TODO: non-static glyph adjustment
-        p()->_tick_pos  = { (int) (p()->extents().w - _box_edge) + p()->stroke_width() + p()->margin(), baseline + 4 };
+        auto x = static_cast<Offset>(p()->extents().w - _box_edge);
+        auto dx = static_cast<Offset>((_box_edge - _tick_extents.w) / 2);
+
+        p()->_tick_pos  = { 
+            x + dx,
+            baseline + p()->_tick_descr.origin_delta.y
+        };
         p()->_box_rect = { 
-            p()->_tick_pos.x - stroke_width() - margin(), baseline - _em_bounds.y_max - margin() - stroke_width(),
+            x, baseline - _em_bounds.y_max - margin() - stroke_width(),
             _box_edge, _box_edge
         };
     }

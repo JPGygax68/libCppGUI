@@ -9,6 +9,10 @@
 #include "./Keyboard_adapter.hpp"
 #include "./Mouse_adapter.hpp"
 
+// Forward declaration
+// TODO: does not belong here
+template<std::size_t Size> struct liberationsans_regular; // { static auto get() -> std::pair<const uint8_t *, std::size_t>; };
+
 namespace cppgui {
 
     namespace sdl {
@@ -16,8 +20,8 @@ namespace cppgui {
         /** Defines a default CppGUI configuration struct that will work with SDL.
          */
         template<class RendererT, bool With_layout>
-        struct Default_configuration {
-    
+        struct Default_configuration
+        {    
             using Renderer = typename RendererT;
 
             using Configuration = typename Default_configuration<Renderer, With_layout>;
@@ -48,6 +52,11 @@ namespace cppgui {
 
             using Mouse = ::cppgui::sdl::Mouse_adapter;
 
+            // Default font
+
+            template<std::size_t Size> using Default_font = typename liberationsans_regular<Size>;
+
+            static const std::size_t Default_font_size = 14;
         };
 
     } // ns sdl
