@@ -112,14 +112,16 @@ endforeach(size)
 
 # Main target
 
+source_group("Implementation files" REGULAR_EXPRESSION "(.*)\\.ipp")
+
 add_library( ${PROJECT_NAME} STATIC
 
-    src/dummy.cpp
+    include/cppgui/Default_font.hpp                 src/Default_font.cpp
+
+    //src/dummy.cpp
 
     include/cppgui/basic_types.hpp
     include/cppgui/aspects.hpp
-
-    include/cppgui/Default_font.hpp                 src/Default_font.cpp
 
     include/cppgui/Canvas.hpp                       include/cppgui/Canvas.ipp
     include/cppgui/Widget.hpp                       include/cppgui/Widget.ipp
