@@ -20,12 +20,12 @@ namespace cppgui {
     
         /** Defines a default CppGUI configuration struct that will work with SDL.
          */
-        template<class RendererT, bool With_layout>
+        template<class ConfigT, class RendererT, bool With_layout>
         struct Default_configuration
         {    
             using Renderer = typename RendererT;
 
-            using Configuration = typename Default_configuration<Renderer, With_layout>;
+            using Configuration = typename ConfigT; // Default_configuration<Renderer, With_layout>;
             using Font_handle = typename Renderer::font_handle;
 
             template<class Aspect_parent> using Widget_updater = typename 
@@ -55,10 +55,8 @@ namespace cppgui {
 
             // Default font
 
-            //template<std::size_t Size> using Default_font = typename liberationsans_regular<Size>;
-            //static const std::size_t Default_font_size = 14;
-
-            using Default_font = typename cppgui::Default_font;
+            //template <Font_size Size>  using Default_font = typename cppgui::Default_font<Size>;
+            using Default_font = typename cppgui::Default_font<>;
         };
 
     } // ns sdl

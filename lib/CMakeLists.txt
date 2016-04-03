@@ -71,7 +71,7 @@ file(WRITE ${GENERATED_HEADERS_DIR}all_icon_fonts.h "// all_icon_fonts.h  - gene
 file(APPEND ${GENERATED_HEADERS_DIR}all_icon_fonts.h
     "template<std::size_t Size> struct materialicons_regular{ static auto get() -> std::pair<const uint8_t *, std::size_t> { return {nullptr, 0}; } };\n\n")
 
-foreach(size IN ITEMS 12 13 14 15 16 17 18 19 20 21 22 23 24)
+foreach(size IN ITEMS 15 22)
 
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont
@@ -116,9 +116,9 @@ source_group("Implementation files" REGULAR_EXPRESSION "(.*)\\.ipp")
 
 add_library( ${PROJECT_NAME} STATIC
 
-    include/cppgui/Default_font.hpp                 src/Default_font.cpp
+    src/dummy.cpp
 
-    //src/dummy.cpp
+    include/cppgui/Default_font.hpp                 include/cppgui/Default_font.ipp
 
     include/cppgui/basic_types.hpp
     include/cppgui/aspects.hpp

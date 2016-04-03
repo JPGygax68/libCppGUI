@@ -18,7 +18,10 @@ using namespace gl;
 #include <cppgui/sdl/OpenGL_adapter.hpp>
 
 using Renderer = typename gpc::gui::gl::renderer<true>;
-using GUI_configuration = typename cppgui::sdl::Default_configuration<Renderer, true>;
+struct GUI_configuration: cppgui::sdl::Default_configuration<GUI_configuration, Renderer, true> {
+
+    using Default_font = typename cppgui::Default_font<24>;
+};
 
 class Test_window;
 using My_SDL_window = cppgui::sdl::Window<Test_window>;

@@ -2,6 +2,7 @@
 
 #include "./Full_resource_mapper.ipp"
 #include "./Cheap_resource_mapper.ipp"
+#include "./Default_font.ipp"
 #include "./Icon_resources.ipp"
 #include "./Canvas.ipp"
 //#include "./Font_resources.ipp" // now a .cpp file

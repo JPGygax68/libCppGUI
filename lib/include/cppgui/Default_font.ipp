@@ -4,7 +4,8 @@
 
 namespace cppgui {
 
-    auto Default_font::get() -> Serialized_font
+    template <Font_size Size>
+    auto Default_font<Size>::get() -> Serialized_font
     {
         return liberationsans_regular<size>::get();
     }

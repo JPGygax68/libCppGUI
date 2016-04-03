@@ -22,15 +22,16 @@ static cppgui::Rasterized_font  glyph_font;     // TODO: move this to a reusable
 
 Test_window::Test_window(): Parent("Test window")
 {
-    static const auto font_size = cppgui::Default_font::size;
+    //static const auto font_size = cppgui::Default_font<>::size<>;
+    using Default_font = GUI_configuration::Default_font;
 
     // TODO: doesn't really belong here (could be executed more than once)
-    auto dflt_font_data = cppgui::Default_font::get();
+    auto dflt_font_data = Default_font::get();
     dflt_font = gpc::fonts::load(dflt_font_data.first, dflt_font_data.second);
 
-    auto tick_font_data = cppgui::Icon_resources<font_size>::tick_font_data();
+    auto tick_font_data = cppgui::Icon_resources<Default_font::size>::tick_font_data();
     glyph_font = gpc::fonts::load(tick_font_data.first, tick_font_data.second);
-    auto tick_descr = cppgui::Icon_resources<font_size>::tick_descr();
+    auto tick_descr = cppgui::Icon_resources<Default_font::size>::tick_descr();
 
     _label.set_font(&dflt_font);
     _label.set_text(U"Hello World!");
