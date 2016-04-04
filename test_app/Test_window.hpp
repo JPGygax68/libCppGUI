@@ -17,6 +17,8 @@ using namespace gl;
 #include <cppgui/sdl/Default_configuration.hpp>
 #include <cppgui/sdl/OpenGL_adapter.hpp>
 
+#include "./Text_input_dialog.hpp"
+
 using Renderer = typename gpc::gui::gl::renderer<true>;
 struct GUI_configuration: cppgui::sdl::Default_configuration<GUI_configuration, Renderer, true> {
 
@@ -26,6 +28,8 @@ struct GUI_configuration: cppgui::sdl::Default_configuration<GUI_configuration, 
 class Test_window;
 using My_SDL_window = cppgui::sdl::Window<Test_window>;
 using My_GUI_window = cppgui::GUI_window<GUI_configuration, My_SDL_window, cppgui::sdl::OpenGL_adapter>;
+
+using Text_input_dialog_t = typename Text_input_dialog<GUI_configuration, true>;
 
 class Test_window: public My_GUI_window {
 public:
@@ -43,4 +47,5 @@ private:
     Stack                       _stack;
     Container                   _menu;
     Label                       _menu_header;
+    Text_input_dialog_t         _input_dlg;
 };

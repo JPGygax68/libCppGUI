@@ -9,7 +9,7 @@
 #include <cppgui/sdl/Window.ipp>
 #include <cppgui/GUI_window.ipp>
 
-#include "./Text_input_dialog.ipp"
+//#include "./Fonts.hpp"
 
 #include "./Test_window.hpp"
 
@@ -79,12 +79,8 @@ Test_window::Test_window(): Parent("Test window")
     _menu.set_position({50, 250});
     _menu.set_extents({200, 207});
 
-    _input_dlg.set_default_font(&dflt_font);
-    _input_dlg.set_caption(U"Give me a value!");
-    _input_dlg.set_caption_font(&dflt_font);
-    _input_dlg.set_prompt(U"Please enter the captain's age:");
-    _input_dlg.set_position({500, 250});
-    _input_dlg.set_extents({500, 180});
+    _input_dlg.set_position({300, 50});
+    _input_dlg.set_extents({300, 180});
 
     root_widget().add_child(&_label);
     root_widget().add_child(&_textbox);

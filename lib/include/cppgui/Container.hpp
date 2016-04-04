@@ -33,6 +33,7 @@ namespace cppgui {
         using Abstract_container_t::add_child;
 
         void mouse_motion(const Position &) override;
+        void mouse_button(const Position &, int button, Key_state) override;
         void mouse_click(const Position &, int button, int count) override;
         void mouse_wheel(const Position &) override;
 

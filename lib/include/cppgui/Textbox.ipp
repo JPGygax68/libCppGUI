@@ -175,7 +175,7 @@ namespace cppgui {
 
         auto pos = offs + position() + _txpos;
 
-        r->set_clipping_rect(_inner_rect.pos.x, _inner_rect.pos.y, _inner_rect.ext.w, _inner_rect.ext.h);
+        r->set_clipping_rect(offs.x + _inner_rect.pos.x, offs.y + _inner_rect.pos.y, _inner_rect.ext.w, _inner_rect.ext.h);
 
         // Selection background
         auto bg_clr = selected_text_background_color();

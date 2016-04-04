@@ -19,6 +19,12 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Container<Config, With_layout>::mouse_button(const Position &pos, int button, Key_state state)
+    {
+        container_mouse_button(pos, button, state);
+    }
+
+    template<class Config, bool With_layout>
     void Container<Config, With_layout>::mouse_click(const Position &pos, int button, int count)
     {
         container_mouse_click(pos - position(), button, count);
@@ -47,35 +53,6 @@ namespace cppgui {
         for (auto& child : children())
         {
             child->render(r, pos);
-        }
-    }
-
-    // Layouter aspect ----------------------------------------------
-
-    template<class Config>
-    void Abstract_container_Layouter<Config, true>::init_children_layout()
-    {
-        for (auto child : p()->children())
-        {
-            child->init_layout();
-        }
-    }
-
-    template<class Config>
-    inline void Abstract_container_Layouter<Config, true>::layout_children()
-    {
-        // TODO: this algorithm, and the whole method, will probably become obsolete as real
-        //  layouting gets implemented
-
-        for (auto child : p()->children())
-        {
-            // EXPERIMENTAL: obtain minimum size and extend accordingly
-            auto min_ext = child->get_minimal_size(), cur_ext = child->extents();
-            if (child->extents().w == 0 && child->extents().h == 0)
-            {
-                child->set_extents({ std::max(min_ext.w, cur_ext.w), std::max(min_ext.h, cur_ext.h) });
-            }
-            child->layout();
         }
     }
 
