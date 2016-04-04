@@ -175,4 +175,27 @@ namespace cppgui {
         if (_click_hndlr) _click_hndlr(pos, button, count);
     }
 
+    // Layouter aspect ----------------------------------------------
+
+    template<class Config>
+    template<class Aspect_parent>
+    inline void Widget_layouter<Config, true>::Aspect<Aspect_parent>::set_padding(const std::initializer_list<Length> &padding)
+    {
+        std::copy(std::begin(padding), std::end(padding), std::begin(_padding));
+    }
+
+    template<class Config>
+    template<class Aspect_parent>
+    void Widget_layouter<Config, true>::Aspect<Aspect_parent>::compute_inner_rect()
+    {
+        auto ext = p()->extents();
+
+        // TODO: adjust for border as well
+
+        p()->_inner_rect = {
+            static_cast<Offset>(_padding[3]), static_cast<Offset>(_padding[0]),
+            ext.w - _padding[3] - _padding[1], ext.h - _padding[0] - _padding[2]
+        };
+    }
+
 } // ns cppgui

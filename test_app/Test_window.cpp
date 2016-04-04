@@ -57,7 +57,7 @@ Test_window::Test_window(): Parent("Test window")
     //_checkbox.set_glyph_font(dflt_font);
     //_checkbox.set_glyph_font_size(22);
     _checkbox.set_tick_glyph(&glyph_font, tick_descr);
-    _checkbox.set_position({500, 50});
+    _checkbox.set_position({350, 50});
     _checkbox.set_extents({200, 40});
     _checkbox.set_label(U"Check me!");
 
@@ -83,8 +83,8 @@ Test_window::Test_window(): Parent("Test window")
     _input_dlg.set_caption(U"Give me a value!");
     _input_dlg.set_caption_font(&dflt_font);
     _input_dlg.set_prompt(U"Please enter the captain's age:");
-    _input_dlg.set_position({500, 250});
-    _input_dlg.set_extents({500, 180});
+    _input_dlg.set_position({350, 250});
+    _input_dlg.set_extents({350, 180});
 
     root_widget().add_child(&_label);
     root_widget().add_child(&_textbox);

@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <type_traits>
+#include <initializer_list>
 
 #include <gpc/gui/renderer.hpp> // TODO: other source & namespace
 
@@ -114,30 +115,10 @@ namespace cppgui {
         Rectangle _rect = {};
     };
 
-    // Layouting aspect
-
-    template <bool With_layout> struct Widget_layouter {
+    template <class Config, bool With_layout> struct Widget_layouter {
 
         template <class Aspect_parent> struct Aspect {
             void init_layout() {}
-        };
-    };
-
-    template <> struct Widget_layouter<true> {
-
-        template <class Aspect_parent> struct Aspect: public Aspect_parent {
-
-            /** It is up to the implementation to guarantee that any internal state/data
-                needed for layouting (including computing/returning the get_minimal_size())
-                is kept up to date.
-             */
-
-            // Layouter aspect contract
-
-            virtual void init_layout() = 0;
-            virtual auto get_minimal_size() -> Extents = 0; // TODO: evolve to get_minimal_bounding_box()
-                                                            // TODO: replace with non-virtual property accessor ?
-            virtual void layout() = 0;
         };
     };
 
@@ -146,7 +127,7 @@ namespace cppgui {
     template <class Config, bool With_layout>
     class Widget: 
         public Config::template Widget_updater< Abstract_widget<Config, With_layout> >,
-        public Widget_layouter<With_layout>::template Aspect<Nil_struct>
+        public Widget_layouter<Config, With_layout>::template Aspect<Nil_struct>
     {
     public:
         using Renderer = typename Config::Renderer;
@@ -166,9 +147,12 @@ namespace cppgui {
 
         void mouse_click(const Position &, int button, int count) override;
 
+    protected:
+        Rectangle               _inner_rect;
+
     private:
-        Click_handler   _click_hndlr;
-        bool            _hovered = false;
+        Click_handler           _click_hndlr;
+        bool                    _hovered = false;
     };
 
     // Default implementations for Updating_aspect
@@ -212,6 +196,36 @@ namespace cppgui {
 
         private:
             Abstract_container_t *_container;
+        };
+    };
+
+    // Layouting aspect
+
+    template <class Config> struct Widget_layouter<Config, true> {
+
+        template <class Aspect_parent> struct Aspect: public Aspect_parent {
+
+            /** It is up to the implementation to guarantee that any internal state/data
+            needed for layouting (including computing/returning the get_minimal_size())
+            is kept up to date.
+            */
+
+            // Layouter aspect contract
+
+            virtual void init_layout() = 0;
+            virtual auto get_minimal_size() -> Extents = 0; // TODO: evolve to get_minimal_bounding_box()
+                                                            // TODO: replace with non-virtual property accessor ?
+            virtual void layout() = 0;
+
+            void set_padding(const std::initializer_list<Length> &);
+
+        protected:
+            class Widget_t: public Widget<Config, true> { friend struct Aspect; };
+            auto p() { return static_cast<Widget_t*>(this); }
+
+            void compute_inner_rect();
+
+            std::array<Length, 4>   _padding = {};  // TODO: provide accessor ?
         };
     };
 

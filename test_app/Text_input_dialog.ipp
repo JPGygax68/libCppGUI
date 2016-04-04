@@ -11,6 +11,7 @@ Text_input_dialog<Config, With_layout>::Text_input_dialog()
     _prompt_label.set_horizontal_alignment(cppgui::Alignment::left);
     _prompt_label.set_vertical_alignment(cppgui::Alignment::top);
     _prompt_label.set_padding({3, 3, 3, 3});
+    _textbox.set_padding({3, 3, 3, 3});
 
     _main_body.set_layout_type(cppgui::Layout_type::content_footer);
     _main_body.add_child(&_prompt_label);

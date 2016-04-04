@@ -173,26 +173,27 @@ namespace cppgui {
     {
         fill(r, offs, rgba_to_native(r, {1, 1, 1, 1})); // TODO: (VERY MUCH) PROVISIONAL, GET REAL COLOR!
 
-        auto pos = offs + position() + _txpos;
+        auto pos = offs + position();
 
-        r->set_clipping_rect(offs.x + _inner_rect.pos.x, offs.y + _inner_rect.pos.y, _inner_rect.ext.w, _inner_rect.ext.h);
+        r->set_clipping_rect(pos.x + _inner_rect.pos.x, pos.y + _inner_rect.pos.y, _inner_rect.ext.w, _inner_rect.ext.h);
 
         // Selection background
         auto bg_clr = selected_text_background_color();
 
-        r->fill_rect(pos.x + _scroll_offs + _sel_start_pixel_pos, pos.y - _ascent, 
+        r->fill_rect(pos.x + _txpos.x + _scroll_offs + _sel_start_pixel_pos, pos.y + _txpos.y - _ascent, 
             _sel_end_pixel_pos - _sel_start_pixel_pos, _ascent - _descent, rgba_to_native(r, bg_clr));
 
         // Text
         if (!_text.empty())
         {
-            r->render_text(_fnthnd, pos.x, pos.y, _text.data() + _first_vis_char_idx, _text.size() - _first_vis_char_idx, _inner_rect.ext.w);
+            r->render_text(_fnthnd, pos.x + _txpos.x, pos.y + _txpos.y, 
+                _text.data() + _first_vis_char_idx, _text.size() - _first_vis_char_idx, _inner_rect.ext.w);
         }
 
         // Caret
         if (has_focus())
         {
-            r->fill_rect(pos.x + _scroll_offs + _caret_pixel_pos, pos.y - _ascent, 
+            r->fill_rect(pos.x + _txpos.x + _scroll_offs + _caret_pixel_pos, pos.y + _txpos.y - _ascent, 
                 1, _ascent - _descent, rgba_to_native(r, caret_color())); // TODO: width from stylesheet
         }
 
@@ -529,7 +530,7 @@ namespace cppgui {
     template<class Aspect_parent>
     inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
     {
-        compute_label_size();
+        compute_text_extents();
         this->layout();
     }
 
@@ -538,13 +539,13 @@ namespace cppgui {
     inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::change_font(const Rasterized_font *font)
     {
         p()->_font = font;
-        compute_label_size();
+        compute_text_extents();
         this->layout();
     }
 
     template <class Config>
     template <class Aspect_parent>
-    inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::compute_label_size()
+    inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::compute_text_extents()
     {
         // TODO: free the font handle
 
@@ -564,18 +565,20 @@ namespace cppgui {
     inline auto Textbox_layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
     {
         // TODO: replace "10" with const
-        // TODO: adjust for border, padding
-        return { (unsigned) (10 * p()->_mean_char_width), (unsigned) (p()->_ascent - p()->_descent) };
+        // TODO: adjust for border
+        return { 
+            _padding[3] + static_cast<Length>(10 * p()->_mean_char_width) + _padding[1], 
+            _padding[0] + static_cast<Length>(p()->_ascent - p()->_descent) + _padding[2] 
+        };
     }
 
     template<class Config>
     template<class Aspect_parent>
     inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
-        // TODO: adjust for border, padding
-        p()->_inner_rect = p()->rectangle();
-        p()->_txpos = {0, p()->_ascent };
-        //p()->_txmaxlen = p()->extents().w;
+        compute_inner_rect();
+
+        p()->_txpos = {_inner_rect.pos.x, _inner_rect.pos.y + p()->_ascent };
     }
 
 } // ns cppgui

@@ -63,13 +63,10 @@ namespace cppgui {
             void set_horizontal_alignment(Alignment align) { _horz_align = align; }
             void set_vertical_alignment(Alignment align) { _vert_align = align; }
 
-            void set_padding(const std::initializer_list<Length> &);
-
         private:
             class Label_t: public Label<Config, true> { friend struct Aspect; };
             auto p() { return static_cast<Label_t*>(this); }
 
-            std::array<Length, 4>   _padding = {};
             Alignment               _horz_align = center;
             Alignment               _vert_align = middle;
         };

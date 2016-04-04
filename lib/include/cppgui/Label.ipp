@@ -100,11 +100,4 @@ namespace cppgui {
         }
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    void Label_layouter<Config, true>::Aspect<Aspect_parent>::set_padding(const std::initializer_list<Length> &padding)
-    {
-        std::copy(std::begin(padding), std::end(padding), std::begin(_padding));
-    }
-
 } // ns cppgui

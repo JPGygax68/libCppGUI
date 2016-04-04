@@ -49,12 +49,6 @@ namespace cppgui {
 
         void render(Canvas_t *, const Position &pos) override;
 
-    public: // for access by Layouter aspect
-        int                     _ascent, _descent; // TODO: support vertical writing
-        int                     _mean_char_width;
-        Rectangle               _inner_rect;
-        Position                _txpos;
-        //int                     _txmaxlen;
 
     protected:
         // Actions
@@ -87,6 +81,11 @@ namespace cppgui {
 
         const Rasterized_font  *_font = nullptr; // TODO: avoid setting default value
 
+        int                     _ascent, _descent; // TODO: support vertical writing
+        int                     _mean_char_width;
+        Position                _txpos;
+        //int                     _txmaxlen;
+
         std::u32string          _text;
         Font_handle             _fnthnd;
         unsigned int            _caret_char_idx , _sel_start_char_idx , _sel_end_char_idx ;
@@ -114,7 +113,7 @@ namespace cppgui {
 
             void change_font(const Rasterized_font *);
 
-            void compute_label_size();
+            void compute_text_extents();
 
             void init_layout() override;
             auto get_minimal_size() -> Extents override;
