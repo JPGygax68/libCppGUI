@@ -26,9 +26,11 @@ namespace cppgui {
         using Renderer = typename Config::Renderer;
         using Widget_t = typename Widget<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
-        //template <class Aspect_parent> using Layouter_t = Container_layouter::Aspect<Aspect_parent>;
+        using Abstract_container_t = typename Abstract_container<Config, With_layout>;
 
         void init() override;
+
+        using Abstract_container_t::add_child;
 
         void mouse_motion(const Position &) override;
         void mouse_click(const Position &, int button, int count) override;
@@ -86,7 +88,7 @@ namespace cppgui {
             void drop_child(Widget_t *);
 
         private:
-            Layout_type     _layout_type;
+            Layout_type     _layout_type = Layout_type::none;
             Extents         _comp_min_size = { 0, 0 };
         };
     };

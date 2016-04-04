@@ -89,6 +89,8 @@ namespace cppgui {
         {
             child->init_layout();
         }
+
+        recalc_minimal_size();
     }
 
     template <class Config>
@@ -114,6 +116,9 @@ namespace cppgui {
                 if (min_sz.w > _comp_min_size.w) _comp_min_size.w = min_sz.w;
             }
         }
+        else {
+            assert(false); 
+        }
     }
 
     template <class Config>
@@ -134,13 +139,19 @@ namespace cppgui {
 
             Length h_rem = p()->extents().h; // "remaining" height
             Length h;
+            Offset y = 0;
             
             h = header->get_minimal_size().h;
 
-            header ->set_extents({ p()->extents().w, h });
+            header->set_position({0, 0});
+            header->set_extents({ p()->extents().w, h });
+            y += static_cast<Offset>(h);
             h_rem -= h;
 
+            content->set_position({0, y});
             content->set_extents({ p()->extents().w, h_rem });
+
+            p()->layout_children();
         }
     }
 

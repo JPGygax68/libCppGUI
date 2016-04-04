@@ -61,12 +61,6 @@ Test_window::Test_window(): Parent("Test window")
     _checkbox.set_extents({200, 40});
     _checkbox.set_label(U"Check me!");
 
-    root_widget().add_child(&_label);
-    root_widget().add_child(&_textbox);
-    root_widget().add_child(&_button);
-    root_widget().add_child(&_stack);
-    root_widget().add_child(&_checkbox);
-
     _button_list.resize(8);
     for (auto i = 0U; i < _button_list.size(); i ++)
     {
@@ -74,8 +68,21 @@ Test_window::Test_window(): Parent("Test window")
         _button_list[i].set_label(std::u32string{U"This is button #"} + char32_t(U'1' + i));
         _stack.add_child(&_button_list[i]);
     }
-    _stack.set_position({50, 250});
-    _stack.set_extents({200, 207});
+
+    _menu_header.set_font(&dflt_font);
+    _menu_header.set_text(U"Look at this:");
+    _menu_header.set_background_color({1, 1, 1, 1});
+    _menu.set_layout_type(cppgui::Layout_type::header_content);
+    _menu.add_child(&_menu_header);
+    _menu.add_child(&_stack);
+    _menu.set_position({50, 250});
+    _menu.set_extents({200, 207});
+
+    root_widget().add_child(&_label);
+    root_widget().add_child(&_textbox);
+    root_widget().add_child(&_button);
+    root_widget().add_child(&_checkbox);
+    root_widget().add_child(&_menu);
 
     root_widget().set_focus_to(&_textbox);
 

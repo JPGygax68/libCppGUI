@@ -56,9 +56,8 @@ namespace cppgui {
 
             auto p() { return static_cast<Stack_t*>(this); }
 
-            //void compute_sizes();
-
-            //void init_layout() override;
+            //void init_layout() override;  // TODO: provide our own that does not use a layouting algorithm
+                                            // or better yet, rewrite the whole Stack container
             auto get_minimal_size() -> Extents override;
             void layout() override;
 
@@ -117,8 +116,6 @@ namespace cppgui {
             class Inner_stack_t: public Inner_stack<Config, true> { friend struct Aspect; };
 
             auto p() { return static_cast<Inner_stack_t*>(this); }
-
-            //void compute_sizes();
 
             //void init_layout() override;
             auto get_minimal_size() -> Extents override { return {0, 0}; } // TODO: better ?

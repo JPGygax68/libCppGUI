@@ -41,5 +41,6 @@ private:
     Checkbox                    _checkbox;
     std::vector<Button>         _button_list;
     Stack                       _stack;
-    Stack                       _menu;
+    Container                   _menu;
+    Label                       _menu_header;
 };

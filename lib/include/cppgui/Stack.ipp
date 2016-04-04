@@ -131,13 +131,13 @@ namespace cppgui {
         p()->_inner_stack.set_position({1, y1});
         p()->_inner_stack.set_extents({extents.w - 2, (unsigned int)(y2 - y1)});
 
-        Container_t::layout();
+        p()->layout_children(); // Container_t::layout();
     }
 
     // Inner_stack --------------------------------------------------
 
     template<class Config, bool With_layout>
-    void cppgui::Inner_stack<Config, With_layout>::init()
+    void Inner_stack<Config, With_layout>::init()
     {
         Container_t::init();
 

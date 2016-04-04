@@ -15,6 +15,7 @@
     using Root_widget   = cppgui::Root_widget<Config, With_layout>; \
     using Textbox       = cppgui::Textbox    <Config, With_layout>; \
     using Checkbox      = cppgui::Checkbox   <Config, With_layout>; \
+    using Container     = cppgui::Container  <Config, With_layout>; \
     using Stack         = cppgui::Stack      <Config, With_layout>; \
     //using Canvas_t = cppgui::Canvas<Renderer>; 
 
