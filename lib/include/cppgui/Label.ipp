@@ -48,7 +48,7 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    inline auto Label_layouter<Config, true>::Aspect<Aspect_parent>::minimal_size() -> Extents
+    inline auto Label_layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
     {
         assert(!p()->text().empty()); // TODO: TENTATIVE RULE: layouting may not occur before conditions are met (font, text must be set) ?
 

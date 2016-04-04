@@ -78,7 +78,7 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    inline auto Button_layouter<Config, true>::Aspect<Aspect_parent>::minimal_size() -> Extents
+    inline auto Button_layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
     {
         // TODO: adjust bounding box so that it always has room for a descender (even
         // if current label does not need it) ?

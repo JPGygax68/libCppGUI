@@ -73,7 +73,7 @@ namespace cppgui {
 
         for (auto child: children())
         {
-            auto ext = child->minimal_size();
+            auto ext = child->get_minimal_size();
             if (ext.w > min_exts.w) min_exts.w = ext.w;
             min_exts.h += ext.h + 1;
         }
@@ -103,7 +103,7 @@ namespace cppgui {
 
     template <class Config>
     template <class Aspect_parent>
-    inline auto Stack_layouter<Config, true>::Aspect<Aspect_parent>::minimal_size() -> Extents
+    inline auto Stack_layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
     {
         _min_exts = p()->compute_children_total_size();
 
@@ -120,7 +120,7 @@ namespace cppgui {
     inline void Stack_layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
         auto extents = p()->extents();
-        unsigned int h_btn = p()->_up_btn.minimal_size().h;
+        unsigned int h_btn = p()->_up_btn.get_minimal_size().h;
 
         p()->_up_btn  .set_extents({extents.w, h_btn});
         p()->_down_btn.set_extents({extents.w, h_btn});
@@ -145,7 +145,7 @@ namespace cppgui {
 
         for (auto child: children())
         {
-            auto ext = child->minimal_size();
+            auto ext = child->get_minimal_size();
             child->set_extents({extents().w - 2 * paper_margin(), ext.h});
             child->set_position({(int) paper_margin(), y});
             child->layout(); // will do nothing if layout aspect is nil'ed

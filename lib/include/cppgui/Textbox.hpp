@@ -10,7 +10,7 @@ namespace cppgui {
         template <class Aspect_parent> struct Aspect: public Aspect_parent {
 
             void font_changed() { static_assert(false, "Concept: Textbox_layouter::font_changed(): must never be used"); }
-            auto minimal_size() -> Extents { static_assert(false, "Concept: Textbox_layouter::minimal_size(): must never be used"); return {}; }
+            auto get_minimal_size() -> Extents { static_assert(false, "Concept: Textbox_layouter::get_minimal_size(): must never be used"); return {}; }
             void layout() override { static_assert(false, "Concept: Textbox_layouter::layout(): must never be used"); }
         };
     };
@@ -117,7 +117,7 @@ namespace cppgui {
             void compute_label_size();
 
             void init_layout() override;
-            auto minimal_size() -> Extents override;
+            auto get_minimal_size() -> Extents override;
             void layout() override;
         };
     };

@@ -106,7 +106,7 @@ namespace cppgui {
 
     template <class Config>
     template <class Aspect_parent>
-    inline auto Checkbox_Layouter<Config, true>::Aspect<Aspect_parent>::minimal_size() -> Extents
+    inline auto Checkbox_Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
     {
         // TODO: spacing between label and tick
         return { 

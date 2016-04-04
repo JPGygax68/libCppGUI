@@ -66,6 +66,7 @@ namespace cppgui {
 
         template <class Aspect_parent> struct Aspect : public Aspect_parent {
 
+            using Widget_t = typename Widget<Config, true>;
             class Container_t: public Container<Config, true> { friend struct Aspect; };
 
             auto p() { return static_cast<Container_t*>(this); }
@@ -73,16 +74,32 @@ namespace cppgui {
             // Layout contract
 
             void init_layout() override;
-            //auto minimal_size() -> Extents override;
+            auto get_minimal_size() -> Extents override { return _comp_min_size; }
             void layout() override;
 
             // Specific interface
 
             void set_layout_type(Layout_type type ) { _layout_type = type; }
+            void recalc_minimal_size();
+
+            void insert_child(Widget_t *);
+            void drop_child(Widget_t *);
 
         private:
-            Layout_type _layout_type;
+            Layout_type     _layout_type;
+            Extents         _comp_min_size = { 0, 0 };
         };
     };
 
+    // Nil implementation of the Layouter aspect
+
+    template <class Config>
+    struct Container_Layouter<Config, false> {
+
+        template <class Aspect_parent> struct Aspect : public Aspect_parent {
+
+            void recalc_minimal_size() {}
+        };
+    };
+        
 } // ns cppgui

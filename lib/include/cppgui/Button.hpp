@@ -64,7 +64,7 @@ namespace cppgui {
             // Layouter contract
 
             void init_layout() override;
-            auto minimal_size() -> Extents override;
+            auto get_minimal_size() -> Extents override;
             void layout() override;
 
             // Extra capabilities coming with layouting

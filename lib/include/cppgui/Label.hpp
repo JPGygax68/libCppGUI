@@ -50,10 +50,10 @@ namespace cppgui {
     template <class Config>
     struct Label_layouter<Config, true> {
 
-        CPPGUI_DEFINE_ASPECT(Aspect)
-        {
+        template<class Aspect_parent> struct Aspect: Aspect_parent {
+
             void init_layout() override;
-            auto minimal_size() -> Extents override;
+            auto get_minimal_size() -> Extents override;
             void layout() override;
 
             class Label_t: public Label<Config, true> { friend struct Aspect; };

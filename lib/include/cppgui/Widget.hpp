@@ -128,12 +128,15 @@ namespace cppgui {
         template <class Aspect_parent> struct Aspect: public Aspect_parent {
 
             /** It is up to the implementation to guarantee that any internal state/data
-                needed for layouting (including computing/returning the minimal_size())
+                needed for layouting (including computing/returning the get_minimal_size())
                 is kept up to date.
              */
 
+            // Layouter aspect contract
+
             virtual void init_layout() = 0;
-            virtual auto minimal_size() -> Extents = 0;
+            virtual auto get_minimal_size() -> Extents = 0; // TODO: evolve to get_minimal_bounding_box()
+                                                            // TODO: replace with non-virtual property accessor ?
             virtual void layout() = 0;
         };
     };

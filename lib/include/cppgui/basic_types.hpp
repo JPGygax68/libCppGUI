@@ -57,6 +57,7 @@ namespace cppgui {
                 static_cast<Length>(static_cast<Offset>(h) - delta.y) 
             };
         }
+
     };
 
     struct Rectangle {
@@ -75,3 +76,12 @@ namespace cppgui {
     using Color             = gpc::gui::rgba_norm;
 
 } // ns cppgui
+
+namespace std {
+
+    inline auto max(const cppgui::Extents &ext1, const cppgui::Extents &ext2) -> cppgui::Extents {
+
+        return { max(ext1.w, ext2.w), max(ext1.h, ext2.h) };
+    }
+
+} // ns std

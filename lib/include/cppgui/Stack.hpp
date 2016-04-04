@@ -59,7 +59,7 @@ namespace cppgui {
             //void compute_sizes();
 
             //void init_layout() override;
-            auto minimal_size() -> Extents override;
+            auto get_minimal_size() -> Extents override;
             void layout() override;
 
         private:
@@ -121,7 +121,7 @@ namespace cppgui {
             //void compute_sizes();
 
             //void init_layout() override;
-            auto minimal_size() -> Extents override { return {0, 0}; } // TODO: better ?
+            auto get_minimal_size() -> Extents override { return {0, 0}; } // TODO: better ?
             void layout() override;
         };
     };

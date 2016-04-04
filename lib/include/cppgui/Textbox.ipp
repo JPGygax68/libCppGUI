@@ -561,7 +561,7 @@ namespace cppgui {
 
     template <class Config>
     template <class Aspect_parent>
-    inline auto Textbox_layouter<Config, true>::Aspect<Aspect_parent>::minimal_size() -> Extents
+    inline auto Textbox_layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
     {
         // TODO: replace "10" with const
         // TODO: adjust for border, padding

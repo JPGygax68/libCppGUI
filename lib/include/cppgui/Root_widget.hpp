@@ -130,7 +130,7 @@ namespace cppgui {
             //using Abstract_container_t = typename Abstract_container<GUIConfig, true>;
 
             virtual void init_layout();
-            virtual auto minimal_size() -> Extents { return {0, 0}; }
+            virtual auto get_minimal_size() -> Extents { return {0, 0}; }
             virtual void layout();
         };
     };
