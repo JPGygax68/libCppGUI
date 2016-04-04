@@ -74,4 +74,8 @@ namespace cppgui {
     using Glyph_control_box = gpc::fonts::rasterized_glyph_cbox;
     using Color             = gpc::gui::rgba_norm;
 
+    // Layouting
+
+    enum Flow_direction { none, top_down, left_right }; // TODO: add culture-adaptive direction
+
 } // ns cppgui

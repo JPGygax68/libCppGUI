@@ -234,4 +234,15 @@ namespace cppgui {
         cv->cancel_clipping();
     }
 
+    template<class Config>
+    template<class Aspect_parent>
+    inline void Inner_stack_Layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    {
+        /** TODO: this does not yet work correctly because the Container layout_children()
+                strategy, and indeed the Widget class family itself, do not support a
+                "preferred size".
+         */
+        Parent_t::layout();
+    }
+
 } // ns cppgui

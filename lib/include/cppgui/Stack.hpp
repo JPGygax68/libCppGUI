@@ -112,6 +112,8 @@ namespace cppgui {
 
         template <class Aspect_parent> struct Aspect : public Aspect_parent {
 
+            using Parent_t = typename Aspect_parent;
+
             class Inner_stack_t: public Inner_stack<Config, true> { friend struct Aspect; };
 
             auto p() { return static_cast<Inner_stack_t*>(this); }
@@ -120,7 +122,7 @@ namespace cppgui {
 
             //void init_layout() override;
             auto minimal_size() -> Extents override { return {0, 0}; } // TODO: better ?
-            void layout() override {}
+            void layout() override;
         };
     };
 

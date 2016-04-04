@@ -1,5 +1,7 @@
 #pragma once
 
+// TODO: alternative: every file includes its dependencies ?
+
 #include "./Full_resource_mapper.ipp"
 #include "./Cheap_resource_mapper.ipp"
 #include "./Default_font.ipp"
@@ -11,6 +13,7 @@
 #include "./Label.ipp"
 #include "./Textbox.ipp"
 #include "./Checkbox.ipp"
+#include "./Abstract_container.ipp"
 #include "./Container.ipp"
 #include "./Stack.ipp"
 #include "./Root_widget.ipp"
