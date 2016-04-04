@@ -72,6 +72,7 @@ Test_window::Test_window(): Parent("Test window")
     _menu_header.set_font(&dflt_font);
     _menu_header.set_text(U"Look at this:");
     _menu_header.set_background_color({1, 1, 1, 1});
+    _menu_header.set_padding({3, 3, 3, 3});
     _menu.set_layout_type(cppgui::Layout_type::header_content);
     _menu.add_child(&_menu_header);
     _menu.add_child(&_stack);

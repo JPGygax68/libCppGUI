@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include <gpc/fonts/rasterized_font.hpp>
 
 #include "./Label.hpp"
@@ -20,6 +22,12 @@ namespace cppgui {
     void Label<Config, With_layout>::set_background_color(const Color &clr)
     {
         _bkgnd_clr = clr;
+    }
+
+    template<class Config, bool With_layout>
+    void Label<Config, With_layout>::set_padding(const std::initializer_list<Length> &padding)
+    {
+        std::copy(std::begin(padding), std::end(padding), std::begin(_padding));
     }
 
     template<class Config, bool With_layout>
@@ -54,7 +62,10 @@ namespace cppgui {
 
         auto bounds = p()->font()->compute_text_extents(0, p()->text().data(), p()->text().size());
 
-        return{ bounds.width(), bounds.height() };
+        return { 
+            p()->_padding[3] + bounds.width () + p()->_padding[1], 
+            p()->_padding[0] + bounds.height() + p()->_padding[2]
+        };
     }
 
     template<class Config>
@@ -67,8 +78,8 @@ namespace cppgui {
         // TODO: select alignment
 
         p()->_txpos = {
-            static_cast<int>((ext.w - txb.width()) / 2),
-            static_cast<int>((ext.h - txb.height()) / 2 + txb.y_max)
+            static_cast<Offset>((ext.w - txb.width()) / 2),
+            static_cast<Offset>((ext.h - txb.height()) / 2 + txb.y_max)
         };
     }
 

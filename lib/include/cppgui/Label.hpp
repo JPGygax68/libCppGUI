@@ -35,6 +35,8 @@ namespace cppgui {
         auto text() const { return _text; }
         void set_background_color(const Color &); // TODO: move to Widget<> ?
 
+        void set_padding(const std::initializer_list<Length> &);
+
         void init() override;
 
         void render(Canvas_t *, const Position &offset) override;
@@ -45,6 +47,7 @@ namespace cppgui {
         std::u32string          _text;
         Position                _txpos;
         Font_handle             _fnthnd;
+        std::array<Length, 4>   _padding = {};
     };
 
     template <class Config>
