@@ -77,10 +77,31 @@ namespace cppgui {
 
         // TODO: select alignment
 
-        p()->_txpos = {
-            static_cast<Offset>((ext.w - txb.width()) / 2),
-            static_cast<Offset>((ext.h - txb.height()) / 2 + txb.y_max)
-        };
+        if (_horz_align == Alignment::left)
+        {
+            p()->_txpos.x = 0;
+        }
+        else if (_horz_align == Alignment::center)
+        {
+            p()->_txpos.x = static_cast<Offset>((ext.w - txb.width()) / 2);
+        }
+        else if (_horz_align == Alignment::right)
+        {
+            p()->_txpos.x = static_cast<Offset>(ext.w - txb.width());
+        }
+
+        if (_vert_align == Alignment::top)
+        {
+            p()->_txpos.y = txb.y_max;
+        }
+        else if (_vert_align == Alignment::middle)
+        {
+            p()->_txpos.y = static_cast<Offset>((ext.h - txb.height()) / 2 + txb.y_max);
+        }
+        else if (_vert_align == Alignment::bottom)
+        {
+            p()->_txpos.y = ext.h - txb.height();
+        }
     }
 
 } // ns cppgui

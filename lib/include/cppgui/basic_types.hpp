@@ -75,6 +75,13 @@ namespace cppgui {
     using Glyph_control_box = gpc::fonts::rasterized_glyph_cbox;
     using Color             = gpc::gui::rgba_norm;
 
+    enum Alignment {
+        none = 0,
+        left, center, middle = center, right,
+        top, bottom
+        // TODO: additional values for culture-adaptive settings, or reuse the geometrical ones above ?
+    };
+
 } // ns cppgui
 
 namespace std {

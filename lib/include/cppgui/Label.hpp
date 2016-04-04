@@ -55,14 +55,23 @@ namespace cppgui {
 
         template<class Aspect_parent> struct Aspect: Aspect_parent {
 
+            // Layouter aspect contract
+
             void init_layout() override;
             auto get_minimal_size() -> Extents override;
             void layout() override;
 
-            class Label_t: public Label<Config, true> { friend struct Aspect; };
+            // Own methods
+
+            void set_horizontal_alignment(Alignment align) { _horz_align = align; }
+            void set_vertical_alignment(Alignment align) { _vert_align = align; }
 
         private:
+            class Label_t: public Label<Config, true> { friend struct Aspect; };
             auto p() { return static_cast<Label_t*>(this); }
+
+            Alignment _horz_align = center;
+            Alignment _vert_align = middle;
         };
     };
 

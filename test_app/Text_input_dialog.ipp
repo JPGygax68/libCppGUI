@@ -8,6 +8,9 @@ Text_input_dialog<Config, With_layout>::Text_input_dialog()
     _caption_label.set_background_color({0.8f, 0.8f, 0.8f, 1});
     _caption_label.set_padding({5, 3, 5, 3});
 
+    _prompt_label.set_horizontal_alignment(cppgui::Alignment::left);
+    _prompt_label.set_vertical_alignment(cppgui::Alignment::top);
+
     _main_body.set_layout_type(cppgui::Layout_type::content_footer);
     _main_body.add_child(&_prompt_label);
     _main_body.add_child(&_textbox);
