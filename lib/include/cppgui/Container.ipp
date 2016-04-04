@@ -111,43 +111,47 @@ namespace cppgui {
         }
         else if (_layout_type == Layout_type::header_content)
         {
+            compute_inner_rect();
+
             Widget_t *header  = p()->children()[0];
             Widget_t *content = p()->children()[1];
 
-            Length h_rem = p()->extents().h; // "remaining" height
+            Length h_rem = _inner_rect.ext.h; // "remaining" height
             Length h;
-            Offset y = 0;
+            Offset y = _inner_rect.pos.y;
             
             h = header->get_minimal_size().h;
 
-            header->set_position({0, 0});
-            header->set_extents({ p()->extents().w, h });
+            header->set_position({ _inner_rect.pos.x, y });
+            header->set_extents ({ _inner_rect.ext.w, h });
             y += static_cast<Offset>(h);
             h_rem -= h;
 
-            content->set_position({0, y});
-            content->set_extents({ p()->extents().w, h_rem });
+            content->set_position({ _inner_rect.pos.x, y });
+            content->set_extents ({ _inner_rect.ext.w, h_rem });
 
             p()->layout_children();
         }
         else if (_layout_type == Layout_type::content_footer)
         {
+            compute_inner_rect();
+
             Widget_t *content = p()->children()[0];
             Widget_t *footer  = p()->children()[1];
 
-            Length h_rem = p()->extents().h; // "remaining" height
+            Length h_rem = _inner_rect.ext.h; // "remaining" height
             Length h;
-            Offset y = static_cast<Offset>(h_rem);
+            Offset y = _inner_rect.bottom();
 
             h = footer->get_minimal_size().h;
 
             y -= static_cast<Offset>(h);
-            footer->set_position({0, y});
-            footer->set_extents({ p()->extents().w, h });
+            footer->set_position({ _inner_rect.left(), y });
+            footer->set_extents({ _inner_rect.width(), h });
             h_rem -= h;
 
-            content->set_position({0, 0});
-            content->set_extents({ p()->extents().w, h_rem });
+            content->set_position({ _inner_rect.left(), _inner_rect.top() });
+            content->set_extents({ _inner_rect.width(), h_rem });
 
             p()->layout_children();
         }

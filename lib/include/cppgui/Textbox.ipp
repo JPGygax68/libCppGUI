@@ -565,7 +565,7 @@ namespace cppgui {
     inline auto Textbox_layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
     {
         // TODO: replace "10" with const
-        // TODO: adjust for border
+        // TODO: adjust for border, too
         return { 
             _padding[3] + static_cast<Length>(10 * p()->_mean_char_width) + _padding[1], 
             _padding[0] + static_cast<Length>(p()->_ascent - p()->_descent) + _padding[2] 

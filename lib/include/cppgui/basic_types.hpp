@@ -65,6 +65,12 @@ namespace cppgui {
         Extents  ext;
         bool contains(const Position &p) const { return ext.contains(p - pos); }
         auto offset(const Position &offs) const -> Rectangle { return { pos.x + offs.x, pos.y + offs.y, ext.w, ext.h }; }
+        auto left() const { return pos.x; }
+        auto top() const { return pos.y; }
+        auto right() const { return pos.y + static_cast<Offset>(ext.h); }
+        auto bottom() const { return pos.y + static_cast<Offset>(ext.h); }
+        auto width() const { return ext.w; }
+        auto height() const { return ext.h; }
     };
 
     using Rasterized_font   = gpc::fonts::rasterized_font;
