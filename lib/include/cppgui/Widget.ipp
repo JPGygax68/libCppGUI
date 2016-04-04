@@ -119,11 +119,11 @@ namespace cppgui {
         return cbox;
     }
 
-    // Default_widget_updater<> aspect ------------------------------
+    // Default_Widget_Updater<> aspect ------------------------------
 
     template<class Config, bool With_layout>
     template<class Aspect_parent>
-    inline void Default_widget_updater<Config, With_layout>::Aspect<Aspect_parent>::invalidate()
+    inline void Default_Widget_Updater<Config, With_layout>::Aspect<Aspect_parent>::invalidate()
     {
         //auto c = static_cast<Abstract_container<GUIConfig, With_layout>*>(this->container());
         //c->child_invalidated(static_cast<Widget_t*>(this));
@@ -133,14 +133,14 @@ namespace cppgui {
 
     template<class Config, bool With_layout>
     template<class Aspect_parent>
-    inline void Default_widget_updater<Config, With_layout>::Aspect<Aspect_parent>::added_to_container(Abstract_container_t *cont)
+    inline void Default_Widget_Updater<Config, With_layout>::Aspect<Aspect_parent>::added_to_container(Abstract_container_t *cont)
     {
         _container = cont;
     }
 
     template<class Config, bool With_layout>
     template<class Aspect_parent>
-    void Default_widget_updater<Config, With_layout>::Aspect<Aspect_parent>::removed_from_container(Abstract_container_t *cont)
+    void Default_Widget_Updater<Config, With_layout>::Aspect<Aspect_parent>::removed_from_container(Abstract_container_t *cont)
     {
         _container = nullptr;
     }

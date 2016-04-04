@@ -7,6 +7,8 @@ namespace cppgui {
 
     // Container base class: descended from Widget
 
+    enum class Layout_type { none, header_content };
+
     // Forward-declare layouter aspect
 
     template <class Config, bool With_layout>
@@ -68,11 +70,18 @@ namespace cppgui {
 
             auto p() { return static_cast<Container_t*>(this); }
 
-            //void compute_sizes();
+            // Layout contract
 
             void init_layout() override;
             //auto minimal_size() -> Extents override;
             void layout() override;
+
+            // Specific interface
+
+            void set_layout_type(Layout_type type ) { _layout_type = type; }
+
+        private:
+            Layout_type _layout_type;
         };
     };
 

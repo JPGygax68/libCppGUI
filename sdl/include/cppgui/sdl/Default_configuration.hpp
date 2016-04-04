@@ -29,7 +29,7 @@ namespace cppgui {
             using Font_handle = typename Renderer::font_handle;
 
             template<class Aspect_parent> using Widget_updater = typename 
-                Default_widget_updater<Configuration, With_layout>::template Aspect<Aspect_parent>;
+                Default_Widget_Updater<Configuration, With_layout>::template Aspect<Aspect_parent>;
 
             template<class Aspect_parent> using Abstract_container_Container_updater = typename 
                 Default_Abstract_container_Container_updater<Configuration, With_layout>::template Aspect<Aspect_parent>;

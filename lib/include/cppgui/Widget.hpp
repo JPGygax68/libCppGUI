@@ -191,7 +191,7 @@ namespace cppgui {
     template <class Config, bool With_layout> class Default_container_updater;
 
     template <class Config, bool With_layout>
-    struct Default_widget_updater {
+    struct Default_Widget_Updater {
         
         template<class Aspect_parent> struct Aspect: public Aspect_parent
         {
@@ -211,12 +211,5 @@ namespace cppgui {
             Abstract_container_t *_container;
         };
     };
-
-    // Macro to make aspect implementation slightly less painful
-
-    #define WIDGET_ASPECT_METHOD(class_, aspect) \
-        template<class Config> \
-        template<class Aspect_parent> \
-        auto class_##_##aspect<Config, true>::Aspect<Aspect_parent>
 
 } // ns cppgui
