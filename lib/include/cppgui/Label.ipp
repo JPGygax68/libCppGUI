@@ -25,12 +25,6 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Label<Config, With_layout>::set_padding(const std::initializer_list<Length> &padding)
-    {
-        std::copy(std::begin(padding), std::end(padding), std::begin(_padding));
-    }
-
-    template<class Config, bool With_layout>
     void Label<Config, With_layout>::init()
     {
         _fnthnd = root_widget()->get_font_handle(_font);
@@ -63,8 +57,8 @@ namespace cppgui {
         auto bounds = p()->font()->compute_text_extents(0, p()->text().data(), p()->text().size());
 
         return { 
-            p()->_padding[3] + bounds.width () + p()->_padding[1], 
-            p()->_padding[0] + bounds.height() + p()->_padding[2]
+            _padding[3] + bounds.width () + _padding[1], 
+            _padding[0] + bounds.height() + _padding[2]
         };
     }
 
@@ -76,32 +70,41 @@ namespace cppgui {
         auto ext = extents();
 
         // TODO: select alignment
+        Length w = ext.w - _padding[1] - _padding[3];
+        Length h = ext.h - _padding[0] - _padding[2];
 
         if (_horz_align == Alignment::left)
         {
-            p()->_txpos.x = 0;
+            p()->_txpos.x = _padding[3];
         }
         else if (_horz_align == Alignment::center)
         {
-            p()->_txpos.x = static_cast<Offset>((ext.w - txb.width()) / 2);
+            p()->_txpos.x = static_cast<Offset>((w - txb.width()) / 2);
         }
         else if (_horz_align == Alignment::right)
         {
-            p()->_txpos.x = static_cast<Offset>(ext.w - txb.width());
+            p()->_txpos.x = static_cast<Offset>(w - txb.width());
         }
 
         if (_vert_align == Alignment::top)
         {
-            p()->_txpos.y = txb.y_max;
+            p()->_txpos.y = _padding[0] + txb.y_max;
         }
         else if (_vert_align == Alignment::middle)
         {
-            p()->_txpos.y = static_cast<Offset>((ext.h - txb.height()) / 2 + txb.y_max);
+            p()->_txpos.y = static_cast<Offset>(_padding[0] + (h - txb.height()) / 2 + txb.y_max);
         }
         else if (_vert_align == Alignment::bottom)
         {
-            p()->_txpos.y = ext.h - txb.height();
+            p()->_txpos.y = ext.h - _padding[3] + txb.y_min;
         }
+    }
+
+    template<class Config>
+    template<class Aspect_parent>
+    void Label_layouter<Config, true>::Aspect<Aspect_parent>::set_padding(const std::initializer_list<Length> &padding)
+    {
+        std::copy(std::begin(padding), std::end(padding), std::begin(_padding));
     }
 
 } // ns cppgui

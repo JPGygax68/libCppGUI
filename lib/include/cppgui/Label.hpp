@@ -35,8 +35,6 @@ namespace cppgui {
         auto text() const { return _text; }
         void set_background_color(const Color &); // TODO: move to Widget<> ?
 
-        void set_padding(const std::initializer_list<Length> &);
-
         void init() override;
 
         void render(Canvas_t *, const Position &offset) override;
@@ -47,7 +45,6 @@ namespace cppgui {
         std::u32string          _text;
         Position                _txpos;
         Font_handle             _fnthnd;
-        std::array<Length, 4>   _padding = {};
     };
 
     template <class Config>
@@ -66,12 +63,15 @@ namespace cppgui {
             void set_horizontal_alignment(Alignment align) { _horz_align = align; }
             void set_vertical_alignment(Alignment align) { _vert_align = align; }
 
+            void set_padding(const std::initializer_list<Length> &);
+
         private:
             class Label_t: public Label<Config, true> { friend struct Aspect; };
             auto p() { return static_cast<Label_t*>(this); }
 
-            Alignment _horz_align = center;
-            Alignment _vert_align = middle;
+            std::array<Length, 4>   _padding = {};
+            Alignment               _horz_align = center;
+            Alignment               _vert_align = middle;
         };
     };
 
