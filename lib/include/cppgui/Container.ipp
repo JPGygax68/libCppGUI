@@ -78,7 +78,7 @@ namespace cppgui {
 
         if (_layout_type == Layout_type::none) return;
 
-        if (_layout_type == Layout_type::header_content)
+        if (_layout_type == Layout_type::header_content || _layout_type == Layout_type::content_footer)
         {
             _comp_min_size.h = 0, _comp_min_size.w = 0;
 
@@ -129,6 +129,30 @@ namespace cppgui {
             content->set_extents({ p()->extents().w, h_rem });
 
             p()->layout_children();
+        }
+        else if (_layout_type == Layout_type::content_footer)
+        {
+            Widget_t *content = p()->children()[0];
+            Widget_t *footer  = p()->children()[1];
+
+            Length h_rem = p()->extents().h; // "remaining" height
+            Length h;
+            Offset y = static_cast<Offset>(h_rem);
+
+            h = footer->get_minimal_size().h;
+
+            y -= static_cast<Offset>(h);
+            footer->set_position({0, y});
+            footer->set_extents({ p()->extents().w, h });
+            h_rem -= h;
+
+            content->set_position({0, 0});
+            content->set_extents({ p()->extents().w, h_rem });
+
+            p()->layout_children();
+        }
+        else {
+            assert(false);
         }
     }
 
