@@ -9,6 +9,8 @@ namespace cppgui {
     template<class Config, bool With_layout>
     Stack<Config, With_layout>::Stack()
     {
+        _inner_stack.set_background_color({1, 1, 0.7f, 1}); // TODO: temporary, use style
+
         _up_btn  .set_font( glyph_font() );
         _down_btn.set_font( glyph_font() );
 

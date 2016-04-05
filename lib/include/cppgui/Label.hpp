@@ -33,7 +33,6 @@ namespace cppgui {
         auto font() const { return _font; }
         void set_text(const std::u32string &);
         auto text() const { return _text; }
-        void set_background_color(const Color &); // TODO: move to Widget<> ?
 
         void init() override;
 
@@ -41,7 +40,6 @@ namespace cppgui {
 
     protected:
         const Rasterized_font  *_font = nullptr;
-        Color                   _bkgnd_clr = {0, 0, 0, 0};
         std::u32string          _text;
         Position                _txpos;
         Font_handle             _fnthnd;

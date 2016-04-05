@@ -14,6 +14,7 @@ Text_input_dialog<Config, With_layout>::Text_input_dialog()
     _textbox.set_padding({3, 3, 3, 3});
 
     _main_body.set_layout_type(cppgui::Layout_type::content_footer);
+    _main_body.set_padding({3, 3, 3, 3});
     _main_body.add_child(&_prompt_label);
     _main_body.add_child(&_textbox);
 

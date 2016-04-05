@@ -135,6 +135,9 @@ namespace cppgui {
         //using Abstract_widget_t = typename Abstract_widget<GUIConfig, With_layout, Widget_layouter, GUIConfig::Abstract_widget_updater>;
         using Click_handler = typename Abstract_widget::Click_handler;
 
+        void set_background_color(const Color &);
+        auto background_color() const;
+
         void on_click(Click_handler);
 
         // void init();
@@ -151,6 +154,7 @@ namespace cppgui {
         Rectangle               _inner_rect;
 
     private:
+        Color                   _bkgnd_clr = {0, 0, 0, 0};
         Click_handler           _click_hndlr;
         bool                    _hovered = false;
     };

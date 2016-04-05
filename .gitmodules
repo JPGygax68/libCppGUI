@@ -1,3 +1,6 @@
+[submodule "external/cereal"]
+  path = external/cereal
+  url = https://github.com/USCiLab/cereal.git
 [submodule "external/SDL2"]
 	path = external/SDL2
 	url = https://github.com/spurious/SDL-mirror.git

@@ -37,10 +37,6 @@ namespace cppgui {
 
         // TODO: visual feedback on mouse down / up
 
-        // TODO: TEMPORARY, REMOVE!!
-        //void mouse_enter() override { std::cout << "Button::mouse_enter() " << std::endl; Widget_t::mouse_enter(); }
-        //void mouse_exit () override { std::cout << "Button::mouse_exit() "  << std::endl; Widget_t::mouse_exit (); }
-
     protected:
         // Styling
         // TODO: make into aspect ?

@@ -43,7 +43,7 @@ namespace cppgui {
         void render(Canvas_t *, const Position &) override;
 
     protected:
-        auto background_color() -> Color { return {1, 1, 0.7f, 1}; }
+        //auto background_color() -> Color { return {1, 1, 0.7f, 1}; }
         auto paper_margin() -> unsigned int { return 2; }
     };
 
