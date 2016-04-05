@@ -7,6 +7,8 @@
 
 namespace cppgui {
 
+    // TODO: not required after all
+
     struct Font_icon_descr {
         char32_t                code_point;
         // TODO: deltas for all four properties: y_max, y_min, x_min, x_max

@@ -98,7 +98,8 @@ namespace cppgui {
     template<class Aspect_parent>
     void Checkbox_Layouter<Config, true>::Aspect<Aspect_parent>::get_tick_metrics()
     {
-        _tick_bounds = p()->_glyph_font->compute_text_extents(0, U"\uE876", 1);
+        //auto cbox = p()->_glyph_font->lookup_glyph(0, 0xE876)
+        _tick_bounds = p()->_glyph_font->compute_text_extents(0, &p()->_tick_descr.code_point, 1);
         _tick_extents = Extents { _tick_bounds.width(), _tick_bounds.height() } + p()->_tick_descr.extents_delta;
         // Adjustment is necessary
         //_tick_bounds.y_min += 4;

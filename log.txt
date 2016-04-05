@@ -1,3 +1,14 @@
+2016-04-05
+==========
+
+Working on a text input dialog. Not intended to be reusable yet, except by copy-pasting it into Locsim Instructor.
+
+Several things need work:
+
+- Using MaterialIcons is problematic because apparently the boxing isn't quite correct
+  -> THIS APPEARS TO BE WRONG. I've just downloaded and installed a tool called Type Light, and it shows that the MaterialDesign icons are perfectly centered
+  -> However, glyphs appear to be systematically shifted by one pixel to the left and the top - but this is actually wrong: the top and left padding is one pixel, where the bottom and right is two pixels - meaning it's impossible at that size to get perfect centering because of grid-fitting.
+
 2016-03-27
 ==========
 
