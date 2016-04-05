@@ -7,7 +7,13 @@ namespace cppgui {
 
     // Container base class: descended from Widget
 
-    enum class Layout_type { none, header_content, content_footer };
+    enum class Layout_type { none, 
+        header_content, 
+        content_footer, 
+        head_content,           // horizontal: fixed-width head, followed by stretching content TODO: better name! 
+        content_tail,           // opposite of head_content
+        end
+    };
 
     // Forward-declare layouter aspect
 

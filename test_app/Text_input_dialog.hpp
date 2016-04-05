@@ -2,9 +2,12 @@
 
 #include <string>
 
+#include <cppgui/all_widgets.hpp>
+/*
 #include <cppgui/Container.hpp>
 #include <cppgui/Label.hpp>
 #include <cppgui/Textbox.hpp>
+*/
 
 template <class Config, bool With_layout>
 class Text_input_dialog: public cppgui::Container<Config, With_layout>
@@ -22,13 +25,18 @@ public:
     void set_prompt(const std::u32string &);
 
 private:
-    using Label_t = cppgui::Label<Config, With_layout>;
-    using Container_t = cppgui::Container<Config, With_layout>;
-    using Textbox_t = cppgui::Textbox<Config, With_layout>;
+    CPPGUI_DEFINE_WIDGET_TYPES(Config, With_layout);
 
-    Label_t             _caption_label;
-    Container_t         _main_body;
-    Label_t             _prompt_label;
-    Textbox_t           _textbox;
+    //using Label_t = cppgui::Label<Config, With_layout>;
+    //using Container_t = cppgui::Container<Config, With_layout>;
+    //using Textbox_t = cppgui::Textbox<Config, With_layout>;
+
+    cppgui::Rasterized_font         _glyph_font;
+    Container                       _header_bar;
+    Label                           _caption_label;
+    Button                          _close_btn;
+    Container                       _main_body;
+    Label                           _prompt_label;
+    Textbox                         _textbox;
 };
 

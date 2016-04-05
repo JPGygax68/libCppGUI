@@ -93,6 +93,21 @@ namespace cppgui {
                 if (min_sz.w > _comp_min_size.w) _comp_min_size.w = min_sz.w;
             }
         }
+        else if (_layout_type == Layout_type::content_tail)
+        {
+            _comp_min_size.w = 0, _comp_min_size.h = 0;
+
+            for(auto child: p()->children())
+            {
+                auto min_sz = child->get_minimal_size();
+
+                // Accumulate minimal width
+                _comp_min_size.w += min_sz.w;
+
+                // Use greatest minimal height
+                if (min_sz.h > _comp_min_size.h) _comp_min_size.h = min_sz.h;
+            }
+        }
         else {
             assert(false); 
         }
@@ -130,7 +145,7 @@ namespace cppgui {
             content->set_position({ _inner_rect.pos.x, y });
             content->set_extents ({ _inner_rect.ext.w, h_rem });
 
-            p()->layout_children();
+            for (auto child : p()->children()) child->layout();
         }
         else if (_layout_type == Layout_type::content_footer)
         {
@@ -153,7 +168,30 @@ namespace cppgui {
             content->set_position({ _inner_rect.left(), _inner_rect.top() });
             content->set_extents({ _inner_rect.width(), h_rem });
 
-            p()->layout_children();
+            for (auto child : p()->children()) child->layout();
+        }
+        else if (_layout_type == Layout_type::content_tail)
+        {
+            compute_inner_rect();
+
+            Widget_t *content = p()->children()[0];
+            Widget_t *tail    = p()->children()[1];
+
+            Length w_rem = _inner_rect.ext.w; // "remaining" width
+            Length w;
+            Offset x = _inner_rect.right();
+
+            w = tail->get_minimal_size().w;
+
+            x -= static_cast<Offset>(w);
+            tail->set_position({ x, _inner_rect.top() });
+            tail->set_extents({ w, _inner_rect.height() });
+            w_rem -= w;
+
+            content->set_position({ _inner_rect.left(), _inner_rect.top() });
+            content->set_extents({ w_rem, _inner_rect.height() });
+
+            for (auto child : p()->children()) child->layout();
         }
         else {
             assert(false);

@@ -3,10 +3,18 @@
 template<class Config, bool With_layout>
 Text_input_dialog<Config, With_layout>::Text_input_dialog()
 {
+    auto font_data = cppgui::Icon_resources<24>::glyph_font_data();
+    _glyph_font = gpc::fonts::load(font_data.first, font_data.second);
+
     set_layout_type(cppgui::Layout_type::header_content);
 
+    _header_bar.set_layout_type(cppgui::Layout_type::content_tail);
     _caption_label.set_background_color({0.8f, 0.8f, 0.8f, 1});
     _caption_label.set_padding({5, 3, 5, 3});
+    _close_btn.set_font(&_glyph_font);
+    _close_btn.set_label(U"\uE14C");
+    _header_bar.add_child(&_caption_label);
+    _header_bar.add_child(&_close_btn);
 
     _prompt_label.set_horizontal_alignment(cppgui::Alignment::left);
     _prompt_label.set_vertical_alignment(cppgui::Alignment::top);
@@ -18,7 +26,7 @@ Text_input_dialog<Config, With_layout>::Text_input_dialog()
     _main_body.add_child(&_prompt_label);
     _main_body.add_child(&_textbox);
 
-    add_child(&_caption_label);
+    add_child(&_header_bar);
     add_child(&_main_body);
 }
 
