@@ -40,7 +40,7 @@ foreach(size IN ITEMS 16 24)
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/generated/headers/${font_file}-${size}.h
         DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont
-        COMMAND GPCBin2C ARGS
+        COMMAND gpcbin2c ARGS
             -i "${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont"
             -o "${CMAKE_CURRENT_BINARY_DIR}/generated/headers/${font_file}-${size}.h"
     )
@@ -87,7 +87,7 @@ foreach(size IN ITEMS 13 20)
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/generated/headers/${font_file}-${size}.h
         DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont
-        COMMAND GPCBin2C ARGS
+        COMMAND gpcbin2c ARGS
             -i "${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont"
             -o "${CMAKE_CURRENT_BINARY_DIR}/generated/headers/${font_file}-${size}.h"
     )

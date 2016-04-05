@@ -28,7 +28,7 @@ foreach(size IN ITEMS
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/generated/headers/${font_file}-${size}.h
         DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont
-        COMMAND GPCBin2C ARGS
+        COMMAND gpcbin2c ARGS
             -i "${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont"
             -o "${CMAKE_CURRENT_BINARY_DIR}/generated/headers/${font_file}-${size}.h"
     )
@@ -57,6 +57,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/g
 
 target_link_libraries( ${PROJECT_NAME} 
 PRIVATE 
-    SDL2-static SDL2main GLBinding libGPCGLWrappers libGPCGUIRenderer libGPCGUIGLRenderer libCppGUI libCppGUI-SDL
+    SDL2-static SDL2main glbinding libGPCGLWrappers libGPCGUIRenderer libGPCGUIGLRenderer libCppGUI libCppGUI-SDL
 )
 target_include_directories( ${PROJECT_NAME} PRIVATE SDL2-static)
