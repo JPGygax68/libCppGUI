@@ -77,7 +77,7 @@ namespace cppgui {
         bool have_selection() const { return _sel_start_char_idx < _sel_end_char_idx; }
         void delete_selected();
         void move_caret_to_pointer_position(const Position &pos);
-        auto find_character_at_pointer_position(const Position &pos)->std::pair<size_t, int>;
+        auto find_character_at_pointer_position(const Position &pos) -> std::pair<size_t, int>;
         void bring_caret_into_view();
 
         // Styling

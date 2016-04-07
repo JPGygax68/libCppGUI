@@ -37,14 +37,14 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    inline void Label_layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
+    inline void Label__Layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
     {
         // TODO: compute text extents here
     }
 
     template<class Config>
     template<class Aspect_parent>
-    inline auto Label_layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
+    inline auto Label__Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
     {
         assert(!p()->text().empty()); // TODO: TENTATIVE RULE: layouting may not occur before conditions are met (font, text must be set) ?
 
@@ -58,7 +58,7 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    void Label_layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    void Label__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
         auto txb = p()->_font->compute_text_extents(0, p()->_text.data(), p()->_text.size());
         auto ext = extents();

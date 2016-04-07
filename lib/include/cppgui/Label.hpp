@@ -11,7 +11,7 @@ namespace gpc { namespace fonts {
 
 namespace cppgui {
 
-    template <class Config, bool With_layout> struct Label_layouter {
+    template <class Config, bool With_layout> struct Label__Layouter {
         CPPGUI_DEFINE_ASPECT(Aspect) {};
     };
 
@@ -20,7 +20,7 @@ namespace cppgui {
     /** Label, without layouting.
      */
     template <class Config, bool With_layout>
-    class Label: public Label_layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >
+    class Label: public Label__Layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >
     {
     public:
         using Renderer = typename Config::Renderer;
@@ -46,7 +46,7 @@ namespace cppgui {
     };
 
     template <class Config>
-    struct Label_layouter<Config, true> {
+    struct Label__Layouter<Config, true> {
 
         template<class Aspect_parent> struct Aspect: Aspect_parent {
 

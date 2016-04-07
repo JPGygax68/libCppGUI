@@ -69,7 +69,7 @@ namespace cppgui {
 
     template <class Config>
     template <class Aspect_parent>
-    inline void Checkbox_Layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
+    inline void Checkbox__Layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
     {
         compute_em_bounds();
         compute_label_size();
@@ -78,7 +78,7 @@ namespace cppgui {
 
     template <class Config>
     template <class Aspect_parent>
-    inline void Checkbox_Layouter<Config, true>::Aspect<Aspect_parent>::compute_em_bounds()
+    inline void Checkbox__Layouter<Config, true>::Aspect<Aspect_parent>::compute_em_bounds()
     {
         // TODO: adapt for multi-cultural use
 
@@ -90,14 +90,14 @@ namespace cppgui {
 
     template <class Config>
     template <class Aspect_parent>
-    inline void Checkbox_Layouter<Config, true>::Aspect<Aspect_parent>::compute_label_size()
+    inline void Checkbox__Layouter<Config, true>::Aspect<Aspect_parent>::compute_label_size()
     {
         _label_bounds = p()->font()->compute_text_extents(0, p()->_label.data(), p()->_label.size());
     }
 
     template<class Config>
     template<class Aspect_parent>
-    void Checkbox_Layouter<Config, true>::Aspect<Aspect_parent>::get_tick_metrics()
+    void Checkbox__Layouter<Config, true>::Aspect<Aspect_parent>::get_tick_metrics()
     {
         _tick_bounds = p()->_glyph_font->compute_text_extents(0, &p()->_tick_descr.code_point, 1);
 
@@ -106,7 +106,7 @@ namespace cppgui {
 
     template <class Config>
     template <class Aspect_parent>
-    inline auto Checkbox_Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
+    inline auto Checkbox__Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
     {
         // TODO: spacing between label and tick
         return { 
@@ -117,7 +117,7 @@ namespace cppgui {
 
     template <class Config>
     template <class Aspect_parent>
-    inline void Checkbox_Layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    inline void Checkbox__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
         // TODO: supporting aligning on a baseline ?
 

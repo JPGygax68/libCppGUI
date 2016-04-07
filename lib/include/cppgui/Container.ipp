@@ -60,7 +60,7 @@ namespace cppgui {
 
     template <class Config>
     template<class Aspect_parent>
-    inline void Container_Layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
+    inline void Container__Layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
     {
         for (auto child: p()->children())
         {
@@ -72,7 +72,7 @@ namespace cppgui {
 
     template <class Config>
     template<class Aspect_parent>
-    inline void Container_Layouter<Config, true>::Aspect<Aspect_parent>::recalc_minimal_size()
+    inline void Container__Layouter<Config, true>::Aspect<Aspect_parent>::recalc_minimal_size()
     {
         // TODO: use polymorphic delegate class 
 
@@ -117,7 +117,7 @@ namespace cppgui {
 
     template <class Config>
     template<class Aspect_parent>
-    inline void Container_Layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    inline void Container__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
         //p()->layout_children();
 
@@ -204,7 +204,7 @@ namespace cppgui {
 
     template <class Config>
     template<class Aspect_parent>
-    inline void Container_Layouter<Config, true>::Aspect<Aspect_parent>::insert_child(Widget_t *child)
+    inline void Container__Layouter<Config, true>::Aspect<Aspect_parent>::insert_child(Widget_t *child)
     {
         p()->add_child(child);
         recalc_minimal_size();
@@ -213,7 +213,7 @@ namespace cppgui {
 
     template <class Config>
     template<class Aspect_parent>
-    inline void Container_Layouter<Config, true>::Aspect<Aspect_parent>::drop_child(Widget_t *child)
+    inline void Container__Layouter<Config, true>::Aspect<Aspect_parent>::drop_child(Widget_t *child)
     {
         p()->remove_child(child);
         recalc_minimal_size();

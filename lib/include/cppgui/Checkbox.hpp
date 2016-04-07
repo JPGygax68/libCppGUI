@@ -12,14 +12,14 @@ namespace gpc { namespace fonts {
 
 namespace cppgui {
 
-    template <class Config, bool With_layout> struct Checkbox_Layouter {
+    template <class Config, bool With_layout> struct Checkbox__Layouter {
         template <class Parent_aspect> struct Aspect;
     };
 
     struct Font_icon_descr;
 
     template <class Config, bool With_layout>
-    class Checkbox: public Checkbox_Layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >
+    class Checkbox: public Checkbox__Layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >
     {
     public:
         using Widget_t = Widget<Config, With_layout>;
@@ -62,7 +62,7 @@ namespace cppgui {
     };
 
     template <class Config>
-    struct Checkbox_Layouter<Config, true> {
+    struct Checkbox__Layouter<Config, true> {
 
         template <class Aspect_parent> struct Aspect: public Aspect_parent
         {

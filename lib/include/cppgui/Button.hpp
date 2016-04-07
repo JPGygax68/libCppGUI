@@ -9,7 +9,7 @@
 namespace cppgui {
 
     template <class Config, bool With_layout>
-    struct Button_layouter {
+    struct Button__Layouter {
         template <class Aspect_parent> struct Aspect;
     };
 
@@ -17,7 +17,7 @@ namespace cppgui {
             in the layouting aspect ?
      */
     template <class Config, bool With_layout>
-    class Button: public Button_layouter<Config, With_layout>::template Aspect< Widget<Config, With_layout> >
+    class Button: public Button__Layouter<Config, With_layout>::template Aspect< Widget<Config, With_layout> >
     {
     public:
         using Renderer = typename Config::Renderer;
@@ -47,7 +47,7 @@ namespace cppgui {
     // Layouter aspect
 
     template <class Config>
-    struct Button_layouter<Config, true> {
+    struct Button__Layouter<Config, true> {
         template <class Aspect_parent> struct Aspect: public Aspect_parent {
 
             Aspect() { _padding = p()->button_padding(); }
@@ -84,7 +84,7 @@ namespace cppgui {
     // Nil implementation (must short out interface with main class)
 
     template <class Config>
-    struct Button_layouter<Config, false> {
+    struct Button__Layouter<Config, false> {
         template <class Aspect_parent> struct Aspect: public Aspect_parent {
 
             void layout() {} // called from init

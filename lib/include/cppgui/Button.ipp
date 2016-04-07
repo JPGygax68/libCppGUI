@@ -36,14 +36,14 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    inline void Button_layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
+    inline void Button__Layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
     {
         this->compute_bounding_box();
     }
 
     template<class Config>
     template<class Aspect_parent>
-    inline auto Button_layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
+    inline auto Button__Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
     {
         // TODO: adjust bounding box so that it always has room for a descender (even
         // if current label does not need it) ?
@@ -55,7 +55,7 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    void Button_layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    void Button__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
         // TODO: border, padding!
 
@@ -70,7 +70,7 @@ namespace cppgui {
     /*
     template<class Config>
     template<class Aspect_parent>
-    inline auto cppgui::Button_layouter<Config, true>::Aspect<Aspect_parent>::minimal_padding() -> int
+    inline auto cppgui::Button__Layouter<Config, true>::Aspect<Aspect_parent>::minimal_padding() -> int
     {
         return 5;
     }
@@ -78,7 +78,7 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    inline void Button_layouter<Config, true>::Aspect<Aspect_parent>::font_changed()
+    inline void Button__Layouter<Config, true>::Aspect<Aspect_parent>::font_changed()
     {
         compute_bounding_box();
         layout();
@@ -87,7 +87,7 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    inline void Button_layouter<Config, true>::Aspect<Aspect_parent>::text_changed()
+    inline void Button__Layouter<Config, true>::Aspect<Aspect_parent>::text_changed()
     {
         compute_bounding_box();
         layout();
@@ -96,7 +96,7 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    void Button_layouter<Config, true>::Aspect<Aspect_parent>::compute_bounding_box()
+    void Button__Layouter<Config, true>::Aspect<Aspect_parent>::compute_bounding_box()
     {
         _bbox = p()->_font->compute_text_extents(0, p()->_label.data(), p()->_label.size());
     }

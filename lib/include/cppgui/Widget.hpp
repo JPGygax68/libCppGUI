@@ -24,11 +24,7 @@ namespace cppgui {
         to function as an element in a container.
      */
     template <class Config, bool With_layout>
-    class Abstract_widget:
-        public Config::Color_mapper
-        //public GUIConfig::Styler
-        //public GUIConfig::Font_mapper
-        //public GUIConfig::Cursor
+    class Abstract_widget: public Config::Color_mapper
     {
     public:
         using Keyboard          = typename Config::Keyboard;
@@ -115,7 +111,7 @@ namespace cppgui {
         Rectangle _rect = {};
     };
 
-    template <class Config, bool With_layout> struct Widget_layouter {
+    template <class Config, bool With_layout> struct Widget__Layouter {
 
         template <class Aspect_parent> struct Aspect {
             void init_layout() {}
@@ -127,12 +123,12 @@ namespace cppgui {
     template <class Config, bool With_layout>
     class Widget: 
         public Config::template Widget_updater< Abstract_widget<Config, With_layout> >,
-        public Widget_layouter<Config, With_layout>::template Aspect<Nil_struct>
+        public Widget__Layouter<Config, With_layout>::template Aspect<Nil_struct>
     {
     public:
         using Renderer = typename Config::Renderer;
         using Font_handle = typename Renderer::font_handle;
-        //using Abstract_widget_t = typename Abstract_widget<GUIConfig, With_layout, Widget_layouter, GUIConfig::Abstract_widget_updater>;
+        //using Abstract_widget_t = typename Abstract_widget<GUIConfig, With_layout, Widget__Layouter, GUIConfig::Abstract_widget_updater>;
         using Click_handler = typename Abstract_widget::Click_handler;
 
         void set_background_color(const Color &);
@@ -188,7 +184,7 @@ namespace cppgui {
     template <class Config, bool With_layout> class Default_container_updater;
 
     template <class Config, bool With_layout>
-    struct Default_Widget_Updater {
+    struct Default__Widget__Updater {
         
         template<class Aspect_parent> struct Aspect: public Aspect_parent
         {
@@ -211,7 +207,7 @@ namespace cppgui {
 
     // Layouting aspect
 
-    template <class Config> struct Widget_layouter<Config, true> {
+    template <class Config> struct Widget__Layouter<Config, true> {
 
         template <class Aspect_parent> struct Aspect: public Aspect_parent {
 

@@ -18,14 +18,14 @@ namespace cppgui {
     // Forward-declare layouter aspect
 
     template <class Config, bool With_layout>
-    struct Container_Layouter {
+    struct Container__Layouter {
 
         template <class Aspect_parent> struct Aspect: public Aspect_parent {};
     };
 
     template <class Config, bool With_layout>
     class Container: 
-        public Container_Layouter<Config, With_layout>::template Aspect < Widget<Config, With_layout> >, 
+        public Container__Layouter<Config, With_layout>::template Aspect < Widget<Config, With_layout> >, 
         public Config::template Container_Container_updater< Abstract_container<Config, With_layout> >
     {
     public:
@@ -45,7 +45,6 @@ namespace cppgui {
 
         void mouse_exit() override;
 
-        //void update_render_resources(Renderer *) override;
         void render(Canvas_t *, const Position &) override;
 
     protected:
@@ -71,7 +70,7 @@ namespace cppgui {
     // Layouter aspect
 
     template <class Config>
-    struct Container_Layouter<Config, true> {
+    struct Container__Layouter<Config, true> {
 
         template <class Aspect_parent> struct Aspect : public Aspect_parent {
 
@@ -106,7 +105,7 @@ namespace cppgui {
     // Nil implementation of the Layouter aspect
 
     template <class Config>
-    struct Container_Layouter<Config, false> {
+    struct Container__Layouter<Config, false> {
 
         template <class Aspect_parent> struct Aspect : public Aspect_parent {
 

@@ -119,11 +119,11 @@ namespace cppgui {
         return cbox;
     }
 
-    // Default_Widget_Updater<> aspect ------------------------------
+    // Default__Widget__Updater<> aspect ------------------------------
 
     template<class Config, bool With_layout>
     template<class Aspect_parent>
-    inline void Default_Widget_Updater<Config, With_layout>::Aspect<Aspect_parent>::invalidate()
+    inline void Default__Widget__Updater<Config, With_layout>::Aspect<Aspect_parent>::invalidate()
     {
         //auto c = static_cast<Abstract_container<GUIConfig, With_layout>*>(this->container());
         //c->child_invalidated(static_cast<Widget_t*>(this));
@@ -133,14 +133,14 @@ namespace cppgui {
 
     template<class Config, bool With_layout>
     template<class Aspect_parent>
-    inline void Default_Widget_Updater<Config, With_layout>::Aspect<Aspect_parent>::added_to_container(Abstract_container_t *cont)
+    inline void Default__Widget__Updater<Config, With_layout>::Aspect<Aspect_parent>::added_to_container(Abstract_container_t *cont)
     {
         _container = cont;
     }
 
     template<class Config, bool With_layout>
     template<class Aspect_parent>
-    void Default_Widget_Updater<Config, With_layout>::Aspect<Aspect_parent>::removed_from_container(Abstract_container_t *cont)
+    void Default__Widget__Updater<Config, With_layout>::Aspect<Aspect_parent>::removed_from_container(Abstract_container_t *cont)
     {
         _container = nullptr;
     }
@@ -230,14 +230,14 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    inline void Widget_layouter<Config, true>::Aspect<Aspect_parent>::set_padding(const std::initializer_list<Length> &padding)
+    inline void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_padding(const std::initializer_list<Length> &padding)
     {
         std::copy(std::begin(padding), std::end(padding), std::begin(_padding));
     }
 
     template<class Config>
     template<class Aspect_parent>
-    void Widget_layouter<Config, true>::Aspect<Aspect_parent>::compute_inner_rect()
+    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::compute_inner_rect()
     {
         auto ext = p()->extents();
 
