@@ -41,6 +41,7 @@ public:
 private:
     Label                       _label;
     Button                      _button;
+    Glyph_button                _glyph_btn;
     Textbox                     _textbox;
     Checkbox                    _checkbox;
     std::vector<Button>         _button_list;

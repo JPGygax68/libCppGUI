@@ -27,7 +27,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    inline void cppgui::Checkbox<Config, With_layout>::init()
+    inline void Checkbox<Config, With_layout>::init()
     {
         _fnthnd      = root_widget()->get_font_handle(_label_font);
         _glyphfnthnd = root_widget()->get_font_handle(_glyph_font);

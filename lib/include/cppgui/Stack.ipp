@@ -55,17 +55,17 @@ namespace cppgui {
     auto Stack<Config, With_layout>::glyph_font() -> const Rasterized_font *
     {
         // TODO: adapt to font size
-        static Rasterized_font font;
+        static const Rasterized_font *font;
         static bool ready = false;
 
         if (!ready)
         {
             auto data = Config::Default_font::get();
-            font = gpc::fonts::load(data.first, data.second);
+            font = gpc::fonts::get(data.first, data.second);
             ready = true;
         }
 
-        return &font;
+        return font;
     }
 
     template<class Config, bool With_layout>

@@ -16,9 +16,16 @@ namespace cppgui {
         Position_delta          origin_delta;  // add this to the origin when rendering so that the glyph will come to rest on the baseline
     };
 
+    struct Icon_glyph_descr {
+        const uint8_t  *font_data;          // must be deserialized to obtain Rasterized_font
+        char32_t        code_point;
+    };
+
     template<Font_size>
     struct Icon_resources {
     
+        //--- TODO: this section should be replaced
+
         // Generic glyph font
         static constexpr auto glyph_font_data() -> std::pair<const uint8_t *, std::size_t>; // TODO: use GSL span instead ?
                                                                                             // TODO: return both data and description in single struct ?
@@ -26,6 +33,9 @@ namespace cppgui {
         static constexpr auto tick_font_data() -> std::pair<const uint8_t *, std::size_t>; // TODO: use GSL span instead ?
         static constexpr auto tick_descr() -> Font_icon_descr;
 
+        //--- END of to-be-replaced section
+
+        static constexpr auto close() -> Icon_glyph_descr;
     };
 
 } // ns cppgui

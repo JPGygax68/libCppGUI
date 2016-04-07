@@ -127,6 +127,7 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Canvas.hpp                       include/cppgui/Canvas.ipp
     include/cppgui/Widget.hpp                       include/cppgui/Widget.ipp
     include/cppgui/Button.hpp                       include/cppgui/Button.ipp
+    include/cppgui/Glyph_button.hpp                 include/cppgui/Glyph_button.ipp
     include/cppgui/Label.hpp                        include/cppgui/Label.ipp
     include/cppgui/Textbox.hpp                      include/cppgui/Textbox.ipp
     include/cppgui/Checkbox.hpp                     include/cppgui/Checkbox.ipp
