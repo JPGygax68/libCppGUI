@@ -33,7 +33,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Container<Config, With_layout>::mouse_click(const Position &pos, int button, int count)
     {
-        container_mouse_click(pos - position(), button, count);
+        container_mouse_click(pos, button, count);
     }
 
     template<class Config, bool With_layout>
