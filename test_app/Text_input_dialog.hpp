@@ -34,9 +34,12 @@ private:
     cppgui::Rasterized_font         _glyph_font;
     Container                       _header_bar;
     Label                           _caption_label;
-    Button                          _close_btn;
+    //Button                          _close_btn;
+    Glyph_button                    _close_btn;
     Container                       _main_body;
     Label                           _prompt_label;
+    Container                       _input_row;
     Textbox                         _textbox;
+    Button                          _ok_btn;
 };
 

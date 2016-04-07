@@ -29,7 +29,7 @@ namespace cppgui {
 
         void set_font(const Rasterized_font *font) { _label_font = font; }
         auto font() const { return _label_font; }
-        void set_tick_glyph(const Rasterized_font *, const Font_icon_descr &);
+        void set_tick_glyph(const Rasterized_font *, const Font_icon_descr &); // TODO: use improved Icon_resources methods
         void set_label(const std::u32string &label) { _label = label; }
         auto label() const { return _label; }
         bool checked() const { return _checked; }
@@ -70,6 +70,8 @@ namespace cppgui {
             auto get_minimal_size() -> Extents override;
             void layout() override;
 
+            auto padding() { return 2; }
+
             // TODO:
             // void change_font();
             // void change_glyph_font();
@@ -82,11 +84,11 @@ namespace cppgui {
             void compute_label_size();
             void get_tick_metrics();
 
-            Text_bounding_box   _em_bounds;
-            Text_bounding_box   _tick_bounds;
-            Extents             _tick_extents;
-            Length              _box_edge;
-            Text_bounding_box   _label_bounds;
+            Text_bounding_box       _em_bounds;
+            Text_bounding_box       _tick_bounds;
+            Extents                 _tick_extents;
+            Length                  _box_edge;
+            Text_bounding_box       _label_bounds;
         };
     };
 

@@ -4,6 +4,8 @@
 
 namespace cppgui {
 
+    // Forward declarations 
+
     template <class Config, bool With_layout>
     struct Textbox_layouter {
 
@@ -14,6 +16,10 @@ namespace cppgui {
             void layout() override { static_assert(false, "Concept: Textbox_layouter::layout(): must never be used"); }
         };
     };
+
+    // Main class 
+
+    // TODO: do not stretch vertically to fill all available space, instead display a strip with border and padding to fit the font size
 
     template <class Config, bool With_layout>
     class Textbox: public Textbox_layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >

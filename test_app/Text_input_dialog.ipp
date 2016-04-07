@@ -11,20 +11,27 @@ Text_input_dialog<Config, With_layout>::Text_input_dialog()
     _header_bar.set_layout_type(cppgui::Layout_type::content_tail);
     _caption_label.set_background_color({0.8f, 0.8f, 0.8f, 1});
     _caption_label.set_padding({5, 3, 5, 3});
-    _close_btn.set_font(&_glyph_font);
-    _close_btn.set_label(U"\uE14C");
+    // TODO: mechanism to choose between available sizes dynamically ?
+    _close_btn.set_glyph(cppgui::Icon_resources<16>::close_glyph());
+    _close_btn.enable_border(false);
     _header_bar.add_child(&_caption_label);
     _header_bar.add_child(&_close_btn);
 
     _prompt_label.set_horizontal_alignment(cppgui::Alignment::left);
     _prompt_label.set_vertical_alignment(cppgui::Alignment::top);
     _prompt_label.set_padding({3, 3, 3, 3});
+
+    _input_row.set_layout_type(cppgui::Layout_type::content_tail);
+    _input_row.set_spacing(5);
     _textbox.set_padding({3, 3, 3, 3});
+    _input_row.add_child(&_textbox);
+    _ok_btn.set_label(U"Ok");
+    _input_row.add_child(&_ok_btn);
 
     _main_body.set_layout_type(cppgui::Layout_type::content_footer);
     _main_body.set_padding({3, 3, 3, 3});
     _main_body.add_child(&_prompt_label);
-    _main_body.add_child(&_textbox);
+    _main_body.add_child(&_input_row);
 
     add_child(&_header_bar);
     add_child(&_main_body);
@@ -35,6 +42,7 @@ void Text_input_dialog<Config, With_layout>::set_default_font(const cppgui::Rast
 {
     _prompt_label.set_font(font);
     _textbox.set_font(font);
+    _ok_btn.set_font(font);
 }
 
 template<class Config, bool With_layout>

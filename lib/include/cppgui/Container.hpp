@@ -94,8 +94,11 @@ namespace cppgui {
             void insert_child(Widget_t *);
             void drop_child(Widget_t *);
 
+            void set_spacing(Length spacing) { _spacing = spacing; }
+
         private:
             Layout_type     _layout_type = Layout_type::none;
+            Length          _spacing = 0;
             Extents         _comp_min_size = { 0, 0 };
         };
     };

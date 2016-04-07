@@ -20,10 +20,15 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Glyph_button<Config, With_layout>::render(Canvas_t *cv, const Position & offset)
     {
-        // Background and borders [TODO: this is shared with Button<>, create common base class ?]
+        // Background
         fill(cv, offset, rgba_to_native(cv, button_face_color()));
-        auto border_ntvclr = rgba_to_native(cv, button_border_color());
-        draw_borders(cv, rectangle(), offset, button_border_width(), border_ntvclr, border_ntvclr, border_ntvclr, border_ntvclr);
+
+        // Border
+        if (_border_enabled)
+        {
+            auto border_ntvclr = rgba_to_native(cv, button_border_color());
+            draw_borders(cv, rectangle(), offset, button_border_width(), border_ntvclr, border_ntvclr, border_ntvclr, border_ntvclr);
+        }
 
         auto pos = offset + position();
 
@@ -37,17 +42,14 @@ namespace cppgui {
     template <class Aspect_parent>
     inline void Glyph_button__Layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
     {
-        obtain_glyph_bounds();
+        compute_sizes();
     }
 
     template <class Config>
     template <class Aspect_parent>
     inline auto Glyph_button__Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
     {
-        return {
-            _glyph_bounds.width () + 2 * p()->padding(),
-            _glyph_bounds.height() + 2 * p()->padding()
-        };
+        return { _min_edge, _min_edge };
     }
 
     template <class Config>
@@ -62,9 +64,11 @@ namespace cppgui {
 
     template <class Config>
     template <class Aspect_parent>
-    inline void Glyph_button__Layouter<Config, true>::Aspect<Aspect_parent>::obtain_glyph_bounds()
+    inline void Glyph_button__Layouter<Config, true>::Aspect<Aspect_parent>::compute_sizes()
     {
         _glyph_bounds = p()->_glyph_fnt->lookup_glyph(0, p()->_glyph_cp)->cbox.bounds;
+
+        _min_edge = std::max(_glyph_bounds.width() + _padding[3] + _padding[1], _glyph_bounds.height() + _padding[0] + _padding[2]);
     }
 
 } // ns cppgui

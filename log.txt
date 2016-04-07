@@ -1,3 +1,9 @@
+2016-04-07
+==========
+
+- After implementing Glyph_button, I found that there is currently no way to enforce an aspect ratio, which would make glyph buttons look much nicer.
+  -> Future extension ? More sophisticated layouting ?
+  
 2016-04-05
 ==========
 

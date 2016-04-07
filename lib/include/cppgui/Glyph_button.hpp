@@ -21,6 +21,8 @@ namespace cppgui {
 
         void set_glyph(const Icon_glyph &);
 
+        void enable_border(bool enabled) { _border_enabled = enabled; }
+
         void init() override;
 
         void render(Canvas_t *, const Position &offset) override;
@@ -30,6 +32,7 @@ namespace cppgui {
         const Rasterized_font          *_glyph_fnt;
         char32_t                        _glyph_cp;
         Position                        _glyph_pos;
+        bool                            _border_enabled = true;
 
     private:
         Font_handle                     _font_hnd;
@@ -42,6 +45,8 @@ namespace cppgui {
 
         template <class Aspect_parent> struct Aspect: public Aspect_parent
         {
+            Aspect() { _padding = this->button_padding(); }
+
             void init_layout() override;
             auto get_minimal_size() -> Extents override;
             void layout() override;
@@ -53,9 +58,10 @@ namespace cppgui {
             class Glyph_button_t: public Glyph_button<Config, true> { friend struct Aspect; };
             auto p() { return static_cast<Glyph_button_t*>(this); }
 
-            void obtain_glyph_bounds();
+            void compute_sizes();
 
-            Text_bounding_box   _glyph_bounds;
+            Text_bounding_box           _glyph_bounds;
+            Length                      _min_edge;
         };
     };
 

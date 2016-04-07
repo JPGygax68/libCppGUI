@@ -107,6 +107,8 @@ namespace cppgui {
                 // Use greatest minimal height
                 if (min_sz.h > _comp_min_size.h) _comp_min_size.h = min_sz.h;
             }
+
+            _comp_min_size.w += (p()->children().size() - 1) * _spacing;
         }
         else {
             assert(false); 
@@ -187,6 +189,8 @@ namespace cppgui {
             tail->set_position({ x, _inner_rect.top() });
             tail->set_extents({ w, _inner_rect.height() });
             w_rem -= w;
+
+            w_rem -= _spacing;
 
             content->set_position({ _inner_rect.left(), _inner_rect.top() });
             content->set_extents({ w_rem, _inner_rect.height() });

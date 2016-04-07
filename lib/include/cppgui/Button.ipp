@@ -28,6 +28,7 @@ namespace cppgui {
         draw_borders(r, rectangle(), offs, button_border_width(), border_ntvclr, border_ntvclr, border_ntvclr, border_ntvclr);
 
         auto pos = offs + position();
+
         r->render_text(_fnthnd, pos.x + _label_origin.x, pos.y + _label_origin.y, _label.data(), _label.size());
     }
 
@@ -47,8 +48,9 @@ namespace cppgui {
         // TODO: adjust bounding box so that it always has room for a descender (even
         // if current label does not need it) ?
         return { 
-            (unsigned int) (_bbox.width () + 2 * minimal_padding()), 
-            (unsigned int) (_bbox.height() + 2 * minimal_padding()) };
+            static_cast<Length>(_bbox.width () + _padding[3] + _padding[1]),
+            static_cast<Length>(_bbox.height() + _padding[0] + _padding[2]) 
+        };
     }
 
     template<class Config>
@@ -65,12 +67,14 @@ namespace cppgui {
         };
     }
 
+    /*
     template<class Config>
     template<class Aspect_parent>
     inline auto cppgui::Button_layouter<Config, true>::Aspect<Aspect_parent>::minimal_padding() -> int
     {
         return 5;
     }
+    */
 
     template<class Config>
     template<class Aspect_parent>

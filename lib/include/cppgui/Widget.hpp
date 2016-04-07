@@ -108,7 +108,7 @@ namespace cppgui {
 
         static auto stroke_width() -> int { return 1; }
         static auto stroke_color() -> Color { return { 0, 0, 0, 1 }; }
-        static auto padding() -> int { return 1; }
+        //static auto padding() -> int { return 5; }
         static auto paper_color() -> Color { return {1, 1, 1, 1}; }
 
     private:
@@ -230,12 +230,16 @@ namespace cppgui {
             void set_padding(const std::initializer_list<Length> &);
 
         protected:
+            using Padding = std::array<Length, 4>;
+
             class Widget_t: public Widget<Config, true> { friend struct Aspect; };
             auto p() { return static_cast<Widget_t*>(this); }
 
+            static constexpr auto button_padding() -> Padding { return { 5, 5, 5, 5 }; }
+
             void compute_inner_rect();
 
-            std::array<Length, 4>   _padding = {};  // TODO: provide accessor ?
+            Padding                 _padding = {};  // TODO: provide accessor ?
         };
     };
 

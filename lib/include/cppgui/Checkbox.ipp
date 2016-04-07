@@ -84,6 +84,7 @@ namespace cppgui {
 
         _em_bounds = p()->font()->compute_text_extents(0, U"M", 1);
 
+        //_box_edge = _em_bounds.height() + _padding[3] + _padding[1];
         _box_edge = _em_bounds.height() + 2 * (p()->padding() + p()->stroke_width());
     }
 
@@ -98,11 +99,9 @@ namespace cppgui {
     template<class Aspect_parent>
     void Checkbox_Layouter<Config, true>::Aspect<Aspect_parent>::get_tick_metrics()
     {
-        //auto cbox = p()->_glyph_font->lookup_glyph(0, 0xE876)
         _tick_bounds = p()->_glyph_font->compute_text_extents(0, &p()->_tick_descr.code_point, 1);
-        _tick_extents = Extents { _tick_bounds.width(), _tick_bounds.height() } + p()->_tick_descr.extents_delta;
-        // Adjustment is necessary
-        //_tick_bounds.y_min += 4;
+
+        _tick_extents = Extents { _tick_bounds.width(), _tick_bounds.height() };
     }
 
     template <class Config>
@@ -111,8 +110,8 @@ namespace cppgui {
     {
         // TODO: spacing between label and tick
         return { 
-            _label_bounds.width() + /* spacing() + */ _tick_extents.w, 
-            std::max(_label_bounds.height(), _em_bounds.height() + 2 * padding() + 2 * p()->stroke_width() ) 
+            _label_bounds.width() + /* spacing() + */ _tick_extents.w + 2, 
+            std::max(_label_bounds.height(), _em_bounds.height() + 2 * padding() + 2 * p()->stroke_width())
         };
     }
 

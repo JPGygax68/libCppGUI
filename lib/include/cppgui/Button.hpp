@@ -50,6 +50,8 @@ namespace cppgui {
     struct Button_layouter<Config, true> {
         template <class Aspect_parent> struct Aspect: public Aspect_parent {
 
+            Aspect() { _padding = p()->button_padding(); }
+
             // Layouter contract
 
             void init_layout() override;
@@ -62,7 +64,7 @@ namespace cppgui {
             // void change_label(const std::u32string &);
 
             // Extra properties
-            auto minimal_padding() -> int; // THIS *INCLUDES* THE BORDER WIDTH (unlike the CSS box model!)
+            //auto minimal_padding() -> int; // THIS *INCLUDES* THE BORDER WIDTH (unlike the CSS box model!)
 
             // Interface with main class (Button)
 
