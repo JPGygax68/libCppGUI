@@ -8,7 +8,7 @@ namespace cppgui {
     // Forward declarations
 
     template <class Config, bool With_layout>
-    struct Stack_layouter {
+    struct Stack__Layouter {
 
         template <class Aspect_parent> struct Aspect: public Aspect_parent {};
     };
@@ -18,7 +18,7 @@ namespace cppgui {
     // Stack container widget
 
     template<class Config, bool With_layout>
-    class Stack: public Stack_layouter<Config, With_layout>::template Aspect< Container<Config, With_layout> >
+    class Stack: public Stack__Layouter<Config, With_layout>::template Aspect< Container<Config, With_layout> >
     {
     public:
         using Container_t = Container<Config, With_layout>;
@@ -47,7 +47,7 @@ namespace cppgui {
     // Layouter aspect
 
     template <class Config>
-    struct Stack_layouter<Config, true> {
+    struct Stack__Layouter<Config, true> {
 
         template <class Aspect_parent> struct Aspect : public Aspect_parent {
 
@@ -71,17 +71,19 @@ namespace cppgui {
     // TODO: move to .ipp file ?
 
     template <class Config, bool With_layout>
-    struct Inner_stack_Layouter {
+    struct Inner_stack__Layouter {
 
         template <class Aspect_parent> struct Aspect: public Aspect_parent {};
     };
 
     template <class Config, bool With_layout>
-    class Inner_stack: public Inner_stack_Layouter<Config, With_layout>::template Aspect< Container<Config, With_layout> >
+    class Inner_stack: public Inner_stack__Layouter<Config, With_layout>::template Aspect< Container<Config, With_layout> >
     {
     public:
         using Container_t = typename Container<Config, With_layout>;
         using Canvas_t = typename Container_t::Canvas_t;
+
+        Inner_stack() { set_background_color({1, 1, 0.7f, 1}); } // TODO: get it from a source
 
         void init() override;
 
@@ -107,7 +109,7 @@ namespace cppgui {
     // Layouter aspect
 
     template <class Config>
-    struct Inner_stack_Layouter<Config, true> {
+    struct Inner_stack__Layouter<Config, true> {
 
         template <class Aspect_parent> struct Aspect : public Aspect_parent {
 

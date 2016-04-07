@@ -5,6 +5,12 @@
 namespace cppgui {
 
     template<class Config, bool With_layout>
+    void Container<Config, With_layout>::set_border(const Border &border)
+    {
+        _border = border;
+    }
+
+    template<class Config, bool With_layout>
     void Container<Config, With_layout>::init()
     {
         init_children_resources();
@@ -44,15 +50,16 @@ namespace cppgui {
     }
 
     template <class Config, bool With_layout>
-    void Container<Config, With_layout>::render(Canvas_t *r, const Position &offs)
+    void Container<Config, With_layout>::render(Canvas_t *cv, const Position &offs)
     {
-        // TODO: paint background, borders
+        fill(cv, offs, background_color());
+        draw_borders(cv, offs, _border.width, _border.color);
 
         auto pos = offs + position();
 
         for (auto& child : children())
         {
-            child->render(r, pos);
+            child->render(cv, pos);
         }
     }
 
@@ -108,7 +115,8 @@ namespace cppgui {
                 if (min_sz.h > _comp_min_size.h) _comp_min_size.h = min_sz.h;
             }
 
-            _comp_min_size.w += (p()->children().size() - 1) * _spacing;
+            _comp_min_size.h += _padding[0] + _padding[2];
+            _comp_min_size.w += (p()->children().size() - 1) * _spacing + _padding[3] + _padding[1];
         }
         else {
             assert(false); 
@@ -224,7 +232,7 @@ namespace cppgui {
 
     template<class Config, bool With_layout>
     template<class Aspect_parent>
-    inline void Default_Container_Container_updater<Config, With_layout>::Aspect<Aspect_parent>::child_invalidated(Widget_t *)
+    inline void Default__Container__Container_updater<Config, With_layout>::Aspect<Aspect_parent>::child_invalidated(Widget_t *)
     {
         p()->container()->child_invalidated(p());
     }

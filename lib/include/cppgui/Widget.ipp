@@ -76,15 +76,21 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Abstract_widget<Config, With_layout>::draw_borders(Canvas_t *cv, const Position & offs, Width width, const Color &color)
+    {
+        draw_borders(cv, rectangle(), offs, width, color);
+    }
+
+    template<class Config, bool With_layout>
     void Abstract_widget<Config, With_layout>::draw_borders(Canvas_t *cv, const Rectangle &rect, const Position &offs, 
-        unsigned int width, const Color &color)
+        Width width, const Color &color)
     {
         draw_borders(cv, rect, offs, width, color, color, color, color);
     }
 
     template<class Config, bool With_layout>
     void Abstract_widget<Config, With_layout>::draw_borders(Canvas_t *r, const Rectangle & rect, const Position & offs, 
-        unsigned int width, const Color & top, const Color & right, const Color & bottom, const Color & left)
+        Width width, const Color & top, const Color & right, const Color & bottom, const Color & left)
     {
         // TODO: this painting procedure does a "wrap" in clockwise fashion, without regard for corners
         fill_rect(r, offs + rect.pos + Position{(int) width, 0}, {rect.ext.w - width, width}, top);
@@ -227,6 +233,13 @@ namespace cppgui {
     }
 
     // Layouter aspect ----------------------------------------------
+
+    template<class Config>
+    template<class Aspect_parent>
+    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_padding(Width w)
+    {
+        set_padding({w, w, w, w});
+    }
 
     template<class Config>
     template<class Aspect_parent>

@@ -87,25 +87,9 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    /*
-    template<class GUIConfig>
-    template<class Aspect_parent>
-    inline void Stack_layouter<GUIConfig, true>::Aspect<Aspect_parent>::init_layout()
-    {
-        compute_sizes();
-    }
-
-    template <class GUIConfig>
-    template <class Aspect_parent>
-    inline void Stack_layouter<GUIConfig, true>::Aspect<Aspect_parent>::compute_sizes()
-    {
-        // ...
-    }
-    */
-
     template <class Config>
     template <class Aspect_parent>
-    inline auto Stack_layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
+    inline auto Stack__Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
     {
         _min_exts = p()->compute_children_total_size();
 
@@ -119,7 +103,7 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    inline void Stack_layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    inline void Stack__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
         auto extents = p()->extents();
         unsigned int h_btn = p()->_up_btn.get_minimal_size().h;
@@ -238,7 +222,7 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    inline void Inner_stack_Layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    inline void Inner_stack__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
         /** TODO: this does not yet work correctly because the Container layout_children()
                 strategy, and indeed the Widget class family itself, do not support a

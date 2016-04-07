@@ -12,6 +12,7 @@ namespace cppgui {
 
     using Offset = int;
     using Length = unsigned int;
+    using Width = Length;
 
     struct Position {
 
@@ -86,6 +87,15 @@ namespace cppgui {
         left, center, middle = center, right,
         top, bottom
         // TODO: additional values for culture-adaptive settings, or reuse the geometrical ones above ?
+    };
+
+    // TODO: use this everywhere!
+    // TODO: rename to Simple_border ?
+    // TODO: plural form ? (std::array<> for four cardinal directions)
+
+    struct Border {
+        Width       width;
+        Color       color;
     };
 
 } // ns cppgui

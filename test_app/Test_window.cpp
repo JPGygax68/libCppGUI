@@ -22,7 +22,6 @@ static cppgui::Rasterized_font *glyph_font;     // TODO: move this to a reusable
 
 Test_window::Test_window(): Parent("Test window")
 {
-    //static const auto font_size = cppgui::Default_font<>::size<>;
     using Default_font = GUI_configuration::Default_font;
 
     // TODO: doesn't really belong here (could be executed more than once)
@@ -81,14 +80,14 @@ Test_window::Test_window(): Parent("Test window")
     _menu.add_child(&_menu_header);
     _menu.add_child(&_stack);
     _menu.set_position({50, 250});
-    _menu.set_extents({200, 207});
+    _menu.set_extents ({200, 207});
 
     _input_dlg.set_default_font(dflt_font);
     _input_dlg.set_caption(U"Give me a value!");
     _input_dlg.set_caption_font(dflt_font);
     _input_dlg.set_prompt(U"Please enter the captain's age:");
     _input_dlg.set_position({350, 250});
-    _input_dlg.set_extents({350, 180});
+    _input_dlg.set_extents ({350, 180});
 
     root_widget().add_child(&_label);
     root_widget().add_child(&_textbox);

@@ -34,6 +34,8 @@ namespace cppgui {
         using Canvas_t = typename Widget_t::Canvas_t;
         using Abstract_container_t = typename Abstract_container<Config, With_layout>;
 
+        void set_border(const Border &);
+
         void init() override;
 
         using Abstract_container_t::add_child;
@@ -48,11 +50,13 @@ namespace cppgui {
         void render(Canvas_t *, const Position &) override;
 
     protected:
-        //auto background_color() -> Color { return {1, 1, 0.7f, 1}; }
-        auto paper_margin() -> unsigned int { return 2; }
+        auto paper_margin() -> unsigned int { return 2; } // TODO: remove (or move to Stack<>)
+
+        Border              _border = {0};
     };
 
-    template <class Config, bool With_layout> struct Default_Container_Container_updater {
+    template <class Config, bool With_layout>
+    struct Default__Container__Container_updater {
 
         template <class Aspect_parent> struct Aspect: public Aspect_parent {
 

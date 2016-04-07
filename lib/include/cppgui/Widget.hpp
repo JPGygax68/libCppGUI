@@ -73,13 +73,6 @@ namespace cppgui {
         bool has_focus() { return root_widget()->focused_widget() == this; }
         bool disabled() const { return false; } // TODO!!!
 
-        /** TODO: Having a virtual function to update render resources is imperfect
-            in the sense that it is not always necessary to defer the mapping of render
-            resources until pre-render time. In fact, in most cases
-         */
-        //virtual void update_render_resources(Canvas_t *) {}
-        //void cleanup_render_resources(Canvas_t *);
-
         /** Convention: the provided position is an offset to be added to the widget's
             own coordinates.
          */
@@ -91,10 +84,10 @@ namespace cppgui {
         void fill_rect(Canvas_t *, const Rectangle &rect, const Position &offs, const Native_color &);
         void fill_rect(Canvas_t *, const Position &pos, const Extents &ext, const Native_color &);
         void fill(Canvas_t *, const Position &offs, const Native_color &);
+        void draw_borders(Canvas_t *, const Position &offs, Width width, const Color &color);
+        void draw_borders(Canvas_t *, const Rectangle &rect, const Position &offs, Width width, const Color &color);
         void draw_borders(Canvas_t *, const Rectangle &rect, const Position &offs, 
-            unsigned int width, const Color &color);
-        void draw_borders(Canvas_t *, const Rectangle &rect, const Position &offs, 
-            unsigned int width, const Color &top, const Color &right, const Color &bottom, const Color &left);
+            Width width, const Color &top, const Color &right, const Color &bottom, const Color &left);
         auto convert_position_to_inner(const Position &) -> Position;
         auto advance_to_glyph_at(const Rasterized_font *, const std::u32string &text, size_t from, size_t to, Position &pos) 
             -> const Glyph_control_box *;
@@ -147,6 +140,10 @@ namespace cppgui {
         void mouse_click(const Position &, int button, int count) override;
 
     protected:
+        // Static styles
+        // TODO: move to "stylesheet"
+        static auto default_dialog_background_color() -> Color { return {0.6f, 0.6f, 0.6f, 1}; }
+
         // Styling
         // TODO: move to new class Abstract_button<> ?
         auto button_face_color() -> Color;
@@ -223,10 +220,11 @@ namespace cppgui {
                                                             // TODO: replace with non-virtual property accessor ?
             virtual void layout() = 0;
 
-            void set_padding(const std::initializer_list<Length> &);
+            void set_padding(Width);
+            void set_padding(const std::initializer_list<Width> &);
 
         protected:
-            using Padding = std::array<Length, 4>;
+            using Padding = std::array<Width, 4>; // TODO: move to basic_types.hpp
 
             class Widget_t: public Widget<Config, true> { friend struct Aspect; };
             auto p() { return static_cast<Widget_t*>(this); }
