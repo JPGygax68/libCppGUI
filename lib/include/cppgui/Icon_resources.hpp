@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <utility>
 
+#include <gpc/fonts/store.hpp>
+
 #include "./basic_types.hpp"
 
 namespace cppgui {
@@ -16,9 +18,9 @@ namespace cppgui {
         Position_delta          origin_delta;  // add this to the origin when rendering so that the glyph will come to rest on the baseline
     };
 
-    struct Icon_glyph_descr {
-        const uint8_t  *font_data;          // must be deserialized to obtain Rasterized_font
-        char32_t        code_point;
+    struct Icon_glyph {
+        gpc::fonts::Data_store  data_store;          // must be deserialized to obtain Rasterized_font
+        char32_t                code_point;
     };
 
     template<Font_size>
@@ -35,7 +37,7 @@ namespace cppgui {
 
         //--- END of to-be-replaced section
 
-        static constexpr auto close() -> Icon_glyph_descr;
+        static constexpr auto close_glyph() -> Icon_glyph;
     };
 
 } // ns cppgui

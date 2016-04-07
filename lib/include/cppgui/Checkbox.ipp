@@ -84,7 +84,7 @@ namespace cppgui {
 
         _em_bounds = p()->font()->compute_text_extents(0, U"M", 1);
 
-        _box_edge = _em_bounds.height() + 2 * (p()->margin() + p()->stroke_width());
+        _box_edge = _em_bounds.height() + 2 * (p()->padding() + p()->stroke_width());
     }
 
     template <class Config>
@@ -112,7 +112,7 @@ namespace cppgui {
         // TODO: spacing between label and tick
         return { 
             _label_bounds.width() + /* spacing() + */ _tick_extents.w, 
-            std::max(_label_bounds.height(), _em_bounds.height() + 2 * margin() + 2 * p()->stroke_width() ) 
+            std::max(_label_bounds.height(), _em_bounds.height() + 2 * padding() + 2 * p()->stroke_width() ) 
         };
     }
 
@@ -122,8 +122,8 @@ namespace cppgui {
     {
         // TODO: supporting aligning on a baseline ?
 
-        auto baseline = std::max(_label_bounds.y_max, _em_bounds.y_max + stroke_width() + margin() );
-        auto h = static_cast<Length>(baseline + std::max(- _label_bounds.y_min, - _em_bounds.y_min + stroke_width() + margin()));
+        auto baseline = std::max(_label_bounds.y_max, _em_bounds.y_max + stroke_width() + padding() );
+        auto h = static_cast<Length>(baseline + std::max(- _label_bounds.y_min, - _em_bounds.y_min + stroke_width() + padding()));
         baseline += static_cast<Offset>((p()->extents().h - h) / 2);
 
         p()->_label_pos = { 0,  baseline };
@@ -137,7 +137,7 @@ namespace cppgui {
             baseline + p()->_tick_descr.origin_delta.y
         };
         p()->_box_rect = { 
-            x, baseline - _em_bounds.y_max - margin() - stroke_width(),
+            x, baseline - _em_bounds.y_max - padding() - stroke_width(),
             _box_edge, _box_edge
         };
     }

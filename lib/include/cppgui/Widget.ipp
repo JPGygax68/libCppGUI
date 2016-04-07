@@ -188,6 +188,44 @@ namespace cppgui {
         if (_click_hndlr) _click_hndlr(pos, button, count);
     }
 
+    // Style
+
+    template<class Config, bool With_layout>
+    auto Widget<Config, With_layout>::button_face_color() -> Color
+    {
+        if (hovered())
+        {
+            return {0.8f, 0.8f, 0.8f, 1};
+        }
+        else {
+            return {0.7f, 0.7f, 0.7f, 1};
+        }
+    }
+
+    template<class Config, bool With_layout>
+    auto Widget<Config, With_layout>::button_border_color() -> Color
+    {
+        if (hovered())
+        {
+            return {0.3f, 0.3f, 0.3f, 1};
+        }
+        else {
+            return {0.1f, 0.1f, 0.1f, 1};
+        }
+    }
+
+    template<class Config, bool With_layout>
+    auto Widget<Config, With_layout>::button_border_width() -> int
+    {
+        if (/*is_default()*/ false) 
+        {
+            return 2;
+        }
+        else {
+            return 1;
+        }
+    }
+
     // Layouter aspect ----------------------------------------------
 
     template<class Config>

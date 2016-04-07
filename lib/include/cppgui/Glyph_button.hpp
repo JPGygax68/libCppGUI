@@ -13,18 +13,25 @@ namespace cppgui {
     // Glyph_button declaration 
 
     template<class Config, bool With_layout>
-    class Glyph_button: Glyph_button__Layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> > {
+    class Glyph_button: public Glyph_button__Layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> > {
     public:
         using Widget_t = Widget<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
         using Font_handle = typename Widget_t::Font_handle;
 
+        void set_glyph(const Icon_glyph &);
+
         void init() override;
 
         void render(Canvas_t *, const Position &offset) override;
 
-    private:
+
+    protected:
         const Rasterized_font          *_glyph_fnt;
+        char32_t                        _glyph_cp;
+        Position                        _glyph_pos;
+
+    private:
         Font_handle                     _font_hnd;
     };
 

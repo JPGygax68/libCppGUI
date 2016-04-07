@@ -32,18 +32,11 @@ namespace cppgui {
 
         void init() override;
 
-        //void update_render_resources(Renderer *) override;
         void render(Canvas_t *, const Position &) override;
 
         // TODO: visual feedback on mouse down / up
 
     protected:
-        // Styling
-        // TODO: make into aspect ?
-        auto face_color() -> Color;
-        auto border_color() -> Color;
-        auto border_width() -> int;
-
         const Rasterized_font  *_font = nullptr;
         std::u32string          _label;
         Position                _label_origin;

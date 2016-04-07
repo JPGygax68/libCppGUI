@@ -108,7 +108,7 @@ namespace cppgui {
 
         static auto stroke_width() -> int { return 1; }
         static auto stroke_color() -> Color { return { 0, 0, 0, 1 }; }
-        static auto margin() -> int { return 1; }
+        static auto padding() -> int { return 1; }
         static auto paper_color() -> Color { return {1, 1, 1, 1}; }
 
     private:
@@ -151,6 +151,12 @@ namespace cppgui {
         void mouse_click(const Position &, int button, int count) override;
 
     protected:
+        // Styling
+        // TODO: move to new class Abstract_button<> ?
+        auto button_face_color() -> Color;
+        auto button_border_color() -> Color;
+        auto button_border_width() -> int;
+
         Rectangle               _inner_rect;
 
     private:

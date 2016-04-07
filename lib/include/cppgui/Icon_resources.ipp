@@ -26,4 +26,13 @@ namespace cppgui {
         };
     }
 
+    template<Font_size Size>
+    constexpr auto Icon_resources<Size>::close_glyph() -> Icon_glyph
+    {
+        return {
+            materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(),
+            0xE14C
+        };
+    }
+
 } // ns cppgui
