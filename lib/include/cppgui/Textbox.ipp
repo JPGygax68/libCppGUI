@@ -528,7 +528,7 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
+    inline void Textbox__Layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
     {
         compute_text_extents();
         this->layout();
@@ -536,7 +536,7 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::change_font(const Rasterized_font *font)
+    inline void Textbox__Layouter<Config, true>::Aspect<Aspect_parent>::change_font(const Rasterized_font *font)
     {
         p()->_font = font;
         compute_text_extents();
@@ -545,7 +545,7 @@ namespace cppgui {
 
     template <class Config>
     template <class Aspect_parent>
-    inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::compute_text_extents()
+    inline void Textbox__Layouter<Config, true>::Aspect<Aspect_parent>::compute_text_extents()
     {
         // TODO: free the font handle
 
@@ -562,7 +562,7 @@ namespace cppgui {
 
     template <class Config>
     template <class Aspect_parent>
-    inline auto Textbox_layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
+    inline auto Textbox__Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
     {
         // TODO: replace "10" with const
         // TODO: adjust for border, too
@@ -574,7 +574,7 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    inline void Textbox_layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    inline void Textbox__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
         compute_inner_rect();
 

@@ -59,6 +59,10 @@ namespace cppgui {
             };
         }
 
+        static auto between_points(const Position &from, const Position &to) -> Extents {
+
+            return { static_cast<Length>(to.x - from.x), static_cast<Length>(to.y - from.y) };
+        }
     };
 
     struct Rectangle {
@@ -66,6 +70,10 @@ namespace cppgui {
         Extents  ext;
         bool contains(const Position &p) const { return ext.contains(p - pos); }
         auto offset(const Position &offs) const -> Rectangle { return { pos.x + offs.x, pos.y + offs.y, ext.w, ext.h }; }
+        auto top_left() const { return pos; }
+        auto top_right() const -> Position { return { pos.x + static_cast<Offset>(ext.w), pos.y }; }
+        auto bottom_right() const -> Position { return { pos.x + static_cast<Offset>(ext.w), pos.y + static_cast<Offset>(ext.h) }; }
+        auto bottom_left() const -> Position { return { pos.x, pos.y + static_cast<Offset>(ext.h) }; }
         auto left() const { return pos.x; }
         auto top() const { return pos.y; }
         auto right() const { return pos.y + static_cast<Offset>(ext.w); }

@@ -20,7 +20,9 @@ namespace cppgui {
     protected:
 
         void add_child(Widget_t *);
+        // TODO: should removal methods be moved to optional aspect ?
         void remove_child(Widget_t *);
+        void remove_all_children();
 
         auto child_at(const Position &) -> Widget_t *;
 

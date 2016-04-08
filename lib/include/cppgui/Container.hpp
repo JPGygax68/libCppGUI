@@ -15,13 +15,15 @@ namespace cppgui {
         end
     };
 
-    // Forward-declare layouter aspect
+    // Forward-declarations
 
     template <class Config, bool With_layout>
     struct Container__Layouter {
 
         template <class Aspect_parent> struct Aspect: public Aspect_parent {};
     };
+
+    // Main class
 
     template <class Config, bool With_layout>
     class Container: 
@@ -39,6 +41,8 @@ namespace cppgui {
         void init() override;
 
         using Abstract_container_t::add_child;
+        using Abstract_container_t::remove_child;
+        using Abstract_container_t::remove_all_children;
 
         void mouse_motion(const Position &) override;
         void mouse_button(const Position &, int button, Key_state) override;
@@ -54,6 +58,8 @@ namespace cppgui {
 
         Border              _border = {0};
     };
+
+    // Container_updater aspect
 
     template <class Config, bool With_layout>
     struct Default__Container__Container_updater {

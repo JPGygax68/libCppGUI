@@ -26,12 +26,13 @@ namespace cppgui {
                 ...
      */
     template <
+        class Impl,                                 // CRTP
         class GUIConfig,                            // GUI library configuration
         class WindowBaseT,                          // Window "concept" implementation
-        template <class> class RendererAdapter      // "glue" code
+        template <class> class RendererAdapter      // "glue" code, using the "aspect" pattern
     >
     class GUI_window: public WindowBaseT, 
-        public RendererAdapter<GUI_window<GUIConfig, WindowBaseT, RendererAdapter>>
+        public RendererAdapter< GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter> >
     {
     public:
         using Canvas_t = typename Canvas<typename GUIConfig::Renderer>;
@@ -40,14 +41,14 @@ namespace cppgui {
 
         GUI_window(const char *title, int w = 800, int h = 600); // TODO: better defaults
 
-        auto& root_widget() { return _root_widget; }
+        auto root_widget() { return &_root_widget; }
 
     protected:
 
         // Concept implementation (CRTP)
 
-        void init_graphics();
-        void cleanup_graphics();
+        void init_graphics();       // 
+        void cleanup_graphics();    // will be called from closing()
 
         void redraw();
 
@@ -61,6 +62,9 @@ namespace cppgui {
         void closing();
 
     private:
+        class Impl_t: public Impl { friend class GUI_window; };
+        auto p() { return static_cast<Impl_t*>(this); }
+
         Canvas_t                   *_canvas;        // TODO: use unique_ptr<>
         Root_widget                 _root_widget;
     };

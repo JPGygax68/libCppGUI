@@ -37,10 +37,12 @@ namespace cppgui {
         using Font_handle = typename Canvas_t::Font_handle;
         using Cursor_handle = typename Config::Mouse::Cursor_handle;
 
-        Root_widget(Canvas_t *);
+        // Root_widget(Canvas_t *);
 
         using Abstract_container_t::add_child;
         using Abstract_container_t::remove_child;
+
+        void set_canvas(Canvas_t *);
 
         void init() override;
 
@@ -61,6 +63,10 @@ namespace cppgui {
         void key_down(const Keycode &) override;
         //void key_up(const Keycode &) override;
 
+        void render();
+
+    protected:
+        
         void render(Canvas_t *, const Position &) override;
 
     private:

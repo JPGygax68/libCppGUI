@@ -177,10 +177,10 @@ namespace cppgui {
         on the Updater (or any other) aspect family, that pointer, and the
         methods associated with it, should be moved to the Widget<> stem class.
      */
-    template <class Config, bool With_layout> class Abstract_container;
-    template <class Config, bool With_layout> class Default_container_updater;
+    template<class Config, bool With_layout> class Abstract_container;
+    template<class Config, bool With_layout> class Default_container_updater;
 
-    template <class Config, bool With_layout>
+    template<class Config, bool With_layout>
     struct Default__Widget__Updater {
         
         template<class Aspect_parent> struct Aspect: public Aspect_parent
@@ -222,6 +222,12 @@ namespace cppgui {
 
             void set_padding(Width);
             void set_padding(const std::initializer_list<Width> &);
+
+            void set_rectangle(const Position &nw, const Position &se);
+            void set_rectangle_nw(const Position &, const Extents &);
+            void set_rectangle_ne(const Position &, const Extents &);
+            void set_rectangle_se(const Position &, const Extents &);
+            void set_rectangle_sw(const Position &, const Extents &);
 
         protected:
             using Padding = std::array<Width, 4>; // TODO: move to basic_types.hpp

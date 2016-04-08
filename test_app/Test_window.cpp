@@ -24,6 +24,8 @@ Test_window::Test_window(): Parent("Test window")
 {
     using Default_font = GUI_configuration::Default_font;
 
+    init_graphics();
+
     // TODO: doesn't really belong here (could be executed more than once)
     auto dflt_font_data = Default_font::get();
     dflt_font = gpc::fonts::get(dflt_font_data.first, dflt_font_data.second);

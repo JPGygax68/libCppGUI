@@ -23,6 +23,12 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Abstract_container<Config, With_layout>::remove_all_children()
+    {
+        _children.clear(); // TODO: send notifications ?
+    }
+
+    template<class Config, bool With_layout>
     auto Abstract_container<Config, With_layout>::child_at(const Position &pos) -> Widget<Config, With_layout>*
     {
         auto child = std::find_if(std::begin(_children), std::end(_children), [&](auto child) { return child->rectangle().contains(pos); });

@@ -2,11 +2,13 @@
 
 namespace cppgui {
 
+    /*
     template<class Config, bool With_layout>
-    Root_widget<Config, With_layout>::Root_widget(Canvas_t *r)
+    Root_widget<Config, With_layout>::Root_widget(Canvas_t *cv)
     {
-        _canvas = r;
+        _canvas = cv;
     }
+    */
 
     /*
     template<class GUIConfig, bool WithLayout>
@@ -16,6 +18,12 @@ namespace cppgui {
         child->added_to_container(static_cast<Abstract_container_t*>(this));
     }
     */
+
+    template<class Config, bool With_layout>
+    void Root_widget<Config, With_layout>::set_canvas(Canvas_t *cv)
+    {
+        _canvas = cv;
+    }
 
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::init()
@@ -113,6 +121,12 @@ namespace cppgui {
             _focused_widget->key_down(key);
             this->unlock();
         }
+    }
+
+    template<class Config, bool With_layout>
+    void Root_widget<Config, With_layout>::render()
+    {
+        render(_canvas, { 0, 0});
     }
 
     template<class Config, bool WithLayout>

@@ -7,13 +7,13 @@ namespace cppgui {
     // Forward declarations 
 
     template <class Config, bool With_layout>
-    struct Textbox_layouter {
+    struct Textbox__Layouter {
 
         template <class Aspect_parent> struct Aspect: public Aspect_parent {
 
-            void font_changed() { static_assert(false, "Concept: Textbox_layouter::font_changed(): must never be used"); }
-            auto get_minimal_size() -> Extents { static_assert(false, "Concept: Textbox_layouter::get_minimal_size(): must never be used"); return {}; }
-            void layout() override { static_assert(false, "Concept: Textbox_layouter::layout(): must never be used"); }
+            void font_changed() { static_assert(false, "Concept: Textbox__Layouter::font_changed(): must never be used"); }
+            auto get_minimal_size() -> Extents { static_assert(false, "Concept: Textbox__Layouter::get_minimal_size(): must never be used"); return {}; }
+            void layout() override { static_assert(false, "Concept: Textbox__Layouter::layout(): must never be used"); }
         };
     };
 
@@ -22,7 +22,7 @@ namespace cppgui {
     // TODO: do not stretch vertically to fill all available space, instead display a strip with border and padding to fit the font size
 
     template <class Config, bool With_layout>
-    class Textbox: public Textbox_layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >
+    class Textbox: public Textbox__Layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >
     {
     public:
         using Renderer = typename Config::Renderer;
@@ -103,13 +103,13 @@ namespace cppgui {
     // Layouting aspect ---------------------------------------------
 
     template <class Config>
-    struct Textbox_layouter<Config, false> {
+    struct Textbox__Layouter<Config, false> {
 
         template <class Aspect_parent> struct Aspect : public Aspect_parent {};
     };
 
     template <class Config>
-    struct Textbox_layouter<Config, true> {
+    struct Textbox__Layouter<Config, true> {
 
         template <class Aspect_parent> struct Aspect : public Aspect_parent {
         

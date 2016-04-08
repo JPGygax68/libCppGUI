@@ -53,7 +53,7 @@ namespace cppgui {
 
             window_map()[id()] = static_cast<Impl*>(this);
 
-            p()->init_graphics();
+            // p()->init_graphics();
         }
 
         template <class Impl>
@@ -214,6 +214,7 @@ namespace cppgui {
         template<class Impl>
         void Window<Impl>::handle_redraw()
         {
+            p()->make_renderer_context_current();
             p()->redraw();
         }
 

@@ -31,17 +31,6 @@ namespace cppgui {
         }
     }
 
-#ifdef NOT_DEFINED
-
-    template <class Config, bool With_layout>
-    inline void Abstract_widget<Config, With_layout>::cleanup_render_resources(Canvas_t *r)
-    {
-        Config::Color_mapper::release_all_resources(r);
-        Config::Font_mapper ::release_all_resources(r);
-    }
-
-#endif
-
     template <class Config, bool With_layout>
     inline auto Abstract_widget<Config, With_layout>::rgba_to_native(Canvas_t *r, const Color &color) -> Native_color
     {
@@ -197,7 +186,7 @@ namespace cppgui {
     // Style
 
     template<class Config, bool With_layout>
-    auto Widget<Config, With_layout>::button_face_color() -> Color
+    inline auto Widget<Config, With_layout>::button_face_color() -> Color
     {
         if (hovered())
         {
@@ -209,7 +198,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    auto Widget<Config, With_layout>::button_border_color() -> Color
+    inline auto Widget<Config, With_layout>::button_border_color() -> Color
     {
         if (hovered())
         {
@@ -221,7 +210,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    auto Widget<Config, With_layout>::button_border_width() -> int
+    inline auto Widget<Config, With_layout>::button_border_width() -> int
     {
         if (/*is_default()*/ false) 
         {
@@ -246,6 +235,46 @@ namespace cppgui {
     inline void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_padding(const std::initializer_list<Length> &padding)
     {
         std::copy(std::begin(padding), std::end(padding), std::begin(_padding));
+    }
+
+    template<class Config>
+    template<class Aspect_parent>
+    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle(const Position &nw, const Position &se)
+    {
+        p()->set_position(nw);
+        p()->set_extents(Extents::between_points(nw, se));
+    }
+
+    template<class Config>
+    template<class Aspect_parent>
+    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle_nw(const Position &pos, const Extents &ext)
+    {
+        p()->set_position(pos);
+        p()->set_extents(ext);
+    }
+
+    template<class Config>
+    template<class Aspect_parent>
+    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle_ne(const Position &pos, const Extents &ext)
+    {
+        p()->set_position({ pos.x - static_cast<Offset>(ext.w), pos.y });
+        p()->set_extents(ext);
+    }
+
+    template<class Config>
+    template<class Aspect_parent>
+    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle_sw(const Position &pos, const Extents &ext)
+    {
+        p()->set_position({ pos.x - static_cast<Offset>(ext.w), pos.y - static_cast<Offset>(ext.h) });
+        p()->set_extents(ext);
+    }
+
+    template<class Config>
+    template<class Aspect_parent>
+    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle_se(const Position &pos, const Extents &ext)
+    {
+        p()->set_position({ pos.x, pos.y - static_cast<Offset>(ext.h) });
+        p()->set_extents(ext);
     }
 
     template<class Config>

@@ -57,7 +57,7 @@ namespace cppgui {
     template<class Aspect_parent>
     void Button__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
-        // TODO: border, padding!
+        compute_inner_rect();
 
         auto ext = p()->extents();
 
