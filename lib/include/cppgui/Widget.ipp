@@ -173,6 +173,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     inline void Widget<Config, With_layout>::mouse_exit()
     {
+        std::cout << "Widget::mouse_exit()" << std::endl;
         _hovered = false;
         invalidate();
     }

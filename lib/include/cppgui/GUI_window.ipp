@@ -9,6 +9,7 @@ namespace cppgui {
     GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::GUI_window(const char *title, int w, int h):
         WindowBaseT(title, w, h)
     {
+        _root_widget.on_invalidated([this]() { invalidate(); });
     }
 
     /** Caution! the following is called from the constructor of the concrete class derived from
