@@ -52,8 +52,6 @@ namespace cppgui {
             _win.reset(win);
 
             window_map()[id()] = static_cast<Impl*>(this);
-
-            // p()->init_graphics();
         }
 
         template <class Impl>
@@ -143,6 +141,20 @@ namespace cppgui {
         void Window<Impl>::dispatch_redraw(uint32_t win_id)
         {
             window_map()[win_id]->handle_redraw();
+        }
+
+        template<class Impl>
+        void Window<Impl>::init_window()
+        {
+            p()->init_renderer(); // call into renderer adapter
+            // TODO: other subsystem adapters
+        }
+
+        template<class Impl>
+        void Window<Impl>::cleanup_window()
+        {
+            p()->cleanup_renderer();
+            // TODO: other subsystem adapters
         }
 
         template <class Impl>

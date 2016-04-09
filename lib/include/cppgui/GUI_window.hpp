@@ -45,10 +45,8 @@ namespace cppgui {
 
     protected:
 
-        // Concept implementation (CRTP)
-
-        void init_graphics();       // 
-        void cleanup_graphics();    // will be called from closing()
+        void init_window();
+        void cleanup_window();
 
         void redraw();
 

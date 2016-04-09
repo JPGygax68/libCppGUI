@@ -16,11 +16,9 @@ namespace cppgui {
         GUI_window<>.
     */
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class RendererAdapter>
-    inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::init_graphics()
+    inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::init_window()
     {
-        std::cout << "Test_window::init()" << std::endl;
-
-        init_renderer();
+        WindowBaseT::init_window();
 
         _canvas = new Canvas_t {}; // TODO: support passing window as parameter
         _canvas->init();
@@ -30,13 +28,13 @@ namespace cppgui {
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
-    inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::cleanup_graphics()
+    inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::cleanup_window()
     {
         assert(_canvas);
         delete _canvas;
         _canvas = nullptr;
 
-        cleanup_renderer();
+        WindowBaseT::cleanup_window();
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
@@ -100,7 +98,7 @@ namespace cppgui {
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
     inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::closing()
     {
-        p()->cleanup_graphics();
+        p()->cleanup_window();
     }
 
 } // ns cppgui

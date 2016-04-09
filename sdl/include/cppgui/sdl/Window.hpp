@@ -68,6 +68,10 @@ namespace cppgui {
             //static void dispatch_custom_event(uint32_t win_id);
 
         protected:
+
+            void init_window(); // use CRTP-override
+            void cleanup_window(); // ditto
+
             void handle_window_event(SDL_WindowEvent &ev);
             void handle_mousemotion_event(SDL_MouseMotionEvent &ev);
             void handle_mousebutton_event(SDL_MouseButtonEvent &ev);
