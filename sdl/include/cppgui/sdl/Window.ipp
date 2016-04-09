@@ -67,6 +67,12 @@ namespace cppgui {
         }
 
         template<class Impl>
+        auto Window<Impl>::get_current_gl_context() -> SDL_GLContext
+        {
+            return SDL_GL_GetCurrentContext();
+        }
+
+        template<class Impl>
         auto Window<Impl>::create_gl_context() -> SDL_GLContext
         {
             SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);

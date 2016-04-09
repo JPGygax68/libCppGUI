@@ -135,7 +135,7 @@ namespace cppgui {
         auto pos = offs + position();
 
         // TODO: the following is temporary - it must be made optional
-        r->clear(r->rgba_to_native({ 0, 0.5f, 0.2f, 1 }));
+        // r->clear(r->rgba_to_native({ 0, 0.5f, 0.2f, 1 }));
         
         for (auto& child : children())
         {

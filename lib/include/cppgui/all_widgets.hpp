@@ -36,4 +36,4 @@
     template cppgui::Checkbox              <Config, With_layout>; \
     template cppgui::Abstract_container    <Config, With_layout>; \
     template cppgui::Container             <Config, With_layout>; \
-    template cppgui::Stack                 <Config, With_layout>; 
+    template cppgui::Stack                 <Config, With_layout>;
