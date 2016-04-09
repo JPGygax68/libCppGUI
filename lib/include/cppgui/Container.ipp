@@ -55,12 +55,7 @@ namespace cppgui {
         fill(cv, offs, background_color());
         draw_borders(cv, offs, _border.width, _border.color);
 
-        auto pos = offs + position();
-
-        for (auto& child : children())
-        {
-            child->render(cv, pos);
-        }
+        render_children(cv, offs + position());
     }
 
     // Container Layouter aspect ------------------------------------

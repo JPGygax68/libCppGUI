@@ -150,6 +150,12 @@ namespace cppgui {
         }
 
         template<class Impl>
+        void Window<Impl>::dispatch_custom_event(uint32_t win_id)
+        {
+            window_map()[win_id]->handle_redraw();
+        }
+
+        template<class Impl>
         void Window<Impl>::init_window()
         {
             p()->init_renderer(); // call into renderer adapter

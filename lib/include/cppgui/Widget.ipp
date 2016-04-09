@@ -163,6 +163,12 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Widget<Config, With_layout>::set_visible(bool vis)
+    {
+        _visible = vis;
+    }
+
+    template<class Config, bool With_layout>
     inline void Widget<Config, With_layout>::mouse_enter()
     {
         std::cout << "Widget::mouse_enter()" << std::endl;
@@ -182,6 +188,16 @@ namespace cppgui {
     void Widget<Config, With_layouting>::mouse_click(const Position &pos, int button, int count)
     {
         if (_click_hndlr) _click_hndlr(pos, button, count);
+    }
+
+    template<class Config, bool With_layout>
+    void Widget<Config, With_layout>::change_visible(bool state)
+    {
+        if (state != visible())
+        {
+            set_visible(state);
+            invalidate();
+        }
     }
 
     // Style

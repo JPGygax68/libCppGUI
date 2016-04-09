@@ -31,7 +31,9 @@ namespace cppgui {
     template<class Config, bool With_layout>
     auto Abstract_container<Config, With_layout>::child_at(const Position &pos) -> Widget<Config, With_layout>*
     {
-        auto child = std::find_if(std::begin(_children), std::end(_children), [&](auto child) { return child->rectangle().contains(pos); });
+        auto child = std::find_if(std::begin(_children), std::end(_children), [&](auto child) { 
+            return child->visible() && child->rectangle().contains(pos); 
+        });
 
         return child != std::end(_children) ? *child : nullptr;
     }
@@ -42,6 +44,18 @@ namespace cppgui {
         for (auto child : children())
         {
             child->init();
+        }
+    }
+
+    template<class Config, bool With_layout>
+    void Abstract_container<Config, With_layout>::render_children(Canvas_t *cv, const Position & offs)
+    {
+        for (auto& child : children())
+        {
+            if (child->visible()) 
+            {
+                child->render(cv, offs);
+            }
         }
     }
 
@@ -103,7 +117,7 @@ namespace cppgui {
     // Layouter aspect ----------------------------------------------
 
     template<class Config>
-    void Abstract_container_Layouter<Config, true>::init_children_layout()
+    void Abstract_container__Layouter<Config, true>::init_children_layout()
     {
         for (auto child : p()->children())
         {
@@ -112,7 +126,7 @@ namespace cppgui {
     }
 
     template<class Config>
-    inline void Abstract_container_Layouter<Config, true>::layout_children()
+    inline void Abstract_container__Layouter<Config, true>::layout_children()
     {
         // TODO: this algorithm, and the whole method, will probably become obsolete as real
         //  layouting gets implemented

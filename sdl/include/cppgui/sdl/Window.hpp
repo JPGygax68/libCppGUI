@@ -14,6 +14,7 @@ struct SDL_MouseButtonEvent;
 struct SDL_MouseWheelEvent;
 struct SDL_TextInputEvent;
 struct SDL_KeyboardEvent;
+struct SDL_UserEvent;
 struct SDL_Keysym;
 using SDL_GLContext = void *;
 
@@ -67,7 +68,7 @@ namespace cppgui {
             static void dispatch_textinput_event(SDL_TextInputEvent &ev);
             static void dispatch_keydown_event(SDL_KeyboardEvent &ev);
             static void dispatch_redraw(uint32_t win_id);
-            //static void dispatch_custom_event(uint32_t win_id);
+            static void dispatch_custom_event(uint32_t win_id);
 
         protected:
 
@@ -81,7 +82,7 @@ namespace cppgui {
             void handle_textinput_event(SDL_TextInputEvent &ev);
             void handle_keydown_event(SDL_KeyboardEvent &ev);
             void handle_redraw();
-            //void handle_custom_event(SDL_UserEvent &ev);
+            virtual void handle_custom_event(SDL_UserEvent &) {}
 
         private:
             class Window_t: public Impl { friend class Window; };

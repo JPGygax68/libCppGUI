@@ -131,6 +131,9 @@ namespace cppgui {
 
         // void init();
 
+        void set_visible(bool visible = true);
+        bool visible() const { return _visible; }
+
         // TODO: should the following be protected ?
         bool hovered() const { return _hovered; }
 
@@ -138,6 +141,8 @@ namespace cppgui {
         void mouse_exit() override;
 
         void mouse_click(const Position &, int button, int count) override;
+
+        void change_visible(bool visible = true);
 
     protected:
         // Static styles
@@ -155,6 +160,7 @@ namespace cppgui {
     private:
         Color                   _bkgnd_clr = {0, 0, 0, 0};
         Click_handler           _click_hndlr;
+        bool                    _visible = true;
         bool                    _hovered = false;
     };
 

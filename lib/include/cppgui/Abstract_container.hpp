@@ -4,16 +4,17 @@
 
 namespace cppgui {
 
-    template <class Config, bool With_layout> struct Abstract_container_Layouter {};
+    template <class Config, bool With_layout> struct Abstract_container__Layouter {};
 
     /** Container functionality (ability to contain Widgets).
     */
     template <class Config, bool With_layout>
     class Abstract_container: public Config::template Abstract_container_Container_updater<Nil_struct>,
-        public Abstract_container_Layouter<Config, With_layout>
+        public Abstract_container__Layouter<Config, With_layout>
     {
     public:
         using Widget_t = Widget<Config, With_layout>;
+        using Canvas_t = typename Widget_t::Canvas_t;
 
         auto& children() { return _children; }
 
@@ -27,6 +28,8 @@ namespace cppgui {
         auto child_at(const Position &) -> Widget_t *;
 
         void init_children_resources();
+
+        void render_children(Canvas_t *, const Position &offs);
 
         /** The handle_mouse_xxxx() methods are intended as "delegates" to be called
         from "real" containers (i.e. descendants of Container<>).            
@@ -64,7 +67,7 @@ namespace cppgui {
         };
     };
 
-    template <class Config> struct Abstract_container_Layouter<Config, true> {
+    template <class Config> struct Abstract_container__Layouter<Config, true> {
 
         class Container_t: public Container<Config, true> { friend struct Aspect; };
 
