@@ -40,9 +40,7 @@ namespace cppgui {
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
     inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::redraw()
     {
-        std::cout << "Test_window::redraw()" << std::endl;
-
-        //GL(Clear, GL_COLOR_BUFFER_BIT);
+        // std::cout << "Test_window::redraw()" << std::endl;
 
         _canvas->enter_context();
         //_root_widget.render(_canvas, { 0, 0 });

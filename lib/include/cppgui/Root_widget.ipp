@@ -126,7 +126,6 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::render()
     {
-        //render(_canvas, { 0, 0});
         render_children(_canvas, {0, 0});
     }
 
