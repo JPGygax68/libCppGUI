@@ -43,6 +43,7 @@ private:
     Label                       _label;
     Button                      _button;
     Glyph_button                _glyph_btn;
+    Glyph_button                _button2;
     Textbox                     _textbox;
     Checkbox                    _checkbox;
     std::vector<Button>         _button_list;

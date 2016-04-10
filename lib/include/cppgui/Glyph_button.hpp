@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "./Widget.hpp"
 
 namespace cppgui {
@@ -19,6 +21,10 @@ namespace cppgui {
         using Canvas_t = typename Widget_t::Canvas_t;
         using Font_handle = typename Widget_t::Font_handle;
 
+        void set_font(const Rasterized_font *font) { _label_fnt = font; }
+
+        void set_label(const std::u32string &label) { _label = label; }
+
         void set_glyph(const Icon_glyph &);
 
         void enable_border(bool enabled) { _border_enabled = enabled; }
@@ -27,15 +33,19 @@ namespace cppgui {
 
         void render(Canvas_t *, const Position &offset) override;
 
-
     protected:
+        const Rasterized_font          *_label_fnt = nullptr;
+        std::u32string                  _label;
         const Rasterized_font          *_glyph_fnt;
         char32_t                        _glyph_cp;
-        Position                        _glyph_pos;
         bool                            _border_enabled = true;
 
+        Position                        _label_pos;
+        Position                        _glyph_pos;
+
     private:
-        Font_handle                     _font_hnd;
+        Font_handle                     _glyph_font_hnd;
+        Font_handle                     _label_font_hnd;
     };
 
     // Layouter aspect
@@ -61,7 +71,9 @@ namespace cppgui {
             void compute_sizes();
 
             Text_bounding_box           _glyph_bounds;
-            Length                      _min_edge;
+            Text_bounding_box           _label_bounds;
+            Length                      _glyph_min_edge;
+            Length                      _spacing; // spacing between label and glyph
         };
     };
 

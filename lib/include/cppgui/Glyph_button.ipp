@@ -14,7 +14,9 @@ namespace cppgui {
     template<class Config, bool With_layout>
     inline void Glyph_button<Config, With_layout>::init()
     {
-        _font_hnd = root_widget()->get_font_handle(_glyph_fnt);
+        if (_label_fnt) _label_font_hnd = root_widget()->get_font_handle(_label_fnt);
+
+        _glyph_font_hnd = root_widget()->get_font_handle(_glyph_fnt);
     }
 
     template<class Config, bool With_layout>
@@ -32,7 +34,14 @@ namespace cppgui {
 
         auto pos = offset + position();
 
-        cv->render_text(_font_hnd, pos.x + _glyph_pos.x, pos.y + _glyph_pos.y, &_glyph_cp, 1);
+        // Label
+        if (!_label.empty())
+        {
+            cv->render_text(_label_font_hnd, pos.x + _label_pos.x, pos.y + _label_pos.y, _label.data(), _label.size());
+        }
+
+        // Glyph
+        cv->render_text(_glyph_font_hnd, pos.x + _glyph_pos.x, pos.y + _glyph_pos.y, &_glyph_cp, 1);
     }
 
 
@@ -47,28 +56,57 @@ namespace cppgui {
 
     template <class Config>
     template <class Aspect_parent>
+    inline void Glyph_button__Layouter<Config, true>::Aspect<Aspect_parent>::compute_sizes()
+    {
+        _glyph_bounds = p()->_glyph_fnt->lookup_glyph(0, p()->_glyph_cp)->cbox.bounds;
+
+        _glyph_min_edge = std::max(_glyph_bounds.width(), _glyph_bounds.height());
+
+        if (!p()->_label.empty())
+        {
+            _label_bounds = p()->_label_fnt->compute_text_extents(0, p()->_label.data(), p()->_label.size());
+            _spacing = 4; // TODO: replace with value based on EM, or stylesheet setting
+        }
+        else {
+            _label_bounds = {};
+            _spacing = 0;
+        }
+    }
+
+    template <class Config>
+    template <class Aspect_parent>
     inline auto Glyph_button__Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
     {
-        return { _min_edge, _min_edge };
+        return { 
+            _padding[3] + _label_bounds.width () + _spacing + _glyph_min_edge + _padding[1], 
+            _padding[0] + std::max(_label_bounds.height(), _glyph_min_edge)   + _padding[2]
+        };
     }
 
     template <class Config>
     template <class Aspect_parent>
     inline void Glyph_button__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
-        p()->_glyph_pos = {
-            static_cast<Offset>((p()->extents().w - _glyph_bounds.width ()) / 2), // - _glyph_bounds.x_min,
-            static_cast<Offset>((p()->extents().h - _glyph_bounds.height()) / 2) + _glyph_bounds.y_max
-        };
-    }
+        auto ext = p()->extents();
 
-    template <class Config>
-    template <class Aspect_parent>
-    inline void Glyph_button__Layouter<Config, true>::Aspect<Aspect_parent>::compute_sizes()
-    {
-        _glyph_bounds = p()->_glyph_fnt->lookup_glyph(0, p()->_glyph_cp)->cbox.bounds;
+        if (!p()->_label.empty())
+        {
+            p()->_label_pos = {
+                static_cast<Offset>(_padding[3]),
+                static_cast<Offset>((ext.h - _label_bounds.height()) / 2) + _label_bounds.y_max
+            };
 
-        _min_edge = std::max(_glyph_bounds.width() + _padding[3] + _padding[1], _glyph_bounds.height() + _padding[0] + _padding[2]);
+            p()->_glyph_pos = {
+                static_cast<Offset>(ext.w - _padding[1] - _glyph_min_edge),
+                static_cast<Offset>((ext.h - _glyph_min_edge) / 2) + _glyph_bounds.y_max
+            };
+        }
+        else {
+            p()->_glyph_pos = {
+                static_cast<Offset>((ext.w - _glyph_bounds.width ()) / 2), // - _glyph_bounds.x_min,
+                static_cast<Offset>((ext.h - _glyph_bounds.height()) / 2) + _glyph_bounds.y_max
+            };
+        }
     }
 
 } // ns cppgui
