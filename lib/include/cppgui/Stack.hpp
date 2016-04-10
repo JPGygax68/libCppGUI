@@ -35,8 +35,8 @@ namespace cppgui {
     protected:
         using Inner_stack_t = typename Inner_stack<Config, With_layout>;
 
-        auto border_color() -> Color;
-        auto border_width() -> int { return 1; }
+        //auto border_color() -> Color;
+        //auto border_width() -> int { return 1; }
         static auto glyph_font() -> const Rasterized_font *;
         auto compute_children_total_size() -> Extents;
 
