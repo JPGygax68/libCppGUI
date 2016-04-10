@@ -42,6 +42,8 @@ namespace cppgui {
         using Abstract_container_t::add_child;
         using Abstract_container_t::remove_child;
 
+        void set_background_color(const Color &color) { _bkgnd_clr = color; }
+
         void set_canvas(Canvas_t *);
 
         void init() override;
@@ -71,6 +73,7 @@ namespace cppgui {
 
     private:
         Font_mapper                 _font_mapper;
+        Color                       _bkgnd_clr = { 0, 0, 0, 0 };
         Canvas_t                   *_canvas = nullptr;
         Widget_t                   *_focused_widget = nullptr;
         std::stack<Cursor_handle>   _cursor_stack;

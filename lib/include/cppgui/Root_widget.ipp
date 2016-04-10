@@ -126,20 +126,22 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::render()
     {
-        render_children(_canvas, {0, 0});
+        render(_canvas, {0, 0});
     }
 
     template<class Config, bool WithLayout>
-    inline void Root_widget<Config, WithLayout>::render(Canvas_t *r, const Position &offs)
+    inline void Root_widget<Config, WithLayout>::render(Canvas_t *cv, const Position &offs)
     {
         auto pos = offs + position();
 
-        // TODO: the following is temporary - it must be made optional
-        // r->clear(r->rgba_to_native({ 0, 0.5f, 0.2f, 1 }));
+        if (_bkgnd_clr[3] > 0)
+        {
+            cv->clear(cv->rgba_to_native(_bkgnd_clr));
+        }
         
         for (auto& child : children())
         {
-            child->render(r, pos);
+            child->render(cv, pos);
         }
     }
 

@@ -24,7 +24,7 @@ Test_window::Test_window(): Parent("Test window")
 {
     using Default_font = GUI_configuration::Default_font;
 
-    init_graphics();
+    init_window();
 
     // TODO: doesn't really belong here (could be executed more than once)
     auto dflt_font_data = Default_font::get();
@@ -91,19 +91,21 @@ Test_window::Test_window(): Parent("Test window")
     _input_dlg.set_position({350, 250});
     _input_dlg.set_extents ({350, 180});
 
-    root_widget().add_child(&_label);
-    root_widget().add_child(&_textbox);
-    root_widget().add_child(&_button);
-    root_widget().add_child(&_glyph_btn);
-    root_widget().add_child(&_checkbox);
-    root_widget().add_child(&_menu);
-    root_widget().add_child(&_input_dlg);
+    root_widget()->set_background_color({0, 0.6f, 0.2f, 1});
 
-    root_widget().set_focus_to(&_textbox);
+    root_widget()->add_child(&_label);
+    root_widget()->add_child(&_textbox);
+    root_widget()->add_child(&_button);
+    root_widget()->add_child(&_glyph_btn);
+    root_widget()->add_child(&_checkbox);
+    root_widget()->add_child(&_menu);
+    root_widget()->add_child(&_input_dlg);
 
-    root_widget().on_invalidated([this]() { invalidate(); });
+    root_widget()->set_focus_to(&_textbox);
 
-    root_widget().init_layout();
-    root_widget().layout();
-    root_widget().init();
+    root_widget()->on_invalidated([this]() { invalidate(); });
+
+    root_widget()->init_layout();
+    root_widget()->layout();
+    root_widget()->init();
 }
