@@ -37,11 +37,11 @@ namespace cppgui {
             template <class Aspect_parent> using Container_Container_updater = typename 
                 Default__Container__Container_updater<Configuration, With_layout>::template Aspect<Aspect_parent>;
 
-            template <class Aspect_parent> using Root_widget_updater = typename 
-                Default_Root_widget_Updater<Configuration, With_layout>::template Aspect<Aspect_parent>;
+            template <class Aspect_parent> using Root_widget__Updater = typename 
+                Default__Root_widget__Updater<Configuration, With_layout>::template Aspect<Aspect_parent>;
 
-            template <class Aspect_parent> using Root_widget_container_updater = typename 
-                Default_Root_widget_Container_updater<Configuration, With_layout>::template Aspect<Aspect_parent>;
+            template <class Aspect_parent> using Root_widget__Container_updater = typename 
+                Default__Root_widget__Container_updater<Configuration, With_layout>::template Aspect<Aspect_parent>;
 
             // We override the color mapper
             // TODO: this should not be necessary, the identity mapper should be chosen automatically

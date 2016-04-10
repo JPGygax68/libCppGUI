@@ -27,12 +27,45 @@ namespace cppgui {
     }
 
     template<Font_size Size>
-    constexpr auto Icon_resources<Size>::close_glyph() -> Icon_glyph
+    constexpr auto Icon_resources<Size>::close() -> Icon_glyph
     {
-        return {
-            materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(),
-            0xE14C
-        };
+        return { materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(), 0xE14C };
+    }
+
+    template<Font_size Size>
+    constexpr auto Icon_resources<Size>::right_arrow() -> Icon_glyph
+    {
+        return { materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(), 0xE154 };
+    }
+
+    template<Font_size Size>
+    constexpr auto Icon_resources<Size>::back() -> Icon_glyph
+    {
+        return { materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(), 0xE15E };
+    }
+
+    template<Font_size Size>
+    constexpr auto Icon_resources<Size>::checkbox_empty() -> Icon_glyph
+    {
+        return { materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(), 0xE835 };
+    }
+
+    template<Font_size Size>
+    constexpr auto Icon_resources<Size>::checkbox_checked() -> Icon_glyph
+    {
+        return { materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(), 0xE834 };
+    }
+
+    template<Font_size Size>
+    constexpr auto Icon_resources<Size>::radiobutton_on() -> Icon_glyph
+    {
+        return { materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(), 0xE837 };
+    }
+
+    template<Font_size Size>
+    constexpr auto Icon_resources<Size>::radiobutton_off() -> Icon_glyph
+    {
+        return { materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(), 0xE836 };
     }
 
 } // ns cppgui

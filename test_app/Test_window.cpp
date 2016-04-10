@@ -56,11 +56,11 @@ Test_window::Test_window(): Parent("Test window")
 
     _button2.set_font(dflt_font);
     _button2.set_label(U"Decorated btn");
-    _button2.set_glyph(cppgui::Icon_resources<Default_font::size>::close_glyph());
+    _button2.set_glyph(cppgui::Icon_resources<Default_font::size>::close());
     _button2.set_position({50, 195});
     _button2.set_extents({200, 30});
 
-    _glyph_btn.set_glyph(cppgui::Icon_resources<Default_font::size>::close_glyph());
+    _glyph_btn.set_glyph(cppgui::Icon_resources<Default_font::size>::close());
     _glyph_btn.set_position({280, 160});
     _glyph_btn.set_extents({30, 30});
 

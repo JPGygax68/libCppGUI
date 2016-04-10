@@ -8,6 +8,8 @@ namespace cppgui {
 
     // Forward declaractions
 
+    struct Icon_glyph;
+
     template <class Config, bool With_layout> struct Glyph_button__Layouter {
         template <class Parent_aspect> struct Aspect;
     };

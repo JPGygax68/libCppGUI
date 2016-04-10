@@ -81,7 +81,7 @@ foreach(size IN ITEMS 12 13 16 20 24 32 36)
             input=${CMAKE_CURRENT_SOURCE_DIR}/data/fonts/${font_file}.ttf
             size=${size}
             output="${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont"
-            range=$E876 range=$E14C
+            range=$E876 range=$E14C range=$E154 range=$E15E range=$E834 range=$E835 range=$E836 range=$E837
     )
 
     add_custom_command(

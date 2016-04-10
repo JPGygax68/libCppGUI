@@ -282,7 +282,7 @@ namespace cppgui {
     template<class Aspect_parent>
     void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle_sw(const Position &pos, const Extents &ext)
     {
-        p()->set_position({ pos.x - static_cast<Offset>(ext.w), pos.y - static_cast<Offset>(ext.h) });
+        p()->set_position({ pos.x, pos.y - static_cast<Offset>(ext.h) });
         p()->set_extents(ext);
     }
 
@@ -290,7 +290,7 @@ namespace cppgui {
     template<class Aspect_parent>
     void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle_se(const Position &pos, const Extents &ext)
     {
-        p()->set_position({ pos.x, pos.y - static_cast<Offset>(ext.h) });
+        p()->set_position({ pos.x - static_cast<Offset>(ext.w), pos.y - static_cast<Offset>(ext.h) });
         p()->set_extents(ext);
     }
 

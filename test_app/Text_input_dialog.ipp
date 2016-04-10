@@ -15,7 +15,7 @@ Text_input_dialog<Config, With_layout>::Text_input_dialog()
     _caption_label.set_background_color({0.8f, 0.8f, 0.8f, 1});
     _caption_label.set_padding({5, 3, 5, 3});
     // TODO: mechanism to choose between available sizes dynamically ?
-    _close_btn.set_glyph(cppgui::Icon_resources<16>::close_glyph());
+    _close_btn.set_glyph(cppgui::Icon_resources<16>::close());
     _close_btn.enable_border(false);
     _header_bar.add_child(&_caption_label);
     _header_bar.add_child(&_close_btn);

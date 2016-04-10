@@ -11,7 +11,7 @@ namespace cppgui {
 
     extern int dummy;
 
-    template <class Config, bool With_layout> struct Root_widget_layouter {
+    template <class Config, bool With_layout> struct Root_widget__Layouter {
 
         template <class Aspect_parent> struct Aspect: public Aspect_parent {};
     };
@@ -22,9 +22,9 @@ namespace cppgui {
 
     template <class Config, bool With_layout>
     class Root_widget: 
-        public Root_widget_layouter<Config, With_layout>::template Aspect< Config::template Root_widget_updater< Abstract_widget<Config, With_layout> > >,
+        public Root_widget__Layouter<Config, With_layout>::template Aspect< Config::template Root_widget__Updater< Abstract_widget<Config, With_layout> > >,
         public Config::Font_mapper,
-        public Config::template Root_widget_container_updater< Abstract_container<Config, With_layout> >
+        public Config::template Root_widget__Container_updater< Abstract_container<Config, With_layout> >
     {
     public:
         //using Renderer = typename GUIConfig::Renderer;
@@ -82,7 +82,7 @@ namespace cppgui {
     // Default implementation for Widget_updater aspect
 
     template <class Config, bool With_layout>
-    struct Default_Root_widget_Updater {
+    struct Default__Root_widget__Updater {
 
         template <class Aspect_parent>
         struct Aspect : public Aspect_parent {
@@ -90,22 +90,28 @@ namespace cppgui {
             using Invalidated_handler = std::function<void()>;
             using Root_widget_t = Root_widget<Config, With_layout>;
 
+            auto root_widget() -> Root_widget_t * override { return static_cast<Root_widget_t*>(this); }
+
             void invalidate();
 
-            auto root_widget() -> Root_widget_t * override { return static_cast<Root_widget_t*>(this); }
+            void on_invalidated(Invalidated_handler handler) { _on_invalidated = handler; }
+
+        private:
+            auto p() -> Root_widget_t *  { return static_cast<Root_widget_t*>(this); }
+
+            Invalidated_handler _on_invalidated;
         };
     };
 
-    // Default implementation for Container_Container_updater aspect
+    // Default implementation for Container_updater aspect
 
     template <class Config, bool With_layout>
-    struct Default_Root_widget_Container_updater {
+    struct Default__Root_widget__Container_updater {
 
         template <class Aspect_parent> struct Aspect : public Aspect_parent {
             
             using Widget_t = Widget<Config, With_layout>;
             using Container_t = Container<Config, With_layout>;
-            using Invalidated_handler = std::function<void()>;
             using Root_widget_t = Root_widget<Config, With_layout>;
 
             // Container_updater contract
@@ -116,14 +122,13 @@ namespace cppgui {
 
             // Specific functionality 
 
-            void on_invalidated(Invalidated_handler handler) { _on_invalidated = handler; }
-
             void lock() { _must_update = false; }
 
-            void unlock() { if (_on_invalidated && _must_update) _on_invalidated(); }
+            void unlock() { if (_must_update) p()->invalidate(); }
 
         private:
-            Invalidated_handler _on_invalidated;
+            auto p() { return static_cast<Root_widget_t*>(this); }
+
             bool                _must_update;
         };
 
@@ -131,16 +136,22 @@ namespace cppgui {
 
     // Layouting aspect
 
-    template <class Config> struct Root_widget_layouter<Config, true> {
+    template <class Config> struct Root_widget__Layouter<Config, true> {
 
         template <class Aspect_parent> struct Aspect: public Aspect_parent {
 
-            using Root_widget_t = Root_widget<Config, true>;
-            //using Abstract_container_t = typename Abstract_container<GUIConfig, true>;
+            class Root_widget_t: public Root_widget<Config, true> { friend struct Aspect; };
+
+            using Widget_t = Widget<Config, true>;
+
+            auto p() { return static_cast<Root_widget_t*>(this); }
 
             virtual void init_layout();
             virtual auto get_minimal_size() -> Extents { return {0, 0}; }
             virtual void layout();
+
+            void insert_child(Widget_t *);
+            void drop_child(Widget_t *);
         };
     };
 

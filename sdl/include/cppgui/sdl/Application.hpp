@@ -23,7 +23,9 @@ namespace cppgui {
 
             // Additional methods
 
+            // TODO: overload that changes the handler but keeps the event id
             static auto register_custom_event(Custom_event_handler) -> uint32_t;
+            //static auto register_custom_window_event(Custom_window_event_handler) -> uint32_t;
 
             // void post_custom_event(const SDL_UserEvent &);
 

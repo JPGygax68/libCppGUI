@@ -37,7 +37,13 @@ namespace cppgui {
 
         //--- END of to-be-replaced section
 
-        static constexpr auto close_glyph() -> Icon_glyph;
+        static constexpr auto close() -> Icon_glyph;
+        static constexpr auto right_arrow() -> Icon_glyph;
+        static constexpr auto back() -> Icon_glyph;
+        static constexpr auto checkbox_empty() -> Icon_glyph;
+        static constexpr auto checkbox_checked() -> Icon_glyph;
+        static constexpr auto radiobutton_on () -> Icon_glyph;
+        static constexpr auto radiobutton_off() -> Icon_glyph;
     };
 
 } // ns cppgui

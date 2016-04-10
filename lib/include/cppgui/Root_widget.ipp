@@ -141,28 +141,55 @@ namespace cppgui {
         
         for (auto& child : children())
         {
-            child->render(cv, pos);
+            if (child->visible()) child->render(cv, pos);
         }
+    }
+
+    // Updater aspect -----------------------------------------------
+
+    template<class Config, bool With_layout>
+    template<class Aspect_parent>
+    inline void Default__Root_widget__Updater<Config, With_layout>::Aspect<Aspect_parent>::invalidate()
+    {
+        _on_invalidated();
     }
 
     // Layouter aspect ----------------------------------------------
 
-    template <class Config>
+    template<class Config>
     template<class Aspect_parent>
-    inline void Root_widget_layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
+    inline void Root_widget__Layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
     {
-        auto p = static_cast<Root_widget_t*>(this);
-
-        p->init_children_layout();
+        p()->init_children_layout();
     }
 
-    template <class Config>
+    template<class Config>
     template<class Aspect_parent>
-    inline void Root_widget_layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    inline void Root_widget__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
-        auto p = static_cast<Root_widget_t*>(this);
+        p()->layout_children(); 
+    }
 
-        p->layout_children(); 
+    template<class Config>
+    template<class Aspect_parent>
+    inline void Root_widget__Layouter<Config, true>::Aspect<Aspect_parent>::insert_child(Widget_t *child)
+    {
+        p()->add_child(child);
+
+        child->init_layout();
+        child->layout();
+        child->init();
+
+        p()->invalidate();
+    }
+
+    template<class Config>
+    template<class Aspect_parent>
+    inline void Root_widget__Layouter<Config, true>::Aspect<Aspect_parent>::drop_child(Widget_t *child)
+    {
+        p()->remove_child(child); 
+
+        p()->invalidate();
     }
 
 } // ns cppgui

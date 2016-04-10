@@ -14,6 +14,8 @@ namespace cppgui {
     using Length = unsigned int;
     using Width = Length;
 
+    struct Extents;
+
     struct Position {
 
         Offset x, y;
@@ -21,6 +23,7 @@ namespace cppgui {
         auto operator + (const Position &delta) const { return Position{ x + delta.x, y + delta.y }; }
         auto operator - (const Position &delta) const { return Position{ x - delta.x, y - delta.y }; }
         auto& operator += (const Position &delta) { x += delta.x, y += delta.y; return *this; }
+
     };
 
     using Position_delta = Position;
@@ -64,6 +67,16 @@ namespace cppgui {
             return { static_cast<Length>(to.x - from.x), static_cast<Length>(to.y - from.y) };
         }
     };
+
+    inline auto operator + (const Position &pos, const Extents &ext) -> Position { 
+        
+        return { pos.x + static_cast<Offset>(ext.w), pos.y + static_cast<Offset>(ext.h) }; 
+    }
+
+    inline auto operator - (const Position &pos, const Extents &ext) -> Position { 
+
+        return { pos.x - static_cast<Offset>(ext.w), pos.y - static_cast<Offset>(ext.h) }; 
+    }
 
     struct Rectangle {
         Position pos;
