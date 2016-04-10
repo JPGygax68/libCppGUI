@@ -113,6 +113,26 @@ namespace cppgui {
             _comp_min_size.h += _padding[0] + _padding[2];
             _comp_min_size.w += (p()->children().size() - 1) * _spacing + _padding[3] + _padding[1];
         }
+        else if (_layout_type == Layout_type::stack)
+        {
+            _comp_min_size.w = 0, _comp_min_size.h = 0;
+
+            for(auto child: p()->children())
+            {
+                auto min_sz = child->get_minimal_size();
+
+                // Use greatest minimal width
+                if (min_sz.w > _comp_min_size.w) _comp_min_size.w = min_sz.w;
+
+                // Add heights
+                _comp_min_size.h += min_sz.h;
+            }
+
+            _comp_min_size.h += (p()->children().size() - 1) * _spacing;
+
+            _comp_min_size.h += _padding[0] + _padding[2];
+            _comp_min_size.w += (p()->children().size() - 1) * _spacing + _padding[3] + _padding[1];
+        }
         else {
             assert(false); 
         }
@@ -199,6 +219,23 @@ namespace cppgui {
             content->set_extents({ w_rem, _inner_rect.height() });
 
             for (auto child : p()->children()) child->layout();
+        }
+        else if (_layout_type == Layout_type::stack)
+        {
+            compute_inner_rect();
+
+            auto ext = p()->extents();
+
+            Offset y = _padding[0];
+            Offset x = _padding[3];
+
+            for (auto child: p()->children())
+            {
+                child->set_position({ x, y });
+                //child->set_extents({ ext.w - _padding[3] - _padding[1], ext });
+
+                y += child->extents().h + _spacing;
+            }
         }
         else {
             assert(false);

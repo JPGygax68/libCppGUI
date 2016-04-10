@@ -16,7 +16,10 @@ namespace cppgui {
     {
         if (_label_fnt) _label_font_hnd = root_widget()->get_font_handle(_label_fnt);
 
-        _glyph_font_hnd = root_widget()->get_font_handle(_glyph_fnt);
+        if (_glyph_cp)
+        {
+            _glyph_font_hnd = root_widget()->get_font_handle(_glyph_fnt);
+        }
     }
 
     template<class Config, bool With_layout>
@@ -41,7 +44,10 @@ namespace cppgui {
         }
 
         // Glyph
-        cv->render_text(_glyph_font_hnd, pos.x + _glyph_pos.x, pos.y + _glyph_pos.y, &_glyph_cp, 1);
+        if (_glyph_cp)
+        {
+            cv->render_text(_glyph_font_hnd, pos.x + _glyph_pos.x, pos.y + _glyph_pos.y, &_glyph_cp, 1);
+        }
     }
 
 
@@ -58,14 +64,20 @@ namespace cppgui {
     template <class Aspect_parent>
     inline void Glyph_button__Layouter<Config, true>::Aspect<Aspect_parent>::compute_sizes()
     {
-        _glyph_bounds = p()->_glyph_fnt->lookup_glyph(0, p()->_glyph_cp)->cbox.bounds;
-
-        _glyph_min_edge = std::max(_glyph_bounds.width(), _glyph_bounds.height());
+        if (p()->_glyph_cp)
+        {
+            _glyph_bounds = p()->_glyph_fnt->lookup_glyph(0, p()->_glyph_cp)->cbox.bounds;
+            _glyph_min_edge = std::max(_glyph_bounds.width(), _glyph_bounds.height());
+        }
+        else {
+            _glyph_bounds = {};
+            _glyph_min_edge = 0;
+        }
 
         if (!p()->_label.empty())
         {
             _label_bounds = p()->_label_fnt->compute_text_extents(0, p()->_label.data(), p()->_label.size());
-            _spacing = 4; // TODO: replace with value based on EM, or stylesheet setting
+            _spacing = _glyph_min_edge > 0 ? 4 : 0; // TODO: replace with value based on EM, or stylesheet setting
         }
         else {
             _label_bounds = {};

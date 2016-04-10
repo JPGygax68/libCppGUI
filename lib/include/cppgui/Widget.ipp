@@ -137,6 +137,11 @@ namespace cppgui {
     template<class Aspect_parent>
     void Default__Widget__Updater<Config, With_layout>::Aspect<Aspect_parent>::removed_from_container(Abstract_container_t *)
     {
+        if (root_widget()->focused_widget() == this) 
+        {
+            root_widget()->set_focus_to(nullptr);
+        }
+
         _container = nullptr;
     }
 

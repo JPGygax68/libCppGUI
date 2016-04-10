@@ -12,6 +12,7 @@ namespace cppgui {
         content_footer, 
         head_content,           // horizontal: fixed-width head, followed by stretching content TODO: better name! 
         content_tail,           // opposite of head_content
+        stack,
         end
     };
 

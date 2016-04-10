@@ -16,16 +16,26 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Abstract_container<Config, With_layout>::remove_child(Widget_t *child)
     {
+        if (child == _hovered_child)
+        {
+            _hovered_child->mouse_exit();
+            _hovered_child = nullptr;
+        }
+
         auto it = std::find(std::begin(_children), std::end(_children), child);
         assert(it != std::end(_children));
         _children.erase(it);
+
         child->removed_from_container(this);
     }
 
     template<class Config, bool With_layout>
     void Abstract_container<Config, With_layout>::remove_all_children()
     {
-        _children.clear(); // TODO: send notifications ?
+        for (auto child: _children)
+        {
+            remove_child(child);
+        }
     }
 
     template<class Config, bool With_layout>

@@ -31,27 +31,8 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Stack<Config, With_layout>::render(Canvas_t *cv, const Position &offs)
     {
-        //auto border_ntvclr = rgba_to_native(cv, border_color());
-        //draw_borders(cv, rectangle(), offs, border_width(), border_ntvclr, border_ntvclr, border_ntvclr, border_ntvclr);
-
         Container_t::render(cv, offs);
     }
-
-    /*
-    template<class Config, bool With_layout>
-    auto Stack<Config, With_layout>::border_color() -> Color
-    {
-        // TODO: focus; also, get from centralized source
-
-        if (hovered())
-        {
-            return {0.3f, 0.3f, 0.3f, 1};
-        }
-        else {
-            return {0.1f, 0.1f, 0.1f, 1};
-        }
-    }
-    */
 
     template<class Config, bool With_layout>
     auto Stack<Config, With_layout>::glyph_font() -> const Rasterized_font *
@@ -224,6 +205,27 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
+    inline auto Inner_stack__Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
+    {
+        Extents result {};
+
+        for (auto child: p()->children())
+        {
+            auto min_sz = child->get_minimal_size();
+
+            result.w = std::max(result.w, min_sz.w);
+            result.h += min_sz.h;
+        }
+
+        result.h += (p()->children().size() - 1);
+
+        return result;
+    }
+
+    #ifdef NOT_DEFINED
+
+    template<class Config>
+    template<class Aspect_parent>
     inline void Inner_stack__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
         /** TODO: this does not yet work correctly because the Container layout_children()
@@ -232,5 +234,7 @@ namespace cppgui {
          */
         Parent_t::layout();
     }
+
+    #endif // NOT_DEFINED (Layouter aspect)
 
 } // ns cppgui

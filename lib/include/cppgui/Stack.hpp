@@ -35,8 +35,6 @@ namespace cppgui {
     protected:
         using Inner_stack_t = typename Inner_stack<Config, With_layout>;
 
-        //auto border_color() -> Color;
-        //auto border_width() -> int { return 1; }
         static auto glyph_font() -> const Rasterized_font *;
         auto compute_children_total_size() -> Extents;
 
@@ -114,14 +112,17 @@ namespace cppgui {
         template <class Aspect_parent> struct Aspect : public Aspect_parent {
 
             using Parent_t = typename Aspect_parent;
-
             class Inner_stack_t: public Inner_stack<Config, true> { friend struct Aspect; };
 
             auto p() { return static_cast<Inner_stack_t*>(this); }
 
+            auto get_minimal_size() -> Extents override;
+
+            /*
             //void init_layout() override;
-            auto get_minimal_size() -> Extents override { return {0, 0}; } // TODO: better ?
+            auto get_minimal_size() -> Extents override;
             void layout() override;
+            */
         };
     };
 

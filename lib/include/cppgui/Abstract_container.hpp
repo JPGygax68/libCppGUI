@@ -16,6 +16,8 @@ namespace cppgui {
         using Widget_t = Widget<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
 
+        Abstract_container(): _hovered_child { nullptr } {}
+
         auto& children() { return _children; }
 
     protected:
