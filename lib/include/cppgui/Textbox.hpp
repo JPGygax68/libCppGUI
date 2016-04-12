@@ -45,7 +45,6 @@ namespace cppgui {
         void mouse_button(const Position &, int button, Key_state) override;
         void mouse_click(const Position &, int button, int count) override;
         void text_input(const char32_t *text, size_t count) override;
-        void key_down(const Keycode &) override;
 
         void mouse_enter() override;
         void mouse_exit() override;
@@ -55,6 +54,7 @@ namespace cppgui {
 
         void render(Canvas_t *, const Position &pos) override;
 
+        bool handle_key_down(const Keycode &) override;
 
     protected:
         // Actions

@@ -172,6 +172,16 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Widget<Config, With_layout>::key_down(const Keycode &key)
+    {
+        if (!handle_key_down(key))
+        {
+            // Let the event "bubble" up
+            container()->child_key_down(key);
+        }
+    }
+
+    template<class Config, bool With_layout>
     inline void Widget<Config, With_layout>::mouse_enter()
     {
         std::cout << "Widget::mouse_enter()" << std::endl;

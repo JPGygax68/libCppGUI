@@ -30,13 +30,13 @@ namespace cppgui {
     class Abstract_widget: public Config::Color_mapper
     {
     public:
-        using Keyboard          = typename Config::Keyboard;
-        using Keycode           = typename Keyboard::Keycode;
         using Abstract_widget_t = Abstract_widget;
         using Root_widget_t     = Root_widget<Config, With_layout>;
         using Canvas_t          = typename Canvas<typename Config::Renderer>;
         using Native_color      = typename Canvas_t::Native_color;
         using Font_handle       = typename Canvas_t::Font_handle;
+        using Keyboard          = typename Config::Keyboard;
+        using Keycode           = typename Keyboard::Keycode;
         using Click_handler     = std::function<void(const Position &, int button, int clicks)>; // TODO: support return value ?
 
         auto& rectangle() const { return _rect; }
@@ -65,8 +65,6 @@ namespace cppgui {
         virtual void mouse_click(const Position &, int button, int count);
         virtual void mouse_wheel(const Position &) {}
         virtual void text_input(const char32_t *, size_t) {}
-        virtual void key_down(const Keycode &) {}
-        //virtual void key_up(const Keycode &) {}
 
         virtual void mouse_enter() {}       // TODO: provide "entry point" parameter ?
         virtual void mouse_exit() {}        // TODO: provide "exit point" parameter ?
@@ -81,7 +79,10 @@ namespace cppgui {
          */
         virtual void render(Canvas_t *, const Position &offs) = 0;
 
+        virtual bool handle_key_down(const Keycode &) { return false; }
+
     protected:
+
         auto rgba_to_native(Canvas_t *, const Color &) -> Native_color;
         void fill_rect(Canvas_t *, const Rectangle &rect, const Native_color &);
         void fill_rect(Canvas_t *, const Rectangle &rect, const Position &offs, const Native_color &);
@@ -124,7 +125,8 @@ namespace cppgui {
     public:
         using Renderer = typename Config::Renderer;
         using Font_handle = typename Renderer::font_handle;
-        //using Abstract_widget_t = typename Abstract_widget<GUIConfig, With_layout, Widget__Layouter, GUIConfig::Abstract_widget_updater>;
+        using Keyboard = typename Config::Keyboard;
+        using Keycode = typename Keyboard::Keycode;
         using Abstract_container_t = Abstract_container<Config, With_layout>;
         using Root_widget_t = Root_widget<Config, With_layout>;
         using Click_handler = typename Abstract_widget::Click_handler;
@@ -144,6 +146,9 @@ namespace cppgui {
 
         // TODO: should the following be protected ?
         bool hovered() const { return _hovered; }
+
+        void key_down(const Keycode &);
+        //void key_up(const Keycode &);
 
         void mouse_enter() override;
         void mouse_exit() override;
@@ -176,6 +181,7 @@ namespace cppgui {
         Click_handler           _click_hndlr;
         bool                    _visible = true;
         bool                    _hovered = false;
+
     };
 
     // Default implementations for Updating_aspect

@@ -15,10 +15,14 @@ namespace cppgui {
     public:
         using Widget_t = Widget<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
+        using Keyboard = typename Config::Keyboard;
+        using Keycode  = typename Keyboard::Keycode;
 
         Abstract_container(): _hovered_child { nullptr } {}
 
         auto& children() { return _children; }
+
+        virtual void child_key_down(const Keycode &) = 0;
 
     protected:
 
@@ -41,7 +45,7 @@ namespace cppgui {
         void container_mouse_click(const Position &, int button, int count);
         void container_mouse_wheel(const Position &dist);
         void container_mouse_exit();
-
+        
         std::vector<Widget_t*> _children;
         Widget_t *_hovered_child = nullptr;
     };

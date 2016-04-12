@@ -36,6 +36,8 @@ namespace cppgui {
         using Widget_t = typename Widget<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
         using Abstract_container_t = typename Abstract_container<Config, With_layout>;
+        using Keyboard = typename Config::Keyboard;
+        using Keycode = typename Keyboard::Keycode;
 
         void set_border(const Border &);
 
@@ -51,6 +53,9 @@ namespace cppgui {
         void mouse_wheel(const Position &) override;
 
         void mouse_exit() override;
+
+        // Event "bubbling"
+        void child_key_down(const Keycode &key) override { key_down(key); }
 
         void render(Canvas_t *, const Position &) override;
 

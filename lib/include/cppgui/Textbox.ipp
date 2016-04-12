@@ -133,17 +133,6 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::key_down(const Keycode &key)
-    {
-        if      (Keyboard::is_left     (key)) move_cursor_left    (Config::Keyboard::is_shift_down());
-        else if (Keyboard::is_right    (key)) move_cursor_right   (Config::Keyboard::is_shift_down());
-        else if (Keyboard::is_home     (key)) move_cursor_to_start(Config::Keyboard::is_shift_down());
-        else if (Keyboard::is_end      (key)) move_cursor_to_end  (Config::Keyboard::is_shift_down());
-        else if (Keyboard::is_backspace(key)) delete_before_caret ();
-        else if (Keyboard::is_delete   (key)) delete_after_caret  ();
-    }
-
-    template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::mouse_enter()
     {
         root_widget()->push_cursor( Config::Mouse::get_ibeam_cursor() );
@@ -199,6 +188,18 @@ namespace cppgui {
         }
 
         r->cancel_clipping();
+    }
+
+    template<class Config, bool With_layout>
+    bool Textbox<Config, With_layout>::handle_key_down(const Keycode &key)
+    {
+        if      (Keyboard::is_left     (key)) { move_cursor_left    (Config::Keyboard::is_shift_down()); return true; }
+        else if (Keyboard::is_right    (key)) { move_cursor_right   (Config::Keyboard::is_shift_down()); return true; }
+        else if (Keyboard::is_home     (key)) { move_cursor_to_start(Config::Keyboard::is_shift_down()); return true; }
+        else if (Keyboard::is_end      (key)) { move_cursor_to_end  (Config::Keyboard::is_shift_down()); return true; }
+        else if (Keyboard::is_backspace(key)) { delete_before_caret ();                                ; return true; }
+        else if (Keyboard::is_delete   (key)) { delete_after_caret  ();                                ; return true; }
+        else return false;
     }
 
     template<class Config, bool With_layout>
@@ -338,7 +339,6 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::delete_before_caret()
     {
-        // TODO: support deleting selection
         if (have_selection())
         {
             delete_selected();
