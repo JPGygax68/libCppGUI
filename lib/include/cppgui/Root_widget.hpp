@@ -49,8 +49,10 @@ namespace cppgui {
         void init() override;
 
         // TODO: request mechanism ?
-        void set_focus_to(Widget_t *);
-        auto focused_widget() const { return _focused_widget; }
+        bool container_has_focus() override { return true; } // TODO: only return true if owning window is active ?
+
+        //void set_focus_to(Widget_t *);
+        //auto focused_widget() const { return focused_child(); } // TODO: remove and replace all calls?
 
         void push_cursor(Cursor_handle);
         void pop_cursor();
@@ -78,7 +80,7 @@ namespace cppgui {
         Font_mapper                 _font_mapper;
         Color                       _bkgnd_clr = { 0, 0, 0, 0 };
         Canvas_t                   *_canvas = nullptr;
-        Widget_t                   *_focused_widget = nullptr;
+        //Widget_t                   *_focused_widget = nullptr;
         std::stack<Cursor_handle>   _cursor_stack;
     };
 

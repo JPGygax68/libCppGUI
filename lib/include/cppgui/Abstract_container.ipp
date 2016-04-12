@@ -6,6 +6,40 @@
 
 namespace cppgui {
 
+    template<class Config, bool With_layout>
+    void Abstract_container<Config, With_layout>::set_focus_to(Widget_t *child)
+    {
+        if (_focused_child)
+        {
+            _focused_child->loosing_focus(); // TODO: support veto-ing loss of focus ?
+        }
+
+        _focused_child = child;
+
+        if (_focused_child)
+        {
+            _focused_child->gained_focus();
+        }
+    }
+
+    template<class Config, bool With_layout>
+    void Abstract_container<Config, With_layout>::container_gained_focus()
+    {
+        if (_focused_child)
+        {
+            _focused_child->gained_focus();
+        }
+    }
+
+    template<class Config, bool With_layout>
+    void Abstract_container<Config, With_layout>::container_loosing_focus()
+    {
+        if (_focused_child)
+        {
+            _focused_child->loosing_focus(); // TODO: support veto-ing loss of focus ?
+        }
+    }
+
     template <class Config, bool With_layout>
     inline void Abstract_container<Config, With_layout>::add_child(Widget_t *child)
     {
@@ -122,6 +156,26 @@ namespace cppgui {
             _hovered_child->mouse_exit();
             _hovered_child = nullptr;
         }
+    }
+
+    template<class Config, bool With_layout>
+    void Abstract_container<Config, With_layout>::container_text_input(const char32_t *text, size_t size)
+    {
+        if (_focused_child)
+        {
+            _focused_child->text_input(text, size);
+        }
+    }
+
+    template<class Config, bool With_layout>
+    bool Abstract_container<Config, With_layout>::container_key_down(const Keycode &key)
+    {
+        if (_focused_child)
+        {
+            return _focused_child->handle_key_down(key);
+        }
+        else
+            return true;
     }
 
     // Layouter aspect ----------------------------------------------

@@ -71,7 +71,6 @@ namespace cppgui {
         virtual void gained_focus() {}
         virtual void loosing_focus() {}
 
-        bool has_focus() { return root_widget()->focused_widget() == this; }
         bool disabled() const { return false; } // TODO!!!
 
         /** Convention: the provided position is an offset to be added to the widget's
@@ -146,6 +145,9 @@ namespace cppgui {
 
         // TODO: should the following be protected ?
         bool hovered() const { return _hovered; }
+
+        // TODO: rename to has_keyboard_focus() ?
+        bool has_focus() { return container()->container_has_focus() && container()->focused_child() == this; }
 
         void key_down(const Keycode &);
         //void key_up(const Keycode &);

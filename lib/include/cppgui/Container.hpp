@@ -47,10 +47,17 @@ namespace cppgui {
         using Abstract_container_t::remove_child;
         using Abstract_container_t::remove_all_children;
 
+        bool container_has_focus() override { return has_focus(); }
+
+        void set_focus_to(Widget_t *) override;
+        void gained_focus() override;
+        void loosing_focus() override;
+
         void mouse_motion(const Position &) override;
         void mouse_button(const Position &, int button, Key_state) override;
         void mouse_click(const Position &, int button, int count) override;
         void mouse_wheel(const Position &) override;
+        void text_input(const char32_t *, size_t) override;
 
         void mouse_exit() override;
 
@@ -61,6 +68,8 @@ namespace cppgui {
 
     protected:
         auto paper_margin() -> unsigned int { return 2; } // TODO: remove (or move to Stack<>)
+
+        bool handle_key_down(const Keycode &) override;
 
         Border              _border = {0};
     };

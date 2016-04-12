@@ -82,9 +82,9 @@ namespace cppgui {
     {
         if (state == pressed)
         {
-            if (root_widget()->focused_widget() != this)
+            if (!has_focus())
             {
-                root_widget()->set_focus_to(this);
+                container()->set_focus_to(this);
             }
 
             move_caret_to_pointer_position(pos);
@@ -513,6 +513,8 @@ namespace cppgui {
     {
         _sel_start_char_idx = _sel_end_char_idx = _caret_char_idx;
         _sel_start_pixel_pos = _sel_end_pixel_pos = _caret_pixel_pos;
+
+        invalidate();
     }
 
     template<class Config, bool With_layout>

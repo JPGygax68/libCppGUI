@@ -18,6 +18,26 @@ namespace cppgui {
         Widget_t::init();
     }
 
+    template<class Config, bool With_layout>
+    void Container<Config, With_layout>::set_focus_to(Widget_t *child)
+    {
+        Abstract_container_t::set_focus_to(child);
+
+        container()->set_focus_to(this);
+    }
+
+    template<class Config, bool With_layout>
+    void Container<Config, With_layout>::gained_focus()
+    {
+        container_gained_focus();
+    }
+
+    template<class Config, bool With_layout>
+    void Container<Config, With_layout>::loosing_focus()
+    {
+        container_loosing_focus();
+    }
+
     template <class Config, bool With_layout>
     void Container<Config, With_layout>::mouse_motion(const Position &pos)
     {
@@ -40,6 +60,20 @@ namespace cppgui {
     void Container<Config, With_layout>::mouse_wheel(const Position &dist)
     {
         container_mouse_wheel(dist);
+    }
+
+    template<class Config, bool With_layout>
+    void Container<Config, With_layout>::text_input(const char32_t *text, size_t size)
+    {
+        container_text_input(text, size);
+    }
+
+    template<class Config, bool With_layout>
+    bool Container<Config, With_layout>::handle_key_down(const Keycode &key)
+    {
+        // TODO: implement tab focus chaining
+
+        return container_key_down(key);
     }
 
     template<class Config, bool With_layout>

@@ -24,6 +24,13 @@ namespace cppgui {
 
         virtual void child_key_down(const Keycode &) = 0;
 
+        virtual bool container_has_focus() = 0;       
+        virtual void set_focus_to(Widget_t *);
+        auto focused_child() -> Widget_t * { return _focused_child; }
+
+        void container_gained_focus();
+        void container_loosing_focus();
+
     protected:
 
         void add_child(Widget_t *);
@@ -45,9 +52,12 @@ namespace cppgui {
         void container_mouse_click(const Position &, int button, int count);
         void container_mouse_wheel(const Position &dist);
         void container_mouse_exit();
-        
+        void container_text_input(const char32_t *, size_t);
+        bool container_key_down(const Keycode &);
+
         std::vector<Widget_t*> _children;
         Widget_t *_hovered_child = nullptr;
+        Widget_t *_focused_child = nullptr;
     };
 
     template <class Config, bool With_layout> class Container;

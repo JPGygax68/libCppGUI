@@ -163,9 +163,9 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Widget<Config, With_layout>::removed_from_container(Abstract_container_t *)
     {
-        if (root_widget()->focused_widget() == this) 
+        if (container()->focused_child() == this) 
         {
-            root_widget()->set_focus_to(nullptr);
+            container()->set_focus_to(nullptr);
         }
 
         _container = nullptr;

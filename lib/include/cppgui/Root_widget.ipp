@@ -33,6 +33,7 @@ namespace cppgui {
         Abstract_widget_t::init();
     }
 
+    /*
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::set_focus_to(Widget_t *widget)
     {
@@ -40,6 +41,7 @@ namespace cppgui {
         _focused_widget = widget;
         if (_focused_widget) _focused_widget->gained_focus();
     }
+    */
 
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::push_cursor(Cursor_handle cursor)
@@ -104,10 +106,10 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::text_input(const char32_t *text, size_t size)
     {
-        if (_focused_widget)
+        if (focused_child())
         {
             this->lock();
-            _focused_widget->text_input(text, size);
+            focused_child()->text_input(text, size);
             this->unlock();
         }
     }
@@ -115,10 +117,10 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::key_down(const Keycode &key)
     {
-        if (_focused_widget)
+        if (focused_child())
         {
             this->lock();
-            _focused_widget->key_down(key);
+            focused_child()->key_down(key);
             this->unlock();
         }
     }
