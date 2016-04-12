@@ -122,27 +122,8 @@ namespace cppgui {
     {
         //auto c = static_cast<Abstract_container<GUIConfig, With_layout>*>(this->container());
         //c->child_invalidated(static_cast<Widget_t*>(this));
-        auto c = this->container();
+        auto c = p()->container();
         c->child_invalidated(static_cast<Widget_t*>(this));
-    }
-
-    template<class Config, bool With_layout>
-    template<class Aspect_parent>
-    inline void Default__Widget__Updater<Config, With_layout>::Aspect<Aspect_parent>::added_to_container(Abstract_container_t *cont)
-    {
-        _container = cont;
-    }
-
-    template<class Config, bool With_layout>
-    template<class Aspect_parent>
-    void Default__Widget__Updater<Config, With_layout>::Aspect<Aspect_parent>::removed_from_container(Abstract_container_t *)
-    {
-        if (root_widget()->focused_widget() == this) 
-        {
-            root_widget()->set_focus_to(nullptr);
-        }
-
-        _container = nullptr;
     }
 
     // Widget<> implementation --------------------------------------
@@ -171,6 +152,23 @@ namespace cppgui {
     void Widget<Config, With_layout>::set_visible(bool vis)
     {
         _visible = vis;
+    }
+
+    template<class Config, bool With_layout>
+    inline void Widget<Config, With_layout>::added_to_container(Abstract_container_t *cont)
+    {
+        _container = cont;
+    }
+
+    template<class Config, bool With_layout>
+    void Widget<Config, With_layout>::removed_from_container(Abstract_container_t *)
+    {
+        if (root_widget()->focused_widget() == this) 
+        {
+            root_widget()->set_focus_to(nullptr);
+        }
+
+        _container = nullptr;
     }
 
     template<class Config, bool With_layout>

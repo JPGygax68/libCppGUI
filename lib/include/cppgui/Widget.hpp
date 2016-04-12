@@ -14,11 +14,14 @@
 
 namespace cppgui {
 
-    enum Key_state { pressed, released };
-
-    template <class Renderer> class Canvas;
+    // Forward declarations 
 
     template <class Config, bool With_layout> class Root_widget;
+    template <class Config, bool With_layout> class Abstract_container;
+
+    enum Key_state { pressed, released }; // TODO: move to basic_types.hpp ?
+
+    template <class Renderer> class Canvas;
 
     /** Abstract_widget: functionality common to both Root_widget and Widget, i.e. not including the ability
         to function as an element in a container.
@@ -122,6 +125,8 @@ namespace cppgui {
         using Renderer = typename Config::Renderer;
         using Font_handle = typename Renderer::font_handle;
         //using Abstract_widget_t = typename Abstract_widget<GUIConfig, With_layout, Widget__Layouter, GUIConfig::Abstract_widget_updater>;
+        using Abstract_container_t = Abstract_container<Config, With_layout>;
+        using Root_widget_t = Root_widget<Config, With_layout>;
         using Click_handler = typename Abstract_widget::Click_handler;
 
         void set_background_color(const Color &);
@@ -134,6 +139,9 @@ namespace cppgui {
         void set_visible(bool visible = true);
         bool visible() const { return _visible; }
 
+        void added_to_container(Abstract_container_t *);
+        void removed_from_container(Abstract_container_t *);
+
         // TODO: should the following be protected ?
         bool hovered() const { return _hovered; }
 
@@ -145,6 +153,10 @@ namespace cppgui {
         void change_visible(bool visible = true);
 
     protected:
+
+        auto container() const { return _container; }
+        auto root_widget() -> Root_widget_t * override { return _container->container_root_widget(); }
+
         // Static styles
         // TODO: move to "stylesheet"
         static auto default_dialog_background_color() -> Color { return {0.6f, 0.6f, 0.6f, 1}; }
@@ -154,6 +166,8 @@ namespace cppgui {
         auto button_face_color() -> Color;
         auto button_border_color() -> Color;
         auto button_border_width() -> int;
+
+        Abstract_container_t   *_container = nullptr;
 
         Rectangle               _inner_rect;
 
@@ -191,20 +205,13 @@ namespace cppgui {
         
         template<class Aspect_parent> struct Aspect: public Aspect_parent
         {
-            using Widget_t = Widget<Config, With_layout>;
+            class Widget_t: public Widget<Config, true> { friend struct Aspect; };
             using Abstract_container_t = Abstract_container<Config, With_layout>;
-            using Root_widget_t = Root_widget<Config, With_layout>;
 
             void invalidate();
-            void added_to_container(Abstract_container_t *);
-            void removed_from_container(Abstract_container_t *);
-
-            auto container() const { return _container; }
-
-            auto root_widget() -> Root_widget_t * override { return _container->container_root_widget(); }
 
         private:
-            Abstract_container_t *_container;
+            auto p() { return static_cast<Widget_t*>(this); }
         };
     };
 
