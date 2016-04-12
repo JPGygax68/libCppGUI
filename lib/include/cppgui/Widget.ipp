@@ -17,7 +17,7 @@ namespace cppgui {
     }
 
     template <class Config, bool With_layout>
-    inline void Abstract_widget<Config, With_layout>::set_extents(const Extents &ext)
+    void Abstract_widget<Config, With_layout>::set_extents(const Extents &ext)
     {
         _rect.ext = ext;
     }
