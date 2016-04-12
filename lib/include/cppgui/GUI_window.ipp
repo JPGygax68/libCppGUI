@@ -59,13 +59,13 @@ namespace cppgui {
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
-    inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::mouse_motion(int x, int y)
+    void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::mouse_motion(int x, int y)
     {
         _root_widget.mouse_motion({x, y});
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
-    inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::mouse_button(int x, int y, int button, int dir, int count)
+    void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::mouse_button(int x, int y, int button, int dir, int count)
     {
         _root_widget.mouse_button({ x, y }, button, dir == down ? cppgui::pressed : cppgui::released);
 
@@ -76,25 +76,25 @@ namespace cppgui {
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
-    inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::mouse_wheel(int x, int y)
+    void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::mouse_wheel(int x, int y)
     {
         _root_widget.mouse_wheel({x, y});
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
-    inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::text_input(const char32_t *text, size_t size)
+    void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::text_input(const char32_t *text, size_t size)
     {
         _root_widget.text_input(text, size);
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
-    inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::key_down(const Keycode &key)
+    void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::key_down(const Keycode &key)
     {
         _root_widget.key_down(key);
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
-    inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::closing()
+    void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::closing()
     {
         p()->cleanup_window();
     }
