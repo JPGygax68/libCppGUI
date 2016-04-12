@@ -127,6 +127,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::text_input(const char32_t *text, size_t count)
     {
+        delete_selected(); // TODO: make optional
         insert_characters(text, count);
         invalidate();
     }
@@ -551,7 +552,7 @@ namespace cppgui {
 
         if (p()->_font)
         {
-            p()->_fnthnd = p()->root_widget()->get_font_handle(p()->_font);
+            //p()->_fnthnd = p()->root_widget()->get_font_handle(p()->_font);
             // TODO: support other cultures
             auto bbox = p()->_font->compute_text_extents(0, U"My", 2);
             p()->_ascent = bbox.y_max;

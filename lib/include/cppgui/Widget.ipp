@@ -11,7 +11,7 @@ namespace cppgui {
     // Abstract_widget<> --------------------------------------------
 
     template <class Config, bool With_layout>
-    inline void Abstract_widget<Config, With_layout>::set_position(const Position &pos)
+    void Abstract_widget<Config, With_layout>::set_position(const Position &pos)
     {
         _rect.pos = pos;
     }
@@ -32,7 +32,7 @@ namespace cppgui {
     }
 
     template <class Config, bool With_layout>
-    inline auto Abstract_widget<Config, With_layout>::rgba_to_native(Canvas_t *r, const Color &color) -> Native_color
+    auto Abstract_widget<Config, With_layout>::rgba_to_native(Canvas_t *r, const Color &color) -> Native_color
     {
         return get_resource(r, color);
     }
