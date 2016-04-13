@@ -33,7 +33,8 @@ namespace cppgui {
         cnv->render_text(_fnthnd, pos.x + _text_orig.x, pos.y + _text_orig.y, _text.data(), _text.size());
 
         //auto r = rectangle();
-        cnv->draw_stippled_rectangle_outline(pos.x + _text_rect.pos.x, pos.y + _text_rect.pos.y, _text_rect.ext.w, _text_rect.ext.h);
+        cnv->draw_stippled_rectangle_outline(pos.x + _text_rect.pos.x, pos.y + _text_rect.pos.y, 
+            _text_rect.ext.w, _text_rect.ext.h, {0, 0, 0.5f, 1});
     }
 
     // Layouter aspect ----------------------------------------------

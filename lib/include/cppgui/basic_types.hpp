@@ -102,6 +102,7 @@ namespace cppgui {
     using Text_bounding_box = gpc::fonts::bounding_box;
     using Glyph_control_box = gpc::fonts::rasterized_glyph_cbox;
     using Color             = gpc::gui::rgba_norm;
+    using Mono_value        = gpc::gui::mono_norm;
 
     enum Alignment {
         none = 0,
