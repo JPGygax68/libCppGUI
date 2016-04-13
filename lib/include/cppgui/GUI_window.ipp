@@ -31,6 +31,7 @@ namespace cppgui {
     inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::cleanup_window()
     {
         assert(_canvas);
+        _canvas->cleanup();
         delete _canvas;
         _canvas = nullptr;
 

@@ -94,6 +94,8 @@ namespace cppgui {
         auto convert_position_to_inner(const Position &) -> Position;
         auto advance_to_glyph_at(const Rasterized_font *, const std::u32string &text, size_t from, size_t to, Position &pos) 
             -> const Glyph_control_box *;
+        // PROVISIONAL
+        void draw_stippled_inner_rect(Canvas_t *, const Rectangle &, const Position &offs);
 
         // Experimental & temporary: implement more sophisticated (and flexible!) styling
         // - May not / should not stay static; make const if possible

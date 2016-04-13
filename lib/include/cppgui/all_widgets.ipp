@@ -1,6 +1,7 @@
 #pragma once
 
 // TODO: alternative: every file includes its dependencies ?
+// TODO: rename (because it does not contain widgets only) ?
 
 #include "./Full_resource_mapper.ipp"
 #include "./Cheap_resource_mapper.ipp"

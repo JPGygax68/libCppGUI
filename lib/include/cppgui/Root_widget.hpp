@@ -47,6 +47,7 @@ namespace cppgui {
         void set_canvas(Canvas_t *);
 
         void init() override;
+        void cleanup();
 
         // TODO: request mechanism ?
         bool container_has_focus() override { return true; } // TODO: only return true if owning window is active ?

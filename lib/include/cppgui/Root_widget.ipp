@@ -23,6 +23,9 @@ namespace cppgui {
     void Root_widget<Config, With_layout>::set_canvas(Canvas_t *cv)
     {
         _canvas = cv;
+
+        //_canvas->init(); // TODO: parameters ?
+            // removed for now: init done by root_widget() user
     }
 
     template<class Config, bool With_layout>
@@ -31,6 +34,15 @@ namespace cppgui {
         init_children_resources();
 
         Abstract_widget_t::init();
+    }
+
+    template<class Config, bool With_layout>
+    void Root_widget<Config, With_layout>::cleanup()
+    {
+        //TODO: cleanup_children_resources();
+
+        //_canvas->cleanup();
+            // see init()
     }
 
     /*
