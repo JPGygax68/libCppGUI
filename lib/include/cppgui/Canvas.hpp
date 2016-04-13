@@ -22,10 +22,14 @@ namespace cppgui {
         void init();
         void cleanup();
 
-    private:
-        Image_handle        _stipple_img;
+        // TODO: move to Renderer ?
+        void draw_stippled_rectangle_outline(int x, int y, int w, int h);
 
-        static auto stipple_image() -> const Image_definition &;
+    private:
+        Image_handle        _horz_stipple_img, _vert_stipple_img;
+
+        static auto horizontal_stipple_image() -> const Image_definition &;
+        static auto vertical_stipple_image() -> const Image_definition &;
 
     };
 

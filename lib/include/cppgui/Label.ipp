@@ -25,12 +25,15 @@ namespace cppgui {
     }
 
     template<class Config, bool WithLayout>
-    inline void Label<Config, WithLayout>::render(Canvas_t *r, const Position &offs)
+    inline void Label<Config, WithLayout>::render(Canvas_t *cnv, const Position &offs)
     {
-        fill(r, offs, rgba_to_native(r, background_color())); 
+        fill(cnv, offs, rgba_to_native(cnv, background_color())); 
 
         auto pos = offs + position();
-        r->render_text(_fnthnd, pos.x + _txpos.x, pos.y + _txpos.y, _text.data(), _text.size());
+        cnv->render_text(_fnthnd, pos.x + _text_orig.x, pos.y + _text_orig.y, _text.data(), _text.size());
+
+        //auto r = rectangle();
+        cnv->draw_stippled_rectangle_outline(pos.x + _text_rect.pos.x, pos.y + _text_rect.pos.y, _text_rect.ext.w, _text_rect.ext.h);
     }
 
     // Layouter aspect ----------------------------------------------
@@ -69,29 +72,35 @@ namespace cppgui {
 
         if (_horz_align == Alignment::left)
         {
-            p()->_txpos.x = _padding[3];
+            p()->_text_orig.x = _padding[3];
         }
         else if (_horz_align == Alignment::center)
         {
-            p()->_txpos.x = static_cast<Offset>((w - txb.width()) / 2);
+            p()->_text_orig.x = static_cast<Offset>((w - txb.width()) / 2);
         }
         else if (_horz_align == Alignment::right)
         {
-            p()->_txpos.x = static_cast<Offset>(w - txb.width());
+            p()->_text_orig.x = static_cast<Offset>(w - txb.width());
         }
 
         if (_vert_align == Alignment::top)
         {
-            p()->_txpos.y = _padding[0] + txb.y_max;
+            p()->_text_orig.y = _padding[0] + txb.y_max;
         }
         else if (_vert_align == Alignment::middle)
         {
-            p()->_txpos.y = static_cast<Offset>(_padding[0] + (h - txb.height()) / 2 + txb.y_max);
+            p()->_text_orig.y = static_cast<Offset>(_padding[0] + (h - txb.height()) / 2 + txb.y_max);
         }
         else if (_vert_align == Alignment::bottom)
         {
-            p()->_txpos.y = ext.h - _padding[3] + txb.y_min;
+            p()->_text_orig.y = ext.h - _padding[3] + txb.y_min;
         }
+
+        // Rectangle around text
+        p()->_text_rect = {
+            p()->_text_orig.x + txb.x_min, p()->_text_orig.y - txb.y_max,
+            txb.width(), txb.height()
+        };
     }
 
 } // ns cppgui

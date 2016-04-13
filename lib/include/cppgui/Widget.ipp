@@ -115,8 +115,9 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::draw_stippled_inner_rect(Canvas_t *, const Rectangle &, const Position & offs)
+    void Abstract_widget<Config, With_layout>::draw_stippled_inner_rect(Canvas_t *cnv, const Rectangle &, const Position & offs)
     {
+        //cnv->draw_stipp()
     }
 
     // Default__Widget__Updater<> aspect ------------------------------
