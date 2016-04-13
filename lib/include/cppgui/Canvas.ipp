@@ -33,10 +33,17 @@ namespace cppgui {
     {
         auto nativ_clr = rgba_to_native(color);
 
-        modulate_greyscale_image(x        , y        , w        , 1      , _horz_stipple_img, color);
-        modulate_greyscale_image(x + w - 1, y + 1    , 1        , h - 1  , _vert_stipple_img, color);
-        modulate_greyscale_image(x + w - 1, y + h    , - (w - 1), - 1    , _horz_stipple_img, color);
+        draw_greyscale_image_right_righthand(x        , y        , w    , 1, _horz_stipple_img, color, 0, 0);
+        draw_greyscale_image_down_righthand (x + w    , y + 1    , h - 1, 1, _horz_stipple_img, color, 0, 0);
+        draw_greyscale_image_left_righthand (x + w - 1, y + h    , w - 1, 1, _horz_stipple_img, color, 0, 0);
+        draw_greyscale_image_up_righthand   (x        , y + h - 1, h - 1, 1, _horz_stipple_img, color, 0, 0);
+
         modulate_greyscale_image(x + 1    , y + h - 1, - 1      , - h + 1, _vert_stipple_img, color);
+
+        //modulate_greyscale_image(x        , y        , w        , 1      , _horz_stipple_img, color);
+        //modulate_greyscale_image(x + w - 1, y + 1    , 1        , h - 1  , _vert_stipple_img, color);
+        //modulate_greyscale_image(x + w - 1, y + h    , - (w - 1), - 1    , _horz_stipple_img, color);
+
         // The following two lines do not respect "flow": they are drawn left-to-right and top-down 
         // instead of right-to-left and bottom-up
         //draw_image(x        , y + h - 1, w - 1, 1    , _horz_stipple_img);
