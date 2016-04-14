@@ -1,8 +1,12 @@
 #pragma once
 
+#include <array>
+
 #include "./basic_types.hpp"
 
 namespace cppgui {
+
+    using Padding = std::array<Width, 4>;
 
     enum Alignment {
         cultural_minor_start,       // = left in western culture
@@ -61,6 +65,32 @@ namespace cppgui {
             Extents         size;
             Position       *output;
         };
+    };
+
+    /** Very simple layout that does nothing more than align a single element.
+
+        TODO: support non-western text directions
+     */
+    class Single_element_layout {
+    public:
+
+        void set_text_element(const Rasterized_font *font, const char32_t *text, size_t len, Text_origin *, Rectangle *);
+        void change_text_element(const Rasterized_font *font, const char32_t *text, size_t len);
+
+        void set_minor_alignment(Alignment al) { minor_alignment = al; }
+        void set_major_alignment(Alignment al) { major_alignment = al; }
+
+        auto compute_minimal_size(const Padding &) -> Extents;
+
+        void compute_layout(const Extents &, const Padding &);
+
+    private:
+        Text_bounding_box   bounding_box;
+        Alignment           minor_alignment;
+        Alignment           major_alignment;
+
+        Text_origin        *text_origin = nullptr;
+        Rectangle          *rectangle = nullptr;
     };
 
 } // ns cppgui

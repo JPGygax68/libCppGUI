@@ -47,6 +47,8 @@ namespace cppgui {
         Font_handle             _fnthnd;
     };
 
+    class Single_element_layout;
+
     template <class Config>
     struct Label__Layouter<Config, true> {
 
@@ -60,15 +62,17 @@ namespace cppgui {
 
             // Own methods
 
-            void set_horizontal_alignment(Alignment align) { _horz_align = align; }
-            void set_vertical_alignment(Alignment align) { _vert_align = align; }
+            void set_minor_alignment(Alignment align) { _minor_alignment = align; }
+            void set_major_alignment(Alignment align) { _major_alignment = align; }
+            // TODO: "change" versions of the above that update layout
 
         private:
             class Label_t: public Label<Config, true> { friend struct Aspect; };
             auto p() { return static_cast<Label_t*>(this); }
 
-            Alignment               _horz_align = center;
-            Alignment               _vert_align = middle;
+            Alignment               _minor_alignment = Alignment::cultural_minor_middle;
+            Alignment               _major_alignment = Alignment::cultural_major_middle;
+            Single_element_layout   _layout;
         };
     };
 

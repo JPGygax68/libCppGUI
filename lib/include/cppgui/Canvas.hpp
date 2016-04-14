@@ -35,10 +35,9 @@ namespace cppgui {
         void draw_stippled_rectangle_outline(int x, int y, int w, int h, const Rgba_norm &color);
 
     private:
-        Image_handle        _horz_stipple_img, _vert_stipple_img;
+        Image_handle        _stipple_img;
 
-        static auto horizontal_stipple_image() -> const Mono_image_definition &;
-        static auto vertical_stipple_image() -> const Mono_image_definition &;
+        static auto stipple_image() -> const Mono_image_definition &;
 
     };
 

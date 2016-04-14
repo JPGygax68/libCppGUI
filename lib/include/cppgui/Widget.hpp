@@ -7,7 +7,9 @@
 #include <gpc/gui/renderer.hpp> // TODO: other source & namespace
 
 #include "./basic_types.hpp"
+#include "./geometry.hpp"
 #include "./aspects.hpp"
+#include "./layouting.hpp"
 
 //#include "./Stylesheet.hpp"
 #include "./Full_resource_mapper.hpp"
@@ -253,7 +255,6 @@ namespace cppgui {
             void set_rectangle_sw(const Position &, const Extents &);
 
         protected:
-            using Padding = std::array<Width, 4>; // TODO: move to basic_types.hpp
 
             class Widget_t: public Widget<Config, true> { friend struct Aspect; };
             auto p() { return static_cast<Widget_t*>(this); }

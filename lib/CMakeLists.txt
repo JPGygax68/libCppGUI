@@ -122,7 +122,10 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Default_font.hpp                 include/cppgui/Default_font.ipp
 
     include/cppgui/basic_types.hpp
+    include/cppgui/geometry.hpp
     include/cppgui/aspects.hpp
+
+    #include/cppgui/Text_element.hpp                 include/cppgui/Text_element.ipp
 
     include/cppgui/Canvas.hpp                       include/cppgui/Canvas.ipp
     include/cppgui/Widget.hpp                       include/cppgui/Widget.ipp
@@ -139,7 +142,7 @@ add_library( ${PROJECT_NAME} STATIC
 
     include/cppgui/Icon_resources.hpp               include/cppgui/Icon_resources.ipp
 
-    #include/cppgui/layouting.hpp                    include/cppgui/layouting.ipp
+    include/cppgui/layouting.hpp                    include/cppgui/layouting.ipp
 
     include/cppgui/Resource_mapper.hpp              include/cppgui/Resource_mapper.ipp
     include/cppgui/Cheap_resource_mapper.hpp        include/cppgui/Cheap_resource_mapper.ipp

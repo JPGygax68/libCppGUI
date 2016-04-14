@@ -8,6 +8,7 @@
 #include "./Default_font.ipp"
 #include "./Icon_resources.ipp"
 #include "./Canvas.ipp"
+#include "./layouting.ipp"
 //#include "./Font_resources.ipp" // now a .cpp file
 #include "./Widget.ipp"
 #include "./Button.ipp"

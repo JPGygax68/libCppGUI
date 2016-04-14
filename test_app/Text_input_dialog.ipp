@@ -20,8 +20,8 @@ Text_input_dialog<Config, With_layout>::Text_input_dialog()
     _header_bar.add_child(&_caption_label);
     _header_bar.add_child(&_close_btn);
 
-    _prompt_label.set_horizontal_alignment(cppgui::Alignment::left);
-    _prompt_label.set_vertical_alignment(cppgui::Alignment::top);
+    _prompt_label.set_minor_alignment(cppgui::Alignment::cultural_minor_start);
+    _prompt_label.set_major_alignment(cppgui::Alignment::cultural_major_middle);
     _prompt_label.set_padding(0); // {3, 3, 3, 3});
 
     _input_row.set_layout_type(cppgui::Layout_type::content_tail);

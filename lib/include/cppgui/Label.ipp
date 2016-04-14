@@ -2,6 +2,8 @@
 
 #include <gpc/fonts/rasterized_font.hpp>
 
+#include "./layouting.hpp"
+
 #include "./Label.hpp"
 
 namespace cppgui {
@@ -32,9 +34,11 @@ namespace cppgui {
         auto pos = offs + position();
         cnv->render_text(_fnthnd, pos.x + _text_orig.x, pos.y + _text_orig.y, _text.data(), _text.size());
 
-        //auto r = rectangle();
-        cnv->draw_stippled_rectangle_outline(pos.x + _text_rect.pos.x, pos.y + _text_rect.pos.y, 
-            _text_rect.ext.w, _text_rect.ext.h, {0, 0, 0.5f, 1});
+        if (has_focus())
+        {
+            auto r = _text_rect.grow({3, 2});
+            cnv->draw_stippled_rectangle_outline(pos.x + r.pos.x, pos.y + r.pos.y, r.ext.w, r.ext.h, {0, 0, 0.5f, 1});
+        }
     }
 
     // Layouter aspect ----------------------------------------------
@@ -43,7 +47,9 @@ namespace cppgui {
     template<class Aspect_parent>
     inline void Label__Layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
     {
-        // TODO: compute text extents here
+        _layout.set_major_alignment(_major_alignment);
+        _layout.set_minor_alignment(_minor_alignment);
+        _layout.set_text_element(p()->font(), p()->_text.data(), p()->_text.size(), & p()->_text_orig, & p()->_text_rect);
     }
 
     template<class Config>
@@ -52,18 +58,17 @@ namespace cppgui {
     {
         assert(!p()->text().empty()); // TODO: TENTATIVE RULE: layouting may not occur before conditions are met (font, text must be set) ?
 
-        auto bounds = p()->font()->compute_text_extents(0, p()->text().data(), p()->text().size());
-
-        return { 
-            _padding[3] + bounds.width () + _padding[1], 
-            _padding[0] + bounds.height() + _padding[2]
-        };
+        return _layout.compute_minimal_size(_padding);
     }
 
     template<class Config>
     template<class Aspect_parent>
     void Label__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
+        _layout.compute_layout(p()->extents(), _padding);
+
+        #ifdef NOT_DEFINED
+
         auto txb = p()->_font->compute_text_extents(0, p()->_text.data(), p()->_text.size());
         auto ext = extents();
 
@@ -102,6 +107,8 @@ namespace cppgui {
             p()->_text_orig.x + txb.x_min, p()->_text_orig.y - txb.y_max,
             txb.width(), txb.height()
         };
+
+        #endif
     }
 
 } // ns cppgui
