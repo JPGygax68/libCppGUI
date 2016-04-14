@@ -41,7 +41,7 @@ namespace cppgui {
     protected:
         const Rasterized_font  *_font = nullptr;
         std::u32string          _text;
-        Position                _text_orig; // origin of first character of label
+        Position                _text_origin; // origin of first character of label
         Rectangle               _text_rect;
 
         Font_handle             _fnthnd;

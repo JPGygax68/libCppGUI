@@ -40,11 +40,14 @@ namespace cppgui {
         const Rasterized_font  *_font = nullptr;
         std::u32string          _label;
         Position                _label_origin;
+        Rectangle               _label_rect;
 
         Font_handle             _fnthnd;
     };
 
     // Layouter aspect
+
+    class Single_element_layout;
 
     template <class Config>
     struct Button__Layouter<Config, true> {
@@ -77,7 +80,8 @@ namespace cppgui {
             auto p() { return static_cast<Button_t*>(this); }
             void compute_bounding_box();
 
-            Text_bounding_box   _bbox;
+            //Text_bounding_box   _bbox;
+            Single_element_layout   _layout;
         };
     };
 

@@ -32,7 +32,7 @@ namespace cppgui {
         fill(cnv, offs, rgba_to_native(cnv, background_color())); 
 
         auto pos = offs + position();
-        cnv->render_text(_fnthnd, pos.x + _text_orig.x, pos.y + _text_orig.y, _text.data(), _text.size());
+        cnv->render_text(_fnthnd, pos.x + _text_origin.x, pos.y + _text_origin.y, _text.data(), _text.size());
 
         if (has_focus())
         {
@@ -49,7 +49,7 @@ namespace cppgui {
     {
         _layout.set_major_alignment(_major_alignment);
         _layout.set_minor_alignment(_minor_alignment);
-        _layout.set_text_element(p()->font(), p()->_text.data(), p()->_text.size(), & p()->_text_orig, & p()->_text_rect);
+        _layout.set_text_element(p()->font(), p()->_text.data(), p()->_text.size(), & p()->_text_origin, & p()->_text_rect);
     }
 
     template<class Config>
