@@ -61,8 +61,9 @@ namespace cppgui {
 
         void mouse_exit() override;
 
-        // Event "bubbling"
-        void child_key_down(const Keycode &key) override { key_down(key); }
+        /** Handle key_down event that has "bubbled" back up from the child it was send to.
+         */
+        void child_key_down(const Keycode &key) override;
 
         void render(Canvas_t *, const Position &) override;
 

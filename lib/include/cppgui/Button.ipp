@@ -35,7 +35,8 @@ namespace cppgui {
 
         if (has_focus())
         {
-            auto r = _label_rect.grow({3, 2});
+            // TODO: draw the rectangle along the border instead of around the label ?
+            auto r = _label_rect.grow({3, 3});
             cnv->draw_stippled_rectangle_outline(pos.x + r.pos.x, pos.y + r.pos.y, r.ext.w, r.ext.h, {0, 0, 0.5f, 1});
         }
     }

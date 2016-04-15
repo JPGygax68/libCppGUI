@@ -83,6 +83,15 @@ namespace cppgui {
         Widget_t::mouse_exit();
     }
 
+    template<class Config, bool With_layout>
+    void Container<Config, With_layout>::child_key_down(const Keycode & key)
+    {
+        if (!handle_key_down(key))
+        {
+            container()->child_key_down(key);
+        }
+    }
+
     template <class Config, bool With_layout>
     void Container<Config, With_layout>::render(Canvas_t *cv, const Position &offs)
     {

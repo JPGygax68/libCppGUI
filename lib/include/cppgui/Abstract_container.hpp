@@ -22,6 +22,9 @@ namespace cppgui {
 
         auto& children() { return _children; }
 
+        /** Called when a key_down event could not be handled by the child it was sent to
+            (from container_key_down()) and needs to "bubble" back up.
+         */
         virtual void child_key_down(const Keycode &) = 0;
 
         virtual bool container_has_focus() = 0;       
@@ -44,8 +47,8 @@ namespace cppgui {
 
         void render_children(Canvas_t *, const Position &offs);
 
-        /** The handle_mouse_xxxx() methods are intended as "delegates" to be called
-        from "real" containers (i.e. descendants of Container<>).            
+        /** The container_xxxx() methods are intended as "delegate" event handlers, to be 
+            called from "real" containers (i.e. descendants of Container<>).            
         */
         void container_mouse_motion(const Position &);
         void container_mouse_button(const Position &, int button, Key_state);
