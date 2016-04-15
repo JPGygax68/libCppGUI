@@ -16,6 +16,7 @@ namespace cppgui {
             static inline bool is_delete   (const Keycode &key) { return key.sym == SDLK_DELETE   ; }
             static inline bool is_home     (const Keycode &key) { return key.sym == SDLK_HOME     ; }
             static inline bool is_end      (const Keycode &key) { return key.sym == SDLK_END      ; }
+            static inline bool is_tab      (const Keycode &key) { return key.sym == SDLK_TAB      ; }
 
             // Modifiers 
 

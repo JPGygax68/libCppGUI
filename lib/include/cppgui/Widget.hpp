@@ -67,6 +67,7 @@ namespace cppgui {
         virtual void mouse_click(const Position &, int button, int count);
         virtual void mouse_wheel(const Position &) {}
         virtual void text_input(const char32_t *, size_t) {}
+        virtual void key_down(const Keycode &) {}
 
         virtual void mouse_enter() {}       // TODO: provide "entry point" parameter ?
         virtual void mouse_exit() {}        // TODO: provide "exit point" parameter ?
@@ -152,6 +153,8 @@ namespace cppgui {
 
         // TODO: rename to has_keyboard_focus() ?
         bool has_focus() { return container()->container_has_focus() && container()->focused_child() == this; }
+        bool is_first_child() { return container()->children().front() == this; }
+        bool is_last_child () { return container()->children().back () == this; }
 
         void key_down(const Keycode &);
         //void key_up(const Keycode &);

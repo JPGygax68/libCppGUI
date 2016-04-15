@@ -58,6 +58,7 @@ namespace cppgui {
         void mouse_click(const Position &, int button, int count) override;
         void mouse_wheel(const Position &) override;
         void text_input(const char32_t *, size_t) override;
+        void key_down(const Keycode &) override;
 
         void mouse_exit() override;
 
@@ -71,6 +72,10 @@ namespace cppgui {
         auto paper_margin() -> unsigned int { return 2; } // TODO: remove (or move to Stack<>)
 
         bool handle_key_down(const Keycode &) override;
+
+        // Actions (return value indicates success)
+        bool cycle_focus_forward ();
+        bool cycle_focus_backward();
 
         Border              _border = {0};
     };

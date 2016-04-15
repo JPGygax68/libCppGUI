@@ -180,6 +180,8 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Widget<Config, With_layout>::key_down(const Keycode &key)
     {
+        // Fallback behavior: try to handle locally, else let it "bubble up"
+
         if (!handle_key_down(key))
         {
             // Let the event "bubble" up

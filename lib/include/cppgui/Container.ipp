@@ -69,11 +69,53 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Container<Config, With_layout>::key_down(const Keycode &key)
+    {
+        // If a child has focused, pass it on to that child, otherwise fall back to
+        // Widget default behaviour (i.e. try to handle locally, then bubble back up)
+
+        if (focused_child())
+        {
+            focused_child()->key_down(key);
+        }
+        else {
+            Widget_t::key_down(key);
+        }
+    }
+
+    template<class Config, bool With_layout>
     bool Container<Config, With_layout>::handle_key_down(const Keycode &key)
     {
-        // TODO: implement tab focus chaining
+        if (Config::Keyboard::is_tab(key))
+        {
+            if (!Config::Keyboard::is_shift_down()) { cycle_focus_forward (); return true; }
+            else                                    { cycle_focus_backward(); return true; }
+        }
 
         return container_key_down(key);
+    }
+
+    template<class Config, bool With_layout>
+    bool Container<Config, With_layout>::cycle_focus_forward()
+    {
+        assert(has_focus());
+
+        if (children().empty()) return false; // cannot cycle, report back to sender
+
+        if (focused_child() == nullptr          ) { set_focus_to(children().front()); return true; }
+        if (focused_child() == children().back()) { set_focus_to(nullptr)           ; return true; }
+        if (focused_child()->is_last_child()    ) { set_focus_to(nullptr)           ; return true; }
+
+        auto it = std::find(std::begin(children()), std::end(children()), focused_child());        
+        set_focus_to(*++it);
+        return true;
+    }
+
+    template<class Config, bool With_layout>
+    bool Container<Config, With_layout>::cycle_focus_backward()
+    {
+        // TODO
+        return false;
     }
 
     template<class Config, bool With_layout>
