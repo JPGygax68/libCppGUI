@@ -169,11 +169,6 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Widget<Config, With_layout>::removed_from_container(Abstract_container_t *)
     {
-        if (container()->focused_child() == this) 
-        {
-            container()->focus_on_child(nullptr);
-        }
-
         _container = nullptr;
     }
 
@@ -186,9 +181,23 @@ namespace cppgui {
         }
         else
         {
-            container()->focus_on_child(this);
+            gained_focus();
+            container()->child_has_obtained_focus(this);
             return true;
         }
+    }
+
+    template<class Config, bool With_layout>
+    void Widget<Config, With_layout>::gained_focus()
+    {
+        container()->child_has_obtained_focus(this);
+        invalidate();
+    }
+
+    template<class Config, bool With_layout>
+    void Widget<Config, With_layout>::loosing_focus()
+    {
+        invalidate();
     }
 
     template<class Config, bool With_layout>

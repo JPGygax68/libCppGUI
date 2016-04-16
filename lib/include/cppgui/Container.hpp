@@ -49,7 +49,7 @@ namespace cppgui {
 
         bool container_has_focus() override { return has_focus(); }
 
-        void focus_on_child(Widget_t *) override;
+        void child_has_obtained_focus(Widget_t *) override;
         void gained_focus() override;
         void loosing_focus() override;
 

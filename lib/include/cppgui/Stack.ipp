@@ -38,6 +38,12 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Stack<Config, With_layout>::gained_focus()
+    {
+        _inner_stack.take_focus();
+    }
+
+    template<class Config, bool With_layout>
     bool Stack<Config, With_layout>::handle_key_down(const Keycode &key)
     {
         if (Keyboard::is_up(key))
@@ -169,11 +175,11 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Inner_stack<Config, With_layout>::focus_on_child(Widget_t * child)
+    void Inner_stack<Config, With_layout>::child_has_obtained_focus(Widget_t * child)
     {
         if (child) bring_child_into_view(child);
 
-        Container_t::focus_on_child(child);
+        Container_t::child_has_obtained_focus(child);
     }
 
     template<class Config, bool With_layout>

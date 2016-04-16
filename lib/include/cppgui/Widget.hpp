@@ -71,8 +71,6 @@ namespace cppgui {
 
         virtual void mouse_enter() {}       // TODO: provide "entry point" parameter ?
         virtual void mouse_exit() {}        // TODO: provide "exit point" parameter ?
-        virtual void gained_focus() {}
-        virtual void loosing_focus() {}
 
         bool disabled() const { return false; } // TODO!!!
 
@@ -155,6 +153,8 @@ namespace cppgui {
         bool hovered() const { return _hovered; }
 
         virtual bool take_focus();
+        virtual void gained_focus();
+        virtual void loosing_focus();
 
         // TODO: rename to has_keyboard_focus() ?
         bool has_focus() { return container()->container_has_focus() && container()->focused_child() == this; }

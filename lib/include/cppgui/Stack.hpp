@@ -34,6 +34,8 @@ namespace cppgui {
 
         void render(Canvas_t *, const Position &offs) override;
 
+        void gained_focus() override;
+
     protected:
         using Inner_stack_t = typename Inner_stack<Config, With_layout>;
 
@@ -105,7 +107,7 @@ namespace cppgui {
         void scroll_down();
 
         // Hooks
-        void focus_on_child(Widget_t *child) override;
+        void child_has_obtained_focus(Widget_t *child) override;
 
         // Helpers
         void bring_child_into_view(Widget_t *);

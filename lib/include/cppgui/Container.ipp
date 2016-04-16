@@ -19,27 +19,31 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Container<Config, With_layout>::focus_on_child(Widget_t *child)
+    void Container<Config, With_layout>::child_has_obtained_focus(Widget_t *child)
     {
-        // Delegate
-        Abstract_container_t::focus_on_child(child);
+        // Propagate upwards
+        container()->child_has_obtained_focus(this);
 
-        // ..and propagate upwards
-        container()->focus_on_child(this);
+        // Delegate
+        Abstract_container_t::child_has_obtained_focus(child);
     }
 
     template<class Config, bool With_layout>
     void Container<Config, With_layout>::gained_focus()
     {
-        // Delegate
-        container_gained_focus();
+        if (_focused_child)
+        {
+            _focused_child->gained_focus();
+        }
     }
 
     template<class Config, bool With_layout>
     void Container<Config, With_layout>::loosing_focus()
     {
-        // Delegate
-        container_loosing_focus();
+        if (_focused_child)
+        {
+            _focused_child->loosing_focus();
+        }
     }
 
     template <class Config, bool With_layout>
@@ -83,7 +87,7 @@ namespace cppgui {
             focused_child()->key_down(key);
         }
         else {
-            Widget_t::key_down(key);
+            Widget_t::key_down(key); // try to handle locally, bubble up if that fails
         }
     }
 
@@ -92,10 +96,11 @@ namespace cppgui {
     {
         if (Config::Keyboard::is_tab(key))
         {
-            if (!Config::Keyboard::is_shift_down()) { cycle_focus_forward (); return true; }
-            else                                    { cycle_focus_backward(); return true; }
+            if (!Config::Keyboard::is_shift_down()) return cycle_focus_forward ();  // failure will make the event bubble up
+            else                                    return cycle_focus_backward();  // "
         }
 
+        // Delegate to container key down handler
         return container_key_down(key);
     }
 
@@ -125,15 +130,19 @@ namespace cppgui {
 
             if (it != std::end(children()))
             {
-                (*it)->take_focus();
+                // take_focus() makes a check (focussable()) that is not necessary here
+                //(*it)->take_focus();
+                if (_focused_child) _focused_child->loosing_focus();
+                _focused_child = *it;
+                container()->child_has_obtained_focus(this);
+                _focused_child->gained_focus();
+                // invalidate() should be triggered by gained_focus()
+                //invalidate();
+                return true;
             }
             else {
-                focus_on_child(nullptr);
+                return false;
             }
-
-            invalidate();
-
-            return true;
         }
     }
 
@@ -148,7 +157,7 @@ namespace cppgui {
         }
         else
         {
-            std::vector<Widget_t*>::reverse_iterator it;
+            decltype(std::rbegin(children())) it;
 
             if (focused_child())
             {
@@ -164,14 +173,13 @@ namespace cppgui {
             if (it != std::rend(children()))
             {
                 (*it)->take_focus();
+                invalidate();
+                return true;
             }
             else {
-                focus_on_child(nullptr);
+                return false; // child_has_obtained_focus(nullptr);
             }
 
-            invalidate();
-
-            return true;
         }
     }
 

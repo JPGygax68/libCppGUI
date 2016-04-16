@@ -7,7 +7,7 @@
 namespace cppgui {
 
     template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::focus_on_child(Widget_t *child)
+    void Abstract_container<Config, With_layout>::child_has_obtained_focus(Widget_t *child)
     {
         if (_focused_child)
         {
@@ -16,28 +16,12 @@ namespace cppgui {
 
         _focused_child = child;
 
+        /* REMOVED: notification originates from newly focused child -> no need to call back
         if (_focused_child)
         {
             _focused_child->gained_focus();
         }
-    }
-
-    template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::container_gained_focus()
-    {
-        if (_focused_child)
-        {
-            _focused_child->gained_focus();
-        }
-    }
-
-    template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::container_loosing_focus()
-    {
-        if (_focused_child)
-        {
-            _focused_child->loosing_focus(); // TODO: support veto-ing loss of focus ?
-        }
+        */
     }
 
     template <class Config, bool With_layout>
@@ -56,11 +40,16 @@ namespace cppgui {
             _hovered_child = nullptr;
         }
 
+        if (child == _focused_child)
+        {
+            _focused_child = nullptr;
+        }
+
+        child->removed_from_container(this);
+
         auto it = std::find(std::begin(_children), std::end(_children), child);
         assert(it != std::end(_children));
         _children.erase(it);
-
-        child->removed_from_container(this);
     }
 
     template<class Config, bool With_layout>
