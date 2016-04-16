@@ -38,6 +38,9 @@ namespace cppgui {
         auto operator = (const Extents &) -> Extents & = default;
         auto operator = (Extents &&) -> Extents & = default;
 
+        auto right_edge () const { return static_cast<Offset>(w); }
+        auto bottom_edge() const { return static_cast<Offset>(h); }
+
         bool contains(const Position &pos) const { 
 
             return pos.x >= 0 && pos.y >= 0 

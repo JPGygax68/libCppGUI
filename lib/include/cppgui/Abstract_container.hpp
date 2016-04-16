@@ -28,7 +28,7 @@ namespace cppgui {
         virtual void child_key_down(const Keycode &) = 0;
 
         virtual bool container_has_focus() = 0;       
-        virtual void set_focus_to(Widget_t *);
+        virtual void focus_on_child(Widget_t *);
         auto focused_child() -> Widget_t * { return _focused_child; }
 
         void container_gained_focus();

@@ -84,7 +84,7 @@ namespace cppgui {
         {
             if (!has_focus())
             {
-                container()->set_focus_to(this);
+                take_focus();
             }
 
             move_caret_to_pointer_position(pos);

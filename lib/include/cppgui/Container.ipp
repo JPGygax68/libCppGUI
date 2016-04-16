@@ -19,22 +19,26 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Container<Config, With_layout>::set_focus_to(Widget_t *child)
+    void Container<Config, With_layout>::focus_on_child(Widget_t *child)
     {
-        Abstract_container_t::set_focus_to(child);
+        // Delegate
+        Abstract_container_t::focus_on_child(child);
 
-        container()->set_focus_to(this);
+        // ..and propagate upwards
+        container()->focus_on_child(this);
     }
 
     template<class Config, bool With_layout>
     void Container<Config, With_layout>::gained_focus()
     {
+        // Delegate
         container_gained_focus();
     }
 
     template<class Config, bool With_layout>
     void Container<Config, With_layout>::loosing_focus()
     {
+        // Delegate
         container_loosing_focus();
     }
 
@@ -100,22 +104,75 @@ namespace cppgui {
     {
         assert(has_focus());
 
-        if (children().empty()) return false; // cannot cycle, report back to sender
+        if (children().empty())
+        {
+            return false; // cannot cycle, report back to sender
+        }
+        else
+        {
+            std::vector<Widget_t*>::iterator it;
 
-        if (focused_child() == nullptr          ) { set_focus_to(children().front()); return true; }
-        if (focused_child() == children().back()) { set_focus_to(nullptr)           ; return true; }
-        if (focused_child()->is_last_child()    ) { set_focus_to(nullptr)           ; return true; }
+            if (focused_child())
+            {
+                it = std::find(std::begin(children()), std::end(children()), focused_child());  
+                it ++;
+            }
+            else {
+                it = std::begin(children());
+            }
 
-        auto it = std::find(std::begin(children()), std::end(children()), focused_child());        
-        set_focus_to(*++it);
-        return true;
+            while (it != std::end(children()) && !(*it)->focussable()) it ++;
+
+            if (it != std::end(children()))
+            {
+                (*it)->take_focus();
+            }
+            else {
+                focus_on_child(nullptr);
+            }
+
+            invalidate();
+
+            return true;
+        }
     }
 
     template<class Config, bool With_layout>
     bool Container<Config, With_layout>::cycle_focus_backward()
     {
-        // TODO
-        return false;
+        assert(has_focus());
+
+        if (children().empty())
+        {
+            return false; // cannot cycle, report back to sender
+        }
+        else
+        {
+            std::vector<Widget_t*>::reverse_iterator it;
+
+            if (focused_child())
+            {
+                it = std::find(std::rbegin(children()), std::rend(children()), focused_child());  
+                it ++;
+            }
+            else {
+                it = std::rbegin(children());
+            }
+
+            while (it != std::rend(children()) && !(*it)->focussable()) it ++;
+
+            if (it != std::rend(children()))
+            {
+                (*it)->take_focus();
+            }
+            else {
+                focus_on_child(nullptr);
+            }
+
+            invalidate();
+
+            return true;
+        }
     }
 
     template<class Config, bool With_layout>

@@ -25,6 +25,8 @@ namespace cppgui {
         using Widget_t = Widget<Config, With_layout>;
         using Button_t = typename Button<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
+        using Keyboard = typename Config::Keyboard;
+        using Keycode = typename Keyboard::Keycode;
 
         Stack();
 
@@ -34,6 +36,8 @@ namespace cppgui {
 
     protected:
         using Inner_stack_t = typename Inner_stack<Config, With_layout>;
+
+        bool handle_key_down(const Keycode &) override;
 
         static auto glyph_font() -> const Rasterized_font *;
         auto compute_children_total_size() -> Extents;
@@ -78,6 +82,7 @@ namespace cppgui {
     class Inner_stack: public Inner_stack__Layouter<Config, With_layout>::template Aspect< Container<Config, With_layout> >
     {
     public:
+        using Widget_t = typename Widget<Config, With_layout>;
         using Container_t = typename Container<Config, With_layout>;
         using Canvas_t = typename Container_t::Canvas_t;
 
@@ -98,6 +103,12 @@ namespace cppgui {
         // Actions
         void scroll_up  ();
         void scroll_down();
+
+        // Hooks
+        void focus_on_child(Widget_t *child) override;
+
+        // Helpers
+        void bring_child_into_view(Widget_t *);
 
         unsigned    _first_visible_item = 0;
         int         _children_offset = 0;

@@ -43,6 +43,7 @@ namespace cppgui {
         bool                            _border_enabled = true;
 
         Position                        _label_pos;
+        Rectangle                       _label_rect;
         Position                        _glyph_pos;
 
     private:

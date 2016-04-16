@@ -171,10 +171,24 @@ namespace cppgui {
     {
         if (container()->focused_child() == this) 
         {
-            container()->set_focus_to(nullptr);
+            container()->focus_on_child(nullptr);
         }
 
         _container = nullptr;
+    }
+
+    template<class Config, bool With_layout>
+    bool Widget<Config, With_layout>::take_focus()
+    {
+        if (!_focussable)
+        {
+            return false;
+        }
+        else
+        {
+            container()->focus_on_child(this);
+            return true;
+        }
     }
 
     template<class Config, bool With_layout>

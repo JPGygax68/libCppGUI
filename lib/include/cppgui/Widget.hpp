@@ -145,14 +145,20 @@ namespace cppgui {
         void set_visible(bool visible = true);
         bool visible() const { return _visible; }
 
+        void set_focussable(bool state = true) { _focussable = state; }
+        bool focussable() const { return _focussable; } // TODO: replace with can_take_focus() that takes other factors into consideration ?
+
         void added_to_container(Abstract_container_t *);
         void removed_from_container(Abstract_container_t *);
 
         // TODO: should the following be protected ?
         bool hovered() const { return _hovered; }
 
+        virtual bool take_focus();
+
         // TODO: rename to has_keyboard_focus() ?
         bool has_focus() { return container()->container_has_focus() && container()->focused_child() == this; }
+
         bool is_first_child() { return container()->children().front() == this; }
         bool is_last_child () { return container()->children().back () == this; }
 
@@ -189,6 +195,7 @@ namespace cppgui {
         Color                   _bkgnd_clr = {0, 0, 0, 0};
         Click_handler           _click_hndlr;
         bool                    _visible = true;
+        bool                    _focussable = true;
         bool                    _hovered = false;
 
     };

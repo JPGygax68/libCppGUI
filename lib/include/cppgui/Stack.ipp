@@ -17,6 +17,9 @@ namespace cppgui {
         _up_btn  .set_label(U"\x25b2");
         _down_btn.set_label(U"\x25bc");
 
+        _up_btn  .set_focussable(false);
+        _down_btn.set_focussable(false);
+
         Abstract_container_t::add_child(&_up_btn);
         Abstract_container_t::add_child(&_down_btn);
         Abstract_container_t::add_child(&_inner_stack);
@@ -32,6 +35,22 @@ namespace cppgui {
     void Stack<Config, With_layout>::render(Canvas_t *cv, const Position &offs)
     {
         Container_t::render(cv, offs);
+    }
+
+    template<class Config, bool With_layout>
+    bool Stack<Config, With_layout>::handle_key_down(const Keycode &key)
+    {
+        if (Keyboard::is_up(key))
+        {
+            return _inner_stack.cycle_focus_backward(); // TODO: "burp" if not possible
+        }
+        else if (Keyboard::is_down(key))
+        {
+            return _inner_stack.cycle_focus_forward(); // TODO: "burp" if not possible
+        }
+        else {
+            return Container_t::handle_key_down(key);
+        }
     }
 
     template<class Config, bool With_layout>
@@ -147,6 +166,30 @@ namespace cppgui {
 
         if      (dist.y < 0) scroll_down(); // TODO: use amount as parameter
         else if (dist.y > 0) scroll_up  (); // TODO: use amount as parameter
+    }
+
+    template<class Config, bool With_layout>
+    void Inner_stack<Config, With_layout>::focus_on_child(Widget_t * child)
+    {
+        if (child) bring_child_into_view(child);
+
+        Container_t::focus_on_child(child);
+    }
+
+    template<class Config, bool With_layout>
+    void cppgui::Inner_stack<Config, With_layout>::bring_child_into_view(Widget_t *child)
+    {
+        while (_children_offset + child->rectangle().bottom() > extents().bottom_edge() && _first_visible_item < children().size() - 1)
+        {
+            _first_visible_item ++;
+            _children_offset = paper_margin() - children()[_first_visible_item]->position().y; // TODO: private method for this ?
+        }
+
+        while (_children_offset + child->rectangle().top() < 0 && _first_visible_item > 0)
+        {
+            _first_visible_item --;
+            _children_offset = paper_margin() - children()[_first_visible_item]->position().y; // TODO: private method for this ?
+        }
     }
 
     template<class Config, bool With_layout>

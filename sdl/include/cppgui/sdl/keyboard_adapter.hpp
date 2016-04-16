@@ -12,6 +12,8 @@ namespace cppgui {
 
             static inline bool is_left     (const Keycode &key) { return key.sym == SDLK_LEFT     ; }
             static inline bool is_right    (const Keycode &key) { return key.sym == SDLK_RIGHT    ; }
+            static inline bool is_up       (const Keycode &key) { return key.sym == SDLK_UP       ; }
+            static inline bool is_down     (const Keycode &key) { return key.sym == SDLK_DOWN     ; }
             static inline bool is_backspace(const Keycode &key) { return key.sym == SDLK_BACKSPACE; }
             static inline bool is_delete   (const Keycode &key) { return key.sym == SDLK_DELETE   ; }
             static inline bool is_home     (const Keycode &key) { return key.sym == SDLK_HOME     ; }

@@ -72,7 +72,7 @@ Test_window::Test_window(): Parent("Test window")
     _checkbox.set_extents({200, 40});
     _checkbox.set_label(U"Check me!");
 
-    _button_list.resize(8);
+    _button_list.resize(9);
     for (auto i = 0U; i < _button_list.size(); i ++)
     {
         _button_list[i].set_font(dflt_font);
@@ -108,7 +108,8 @@ Test_window::Test_window(): Parent("Test window")
     root_widget()->add_child(&_menu);
     root_widget()->add_child(&_input_dlg);
 
-    root_widget()->set_focus_to(&_textbox);
+    _menu.take_focus();
+    //root_widget()->set_focus_to(&_menu); // ); // &_textbox);
 
     root_widget()->on_invalidated([this]() { invalidate(); });
 

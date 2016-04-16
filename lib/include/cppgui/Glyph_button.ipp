@@ -23,16 +23,16 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Glyph_button<Config, With_layout>::render(Canvas_t *cv, const Position & offset)
+    void Glyph_button<Config, With_layout>::render(Canvas_t *cnv, const Position & offset)
     {
         // Background
-        fill(cv, offset, rgba_to_native(cv, button_face_color()));
+        fill(cnv, offset, rgba_to_native(cnv, button_face_color()));
 
         // Border
         if (_border_enabled)
         {
-            auto border_ntvclr = rgba_to_native(cv, button_border_color());
-            draw_borders(cv, rectangle(), offset, button_border_width(), border_ntvclr, border_ntvclr, border_ntvclr, border_ntvclr);
+            auto border_ntvclr = rgba_to_native(cnv, button_border_color());
+            draw_borders(cnv, rectangle(), offset, button_border_width(), border_ntvclr, border_ntvclr, border_ntvclr, border_ntvclr);
         }
 
         auto pos = offset + position();
@@ -40,18 +40,26 @@ namespace cppgui {
         // Label
         if (!_label.empty())
         {
-            cv->render_text(_label_font_hnd, pos.x + _label_pos.x, pos.y + _label_pos.y, _label.data(), _label.size());
+            cnv->render_text(_label_font_hnd, pos.x + _label_pos.x, pos.y + _label_pos.y, _label.data(), _label.size());
+        }
+        if (has_focus())
+        {
+            // TODO: draw the rectangle along the border instead of around the label ?
+            auto r = _label_rect.grow({3, 3});
+            cnv->draw_stippled_rectangle_outline(pos.x + r.pos.x, pos.y + r.pos.y, r.ext.w, r.ext.h, {0, 0, 0.5f, 1});
         }
 
         // Glyph
         if (_glyph_cp)
         {
-            cv->render_text(_glyph_font_hnd, pos.x + _glyph_pos.x, pos.y + _glyph_pos.y, &_glyph_cp, 1);
+            cnv->render_text(_glyph_font_hnd, pos.x + _glyph_pos.x, pos.y + _glyph_pos.y, &_glyph_cp, 1);
         }
     }
 
 
     // Layouter aspect ----------------------------------------------
+
+    // TODO: 1) write a layout class that can handle a label + a glyph  2) use it here
 
     template <class Config>
     template <class Aspect_parent>
@@ -106,6 +114,11 @@ namespace cppgui {
             p()->_label_pos = {
                 static_cast<Offset>(_padding[3]),
                 static_cast<Offset>((ext.h - _label_bounds.height()) / 2) + _label_bounds.y_max
+            };
+
+            p()->_label_rect = {
+                p()->_label_pos.x, p()->_label_pos.y - _label_bounds.y_max,
+                _label_bounds.width(), _label_bounds.height()
             };
 
             p()->_glyph_pos = {
