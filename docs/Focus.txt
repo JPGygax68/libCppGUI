@@ -1,0 +1,37 @@
+Focus in libCppGUI
+==================
+
+The principles, for future reference
+------------------------------------
+
+2016/04/16-17 Jean-Pierre Gygax <gygax@practicomp.ch>
+
+### The focus chain (that is actually a tree)
+
+The "focus chain" is the way that keyboard events travel from the root widget down to the widget that will eventually process them (which may mean letting them "bubble up" that chain in case that widget cannot fully handle an event).
+
+That focus chain is established by the container hierarchy: each container maintains a member "focused child" as part of its state. When a container receives a keyboard event, it will simply pass it along further down the chain, unless it has no children or none of them is currently focused. 
+
+Note: there is no rule forbidding a specific container class to react to a keyboard event before sending it further down the chain. It may also refuse to pass it along, or even ignore the event altogether. (Last but not least, it may also react to the event by focusing a different child.)
+
+As a matter of terminology, each widget along the focus chain is said to "have focus", even though it is only the last link of that chain that will typically handle (or start to handle) the event.
+
+### Obtaining focus
+
+There are two basic ways for a widget to obtain focus:
+
+1) from its container
+
+2) by taking it
+
+The first case is what happens during keyboard-based navigation (usually via tab / shift-tab). It means that the container changes its focused child property, notifying both the previously focused child (if any) and the newly focused child.
+  
+The second case is what typically happens when a widget is clicked. The click event is typically wired to the "take focus" action, which works the opposite way of the first case: the widget will typically update any internal state, then notify its container that it has obtained focus, then finally trigger a visual update (invalidate). 
+
+The notified container in turn notifies its parent container that it has obtained focus, and so forth up to the root widget. Every container widget along the upward chain must notify its previously focused child (if any) that it is loosing focus.
+
+Every container along the "up" chain must also invalidate itself as needed (it is possible however that a container does not give visual clues of its own that it has focus; in that case, that container does not need to invalidate).
+
+One important rule is that a container loosing the focus does *not* mean that its own focused child property needs to be cleared. This means that if, for example, a textbox was focused in one container, the user clicks some other control in another container, and then uses (for example) shift-tab to navigate back to the first container, focus will go back to the initially focused textbox. In that way, the focus "chain" is actually more of a focus "tree", though with a single active full path at any given time.
+
+Thus, at the time of writing, keyboard navigation does not follow a strict forward-backward order, but gives preferences to the "last visited" idea. However, any container class may override this behavior by overriding the gained_focus() method, in which a different child may be made active by setting the focused_child property before calling the inherited gained_focus().

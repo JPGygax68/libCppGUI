@@ -153,6 +153,8 @@ namespace cppgui {
         bool hovered() const { return _hovered; }
 
         virtual bool take_focus();
+        /** Important: do not call gained_focus() from a child; call child_obtained_focus() instead.
+         */
         virtual void gained_focus();
         virtual void loosing_focus();
 

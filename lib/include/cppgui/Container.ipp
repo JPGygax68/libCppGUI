@@ -21,11 +21,11 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Container<Config, With_layout>::child_has_obtained_focus(Widget_t *child)
     {
+        // Inform former focused child, update focused_child property
+        Abstract_container_t::child_has_obtained_focus(child);
+
         // Propagate upwards
         container()->child_has_obtained_focus(this);
-
-        // Delegate
-        Abstract_container_t::child_has_obtained_focus(child);
     }
 
     template<class Config, bool With_layout>
@@ -35,11 +35,15 @@ namespace cppgui {
         {
             _focused_child->gained_focus();
         }
+
+        Widget_t::gained_focus();
     }
 
     template<class Config, bool With_layout>
     void Container<Config, With_layout>::loosing_focus()
     {
+        Widget_t::loosing_focus();
+
         if (_focused_child)
         {
             _focused_child->loosing_focus();
@@ -130,14 +134,8 @@ namespace cppgui {
 
             if (it != std::end(children()))
             {
-                // take_focus() makes a check (focussable()) that is not necessary here
-                //(*it)->take_focus();
-                if (_focused_child) _focused_child->loosing_focus();
-                _focused_child = *it;
-                container()->child_has_obtained_focus(this);
-                _focused_child->gained_focus();
-                // invalidate() should be triggered by gained_focus()
-                //invalidate();
+                (*it)->gained_focus();
+                child_has_obtained_focus(*it);
                 return true;
             }
             else {
@@ -172,8 +170,8 @@ namespace cppgui {
 
             if (it != std::rend(children()))
             {
-                (*it)->take_focus();
-                invalidate();
+                (*it)->gained_focus();
+                child_has_obtained_focus(*it);
                 return true;
             }
             else {

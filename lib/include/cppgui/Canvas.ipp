@@ -18,7 +18,7 @@ namespace cppgui {
     void Canvas<Renderer>::cleanup()
     {
         // TODO: replace with yet-to-do release_all_images() (called internally by Renderer) ?
-        release_rgba32_image(_stipple_img);
+        release_mono8_image(_stipple_img);
 
         Renderer::cleanup();
     }
