@@ -1,0 +1,42 @@
+Styles in libCppGUI
+===================
+
+Brainstorming
+-------------
+
+### General
+
+- Styles should scale be scalable (typically following the size of the font used in or around a given widget)
+
+  - It must be possible to specify sizes in EM
+  
+    - However it is not necessary to store EM sizes in the main class of a widget, only in the layout aspects, and only store the derived pixel sizes in the main class (and even then only where it is needed for drawing).
+    
+- Styles should be inherited from parent containers
+
+  - This goes both for settings (in the layout aspects) and main-class members (in the main classes)
+  
+    - e.g. the font name would be inherited quite separately from the actual rasterized_font structure pointer
+  
+- Sizes must be grid-fitted
+
+  - ? Can there be a case where a size should be effectively rounded other than up (to at least 1 pixel) ?
+      
+      => very probably NO, sizes should always be at least one pixel, both for lines and points and for spacing
+      
+
+### Borders
+
+- Borders should be described in terms of width and color; more options could be added in the future
+
+- It may or may not make sense to support setting the widths individually for all for edges
+
+- Supporting bevel and groove effects would require extending the graphics layer, either by supporting arbitrary polygons (which might be difficult to implement with very simple libraries) or by defining a specific "border" feature (4 colors) which on very simple hardware / graphics APIs could be implemented pixel-by-pixel.
+
+  - Another possibility would be to make support for arbitrary polygons optional
+  
+    - However, this should fail at built time, not at run time - how ?
+      
+      => Reporting such a mismatch would fall to the tool/script/build task that turns the GUI definition into include-able C++ code. That code could carry meta-information as static data that could be checked against by the GUI library via static_assert()
+      
+      => When supporting run-time layouting and styling, it falls to the layouting aspects to check whether a specified setting is acceptable for the GUI configuration in use.
