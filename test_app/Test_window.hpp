@@ -51,4 +51,5 @@ private:
     Container                   _menu;
     Label                       _menu_header;
     Text_input_dialog_t         _input_dlg;
+    Vertical_scrollbar          _vert_scrollbar;    
 };

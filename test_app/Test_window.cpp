@@ -97,6 +97,9 @@ Test_window::Test_window(): Parent("Test window")
     _input_dlg.set_position({350, 250});
     _input_dlg.set_extents ({350, 180});
 
+    _vert_scrollbar.set_position({750,  50});
+    _vert_scrollbar.set_extents ({ 30, 200});
+
     root_widget()->set_background_color({0, 0.6f, 0.2f, 1});
 
     root_widget()->add_child(&_label);
@@ -107,6 +110,7 @@ Test_window::Test_window(): Parent("Test window")
     root_widget()->add_child(&_checkbox);
     root_widget()->add_child(&_menu);
     root_widget()->add_child(&_input_dlg);
+    root_widget()->add_child(&_vert_scrollbar);
 
     _menu.take_focus();
     //root_widget()->set_focus_to(&_menu); // ); // &_textbox);

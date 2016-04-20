@@ -44,6 +44,8 @@ namespace cppgui {
         static constexpr auto checkbox_checked() -> Icon_glyph;
         static constexpr auto radiobutton_on () -> Icon_glyph;
         static constexpr auto radiobutton_off() -> Icon_glyph;
+        static constexpr auto up_arrow() -> Icon_glyph;
+        static constexpr auto down_arrow() -> Icon_glyph;
     };
 
 } // ns cppgui

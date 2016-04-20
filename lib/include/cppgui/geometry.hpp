@@ -69,6 +69,9 @@ namespace cppgui {
             };
         }
 
+        auto right () { return static_cast<Offset>(w); }
+        auto bottom() { return static_cast<Offset>(h); }
+
         static auto between_points(const Position &from, const Position &to) -> Extents {
 
             return { static_cast<Length>(to.x - from.x), static_cast<Length>(to.y - from.y) };

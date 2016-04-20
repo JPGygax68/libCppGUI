@@ -68,4 +68,16 @@ namespace cppgui {
         return { materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(), 0xE836 };
     }
 
+    template<Font_size Size>
+    constexpr auto Icon_resources<Size>::up_arrow() -> Icon_glyph
+    {
+        return { materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(), 0xE5C7 };
+    }
+
+    template<Font_size Size>
+    constexpr auto Icon_resources<Size>::down_arrow() -> Icon_glyph
+    {
+        return { materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(), 0xE5C5 };
+    }
+
 } // ns cppgui

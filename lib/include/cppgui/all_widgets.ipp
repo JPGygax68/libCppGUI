@@ -19,4 +19,5 @@
 #include "./Abstract_container.ipp"
 #include "./Container.ipp"
 #include "./Stack.ipp"
+#include "./Vertical_scrollbar.ipp"
 #include "./Root_widget.ipp"

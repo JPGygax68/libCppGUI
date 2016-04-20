@@ -81,7 +81,7 @@ foreach(size IN ITEMS 12 13 16 20 24 32 36)
             input=${CMAKE_CURRENT_SOURCE_DIR}/data/fonts/${font_file}.ttf
             size=${size}
             output="${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont"
-            range=$E876 range=$E14C range=$E154 range=$E15E range=$E834 range=$E835 range=$E836 range=$E837
+            range=$E876 range=$E14C range=$E154 range=$E15E range=$E834 range=$E835 range=$E836 range=$E837 range=$E5C5 range=$E5C7
     )
 
     add_custom_command(
@@ -139,6 +139,7 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Container.hpp                    include/cppgui/Container.ipp
     include/cppgui/Stack.hpp                        include/cppgui/Stack.ipp
     include/cppgui/Root_widget.hpp                  include/cppgui/Root_widget.ipp
+    include/cppgui/Vertical_scrollbar.hpp           include/cppgui/Vertical_scrollbar.ipp
 
     include/cppgui/Icon_resources.hpp               include/cppgui/Icon_resources.ipp
 
