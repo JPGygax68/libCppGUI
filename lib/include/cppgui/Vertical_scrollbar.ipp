@@ -23,6 +23,8 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Vertical_scrollbar<Config, With_layout>::mouse_motion(const Position &pos)
     {
+        Container_t::mouse_motion(pos);
+
         bool on_thumb = _thumb_rect.contains(pos);
 
         if (on_thumb != _thumb_hovered)
