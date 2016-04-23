@@ -126,6 +126,7 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/aspects.hpp
 
     #include/cppgui/Text_element.hpp                 include/cppgui/Text_element.ipp
+    include/cppgui/Drag_controller.hpp              include/Drag_controller.ipp
 
     include/cppgui/Canvas.hpp                       include/cppgui/Canvas.ipp
     include/cppgui/Widget.hpp                       include/cppgui/Widget.ipp

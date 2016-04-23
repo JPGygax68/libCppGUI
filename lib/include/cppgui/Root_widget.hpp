@@ -73,6 +73,9 @@ namespace cppgui {
 
         void child_key_down(const Keycode &) override {}
 
+        void capture_mouse(Widget_t *);
+        void end_mouse_capture();
+
     protected:
         
         void render(Canvas_t *, const Position &) override;
@@ -83,6 +86,8 @@ namespace cppgui {
         Canvas_t                   *_canvas = nullptr;
         //Widget_t                   *_focused_widget = nullptr;
         std::stack<Cursor_handle>   _cursor_stack;
+        Widget_t                   *_mouse_holder = nullptr;
+        Position                    _capture_offset;
     };
 
     // Default implementation for Widget_updater aspect

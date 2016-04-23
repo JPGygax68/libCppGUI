@@ -20,6 +20,7 @@ namespace cppgui {
 
     template <class Config, bool With_layout> class Root_widget;
     template <class Config, bool With_layout> class Abstract_container;
+    template <class Config, bool With_layout> class Drag_controller;
 
     enum Key_state { pressed, released }; // TODO: move to basic_types.hpp ?
 
@@ -83,6 +84,8 @@ namespace cppgui {
 
     protected:
 
+        // Rendering conveniences
+
         auto rgba_to_native(Canvas_t *, const Color &) -> Native_color;
         void fill_rect(Canvas_t *, const Rectangle &rect, const Native_color &);
         void fill_rect(Canvas_t *, const Rectangle &rect, const Position &offs, const Native_color &);
@@ -107,7 +110,8 @@ namespace cppgui {
         static auto paper_color() -> Color { return {1, 1, 1, 1}; }
 
     private:
-        Rectangle _rect = {};
+
+        Rectangle   _rect = {};
     };
 
     template <class Config, bool With_layout> struct Widget__Layouter {
@@ -194,12 +198,14 @@ namespace cppgui {
         Rectangle               _inner_rect;
 
     private:
+        friend class Drag_controller<Config, With_layout>;
+        friend class Root_widget<Config, With_layout>;
+
         Color                   _bkgnd_clr = {0, 0, 0, 0};
         Click_handler           _click_hndlr;
         bool                    _visible = true;
         bool                    _focussable = true;
         bool                    _hovered = false;
-
     };
 
     // Default implementations for Updating_aspect

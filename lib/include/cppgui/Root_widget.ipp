@@ -87,7 +87,15 @@ namespace cppgui {
     void Root_widget<Config, WithLayout>::mouse_motion(const Position &pos)
     {
         this->lock();
-        container_mouse_motion(pos); // Abstract_container TODO: better name ?
+
+        if (_mouse_holder)
+        {
+            _mouse_holder->mouse_motion(pos - _capture_offset);
+        }
+
+        // Note: there should be no harm in repeating a mouse motion event (contrary to e.g. mouse button events)
+        container_mouse_motion(pos);
+
         this->unlock();
     }
 
@@ -95,7 +103,16 @@ namespace cppgui {
     void Root_widget<Config, With_layout>::mouse_button(const Position &pos, int button, Key_state state)
     {
         this->lock();
-        container_mouse_button(pos, button, state); // Abstract_container TODO: better name ?
+
+        if (_mouse_holder)
+        {
+            _mouse_holder->mouse_button(pos, button, state);
+        }
+        else
+        {
+            container_mouse_button(pos, button, state); // Abstract_container TODO: better name ?
+        }
+
         this->unlock();
     }
 
@@ -141,6 +158,31 @@ namespace cppgui {
     void Root_widget<Config, With_layout>::render()
     {
         render(_canvas, {0, 0});
+    }
+
+    template<class Config, bool With_layout>
+    void Root_widget<Config, With_layout>::capture_mouse(Widget_t *holder)
+    {
+        assert(!_mouse_holder);
+
+        _mouse_holder = holder;
+
+        // The mouse holder expects mouse positions as relative to its own origin,
+        // so we get its absolute position here and store it as the "capture offset"
+        Position offset = holder->position();
+        for (auto cont = holder->container(); cont != this; cont = static_cast<Container_t*>(cont)->container())
+        {
+            offset += static_cast<Container_t*>(cont)->position();
+        }
+        _capture_offset = offset;
+    }
+
+    template<class Config, bool With_layout>
+    void Root_widget<Config, With_layout>::end_mouse_capture()
+    {
+        assert(_mouse_holder);
+
+        _mouse_holder = nullptr;
     }
 
     template<class Config, bool WithLayout>
