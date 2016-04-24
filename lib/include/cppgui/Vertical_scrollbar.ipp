@@ -78,15 +78,36 @@ namespace cppgui {
     {
         if (button == 1 && state == Key_state::pressed)
         {
-            _thumb_drag_anchor_pos = pos.y;
-            _thumb_drag_start_pos = _thumb_rect.pos.y;
-            _dragging_thumb = true;
-            root_widget()->capture_mouse(this);
+            if (pos.y > _sliding_range.start && pos.y < _sliding_range.end)
+            {
+                auto y_rel = pos.y - _thumb_rect.pos.y;
+
+                // Above thumb ?
+                if (y_rel < 0)
+                {
+                    page_up();
+                }
+                // Below thumb ?
+                else if (y_rel > _thumb_rect.ext.bottom())
+                {
+                    page_down();
+                }
+                else // On thumb
+                {
+                    _thumb_drag_anchor_pos = pos.y;
+                    _thumb_drag_start_pos = _thumb_rect.pos.y;
+                    _dragging_thumb = true;
+                    root_widget()->capture_mouse(this);
+                }
+            }
         }
         else if (button == 1 && state == Key_state::released)
         {
-            _dragging_thumb = false;
-            root_widget()->release_mouse();
+            if (_dragging_thumb)
+            {
+                _dragging_thumb = false;
+                root_widget()->release_mouse();
+            }
         }
         else
             Widget_t::mouse_button(pos, button, state);
@@ -139,6 +160,24 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Vertical_scrollbar<Config, With_layout>::page_up()
+    {
+        _thumb_rect.pos.y -= static_cast<Offset>(_thumb_rect.ext.h);
+        clip_thumb_pos();
+        notify_position_change();
+        invalidate();
+    }
+
+    template<class Config, bool With_layout>
+    void Vertical_scrollbar<Config, With_layout>::page_down()
+    {
+        _thumb_rect.pos.y += static_cast<Offset>(_thumb_rect.ext.h);
+        clip_thumb_pos();
+        notify_position_change();
+        invalidate();
+    }
+
+    template<class Config, bool With_layout>
     void Vertical_scrollbar<Config, With_layout>::move_thumb_to(Offset new_pos)
     {
         new_pos = std::max(new_pos, _sliding_range.start);
@@ -155,9 +194,20 @@ namespace cppgui {
     {
         _thumb_rect.ext.h = _thumb_length * (_sliding_range.end - _sliding_range.start) / (_position_range.end - _position_range.start);
 
-        auto thumb_end = _sliding_range.start + static_cast<Offset>(_thumb_rect.ext.h);
-        auto delta = thumb_end - _sliding_range.end;
-        if (delta > 0) _thumb_rect.pos.y = _sliding_range.end - static_cast<Offset>(_thumb_rect.ext.h);
+        clip_thumb_pos();
+    }
+
+    template<class Config, bool With_layout>
+    void Vertical_scrollbar<Config, With_layout>::clip_thumb_pos()
+    {
+        if (_thumb_rect.bottom() > _sliding_range.end)
+        {
+            _thumb_rect.pos.y = _sliding_range.end - static_cast<Offset>(_thumb_rect.ext.h);
+        }
+        else if (_thumb_rect.pos.y < _sliding_range.start)
+        {
+            _thumb_rect.pos.y = _sliding_range.start;
+        }
     }
 
     template<class Config, bool With_layout>

@@ -50,6 +50,11 @@ namespace cppgui {
 
         auto current_position() -> Fraction<>;
 
+        // Actions
+
+        void page_up();
+        void page_down();
+
     protected:
         using Glyph_button_t = typename Glyph_button<Config, With_layout>;
 
@@ -62,7 +67,7 @@ namespace cppgui {
 
         void move_thumb_to(Offset);
         void recalc_thumb();
-
+        void clip_thumb_pos();
         void notify_position_change();
 
         Glyph_button_t          _up_btn, _down_btn;
