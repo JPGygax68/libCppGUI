@@ -78,13 +78,14 @@ namespace cppgui {
     {
         if (button == 1 && state == Key_state::pressed)
         {
-            _thumb_drag_ctl.start_drag(pos);
-            root_widget()->capture_mouse(this);
+            _thumb_drag_anchor_pos = pos.y;
             _thumb_drag_start_pos = _thumb_rect.pos.y;
+            _dragging_thumb = true;
+            root_widget()->capture_mouse(this);
         }
         else if (button == 1 && state == Key_state::released)
         {
-            _thumb_drag_ctl.end_drag();
+            _dragging_thumb = false;
             root_widget()->release_mouse();
         }
         else
@@ -103,18 +104,19 @@ namespace cppgui {
             invalidate();
         }
 
-        if (Config::Mouse::is_button_down(1) && _thumb_drag_ctl.dragging())
+        if (Config::Mouse::is_button_down(1) && _dragging_thumb)
         {
-            auto delta = _thumb_drag_ctl.drag(pos);
-            auto new_pos = _thumb_drag_start_pos + delta.y;
-            new_pos = std::max(new_pos, _sliding_range.start);
-            new_pos = std::min(new_pos, _sliding_range.end - static_cast<Offset>(_thumb_rect.ext.h));
-            _thumb_rect.pos = {2, new_pos};
-            notify_position_change();
-            invalidate();
+            auto delta = pos.y - _thumb_drag_anchor_pos;
+            move_thumb_to(_thumb_drag_start_pos + delta);
         }
         else
             Widget_t::mouse_motion(pos);
+    }
+
+    template<class Config, bool With_layout>
+    void Vertical_scrollbar<Config, With_layout>::mouse_wheel(const Position_delta &delta)
+    {
+        move_thumb_to(_thumb_rect.pos.y - delta.y);
     }
 
     template<class Config, bool With_layout>
@@ -134,6 +136,18 @@ namespace cppgui {
             static_cast<unsigned int>(_thumb_rect.pos.y - _sliding_range.start), 
             static_cast<unsigned int>(_sliding_range.end - _sliding_range.start) - _thumb_rect.ext.h
         };
+    }
+
+    template<class Config, bool With_layout>
+    void Vertical_scrollbar<Config, With_layout>::move_thumb_to(Offset new_pos)
+    {
+        new_pos = std::max(new_pos, _sliding_range.start);
+        new_pos = std::min(new_pos, _sliding_range.end - static_cast<Offset>(_thumb_rect.ext.h));
+
+        _thumb_rect.pos = {2, new_pos};
+        
+        notify_position_change();
+        invalidate();
     }
 
     template<class Config, bool With_layout>

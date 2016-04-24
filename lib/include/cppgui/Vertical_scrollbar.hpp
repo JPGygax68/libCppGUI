@@ -2,7 +2,7 @@
 
 #include "./Container.hpp"
 #include "./Glyph_button.hpp"
-#include "./Drag_controller.hpp"
+//#include "./Drag_controller.hpp"
 
 namespace cppgui {
 
@@ -40,6 +40,7 @@ namespace cppgui {
 
         void mouse_button(const Position &, int button, Key_state) override;
         void mouse_motion(const Position &) override;
+        void mouse_wheel(const Position_delta & ) override;
         void mouse_exit() override;
 
         void render(Canvas_t *, const Position &offset) override;
@@ -59,6 +60,8 @@ namespace cppgui {
             auto length() const { return static_cast<Offset>(end - start); }
         };
 
+        void move_thumb_to(Offset);
+
         void notify_position_change();
 
         Glyph_button_t          _up_btn, _down_btn;
@@ -68,10 +71,12 @@ namespace cppgui {
 
         Sliding_range           _sliding_range;
         Rectangle               _thumb_rect;
-        Drag_controller         _thumb_drag_ctl;
+        //Drag_controller         _thumb_drag_ctl;
 
-        Offset                  _thumb_drag_start_pos;
         bool                    _thumb_hovered = false;
+        Offset                  _thumb_drag_start_pos;
+        Offset                  _thumb_drag_anchor_pos;
+        bool                    _dragging_thumb = false;
     };
 
     // Layouter aspect
