@@ -5,14 +5,13 @@
 
 namespace cppgui {
 
-    template<class Config, bool With_layout>
-    void Drag_controller<Config, With_layout>::start_drag(Widget_t *widget, const Position &pos)
+    void Drag_controller::start_drag(const Position &pos)
     {
         assert(!_dragging);
 
         _start_pos = pos;
 
-        widget->root_widget()->capture_mouse(widget);
+        //root_widget()->capture_mouse(widget);
 
         // TODO: send notification
         // TODO: visual feedback
@@ -21,18 +20,18 @@ namespace cppgui {
         _dragging = true;
     }
 
-    template<class Config, bool With_layout>
-    void Drag_controller<Config, With_layout>::drag(Widget_t *, const Position &pos)
+    auto Drag_controller::drag(const Position &pos) -> Position_delta
     {
         auto delta = pos - _start_pos;
 
-        std::cout << "delta = " << delta.x << ", " << delta.y << std::endl;
+        //std::cout << "delta = " << delta.x << ", " << delta.y << std::endl;
+
+        return delta;
     }
 
-    template<class Config, bool With_layout>
-    void Drag_controller<Config, With_layout>::end_drag(Widget_t *widget)
+    void Drag_controller::end_drag()
     {
-        widget->root_widget()->end_mouse_capture();
+        //widget->root_widget()->release_mouse();
 
         _dragging = false;
         // TODO: send notification ?

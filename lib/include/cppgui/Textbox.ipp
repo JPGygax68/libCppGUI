@@ -1,3 +1,6 @@
+#include <locale>
+#include <codecvt>
+
 #include "./Textbox.hpp"
 
 namespace cppgui {
@@ -34,6 +37,22 @@ namespace cppgui {
             bring_caret_into_view();
             invalidate();
         }
+    }
+
+    template<class Config, bool With_layout>
+    void Textbox<Config, With_layout>::change_text(const std::string &text)
+    {
+        #if _MSC_VER == 1900
+        std::wstring_convert<std::codecvt_utf8<int32_t>, int32_t> conv;
+        auto inter = conv.from_bytes(text);
+        std::u32string converted { reinterpret_cast<const char32_t*>(inter.data()), inter.size() };
+        #else
+        std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> conv;
+        auto converted = conv.from_bytes(text);
+        #endif
+
+
+        change_text(converted);
     }
 
     template<class Config, bool With_layout>

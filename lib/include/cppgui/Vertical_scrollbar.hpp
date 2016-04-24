@@ -26,26 +26,52 @@ namespace cppgui {
         using Canvas_t = typename Widget_t::Canvas_t;
         using Thumb_t = typename Vertical_scrollbar_thumb<Config, With_layout>;
 
+        using Position_change_handler = std::function<void(const Fraction<> &)>;
+        struct Range { int start, end; };
+
         Vertical_scrollbar();
+
+        void on_position_change(Position_change_handler);
+
+        void set_value_range(const Range &);
+        void set_thumb_length(unsigned int);
 
         void init() override;
 
-        //void mouse_motion(const Position &) override;
-        //void mouse_exit() override;
+        void mouse_button(const Position &, int button, Key_state) override;
+        void mouse_motion(const Position &) override;
+        void mouse_exit() override;
 
         void render(Canvas_t *, const Position &offset) override;
+
+        void change_value_range(const Range &);
+        void change_thumb_length(unsigned int);
+
+        auto current_position() -> Fraction<>;
 
     protected:
         using Glyph_button_t = typename Glyph_button<Config, With_layout>;
 
+        friend Thumb_t;
+        
         struct Sliding_range {
             Offset  start, end; // start and end of sliding range (in pixels)
             auto length() const { return static_cast<Offset>(end - start); }
         };
 
+        void notify_position_change();
+
         Glyph_button_t          _up_btn, _down_btn;
+        Position_change_handler _on_position_change;
+        Range                   _position_range = { 0, 100 };
+        unsigned int            _thumb_length = 10; // TODO: better use a default of 1 here, or even 0
+
         Sliding_range           _sliding_range;
-        Thumb_t                 _thumb;
+        Rectangle               _thumb_rect;
+        Drag_controller         _thumb_drag_ctl;
+
+        Offset                  _thumb_drag_start_pos;
+        bool                    _thumb_hovered = false;
     };
 
     // Layouter aspect
@@ -70,6 +96,8 @@ namespace cppgui {
         };
     };
 
+    #ifdef THUMB_AS_WIDGET
+
     // Thumb --------------------------------------------------------
 
     template <class Config, bool With_layout> struct Vertical_scrollbar_thumb__Layouter {
@@ -81,6 +109,7 @@ namespace cppgui {
     {
     public:
         using Widget_t = typename Widget<Config, With_layout>;
+        using Vertical_scrollbar_t = typename Vertical_scrollbar<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
 
         void mouse_button(const Position &, int button, Key_state) override;
@@ -92,7 +121,10 @@ namespace cppgui {
     protected:
         using Drag_controller_t = Drag_controller<Config, With_layout>;
 
+        auto scrollbar() { return static_cast<Vertical_scrollbar_t*>(container()); }
+
         Drag_controller_t       _drag_ctl;
+        Offset                  _drag_start_pos;
     };
 
     // Thumb layouter aspect
@@ -118,7 +150,7 @@ namespace cppgui {
         };
     };
 
-
+    #endif
 
 } // ns cppgui
 

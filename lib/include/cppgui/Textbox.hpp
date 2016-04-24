@@ -37,6 +37,7 @@ namespace cppgui {
         auto font() const { return _font; }
         void set_text(const std::u32string &);
         void change_text(const std::u32string &);
+        void change_text(const std::string &);
         auto text() const { return _text; }
 
         void init() override;

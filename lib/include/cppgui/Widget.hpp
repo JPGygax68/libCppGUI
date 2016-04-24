@@ -20,7 +20,7 @@ namespace cppgui {
 
     template <class Config, bool With_layout> class Root_widget;
     template <class Config, bool With_layout> class Abstract_container;
-    template <class Config, bool With_layout> class Drag_controller;
+    /*template <class Config, bool With_layout>*/ class Drag_controller;
 
     enum Key_state { pressed, released }; // TODO: move to basic_types.hpp ?
 
@@ -198,7 +198,7 @@ namespace cppgui {
         Rectangle               _inner_rect;
 
     private:
-        friend class Drag_controller<Config, With_layout>;
+        friend class Drag_controller;
         friend class Root_widget<Config, With_layout>;
 
         Color                   _bkgnd_clr = {0, 0, 0, 0};

@@ -94,6 +94,8 @@ namespace cppgui {
         }
 
         // Note: there should be no harm in repeating a mouse motion event (contrary to e.g. mouse button events)
+        //  (we need to repeat the event so as to support drag-and-drop, e.g. highlighting potential targets)
+        // TODO: this will trigger mouse_exit() even if the mouse was captured - is that correct/acceptable ?
         container_mouse_motion(pos);
 
         this->unlock();
@@ -178,7 +180,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::end_mouse_capture()
+    void Root_widget<Config, With_layout>::release_mouse()
     {
         assert(_mouse_holder);
 

@@ -38,6 +38,8 @@ namespace cppgui {
 
         void render(Canvas_t *, const Position &offset) override;
 
+        void change_text(const std::u32string &);
+
     protected:
         const Rasterized_font  *_font = nullptr;
         std::u32string          _text;

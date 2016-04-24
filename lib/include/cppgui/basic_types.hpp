@@ -21,6 +21,14 @@ namespace cppgui {
     using Color             = gpc::gui::rgba_norm;
     using Mono_value        = gpc::gui::mono_norm;
 
+    template<typename T = unsigned int>
+    struct Fraction {
+        T num, den;
+
+        template<typename Float>
+        constexpr auto Float() const -> Float { return static_cast<Float>(static_cast<double>(num) / static_cast<double>(den)); }
+    };
+
     /*
     enum Alignment {
         none = 0,
