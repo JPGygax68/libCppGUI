@@ -10,7 +10,6 @@
 #include "./Canvas.ipp"
 #include "./layouting.ipp"
 //#include "./Font_resources.ipp" // now a .cpp file
-#include "./Drag_controller.ipp"
 #include "./Widget.ipp"
 #include "./Button.ipp"
 #include "./Glyph_button.ipp"

@@ -61,6 +61,7 @@ namespace cppgui {
         };
 
         void move_thumb_to(Offset);
+        void recalc_thumb();
 
         void notify_position_change();
 
@@ -71,7 +72,6 @@ namespace cppgui {
 
         Sliding_range           _sliding_range;
         Rectangle               _thumb_rect;
-        //Drag_controller         _thumb_drag_ctl;
 
         bool                    _thumb_hovered = false;
         Offset                  _thumb_drag_start_pos;

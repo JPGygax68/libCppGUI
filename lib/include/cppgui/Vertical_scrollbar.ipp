@@ -36,10 +36,10 @@ namespace cppgui {
     {
         Container_t::init();
 
-        _thumb_rect.ext.h = _thumb_length * (_sliding_range.end - _sliding_range.start) / (_position_range.end - _position_range.start);
-
         _thumb_rect.pos = { 2, _sliding_range.start };
             // TODO: position from style
+
+        recalc_thumb();
     }
 
     template<class Config, bool With_layout>
@@ -61,7 +61,7 @@ namespace cppgui {
     void Vertical_scrollbar<Config, With_layout>::change_value_range(const Range &range)
     {
         set_value_range(range);
-        // TODO: recalculate position
+        recalc_thumb();
         invalidate();
     }
 
@@ -69,7 +69,7 @@ namespace cppgui {
     void Vertical_scrollbar<Config, With_layout>::change_thumb_length(unsigned int length)
     {
         set_thumb_length(length);
-        // TODO: recalculate position
+        recalc_thumb();
         invalidate();
     }
 
@@ -148,6 +148,16 @@ namespace cppgui {
         
         notify_position_change();
         invalidate();
+    }
+
+    template<class Config, bool With_layout>
+    void Vertical_scrollbar<Config, With_layout>::recalc_thumb()
+    {
+        _thumb_rect.ext.h = _thumb_length * (_sliding_range.end - _sliding_range.start) / (_position_range.end - _position_range.start);
+
+        auto thumb_end = _sliding_range.start + static_cast<Offset>(_thumb_rect.ext.h);
+        auto delta = thumb_end - _sliding_range.end;
+        if (delta > 0) _thumb_rect.pos.y = _sliding_range.end - static_cast<Offset>(_thumb_rect.ext.h);
     }
 
     template<class Config, bool With_layout>
