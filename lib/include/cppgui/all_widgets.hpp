@@ -8,6 +8,7 @@
 #include <cppgui/Glyph_button.hpp>
 #include <cppgui/Stack.hpp>
 #include <cppgui/Vertical_scrollbar.hpp>
+#include <cppgui/Scrollbox.hpp>
 #include <cppgui/Canvas.hpp>
 
 #define CPPGUI_DEFINE_WIDGET_TYPES(Config, With_layout) \
@@ -22,6 +23,7 @@
     using Container          = cppgui::Container         <Config, With_layout>; \
     using Stack              = cppgui::Stack             <Config, With_layout>; \
     using Vertical_scrollbar = cppgui::Vertical_scrollbar<Config, With_layout>; \
+    using Scrollbox          = cppgui::Scrollbox         <Config, With_layout>; \
     //using Canvas_t = cppgui::Canvas<Renderer>; 
 
 #define CPPGUI_INSTANTIATE_WIDGET_TYPES(Config, With_layout) \
@@ -42,4 +44,5 @@
     template cppgui::Abstract_container__Layouter     <Config, With_layout>; \
     template cppgui::Container                        <Config, With_layout>; \
     template cppgui::Stack                            <Config, With_layout>; \
-    template cppgui::Vertical_scrollbar               <Config, With_layout>;
+    template cppgui::Vertical_scrollbar               <Config, With_layout>; \
+    template cppgui::Scrollbox                        <Config, With_layout>; 

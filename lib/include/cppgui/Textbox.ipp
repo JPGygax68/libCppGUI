@@ -29,6 +29,9 @@ namespace cppgui {
     {
         set_text(text);
 
+        _first_vis_char_idx = 0;
+        _scroll_offs = 0;
+
         if (font()) // TODO: is there a way to avoid this check ? (i.e. use different set_text() before font is set ?)
         {
             internal_select_all();
@@ -50,7 +53,6 @@ namespace cppgui {
         std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> conv;
         auto converted = conv.from_bytes(text);
         #endif
-
 
         change_text(converted);
     }

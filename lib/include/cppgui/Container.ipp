@@ -380,7 +380,7 @@ namespace cppgui {
             for (auto child: p()->children())
             {
                 child->set_position({ x, y });
-                //child->set_extents({ ext.w - _padding[3] - _padding[1], ext });
+                child->set_extents({ ext.w - _padding[3] - _padding[1], child->get_minimal_size().h });
 
                 y += child->extents().h + _spacing;
             }

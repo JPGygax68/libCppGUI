@@ -103,13 +103,25 @@ Test_window::Test_window(): Parent("Test window")
     _vert_scrollbar.set_thumb_length(20);
     _vert_scrollbar.on_position_change([&](const cppgui::Fraction<> &pos) {
 
-        //std::cout << "scrollbar value: " << pos.num << "/" << pos.den << std::endl;
         _scrollbar_pos.change_text( std::to_string(pos.num) + "/" + std::to_string(pos.den) );
     });
 
     _scrollbar_pos.set_font(dflt_font);
     _scrollbar_pos.set_position({800, 50});
     _scrollbar_pos.set_extents ({100, 30});
+
+    // Scrollbox
+    _sb_buttons.resize(9);
+    for (auto i = 0U; i < _sb_buttons.size(); i ++)
+    {
+        _sb_buttons[i].set_font(dflt_font);
+        _sb_buttons[i].set_label(std::u32string{U"Scrollbox button #"} + char32_t(U'1' + i));
+        _sb_content.add_child(&_sb_buttons[i]);
+    }
+    _sb_content.set_layout_type(cppgui::Layout_type::stack);
+    _scrollbox.set_content(&_sb_content);
+    _scrollbox.set_position({750, 300});
+    _scrollbox.set_extents ({400, 300});
 
     root_widget()->set_background_color({0, 0.6f, 0.2f, 1});
 
@@ -123,6 +135,7 @@ Test_window::Test_window(): Parent("Test window")
     root_widget()->add_child(&_input_dlg);
     root_widget()->add_child(&_vert_scrollbar);
     root_widget()->add_child(&_scrollbar_pos);
+    root_widget()->add_child(&_scrollbox);
 
     _menu.take_focus();
     //root_widget()->set_focus_to(&_menu); // ); // &_textbox);

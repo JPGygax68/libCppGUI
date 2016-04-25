@@ -141,6 +141,7 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Stack.hpp                        include/cppgui/Stack.ipp
     include/cppgui/Root_widget.hpp                  include/cppgui/Root_widget.ipp
     include/cppgui/Vertical_scrollbar.hpp           include/cppgui/Vertical_scrollbar.ipp
+    include/cppgui/Scrollbox.hpp                    include/cppgui/Scrollbox.ipp
 
     include/cppgui/Icon_resources.hpp               include/cppgui/Icon_resources.ipp
 
