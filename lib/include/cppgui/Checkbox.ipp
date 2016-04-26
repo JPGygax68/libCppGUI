@@ -34,7 +34,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Checkbox<Config, With_layout>::render(Canvas_t *cv, const Position & offs)
+    void Checkbox<Config, With_layout>::render(Canvas_t *cv, const Point & offs)
     {
         auto pos = offs + position();
 
@@ -52,7 +52,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Checkbox<Config, With_layout>::mouse_click(const Position &pos, int button, int count)
+    void Checkbox<Config, With_layout>::mouse_click(const Point &pos, int button, int count)
     {
         if (_box_rect.contains(pos)) // todo: subtract stroke_width() ?
         {
@@ -123,13 +123,13 @@ namespace cppgui {
 
         auto baseline = std::max(_label_bounds.y_max, _em_bounds.y_max + stroke_width() + padding() );
         auto h = static_cast<Length>(baseline + std::max(- _label_bounds.y_min, - _em_bounds.y_min + stroke_width() + padding()));
-        baseline += static_cast<Offset>((p()->extents().h - h) / 2);
+        baseline += static_cast<Position>((p()->extents().h - h) / 2);
 
         p()->_label_pos = { 0,  baseline };
 
         // TODO: non-static glyph adjustment
-        auto x = static_cast<Offset>(p()->extents().w - _box_edge);
-        auto dx = static_cast<Offset>((_box_edge - _tick_extents.w) / 2);
+        auto x = static_cast<Position>(p()->extents().w - _box_edge);
+        auto dx = static_cast<Position>((_box_edge - _tick_extents.w) / 2);
 
         p()->_tick_pos  = { 
             x + dx,

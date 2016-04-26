@@ -36,14 +36,14 @@ namespace cppgui {
 
         void init() override;
 
-        void render(Canvas_t *, const Position &offset) override;
+        void render(Canvas_t *, const Point &offset) override;
 
         void change_text(const std::u32string &);
 
     protected:
         const Rasterized_font  *_font = nullptr;
         std::u32string          _text;
-        Position                _text_origin; // origin of first character of label
+        Point                _text_origin; // origin of first character of label
         Rectangle               _text_rect;
 
         Font_handle             _fnthnd;

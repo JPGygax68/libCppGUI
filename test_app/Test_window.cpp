@@ -37,7 +37,7 @@ Test_window::Test_window(): Parent("Test window")
     _label.set_font(dflt_font);
     _label.set_background_color({1, 1, 1, 1});
     _label.set_text(U"Hello World!");
-    _label.on_click([](const cppgui::Position &pos, int button, int clicks) {
+    _label.on_click([](const cppgui::Point &pos, int button, int clicks) {
         std::cout << "Label was clicked! (pos = " << pos.x << ", " << pos.y 
             << ", button = " << button << ", clicks = " << clicks << ")" << std::endl;
     });
@@ -99,8 +99,7 @@ Test_window::Test_window(): Parent("Test window")
 
     _vert_scrollbar.set_position({750,  50});
     _vert_scrollbar.set_extents ({ 30, 200});
-    _vert_scrollbar.set_value_range({ 10, 150 });
-    _vert_scrollbar.set_thumb_length(20);
+    _vert_scrollbar.define_range(150, 20);
     _vert_scrollbar.on_position_change([&](const cppgui::Fraction<> &pos) {
 
         _scrollbar_pos.change_text( std::to_string(pos.num) + "/" + std::to_string(pos.den) );
@@ -119,6 +118,7 @@ Test_window::Test_window(): Parent("Test window")
         _sb_content.add_child(&_sb_buttons[i]);
     }
     _sb_content.set_layout_type(cppgui::Layout_type::stack);
+    _sb_content.set_extents({500, 400});
     _scrollbox.set_content(&_sb_content);
     _scrollbox.set_position({750, 300});
     _scrollbox.set_extents ({400, 300});

@@ -11,7 +11,7 @@ namespace cppgui {
     // Abstract_widget<> --------------------------------------------
 
     template <class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::set_position(const Position &pos)
+    void Abstract_widget<Config, With_layout>::set_position(const Point &pos)
     {
         _rect.pos = pos;
     }
@@ -23,7 +23,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::mouse_click(const Position &, int button, int count)
+    void Abstract_widget<Config, With_layout>::mouse_click(const Point &, int button, int count)
     {
         if (button == 1 && count == 1)
         {
@@ -44,19 +44,19 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::fill_rect(Canvas_t * r, const Rectangle & rect, const Position & offs, const Native_color &color)
+    void Abstract_widget<Config, With_layout>::fill_rect(Canvas_t * r, const Rectangle & rect, const Point & offs, const Native_color &color)
     {
         r->fill_rect(rect.pos.x + offs.x, rect.pos.y + offs.y, rect.ext.w, rect.ext.h, color);
     }
 
     template<class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::fill_rect(Canvas_t * r, const Position & pos, const Extents & ext, const Native_color &color)
+    void Abstract_widget<Config, With_layout>::fill_rect(Canvas_t * r, const Point & pos, const Extents & ext, const Native_color &color)
     {
         r->fill_rect(pos.x, pos.y, ext.w, ext.h, color);
     }
 
     template <class Config, bool With_layout>
-    inline void Abstract_widget<Config, With_layout>::fill(Canvas_t *r, const Position &offs, const Native_color &color)
+    inline void Abstract_widget<Config, With_layout>::fill(Canvas_t *r, const Point &offs, const Native_color &color)
     {
         fill_rect(r, rectangle(), offs, color);
 
@@ -65,31 +65,31 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::draw_borders(Canvas_t *cv, const Position & offs, Width width, const Color &color)
+    void Abstract_widget<Config, With_layout>::draw_borders(Canvas_t *cv, const Point & offs, Width width, const Color &color)
     {
         draw_borders(cv, rectangle(), offs, width, color);
     }
 
     template<class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::draw_borders(Canvas_t *cv, const Rectangle &rect, const Position &offs, 
+    void Abstract_widget<Config, With_layout>::draw_borders(Canvas_t *cv, const Rectangle &rect, const Point &offs, 
         Width width, const Color &color)
     {
         draw_borders(cv, rect, offs, width, color, color, color, color);
     }
 
     template<class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::draw_borders(Canvas_t *r, const Rectangle & rect, const Position & offs, 
+    void Abstract_widget<Config, With_layout>::draw_borders(Canvas_t *r, const Rectangle & rect, const Point & offs, 
         Width width, const Color & top, const Color & right, const Color & bottom, const Color & left)
     {
         // TODO: this painting procedure does a "wrap" in clockwise fashion, without regard for corners
-        fill_rect(r, offs + rect.pos + Position{(int) width, 0}, {rect.ext.w - width, width}, top);
-        fill_rect(r, offs + rect.pos + Position{(int) (rect.ext.w - width), 0}, {width, rect.ext.h}, right);
-        fill_rect(r, offs + rect.pos + Position{0, (int) (rect.ext.h - width)}, {rect.ext.w - width, width}, bottom);
+        fill_rect(r, offs + rect.pos + Point{(int) width, 0}, {rect.ext.w - width, width}, top);
+        fill_rect(r, offs + rect.pos + Point{(int) (rect.ext.w - width), 0}, {width, rect.ext.h}, right);
+        fill_rect(r, offs + rect.pos + Point{0, (int) (rect.ext.h - width)}, {rect.ext.w - width, width}, bottom);
         fill_rect(r, offs + rect.pos, {width, rect.ext.h}, left);
     }
 
     template<class Config, bool With_layout>
-    auto Abstract_widget<Config, With_layout>::convert_position_to_inner(const Position &pos) -> Position
+    auto Abstract_widget<Config, With_layout>::convert_position_to_inner(const Point &pos) -> Point
     {
         // TODO: subtract border and padding
         return pos;
@@ -97,7 +97,7 @@ namespace cppgui {
 
     template<class Config, bool With_layout>
     auto Abstract_widget<Config, With_layout>::advance_to_glyph_at(const Rasterized_font *font, const std::u32string &text, 
-        size_t from, size_t to, Position &pos) -> const Glyph_control_box *
+        size_t from, size_t to, Point &pos) -> const Glyph_control_box *
     {
         assert(to >= from);
 
@@ -115,7 +115,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::draw_stippled_inner_rect(Canvas_t *cnv, const Rectangle &, const Position & offs)
+    void Abstract_widget<Config, With_layout>::draw_stippled_inner_rect(Canvas_t *cnv, const Rectangle &, const Point & offs)
     {
         //cnv->draw_stipp()
     }
@@ -229,7 +229,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layouting>
-    void Widget<Config, With_layouting>::mouse_click(const Position &pos, int button, int count)
+    void Widget<Config, With_layouting>::mouse_click(const Point &pos, int button, int count)
     {
         if (_click_hndlr) _click_hndlr(pos, button, count);
     }
@@ -300,7 +300,7 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle(const Position &nw, const Position &se)
+    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle(const Point &nw, const Point &se)
     {
         p()->set_position(nw);
         p()->set_extents(Extents::between_points(nw, se));
@@ -308,7 +308,7 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle_nw(const Position &pos, const Extents &ext)
+    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle_nw(const Point &pos, const Extents &ext)
     {
         p()->set_position(pos);
         p()->set_extents(ext);
@@ -316,25 +316,25 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle_ne(const Position &pos, const Extents &ext)
+    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle_ne(const Point &pos, const Extents &ext)
     {
-        p()->set_position({ pos.x - static_cast<Offset>(ext.w), pos.y });
+        p()->set_position({ pos.x - static_cast<Position>(ext.w), pos.y });
         p()->set_extents(ext);
     }
 
     template<class Config>
     template<class Aspect_parent>
-    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle_sw(const Position &pos, const Extents &ext)
+    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle_sw(const Point &pos, const Extents &ext)
     {
-        p()->set_position({ pos.x, pos.y - static_cast<Offset>(ext.h) });
+        p()->set_position({ pos.x, pos.y - static_cast<Position>(ext.h) });
         p()->set_extents(ext);
     }
 
     template<class Config>
     template<class Aspect_parent>
-    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle_se(const Position &pos, const Extents &ext)
+    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle_se(const Point &pos, const Extents &ext)
     {
-        p()->set_position({ pos.x - static_cast<Offset>(ext.w), pos.y - static_cast<Offset>(ext.h) });
+        p()->set_position({ pos.x - static_cast<Position>(ext.w), pos.y - static_cast<Position>(ext.h) });
         p()->set_extents(ext);
     }
 
@@ -347,7 +347,7 @@ namespace cppgui {
         // TODO: adjust for border as well
 
         p()->_inner_rect = {
-            static_cast<Offset>(_padding[3]), static_cast<Offset>(_padding[0]),
+            static_cast<Position>(_padding[3]), static_cast<Position>(_padding[0]),
             ext.w - _padding[3] - _padding[1], ext.h - _padding[0] - _padding[2]
         };
     }

@@ -21,8 +21,8 @@ namespace cppgui {
     {
         return {
             0xE876,
-            { 0, 0 }, //{ - static_cast<Offset>(0.5 + 2 * static_cast<double>(Size) / 24), - static_cast<Offset>(0.5 + 3 * static_cast<double>(Size) / 24) },
-            { 0, 0 }  //{ 0,   static_cast<Offset>(0.5 + 2 * static_cast<double>(Size) / 24) }
+            { 0, 0 }, //{ - static_cast<Position>(0.5 + 2 * static_cast<double>(Size) / 24), - static_cast<Position>(0.5 + 3 * static_cast<double>(Size) / 24) },
+            { 0, 0 }  //{ 0,   static_cast<Position>(0.5 + 2 * static_cast<double>(Size) / 24) }
         };
     }
 

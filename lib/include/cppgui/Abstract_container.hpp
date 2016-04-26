@@ -38,19 +38,19 @@ namespace cppgui {
         void remove_child(Widget_t *);
         void remove_all_children();
 
-        auto child_at(const Position &) -> Widget_t *;
+        auto child_at(const Point &) -> Widget_t *;
 
         void init_children_resources();
 
-        void render_children(Canvas_t *, const Position &offs);
+        void render_children(Canvas_t *, const Point &offs);
 
         /** The container_xxxx() methods are intended as "delegate" event handlers, to be 
             called from "real" containers (i.e. descendants of Container<>).            
         */
-        void container_mouse_motion(const Position &);
-        void container_mouse_button(const Position &, int button, Key_state);
-        void container_mouse_click(const Position &, int button, int count);
-        void container_mouse_wheel(const Position &dist);
+        void container_mouse_motion(const Point &);
+        void container_mouse_button(const Point &, int button, Key_state);
+        void container_mouse_click(const Point &, int button, int count);
+        void container_mouse_wheel(const Point &dist);
         void container_mouse_exit();
         void container_text_input(const char32_t *, size_t);
         bool container_key_down(const Keycode &);

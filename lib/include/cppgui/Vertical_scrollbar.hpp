@@ -27,23 +27,25 @@ namespace cppgui {
         using Thumb_t = typename Vertical_scrollbar_thumb<Config, With_layout>;
 
         using Position_change_handler = std::function<void(const Fraction<> &)>;
-        struct Range { int start, end; };
 
         Vertical_scrollbar();
 
         void on_position_change(Position_change_handler);
 
-        void set_value_range(const Range &);
-        void set_thumb_length(unsigned int);
+        /** Defines the range to be covered by the scrollbar, consisting of the "full"
+            range and the "shown" range, visually represented by the "slide" between
+            the up/down buttons and the length of the thumb, respectively.
+         */
+        void define_range(Length full, Length shown);
 
         void init() override;
 
-        void mouse_button(const Position &, int button, Key_state) override;
-        void mouse_motion(const Position &) override;
+        void mouse_button(const Point &, int button, Key_state) override;
+        void mouse_motion(const Point &) override;
         void mouse_wheel(const Position_delta & ) override;
         void mouse_exit() override;
 
-        void render(Canvas_t *, const Position &offset) override;
+        void render(Canvas_t *, const Point &offset) override;
 
         void change_value_range(const Range &);
         void change_thumb_length(unsigned int);
@@ -60,27 +62,21 @@ namespace cppgui {
 
         friend Thumb_t;
         
-        struct Sliding_range {
-            Offset  start, end; // start and end of sliding range (in pixels)
-            auto length() const { return static_cast<Offset>(end - start); }
-        };
-
-        void move_thumb_to(Offset);
+        void move_thumb_to(Position);
         void recalc_thumb();
         void clip_thumb_pos();
         void notify_position_change();
 
         Glyph_button_t          _up_btn, _down_btn;
         Position_change_handler _on_position_change;
-        Range                   _position_range = { 0, 100 };
-        unsigned int            _thumb_length = 10; // TODO: better use a default of 1 here, or even 0
+        Length                  _full_length = 0, _shown_length = 0;
 
-        Sliding_range           _sliding_range;
+        Range                   _sliding_range;
         Rectangle               _thumb_rect;
 
         bool                    _thumb_hovered = false;
-        Offset                  _thumb_drag_start_pos;
-        Offset                  _thumb_drag_anchor_pos;
+        Position                  _thumb_drag_start_pos;
+        Position                  _thumb_drag_anchor_pos;
         bool                    _dragging_thumb = false;
     };
 
@@ -122,11 +118,11 @@ namespace cppgui {
         using Vertical_scrollbar_t = typename Vertical_scrollbar<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
 
-        void mouse_button(const Position &, int button, Key_state) override;
-        void mouse_motion(const Position &) override;
+        void mouse_button(const Point &, int button, Key_state) override;
+        void mouse_motion(const Point &) override;
         //void mouse_exit() override;
 
-        void render(Canvas_t *, const Position &offset) override;
+        void render(Canvas_t *, const Point &offset) override;
 
     protected:
         using Drag_controller_t = Drag_controller<Config, With_layout>;
@@ -134,7 +130,7 @@ namespace cppgui {
         auto scrollbar() { return static_cast<Vertical_scrollbar_t*>(container()); }
 
         Drag_controller_t       _drag_ctl;
-        Offset                  _drag_start_pos;
+        Position                  _drag_start_pos;
     };
 
     // Thumb layouter aspect

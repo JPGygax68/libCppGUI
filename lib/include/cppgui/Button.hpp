@@ -32,14 +32,14 @@ namespace cppgui {
 
         void init() override;
 
-        void render(Canvas_t *, const Position &) override;
+        void render(Canvas_t *, const Point &) override;
 
         // TODO: visual feedback on mouse down / up
 
     protected:
         const Rasterized_font  *_font = nullptr;
         std::u32string          _label;
-        Position                _label_origin;
+        Point                _label_origin;
         Rectangle               _label_rect;
 
         Font_handle             _fnthnd;

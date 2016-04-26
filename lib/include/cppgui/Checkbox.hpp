@@ -39,9 +39,9 @@ namespace cppgui {
 
         void init() override;
 
-        void render(Canvas_t *, const Position &offset) override;
+        void render(Canvas_t *, const Point &offset) override;
 
-        void mouse_click(const Position &, int button, int count) override;
+        void mouse_click(const Point &, int button, int count) override;
 
     protected: // for access by Layouter aspect
         
@@ -51,8 +51,8 @@ namespace cppgui {
         std::u32string          _label;
         State_change_handler    _state_change_handler;
 
-        Position                _label_pos;
-        Position                _tick_pos;
+        Point                _label_pos;
+        Point                _tick_pos;
         Rectangle               _box_rect;
 
     private:

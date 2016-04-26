@@ -84,7 +84,7 @@ namespace cppgui {
     }
 
     template<class Config, bool WithLayout>
-    void Root_widget<Config, WithLayout>::mouse_motion(const Position &pos)
+    void Root_widget<Config, WithLayout>::mouse_motion(const Point &pos)
     {
         this->lock();
 
@@ -102,7 +102,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::mouse_button(const Position &pos, int button, Key_state state)
+    void Root_widget<Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state)
     {
         this->lock();
 
@@ -119,7 +119,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::mouse_click(const Position &pos, int button, int count)
+    void Root_widget<Config, With_layout>::mouse_click(const Point &pos, int button, int count)
     {
         this->lock();
         container_mouse_click(pos, button, count);
@@ -171,7 +171,7 @@ namespace cppgui {
 
         // The mouse holder expects mouse positions as relative to its own origin,
         // so we get its absolute position here and store it as the "capture offset"
-        Position offset = holder->position();
+        Point offset = holder->position();
         for (auto cont = holder->container(); cont != this; cont = static_cast<Container_t*>(cont)->container())
         {
             offset += static_cast<Container_t*>(cont)->position();
@@ -188,7 +188,7 @@ namespace cppgui {
     }
 
     template<class Config, bool WithLayout>
-    inline void Root_widget<Config, WithLayout>::render(Canvas_t *cv, const Position &offs)
+    inline void Root_widget<Config, WithLayout>::render(Canvas_t *cv, const Point &offs)
     {
         auto pos = offs + position();
 

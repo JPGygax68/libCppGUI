@@ -42,15 +42,15 @@ namespace cppgui {
 
         if (minor_alignment == Alignment::cultural_minor_start)
         {
-            text_origin->x = static_cast<Offset>(padding[3]);
+            text_origin->x = static_cast<Position>(padding[3]);
         }
         else if (minor_alignment == Alignment::cultural_minor_middle)
         {
-            text_origin->x = static_cast<Offset>(padding[3] + (w - bounding_box.width()) / 2);
+            text_origin->x = static_cast<Position>(padding[3] + (w - bounding_box.width()) / 2);
         }
         else if (minor_alignment == Alignment::cultural_minor_end)
         {
-            text_origin->x = static_cast<Offset>(padding[3] + w - bounding_box.width());
+            text_origin->x = static_cast<Position>(padding[3] + w - bounding_box.width());
         }
 
         if (major_alignment == Alignment::cultural_major_start)
@@ -59,7 +59,7 @@ namespace cppgui {
         }
         else if (major_alignment == Alignment::cultural_major_middle)
         {
-            text_origin->y = static_cast<Offset>(padding[0] + (h - bounding_box.height()) / 2 + bounding_box.y_max);
+            text_origin->y = static_cast<Position>(padding[0] + (h - bounding_box.height()) / 2 + bounding_box.y_max);
         }
         else if (major_alignment == Alignment::cultural_major_end)
         {

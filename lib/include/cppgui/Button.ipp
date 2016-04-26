@@ -23,7 +23,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Button<Config, With_layout>::render(Canvas_t *cnv, const Position &offs)
+    void Button<Config, With_layout>::render(Canvas_t *cnv, const Point &offs)
     {
         fill(cnv, offs, rgba_to_native(cnv, button_face_color()));
         auto border_ntvclr = rgba_to_native(cnv, button_border_color());

@@ -60,9 +60,9 @@ namespace cppgui {
 
         auto get_font_handle(const Rasterized_font *) -> Font_handle;
 
-        void mouse_motion(const Position &) override;
-        void mouse_button(const Position &, int button, Key_state) override;
-        void mouse_click(const Position &, int button, int count) override;
+        void mouse_motion(const Point &) override;
+        void mouse_button(const Point &, int button, Key_state) override;
+        void mouse_click(const Point &, int button, int count) override;
         void mouse_wheel(const Position_delta &) override;
         void text_input(const char32_t *, size_t) override;
         void key_down(const Keycode &);
@@ -78,7 +78,7 @@ namespace cppgui {
 
     protected:
         
-        void render(Canvas_t *, const Position &) override;
+        void render(Canvas_t *, const Point &) override;
 
     private:
         Font_mapper                 _font_mapper;
@@ -87,7 +87,7 @@ namespace cppgui {
         //Widget_t                   *_focused_widget = nullptr;
         std::stack<Cursor_handle>   _cursor_stack;
         Widget_t                   *_mouse_holder = nullptr;
-        Position                    _capture_offset;
+        Point                    _capture_offset;
     };
 
     // Default implementation for Widget_updater aspect

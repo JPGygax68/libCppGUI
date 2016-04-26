@@ -27,7 +27,7 @@ namespace cppgui {
     }
 
     template<class Config, bool WithLayout>
-    inline void Label<Config, WithLayout>::render(Canvas_t *cnv, const Position &offs)
+    inline void Label<Config, WithLayout>::render(Canvas_t *cnv, const Point &offs)
     {
         fill(cnv, offs, rgba_to_native(cnv, background_color())); 
 
@@ -82,11 +82,11 @@ namespace cppgui {
         }
         else if (_horz_align == Alignment::center)
         {
-            p()->_text_orig.x = static_cast<Offset>((w - txb.width()) / 2);
+            p()->_text_orig.x = static_cast<Position>((w - txb.width()) / 2);
         }
         else if (_horz_align == Alignment::right)
         {
-            p()->_text_orig.x = static_cast<Offset>(w - txb.width());
+            p()->_text_orig.x = static_cast<Position>(w - txb.width());
         }
 
         if (_vert_align == Alignment::top)
@@ -95,7 +95,7 @@ namespace cppgui {
         }
         else if (_vert_align == Alignment::middle)
         {
-            p()->_text_orig.y = static_cast<Offset>(_padding[0] + (h - txb.height()) / 2 + txb.y_max);
+            p()->_text_orig.y = static_cast<Position>(_padding[0] + (h - txb.height()) / 2 + txb.y_max);
         }
         else if (_vert_align == Alignment::bottom)
         {

@@ -62,7 +62,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    auto Abstract_container<Config, With_layout>::child_at(const Position &pos) -> Widget<Config, With_layout>*
+    auto Abstract_container<Config, With_layout>::child_at(const Point &pos) -> Widget<Config, With_layout>*
     {
         auto child = std::find_if(std::begin(_children), std::end(_children), [&](auto child) { 
             return child->visible() && child->rectangle().contains(pos); 
@@ -81,7 +81,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::render_children(Canvas_t *cv, const Position & offs)
+    void Abstract_container<Config, With_layout>::render_children(Canvas_t *cv, const Point & offs)
     {
         for (auto& child : children())
         {
@@ -93,7 +93,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::container_mouse_motion(const Position &pos)
+    void Abstract_container<Config, With_layout>::container_mouse_motion(const Point &pos)
     {
         auto hovered = child_at(pos);
 
@@ -115,7 +115,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::container_mouse_button(const Position &pos, int button, Key_state state)
+    void Abstract_container<Config, With_layout>::container_mouse_button(const Point &pos, int button, Key_state state)
     {
         auto child = child_at(pos);
 
@@ -123,7 +123,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::container_mouse_click(const Position &pos, int button, int count)
+    void Abstract_container<Config, With_layout>::container_mouse_click(const Point &pos, int button, int count)
     {
         auto child = child_at(pos);
 
@@ -131,7 +131,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::container_mouse_wheel(const Position &dist)
+    void Abstract_container<Config, With_layout>::container_mouse_wheel(const Point &dist)
     {
         if (_hovered_child) _hovered_child->mouse_wheel(dist);
     }

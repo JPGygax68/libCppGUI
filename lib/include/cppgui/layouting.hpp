@@ -28,13 +28,13 @@ namespace cppgui {
     class Concept_Layout {
     public:
 
-        void add_text_element(const Rasterized_font *, const char32_t *text, size_t len, Position *output); // { static_assert(false, "Concept_Layouter::add_text_element() not implemented"); }
+        void add_text_element(const Rasterized_font *, const char32_t *text, size_t len, Point *output); // { static_assert(false, "Concept_Layouter::add_text_element() not implemented"); }
 
-        void add_block_element(const Extents &, Alignment, Position *output); // { static_assert(false, "Concept_Layouter::add_block_element() not implemented"); }
+        void add_block_element(const Extents &, Alignment, Point *output); // { static_assert(false, "Concept_Layouter::add_block_element() not implemented"); }
 
-        void change_text_element(unsigned index, const Rasterized_font *, const char32_t *text, size_t len, Position *output); // { static_assert(false, "Concept_Layouter::change_text_element() not implemented"); }
+        void change_text_element(unsigned index, const Rasterized_font *, const char32_t *text, size_t len, Point *output); // { static_assert(false, "Concept_Layouter::change_text_element() not implemented"); }
 
-        void change_block_element(unsigned index, const Extents &, Alignment, Position *output); // { static_assert(false, "Concept_Layouter::change_block_element() not implemented"); }
+        void change_block_element(unsigned index, const Extents &, Alignment, Point *output); // { static_assert(false, "Concept_Layouter::change_block_element() not implemented"); }
 
         void scan(); // { static_assert(false, "Concept_Layouter::scan() not implemented"); }
 
@@ -46,13 +46,13 @@ namespace cppgui {
     class Flow_layout: public Concept_Layout {
     public:
 
-        void add_text_element(const Rasterized_font *, const char32_t *text, size_t len, Position *output);
+        void add_text_element(const Rasterized_font *, const char32_t *text, size_t len, Point *output);
 
-        void add_block_element(const Extents &, Alignment, Position *output);
+        void add_block_element(const Extents &, Alignment, Point *output);
 
-        void change_text_element(unsigned index, const Rasterized_font *, const char32_t *text, size_t len, Position *output);
+        void change_text_element(unsigned index, const Rasterized_font *, const char32_t *text, size_t len, Point *output);
 
-        void change_block_element(unsigned index, const Extents &, Alignment, Position *output);
+        void change_block_element(unsigned index, const Extents &, Alignment, Point *output);
 
         void scan();
 
@@ -63,7 +63,7 @@ namespace cppgui {
             Alignment       alignment;
             Element_type    type;
             Extents         size;
-            Position       *output;
+            Point       *output;
         };
     };
 

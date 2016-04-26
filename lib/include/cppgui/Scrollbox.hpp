@@ -1,6 +1,7 @@
 #pragma once
 
 #include "./Widget.hpp"
+#include "./Vertical_scrollbar.hpp"
 
 namespace cppgui {
 
@@ -15,11 +16,19 @@ namespace cppgui {
     {
     public:
         using Container_t = Container<Config, With_layout>;
+        using Canvas_t = typename Canvas<typename Config::Renderer>;
+
+        Scrollbox();
 
         void set_content(Container_t *);
 
+        void render(Canvas_t *, const Point &offset) override;
+
     protected:
-        Container      *_content = nullptr;
+        using Vertical_scrollbar_t = Vertical_scrollbar<Config, With_layout>;
+
+        Container              *_content = nullptr;
+        Vertical_scrollbar_t    _vert_sbar;
     };
 
     // Layouter aspect

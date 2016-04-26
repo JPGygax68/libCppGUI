@@ -23,7 +23,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Glyph_button<Config, With_layout>::render(Canvas_t *cnv, const Position & offset)
+    void Glyph_button<Config, With_layout>::render(Canvas_t *cnv, const Point & offset)
     {
         // Background
         fill(cnv, offset, rgba_to_native(cnv, button_face_color()));
@@ -112,8 +112,8 @@ namespace cppgui {
         if (!p()->_label.empty())
         {
             p()->_label_pos = {
-                static_cast<Offset>(_padding[3]),
-                static_cast<Offset>((ext.h - _label_bounds.height()) / 2) + _label_bounds.y_max
+                static_cast<Position>(_padding[3]),
+                static_cast<Position>((ext.h - _label_bounds.height()) / 2) + _label_bounds.y_max
             };
 
             p()->_label_rect = {
@@ -122,14 +122,14 @@ namespace cppgui {
             };
 
             p()->_glyph_pos = {
-                static_cast<Offset>(ext.w - _padding[1] - _glyph_min_edge),
-                static_cast<Offset>((ext.h - _glyph_min_edge) / 2) + _glyph_bounds.y_max
+                static_cast<Position>(ext.w - _padding[1] - _glyph_min_edge),
+                static_cast<Position>((ext.h - _glyph_min_edge) / 2) + _glyph_bounds.y_max
             };
         }
         else {
             p()->_glyph_pos = {
-                static_cast<Offset>((ext.w - _glyph_bounds.width ()) / 2), // - _glyph_bounds.x_min,
-                static_cast<Offset>((ext.h - _glyph_bounds.height()) / 2) + _glyph_bounds.y_max
+                static_cast<Position>((ext.w - _glyph_bounds.width ()) / 2), // - _glyph_bounds.x_min,
+                static_cast<Position>((ext.h - _glyph_bounds.height()) / 2) + _glyph_bounds.y_max
             };
         }
     }

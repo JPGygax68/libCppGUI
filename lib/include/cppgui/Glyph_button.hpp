@@ -33,7 +33,7 @@ namespace cppgui {
 
         void init() override;
 
-        void render(Canvas_t *, const Position &offset) override;
+        void render(Canvas_t *, const Point &offset) override;
 
     protected:
         const Rasterized_font          *_label_fnt = nullptr;
@@ -42,9 +42,9 @@ namespace cppgui {
         char32_t                        _glyph_cp;
         bool                            _border_enabled = true;
 
-        Position                        _label_pos;
+        Point                        _label_pos;
         Rectangle                       _label_rect;
-        Position                        _glyph_pos;
+        Point                        _glyph_pos;
 
     private:
         Font_handle                     _glyph_font_hnd;

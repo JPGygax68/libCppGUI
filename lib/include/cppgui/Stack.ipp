@@ -32,7 +32,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Stack<Config, With_layout>::render(Canvas_t *cv, const Position &offs)
+    void Stack<Config, With_layout>::render(Canvas_t *cv, const Point &offs)
     {
         Container_t::render(cv, offs);
     }
@@ -150,19 +150,19 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Inner_stack<Config, With_layout>::mouse_motion(const Position &pos)
+    void Inner_stack<Config, With_layout>::mouse_motion(const Point &pos)
     {
         // TODO: handle elements that are not "children"
 
-        Container_t::mouse_motion(pos + Position{0, - _children_offset});
+        Container_t::mouse_motion(pos + Point{0, - _children_offset});
 
         _last_mouse_pos = pos;
     }
 
     template<class Config, bool With_layout>
-    void Inner_stack<Config, With_layout>::mouse_click(const Position &pos, int button, int count)
+    void Inner_stack<Config, With_layout>::mouse_click(const Point &pos, int button, int count)
     {
-        Container_t::mouse_click(pos + Position{0, - _children_offset}, button, count);
+        Container_t::mouse_click(pos + Point{0, - _children_offset}, button, count);
     }
 
     template<class Config, bool With_layout>
@@ -232,7 +232,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Inner_stack<Config, With_layout>::render(Canvas_t *cv, const Position &offs)
+    void Inner_stack<Config, With_layout>::render(Canvas_t *cv, const Point &offs)
     {
         fill(cv, offs, background_color());
 
@@ -241,7 +241,7 @@ namespace cppgui {
         cv->set_clipping_rect(pos.x + paper_margin(), pos.y + paper_margin(), 
             extents().w - 2 * paper_margin(), extents().h - 2 * paper_margin());
 
-        pos += Position{0, _children_offset};
+        pos += Point{0, _children_offset};
 
         // TODO: optimize - do not render outside the clipping rect
         for (auto i = _first_visible_item; i < children().size(); i++)

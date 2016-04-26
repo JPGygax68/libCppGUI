@@ -53,9 +53,9 @@ namespace cppgui {
         void gained_focus() override;
         void loosing_focus() override;
 
-        void mouse_motion(const Position &) override;
-        void mouse_button(const Position &, int button, Key_state) override;
-        void mouse_click(const Position &, int button, int count) override;
+        void mouse_motion(const Point &) override;
+        void mouse_button(const Point &, int button, Key_state) override;
+        void mouse_click(const Point &, int button, int count) override;
         void mouse_wheel(const Position_delta &) override;
         void text_input(const char32_t *, size_t) override;
         void key_down(const Keycode &) override;
@@ -66,7 +66,7 @@ namespace cppgui {
          */
         void child_key_down(const Keycode &key) override;
 
-        void render(Canvas_t *, const Position &) override;
+        void render(Canvas_t *, const Point &) override;
 
     protected:
         auto paper_margin() -> unsigned int { return 2; } // TODO: remove (or move to Stack<>)

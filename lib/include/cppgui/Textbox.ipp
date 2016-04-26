@@ -68,7 +68,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::mouse_motion(const Position &pos)
+    void Textbox<Config, With_layout>::mouse_motion(const Point &pos)
     {
         if (Config::Mouse::is_button_down(1))
         {
@@ -99,7 +99,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::mouse_button(const Position &pos, int button, Key_state state)
+    void Textbox<Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state)
     {
         if (state == pressed)
         {
@@ -117,7 +117,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::mouse_click(const Position &, int /*button*/, int count)
+    void Textbox<Config, With_layout>::mouse_click(const Point &, int /*button*/, int count)
     {
         if (count == 2) // double-click
         {
@@ -127,7 +127,7 @@ namespace cppgui {
 
     /*
     template<class GUIConfig, bool With_layout>
-    void Textbox<GUIConfig, With_layout>::mouse_click(const Position &pos, int button, int count)
+    void Textbox<GUIConfig, With_layout>::mouse_click(const Point &pos, int button, int count)
     {
         if (button == 1 && count == 1)
         {
@@ -180,7 +180,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    inline void Textbox<Config, With_layout>::render(Canvas_t *r, const Position &offs)
+    inline void Textbox<Config, With_layout>::render(Canvas_t *r, const Point &offs)
     {
         fill(r, offs, rgba_to_native(r, {1, 1, 1, 1})); // TODO: (VERY MUCH) PROVISIONAL, GET REAL COLOR!
 
@@ -412,7 +412,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::move_caret_to_pointer_position(const Position &pos)
+    void Textbox<Config, With_layout>::move_caret_to_pointer_position(const Point &pos)
     {
         auto char_pos = find_character_at_pointer_position(pos);
 
@@ -424,7 +424,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    auto Textbox<Config, With_layout>::find_character_at_pointer_position(const Position & pos) -> std::pair<size_t, int>
+    auto Textbox<Config, With_layout>::find_character_at_pointer_position(const Point & pos) -> std::pair<size_t, int>
     {
         auto inner_pos = convert_position_to_inner(pos);
 
@@ -505,7 +505,7 @@ namespace cppgui {
     {
         // TODO: support vertical scripts
 
-        Position pos = { 0, 0 };
+        Point pos = { 0, 0 };
         const Glyph_control_box *cbox;
 
         if (_sel_start_char_idx > 0)

@@ -42,9 +42,9 @@ namespace cppgui {
 
         void init() override;
 
-        void mouse_motion(const Position &) override;
-        void mouse_button(const Position &, int button, Key_state) override;
-        void mouse_click(const Position &, int button, int count) override;
+        void mouse_motion(const Point &) override;
+        void mouse_button(const Point &, int button, Key_state) override;
+        void mouse_click(const Point &, int button, int count) override;
         void text_input(const char32_t *text, size_t count) override;
 
         void mouse_enter() override;
@@ -53,7 +53,7 @@ namespace cppgui {
         void gained_focus() override;
         void loosing_focus() override;
 
-        void render(Canvas_t *, const Position &pos) override;
+        void render(Canvas_t *, const Point &pos) override;
 
         bool handle_key_down(const Keycode &) override;
 
@@ -77,8 +77,8 @@ namespace cppgui {
         void collapse_selection_to_caret();
         bool have_selection() const { return _sel_start_char_idx < _sel_end_char_idx; }
         void delete_selected();
-        void move_caret_to_pointer_position(const Position &pos);
-        auto find_character_at_pointer_position(const Position &pos) -> std::pair<size_t, int>;
+        void move_caret_to_pointer_position(const Point &pos);
+        auto find_character_at_pointer_position(const Point &pos) -> std::pair<size_t, int>;
         void bring_caret_into_view();
 
         // Styling
@@ -90,7 +90,7 @@ namespace cppgui {
 
         int                     _ascent, _descent; // TODO: support vertical writing
         int                     _mean_char_width;
-        Position                _txpos;
+        Point                _txpos;
         //int                     _txmaxlen;
 
         std::u32string          _text;

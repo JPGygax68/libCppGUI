@@ -32,7 +32,7 @@ namespace cppgui {
 
         void add_child(Widget_t *);
 
-        void render(Canvas_t *, const Position &offs) override;
+        void render(Canvas_t *, const Point &offs) override;
 
         void gained_focus() override;
 
@@ -92,12 +92,12 @@ namespace cppgui {
 
         void init() override;
 
-        void mouse_motion(const Position &) override;
-        void mouse_click(const Position &, int button, int count) override;
+        void mouse_motion(const Point &) override;
+        void mouse_click(const Point &, int button, int count) override;
         // TODO: mouse_button & any other events that carry a mouse position
         void mouse_wheel(const Position_delta &dist) override;
 
-        void render(Canvas_t *, const Position &) override;
+        void render(Canvas_t *, const Point &) override;
 
     protected:
         friend class Stack<Config, With_layout>;
@@ -114,7 +114,7 @@ namespace cppgui {
 
         unsigned    _first_visible_item = 0;
         int         _children_offset = 0;
-        Position    _last_mouse_pos = {};
+        Point    _last_mouse_pos = {};
     };
 
     // Layouter aspect

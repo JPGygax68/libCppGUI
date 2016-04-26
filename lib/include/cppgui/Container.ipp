@@ -51,19 +51,19 @@ namespace cppgui {
     }
 
     template <class Config, bool With_layout>
-    void Container<Config, With_layout>::mouse_motion(const Position &pos)
+    void Container<Config, With_layout>::mouse_motion(const Point &pos)
     {
         container_mouse_motion(pos);
     }
 
     template<class Config, bool With_layout>
-    void Container<Config, With_layout>::mouse_button(const Position &pos, int button, Key_state state)
+    void Container<Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state)
     {
         container_mouse_button(pos, button, state);
     }
 
     template<class Config, bool With_layout>
-    void Container<Config, With_layout>::mouse_click(const Position &pos, int button, int count)
+    void Container<Config, With_layout>::mouse_click(const Point &pos, int button, int count)
     {
         container_mouse_click(pos, button, count);
     }
@@ -198,7 +198,7 @@ namespace cppgui {
     }
 
     template <class Config, bool With_layout>
-    void Container<Config, With_layout>::render(Canvas_t *cv, const Position &offs)
+    void Container<Config, With_layout>::render(Canvas_t *cv, const Point &offs)
     {
         fill(cv, offs, background_color());
         draw_borders(cv, offs, _border.width, _border.color);
@@ -306,13 +306,13 @@ namespace cppgui {
 
             Length h_rem = _inner_rect.ext.h; // "remaining" height
             Length h;
-            Offset y = _inner_rect.pos.y;
+            Position y = _inner_rect.pos.y;
             
             h = header->get_minimal_size().h;
 
             header->set_position({ _inner_rect.pos.x, y });
             header->set_extents ({ _inner_rect.ext.w, h });
-            y += static_cast<Offset>(h);
+            y += static_cast<Position>(h);
             h_rem -= h;
 
             content->set_position({ _inner_rect.pos.x, y });
@@ -329,11 +329,11 @@ namespace cppgui {
 
             Length h_rem = _inner_rect.ext.h; // "remaining" height
             Length h;
-            Offset y = _inner_rect.bottom();
+            Position y = _inner_rect.bottom();
 
             h = footer->get_minimal_size().h;
 
-            y -= static_cast<Offset>(h);
+            y -= static_cast<Position>(h);
             footer->set_position({ _inner_rect.left(), y });
             footer->set_extents({ _inner_rect.width(), h });
             h_rem -= h;
@@ -352,11 +352,11 @@ namespace cppgui {
 
             Length w_rem = _inner_rect.ext.w; // "remaining" width
             Length w;
-            Offset x = _inner_rect.right();
+            Position x = _inner_rect.right();
 
             w = tail->get_minimal_size().w;
 
-            x -= static_cast<Offset>(w);
+            x -= static_cast<Position>(w);
             tail->set_position({ x, _inner_rect.top() });
             tail->set_extents({ w, _inner_rect.height() });
             w_rem -= w;
@@ -374,13 +374,15 @@ namespace cppgui {
 
             auto ext = p()->extents();
 
-            Offset y = _padding[0];
-            Offset x = _padding[3];
+            Position y = _padding[0];
+            Position x = _padding[3];
 
             for (auto child: p()->children())
             {
                 child->set_position({ x, y });
                 child->set_extents({ ext.w - _padding[3] - _padding[1], child->get_minimal_size().h });
+
+                child->layout();
 
                 y += child->extents().h + _spacing;
             }

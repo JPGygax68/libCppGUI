@@ -40,12 +40,12 @@ namespace cppgui {
         using Font_handle       = typename Canvas_t::Font_handle;
         using Keyboard          = typename Config::Keyboard;
         using Keycode           = typename Keyboard::Keycode;
-        using Click_handler     = std::function<void(const Position &, int button, int clicks)>; // TODO: support return value ?
+        using Click_handler     = std::function<void(const Point &, int button, int clicks)>; // TODO: support return value ?
 
         auto& rectangle() const { return _rect; }
         auto& position() const { return _rect.pos; }
         auto& extents() const { return _rect.ext; }
-        void set_position(const Position &);
+        void set_position(const Point &);
         void set_extents(const Extents &);
 
         // TODO: color and other style definitions belong into stylesheets
@@ -63,9 +63,9 @@ namespace cppgui {
             the container, to subtract the child widget's position() from the
             coordinates it gets from yet higher up).
          */
-        virtual void mouse_motion(const Position &) {}
-        virtual void mouse_button(const Position &, int /*button*/, Key_state) {}
-        virtual void mouse_click(const Position &, int button, int count);
+        virtual void mouse_motion(const Point &) {}
+        virtual void mouse_button(const Point &, int /*button*/, Key_state) {}
+        virtual void mouse_click(const Point &, int button, int count);
         virtual void mouse_wheel(const Position_delta &) {}
         virtual void text_input(const char32_t *, size_t) {}
         virtual void key_down(const Keycode &) {}
@@ -78,7 +78,7 @@ namespace cppgui {
         /** Convention: the provided position is an offset to be added to the widget's
             own coordinates.
          */
-        virtual void render(Canvas_t *, const Position &offs) = 0;
+        virtual void render(Canvas_t *, const Point &offs) = 0;
 
         virtual bool handle_key_down(const Keycode &) { return false; }
 
@@ -88,18 +88,18 @@ namespace cppgui {
 
         auto rgba_to_native(Canvas_t *, const Color &) -> Native_color;
         void fill_rect(Canvas_t *, const Rectangle &rect, const Native_color &);
-        void fill_rect(Canvas_t *, const Rectangle &rect, const Position &offs, const Native_color &);
-        void fill_rect(Canvas_t *, const Position &pos, const Extents &ext, const Native_color &);
-        void fill(Canvas_t *, const Position &offs, const Native_color &);
-        void draw_borders(Canvas_t *, const Position &offs, Width width, const Color &color);
-        void draw_borders(Canvas_t *, const Rectangle &rect, const Position &offs, Width width, const Color &color);
-        void draw_borders(Canvas_t *, const Rectangle &rect, const Position &offs, 
+        void fill_rect(Canvas_t *, const Rectangle &rect, const Point &offs, const Native_color &);
+        void fill_rect(Canvas_t *, const Point &pos, const Extents &ext, const Native_color &);
+        void fill(Canvas_t *, const Point &offs, const Native_color &);
+        void draw_borders(Canvas_t *, const Point &offs, Width width, const Color &color);
+        void draw_borders(Canvas_t *, const Rectangle &rect, const Point &offs, Width width, const Color &color);
+        void draw_borders(Canvas_t *, const Rectangle &rect, const Point &offs, 
             Width width, const Color &top, const Color &right, const Color &bottom, const Color &left);
-        auto convert_position_to_inner(const Position &) -> Position;
-        auto advance_to_glyph_at(const Rasterized_font *, const std::u32string &text, size_t from, size_t to, Position &pos) 
+        auto convert_position_to_inner(const Point &) -> Point;
+        auto advance_to_glyph_at(const Rasterized_font *, const std::u32string &text, size_t from, size_t to, Point &pos) 
             -> const Glyph_control_box *;
         // PROVISIONAL
-        void draw_stippled_inner_rect(Canvas_t *, const Rectangle &, const Position &offs);
+        void draw_stippled_inner_rect(Canvas_t *, const Rectangle &, const Point &offs);
 
         // Experimental & temporary: implement more sophisticated (and flexible!) styling
         // - May not / should not stay static; make const if possible
@@ -174,7 +174,7 @@ namespace cppgui {
         void mouse_enter() override;
         void mouse_exit() override;
 
-        void mouse_click(const Position &, int button, int count) override;
+        void mouse_click(const Point &, int button, int count) override;
 
         void change_visible(bool visible = true);
 
@@ -266,11 +266,11 @@ namespace cppgui {
             void set_padding(Width);
             void set_padding(const std::initializer_list<Width> &);
 
-            void set_rectangle(const Position &nw, const Position &se);
-            void set_rectangle_nw(const Position &, const Extents &);
-            void set_rectangle_ne(const Position &, const Extents &);
-            void set_rectangle_se(const Position &, const Extents &);
-            void set_rectangle_sw(const Position &, const Extents &);
+            void set_rectangle(const Point &nw, const Point &se);
+            void set_rectangle_nw(const Point &, const Extents &);
+            void set_rectangle_ne(const Point &, const Extents &);
+            void set_rectangle_se(const Point &, const Extents &);
+            void set_rectangle_sw(const Point &, const Extents &);
 
         protected:
 
