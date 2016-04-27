@@ -7,6 +7,12 @@ namespace cppgui {
     template<class Config, bool With_layout>
     Scrollbox<Config, With_layout>::Scrollbox()
     {
+        _vert_sbar.on_position_change([this](const Fraction<> &pos) {
+
+            _content->set_position({ 0, - static_cast<Position>((_content->extents().h - extents().h) * pos.num / pos.den) });
+            invalidate();
+        });
+
         add_child(&_vert_sbar);
     }
 
@@ -16,6 +22,8 @@ namespace cppgui {
         assert(!_content);
 
         _content = content;
+        _content->set_border({1, Color{ 1, 1, 0, 1 }});
+
         add_child(content);
     }
 
