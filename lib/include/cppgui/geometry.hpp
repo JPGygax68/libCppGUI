@@ -37,7 +37,7 @@ namespace cppgui {
 
     };
 
-    using Position_delta = Point;
+    using Vector = Point;
 
     using Extents_delta = Point; // TODO: define specialized class
 

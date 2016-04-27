@@ -127,7 +127,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::mouse_wheel(const Position_delta &dir)
+    void Root_widget<Config, With_layout>::mouse_wheel(const Vector &dir)
     {
         this->lock();
         container_mouse_wheel(dir);

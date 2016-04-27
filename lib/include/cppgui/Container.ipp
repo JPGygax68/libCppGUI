@@ -69,7 +69,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Container<Config, With_layout>::mouse_wheel(const Position_delta &dist)
+    void Container<Config, With_layout>::mouse_wheel(const Vector &dist)
     {
         container_mouse_wheel(dist);
     }

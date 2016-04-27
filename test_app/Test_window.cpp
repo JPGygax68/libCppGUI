@@ -82,23 +82,23 @@ Test_window::Test_window(): Parent("Test window")
 
     _menu_header.set_font(dflt_font);
     _menu_header.set_text(U"Look at this:");
-    _menu_header.set_background_color({1, 1, 1, 1});
-    _menu_header.set_padding({3, 3, 3, 3});
+    _menu_header.set_background_color({ 1, 1, 1, 1 });
+    _menu_header.set_padding({ 3, 3, 3, 3 });
     _menu.set_layout_type(cppgui::Layout_type::header_content);
     _menu.add_child(&_menu_header);
     _menu.add_child(&_stack);
-    _menu.set_position({50, 250});
-    _menu.set_extents ({200, 207});
+    _menu.set_position({  50, 250 });
+    _menu.set_extents ({ 200, 207 });
 
     _input_dlg.set_default_font(dflt_font);
     _input_dlg.set_caption(U"Give me a value!");
     _input_dlg.set_caption_font(dflt_font);
     _input_dlg.set_prompt(U"Please enter the captain's age:");
-    _input_dlg.set_position({350, 250});
-    _input_dlg.set_extents ({350, 180});
+    _input_dlg.set_position({ 350, 250 });
+    _input_dlg.set_extents ({ 350, 180 });
 
-    _vert_scrollbar.set_position({750,  50});
-    _vert_scrollbar.set_extents ({ 30, 200});
+    _vert_scrollbar.set_position({ 750,  50 });
+    _vert_scrollbar.set_extents ({  30, 200 });
     _vert_scrollbar.define_range(150, 40);
     _vert_scrollbar.on_position_change([&](const cppgui::Fraction<> &pos) {
 
@@ -118,10 +118,10 @@ Test_window::Test_window(): Parent("Test window")
         _sb_content.add_child(&_sb_buttons[i]);
     }
     _sb_content.set_layout_type(cppgui::Layout_type::stack);
-    _sb_content.set_extents({500, 400});
+    _sb_content.set_extents({ 500, 400 });
     _scrollbox.set_content(&_sb_content);
-    _scrollbox.set_position({750, 300});
-    _scrollbox.set_extents ({400, 300});
+    _scrollbox.set_position({ 750, 300 });
+    _scrollbox.set_extents ({ 400, 300 });
 
     root_widget()->set_background_color({0, 0.6f, 0.2f, 1});
 
@@ -137,8 +137,9 @@ Test_window::Test_window(): Parent("Test window")
     root_widget()->add_child(&_scrollbar_pos);
     root_widget()->add_child(&_scrollbox);
 
-    _menu.take_focus();
+    //_menu.take_focus();
     //root_widget()->set_focus_to(&_menu); // ); // &_textbox);
+    _scrollbox.take_focus();
 
     root_widget()->on_invalidated([this]() { invalidate(); });
 

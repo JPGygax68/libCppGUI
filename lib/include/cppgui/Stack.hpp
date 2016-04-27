@@ -95,7 +95,7 @@ namespace cppgui {
         void mouse_motion(const Point &) override;
         void mouse_click(const Point &, int button, int count) override;
         // TODO: mouse_button & any other events that carry a mouse position
-        void mouse_wheel(const Position_delta &dist) override;
+        void mouse_wheel(const Vector &dist) override;
 
         void render(Canvas_t *, const Point &) override;
 

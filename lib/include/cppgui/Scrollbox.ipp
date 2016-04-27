@@ -7,6 +7,8 @@ namespace cppgui {
     template<class Config, bool With_layout>
     Scrollbox<Config, With_layout>::Scrollbox()
     {
+        _vert_sbar.set_focussable(false);
+
         _vert_sbar.on_position_change([this](const Fraction<> &pos) {
 
             _content->set_position({ 0, - static_cast<Position>((_content->extents().h - extents().h) * pos.num / pos.den) });
@@ -28,7 +30,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Scrollbox<Config, With_layout>::mouse_wheel(const Position_delta &delta)
+    void Scrollbox<Config, With_layout>::mouse_wheel(const Vector &delta)
     {
         // TODO: better way than just redirecting input events ?
         _vert_sbar.mouse_wheel(delta);

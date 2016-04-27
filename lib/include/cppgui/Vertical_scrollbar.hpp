@@ -42,7 +42,7 @@ namespace cppgui {
 
         void mouse_button(const Point &, int button, Key_state) override;
         void mouse_motion(const Point &) override;
-        void mouse_wheel(const Position_delta & ) override;
+        void mouse_wheel(const Vector & ) override;
         void mouse_exit() override;
 
         void render(Canvas_t *, const Point &offset) override;

@@ -15,7 +15,7 @@ namespace cppgui {
         char32_t                code_point;
         // TODO: deltas for all four properties: y_max, y_min, x_min, x_max
         Extents_delta           extents_delta;
-        Position_delta          origin_delta;  // add this to the origin when rendering so that the glyph will come to rest on the baseline
+        Vector          origin_delta;  // add this to the origin when rendering so that the glyph will come to rest on the baseline
     };
 
     struct Icon_glyph {

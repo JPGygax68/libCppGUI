@@ -68,7 +68,7 @@ namespace cppgui {
         virtual void mouse_motion(const Point &) {}
         virtual void mouse_button(const Point &, int /*button*/, Key_state) {}
         virtual void mouse_click(const Point &, int button, int count);
-        virtual void mouse_wheel(const Position_delta &) {}
+        virtual void mouse_wheel(const Vector &) {}
         virtual void text_input(const char32_t *, size_t) {}
         virtual void key_down(const Keycode &) {}
 

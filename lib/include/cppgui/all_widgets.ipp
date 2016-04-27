@@ -20,5 +20,6 @@
 #include "./Container.ipp"
 #include "./Stack.ipp"
 #include "./Vertical_scrollbar.ipp"
+#include "./List_pane.ipp"
 #include "./Scrollbox.ipp"
 #include "./Root_widget.ipp"

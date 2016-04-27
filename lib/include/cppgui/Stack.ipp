@@ -166,7 +166,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    inline void Inner_stack<Config, With_layout>::mouse_wheel(const Position_delta &dist)
+    inline void Inner_stack<Config, With_layout>::mouse_wheel(const Vector &dist)
     {
         // std::cout << "Stack::mouse_wheel(" << dist.x << ", " << dist.y << ")" << std::endl;
 

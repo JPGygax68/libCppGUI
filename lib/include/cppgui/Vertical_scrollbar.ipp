@@ -8,6 +8,9 @@ namespace cppgui {
         _up_btn  .set_glyph(cppgui::Icon_resources<24>::up_arrow  ());
         _down_btn.set_glyph(cppgui::Icon_resources<24>::down_arrow());
 
+        _up_btn  .set_focussable(false);
+        _down_btn.set_focussable(false);
+
         _up_btn  .on_push([this](const Point &) { move_by_elements(-1); });
         _down_btn.on_push([this](const Point &) { move_by_elements( 1); });
 
@@ -130,7 +133,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::mouse_wheel(const Position_delta &delta)
+    void Vertical_scrollbar<Config, With_layout>::mouse_wheel(const Vector &delta)
     {
         //move_thumb_to(_thumb_rect.pos.y - delta.y * _element_length);
         move_by_elements(-delta.y);
