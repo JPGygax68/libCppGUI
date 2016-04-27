@@ -13,7 +13,7 @@ namespace cppgui {
         using Widget_t = Widget<Config, With_layout>;
 
         void set_header(Widget *);
-        void set_content(Widget *);
+        void set_content_pane(Widget *);
         void set_footer(Widget *);
 
     private:

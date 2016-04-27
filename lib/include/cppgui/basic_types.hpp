@@ -47,6 +47,10 @@ namespace cppgui {
         Color       color;
     };
 
+    enum Navigation_step {
+        beginning, end, previous_page, next_page, previous_element, next_element
+    };
+
 } // ns cppgui
 
 namespace std {

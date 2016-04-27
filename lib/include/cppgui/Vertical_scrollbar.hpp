@@ -17,8 +17,8 @@ namespace cppgui {
 
     // Class declaration
 
-    template<class Config, bool With_layout>
-    class Vertical_scrollbar: public Vertical_scrollbar__Layouter<Config, With_layout>::template Aspect< Container<Config, With_layout> >
+    template<class Impl, class Config, bool With_layout, class Navigator>
+    class Vertical_scrollbar_base: public Vertical_scrollbar__Layouter<Config, With_layout>::template Aspect< Container<Config, With_layout> >
     {
     public:
         using Widget_t = typename Widget<Config, With_layout>;
@@ -26,11 +26,9 @@ namespace cppgui {
         using Canvas_t = typename Widget_t::Canvas_t;
         using Thumb_t = typename Vertical_scrollbar_thumb<Config, With_layout>;
 
-        using Position_change_handler = std::function<void(const Fraction<> &)>;
+        using Position_change_handler = std::function<void(const Fraction<>&)>;
 
-        Vertical_scrollbar();
-
-        void on_position_change(Position_change_handler);
+        Vertical_scrollbar_base();
 
         /** Defines the range to be covered by the scrollbar, consisting of the "full"
             range and the "shown" range, visually represented by the "slide" between
@@ -50,13 +48,6 @@ namespace cppgui {
         void change_range(Length full, Length shown, Length element = 0);
 
         auto current_position() -> Fraction<>;
-
-        // Actions
-
-        void element_up();
-        void element_down();
-        void page_up();
-        void page_down();
 
     protected:
         using Glyph_button_t = typename Glyph_button<Config, With_layout>;
@@ -98,67 +89,55 @@ namespace cppgui {
             // TODO
 
         protected:
-            class Vertical_scrollbar_t: public Vertical_scrollbar<Config, true> { friend struct Aspect; };
+            class Vertical_scrollbar_base_t: public Vertical_scrollbar_base<Config, true> { friend struct Aspect; };
 
-            auto p() { return static_cast<Vertical_scrollbar_t*>(this); }
+            auto p() { return static_cast<Vertical_scrollbar_base_t*>(this); }
         };
     };
 
-    #ifdef THUMB_AS_WIDGET
+    //---------------------------------------------------------------
 
-    // Thumb --------------------------------------------------------
+    /** "Slave" implementation of Vertical_scrollbar
 
-    template <class Config, bool With_layout> struct Vertical_scrollbar_thumb__Layouter {
-        template<class Aspect_parent> struct Aspect: public Aspect_parent {};
-    };
-
+        This derivation was created to become a part of the Scrollbox component.
+        It delegates implementation of navigation actions to a callback.
+     */
     template<class Config, bool With_layout>
-    class Vertical_scrollbar_thumb: public Vertical_scrollbar_thumb__Layouter<Config, With_layout>::template Aspect< Widget<Config, With_layout> >
+    class Slave_vertical_scrollbar: public Vertical_scrollbar_base<Slave_vertical_scrollbar<Config, With_layout>, Config, With_layout>
     {
     public:
-        using Widget_t = typename Widget<Config, With_layout>;
-        using Vertical_scrollbar_t = typename Vertical_scrollbar<Config, With_layout>;
-        using Canvas_t = typename Widget_t::Canvas_t;
+        using Navigation_handler = std::function<void(Navigation_step)>;
 
-        void mouse_button(const Point &, int button, Key_state) override;
-        void mouse_motion(const Point &) override;
-        //void mouse_exit() override;
-
-        void render(Canvas_t *, const Point &offset) override;
+        void on_position_change(Position_change_handler);
 
     protected:
-        using Drag_controller_t = Drag_controller<Config, With_layout>;
+        // Navigation
+        void element_up();
+        void element_down();
+        void page_up();
+        void page_down();
 
-        auto scrollbar() { return static_cast<Vertical_scrollbar_t*>(container()); }
-
-        Drag_controller_t       _drag_ctl;
-        Position                  _drag_start_pos;
+        Navigation_handler      _on_navigation;
     };
 
-    // Thumb layouter aspect
+    //---------------------------------------------------------------
 
-    template <class Config>
-    struct Vertical_scrollbar_thumb__Layouter<Config, true> {
-        template <class Aspect_parent> struct Aspect: public Aspect_parent {
+    template<class Config, bool With_layout>
+    class Slave_vertical_scrollbar: public Vertical_scrollbar_base<Slave_vertical_scrollbar<Config, With_layout>, Config, With_layout>
+    {
+    public:
+        using Navigation_handler = std::function<void(Navigation_step)>;
 
-            // Layouter contract
+        void on_position_change(Position_change_handler);
 
-            void init_layout() override;
-            auto get_minimal_size() -> Extents override;
-            void layout() override;
+    protected:
+        // Navigation
+        void element_up();
+        void element_down();
+        void page_up();
+        void page_down();
 
-            // Extra capabilities coming with layouting
-            // TODO
-
-        protected:
-            class Vertical_scrollbar_thumb_t: public Vertical_scrollbar_thumb<Config, true> { friend struct Aspect; };
-            using Vertical_scrollbar_t = Vertical_scrollbar<Config, true>;
-
-            auto p() { return static_cast<Vertical_scrollbar_thumb_t*>(this); }
-        };
+        Navigation_handler      _on_navigation;
     };
-
-    #endif
 
 } // ns cppgui
-

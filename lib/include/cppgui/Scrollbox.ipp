@@ -19,7 +19,13 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Scrollbox<Config, With_layout>::set_content(Container_t *content)
+    void Scrollbox<Config, With_layout>::on_navigation(Navigation_handler handler)
+    {
+        _on_navigation = handler;
+    }
+
+    template<class Config, bool With_layout>
+    void Scrollbox<Config, With_layout>::set_content_pane(Container_t *content)
     {
         assert(!_content);
 
