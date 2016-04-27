@@ -28,9 +28,22 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Scrollbox<Config, With_layout>::mouse_wheel(const Position_delta &delta)
+    {
+        // TODO: better way than just redirecting input events ?
+        _vert_sbar.mouse_wheel(delta);
+    }
+
+    template<class Config, bool With_layout>
     void Scrollbox<Config, With_layout>::render(Canvas_t *canvas, const Point &offset)
     {
+        Rectangle r { rectangle() };
+
+        canvas->set_clipping_rect(r.pos.x, r.pos.y, r.ext.w, r.ext.h);
+
         Container_t::render(canvas, offset);
+
+        canvas->cancel_clipping();
 
         draw_borders(canvas, offset, 1, {1, 0.2f, 0, 1});
     }

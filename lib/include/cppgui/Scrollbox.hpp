@@ -22,6 +22,8 @@ namespace cppgui {
 
         void set_content(Container_t *);
 
+        void mouse_wheel(const Position_delta &) override;
+
         void render(Canvas_t *, const Point &offset) override;
 
     protected:
