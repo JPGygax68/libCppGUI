@@ -36,7 +36,7 @@ namespace cppgui {
             range and the "shown" range, visually represented by the "slide" between
             the up/down buttons and the length of the thumb, respectively.
          */
-        void define_range(Length full, Length shown);
+        void define_range(Length full, Length shown, Length element = 0);
 
         void init() override;
 
@@ -47,13 +47,14 @@ namespace cppgui {
 
         void render(Canvas_t *, const Point &offset) override;
 
-        void change_value_range(const Range &);
-        void change_thumb_length(unsigned int);
+        void change_range(Length full, Length shown, Length element = 0);
 
         auto current_position() -> Fraction<>;
 
         // Actions
 
+        void element_up();
+        void element_down();
         void page_up();
         void page_down();
 
@@ -63,20 +64,21 @@ namespace cppgui {
         friend Thumb_t;
         
         void move_thumb_to(Position);
+        void move_by_elements(int delta);
         void recalc_thumb();
         void clip_thumb_pos();
         void notify_position_change();
 
         Glyph_button_t          _up_btn, _down_btn;
         Position_change_handler _on_position_change;
-        Length                  _full_length = 0, _shown_length = 0;
+        Length                  _full_length = 0, _shown_length = 0, _element_length = 0;
 
         Range                   _sliding_range;
         Rectangle               _thumb_rect;
 
         bool                    _thumb_hovered = false;
-        Position                  _thumb_drag_start_pos;
-        Position                  _thumb_drag_anchor_pos;
+        Position                _thumb_drag_start_pos;
+        Position                _thumb_drag_anchor_pos;
         bool                    _dragging_thumb = false;
     };
 

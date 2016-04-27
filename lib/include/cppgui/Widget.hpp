@@ -40,7 +40,9 @@ namespace cppgui {
         using Font_handle       = typename Canvas_t::Font_handle;
         using Keyboard          = typename Config::Keyboard;
         using Keycode           = typename Keyboard::Keycode;
+
         using Click_handler     = std::function<void(const Point &, int button, int clicks)>; // TODO: support return value ?
+        using Push_handler      = std::function<void(const Point &)>; // for buttons
 
         auto& rectangle() const { return _rect; }
         auto& position() const { return _rect.pos; }

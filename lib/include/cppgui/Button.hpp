@@ -39,7 +39,7 @@ namespace cppgui {
     protected:
         const Rasterized_font  *_font = nullptr;
         std::u32string          _label;
-        Point                _label_origin;
+        Point                   _label_origin;
         Rectangle               _label_rect;
 
         Font_handle             _fnthnd;

@@ -22,6 +22,9 @@ namespace cppgui {
         using Widget_t = Widget<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
         using Font_handle = typename Widget_t::Font_handle;
+        using Push_handler = typename Widget_t::Push_handler;
+
+        void on_push(Push_handler);
 
         void set_font(const Rasterized_font *font) { _label_fnt = font; }
 
@@ -35,16 +38,20 @@ namespace cppgui {
 
         void render(Canvas_t *, const Point &offset) override;
 
+        void mouse_button(const Point &, int button, Key_state) override;
+
     protected:
+        //Click_handler                   _on_click;
+        Push_handler                    _on_push;
         const Rasterized_font          *_label_fnt = nullptr;
         std::u32string                  _label;
         const Rasterized_font          *_glyph_fnt;
         char32_t                        _glyph_cp;
         bool                            _border_enabled = true;
 
-        Point                        _label_pos;
+        Point                           _label_pos;
         Rectangle                       _label_rect;
-        Point                        _glyph_pos;
+        Point                           _glyph_pos;
 
     private:
         Font_handle                     _glyph_font_hnd;

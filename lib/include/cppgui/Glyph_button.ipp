@@ -5,6 +5,12 @@ namespace cppgui {
     // Main class implementation ------------------------------------
 
     template<class Config, bool With_layout>
+    void Glyph_button<Config, With_layout>::on_push(Push_handler handler)
+    {
+        _on_push = handler;
+    }
+
+    template<class Config, bool With_layout>
     void Glyph_button<Config, With_layout>::set_glyph(const Icon_glyph &icgl)
     {
         _glyph_fnt = gpc::fonts::get(icgl.data_store);
@@ -54,6 +60,17 @@ namespace cppgui {
         {
             cnv->render_text(_glyph_font_hnd, pos.x + _glyph_pos.x, pos.y + _glyph_pos.y, &_glyph_cp, 1);
         }
+    }
+
+    template<class Config, bool With_layout>
+    void Glyph_button<Config, With_layout>::mouse_button(const Point &point, int button, Key_state state)
+    {
+        if (button == 1 && state == Key_state::pressed)
+        {
+            if (_on_push) _on_push(point);
+        }
+
+        Widget_t::mouse_button(point, button, state);
     }
 
 
