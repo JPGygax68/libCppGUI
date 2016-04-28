@@ -1,7 +1,7 @@
 #pragma once
 
 #include "./Widget.hpp"
-#include "./List_pane.hpp"
+//#include "./List_pane.hpp"
 #include "./Vertical_scrollbar.hpp"
 
 namespace cppgui {
@@ -18,7 +18,7 @@ namespace cppgui {
     public:
         using Container_t = Container<Config, With_layout>;
         using Canvas_t = typename Canvas<typename Config::Renderer>;
-        using List_pane_t = List_pane<Config, With_layout>;
+        //using List_pane_t = List_pane<Config, With_layout>;
 
         Scrollbox();
 
@@ -31,6 +31,8 @@ namespace cppgui {
 
     protected:
         using Vertical_scrollbar_t = Vertical_scrollbar<Config, With_layout>;
+
+        auto& scrollbar() { return _vert_sbar; }
 
         //List_pane_t             _content_pane;
         Container_t            *_content = nullptr;
@@ -48,6 +50,9 @@ namespace cppgui {
             auto p() { return static_cast<Scrollbox_t*>(this); }
 
             void layout() override;
+
+        protected:
+            auto content_rect() -> Rectangle;
         };
     };
 

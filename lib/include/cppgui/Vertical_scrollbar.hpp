@@ -52,9 +52,6 @@ namespace cppgui {
         auto current_position() -> Fraction<>;
 
         // Actions
-
-        void element_up();
-        void element_down();
         void page_up();
         void page_down();
 

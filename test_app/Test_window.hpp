@@ -56,4 +56,6 @@ private:
     Container                   _sb_content;
     std::vector<Button>         _sb_buttons;
     Scrollbox                   _scrollbox;
+    std::vector<Button>         _lb_buttons;
+    Listbox                     _listbox;
 };

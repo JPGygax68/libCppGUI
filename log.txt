@@ -1,3 +1,28 @@
+2016-04-27
+==========
+
+There is a need to define an interface between the Scrollbox component and its content.
+
+The current state is working, but treats the content pane as a simple, uniform surface, which can be moved by arbitrary amounts of pixels. This does not take into account the size of items contained in the pane.
+
+What is to be done?
+
+- Implement a completely separate component "Listbox" ? 
+  - Or is that name reserved for a component that contains items that are not themselves widgets (indeed typically simple text strings) ?
+  
+"Listbox":
+
+- A scrollbox combined with a list of widgets
+
+- Those widgets will be arranged into a vertical "stack", the width of each widget set to the "inner width" of the listbox, and its height to the minimum of the highest item (which will get stored to the main aspect and used to configure the scrollbox as well). This will be done as part of the layouting process.
+  -> This implies that adding/removing widgets will only be possible if layouting is enabled at least for the Scrollbox component.
+  
+- Regardless of possible differences in height, each "item widget" counts as a single step navigation-wise
+
+- Layouting of the scrollbox will be based on a configurable number (on the layouter aspect) of "maximum visible items"
+
+- It is probably best to put the items into a sub-container with "stack" layouting (which may need to be slightly adapted)
+
 2016-04-07
 ==========
 

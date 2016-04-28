@@ -58,18 +58,28 @@ namespace cppgui {
     {
         auto exts = p()->extents();
 
-        p()->_content->set_extents({ exts.w, p()->_content->extents().h });
-
+        // TODO: use configurable or stylable width for the scrollbar
         p()->_vert_sbar.set_position({ exts.right() - 20, 0 });
         p()->_vert_sbar.set_extents ({ 20, exts.h });
+
+        p()->_content->set_extents({ exts.w - p()->_vert_sbar.extents().w, p()->_content->extents().h });
 
         // TODO: the following must also be done in the main aspect when the content pane changes
         p()->_vert_sbar.define_range(p()->_content->extents().h, exts.h);
 
         p()->_vert_sbar.layout();
 
-        p()->_content->set_extents({ exts.w - 20, p()->_content->extents().h });
         p()->_content->layout();
+    }
+
+    template<class Config>
+    template<class Aspect_parent>
+    auto Scrollbox__Layouter<Config, true>::Aspect<Aspect_parent>::content_rect() -> Rectangle
+    {
+        return { 
+            0, 0, 
+            p()->extents().w - p()->_vert_sbar.extents().w, p()->extents().h
+        };
     }
 
 } // ns cppgui

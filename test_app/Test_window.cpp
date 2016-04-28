@@ -123,6 +123,17 @@ Test_window::Test_window(): Parent("Test window")
     _scrollbox.set_position({ 750, 300 });
     _scrollbox.set_extents ({ 400, 300 });
 
+    // Listbox
+    _lb_buttons.resize(9);
+    for (auto i = 0U; i < _lb_buttons.size(); i ++)
+    {
+        _lb_buttons[i].set_font(dflt_font);
+        _lb_buttons[i].set_label(std::u32string{U"Scrollbox button #"} + char32_t(U'1' + i));
+        _listbox.add_item(&_lb_buttons[i]);
+    }
+    _listbox.set_position({ 750, 650 });
+    _listbox.set_extents ({ 400, 120 });
+
     root_widget()->set_background_color({0, 0.6f, 0.2f, 1});
 
     root_widget()->add_child(&_label);
@@ -136,6 +147,7 @@ Test_window::Test_window(): Parent("Test window")
     root_widget()->add_child(&_vert_scrollbar);
     root_widget()->add_child(&_scrollbar_pos);
     root_widget()->add_child(&_scrollbox);
+    root_widget()->add_child(&_listbox);
 
     //_menu.take_focus();
     //root_widget()->set_focus_to(&_menu); // ); // &_textbox);

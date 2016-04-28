@@ -161,24 +161,6 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::element_up()
-    {
-        _thumb_rect.pos.y -= static_cast<Position>((_sliding_range.l _thumb_rect.ext.h) * _element_length / _full_length);
-        clip_thumb_pos();
-        notify_position_change();
-        invalidate();
-    }
-
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::element_down()
-    {
-        _thumb_rect.pos.y += static_cast<Position>(_sliding_range.l * _element_length / _full_length);
-        clip_thumb_pos();
-        notify_position_change();
-        invalidate();
-    }
-
-    template<class Config, bool With_layout>
     void Vertical_scrollbar<Config, With_layout>::page_up()
     {
         _thumb_rect.pos.y -= static_cast<Position>(_thumb_rect.ext.h);
@@ -211,7 +193,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Vertical_scrollbar<Config, With_layout>::move_by_elements(int delta)
     {
-        _thumb_rect.pos.y += delta * static_cast<Position>((_sliding_range.l - _thumb_rect.ext.h) * _element_length / _full_length);
+        _thumb_rect.pos.y += delta * static_cast<Position>((_sliding_range.l - _thumb_rect.ext.h) * _element_length / (_full_length - _shown_length));
         clip_thumb_pos();
         notify_position_change();
         invalidate();
