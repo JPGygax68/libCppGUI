@@ -25,13 +25,9 @@ namespace cppgui {
         using Container_t = typename Container<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
 
-        //using Position_change_handler = std::function<void(const Fraction<> &)>;
         using Navigation_handler = std::function<void(Navigation_unit, Position initial_pos, const Fraction<int> &delta)>; //, bool ending)>;
 
         Vertical_scrollbar_base();
-
-        //void on_position_change(Position_change_handler);
-        void on_navigation(Navigation_handler);
 
         /** Defines the range to be covered by the scrollbar, consisting of the "full"
             range and the "shown" range, visually represented by the "slide" between
@@ -66,12 +62,9 @@ namespace cppgui {
         void move_thumb_to(Position);
         void recalc_thumb();
         void clip_thumb_pos();
-        //void notify_position_change();
         void notify_drag_navigation(Position_delta);
 
         Glyph_button_t          _up_btn, _down_btn;
-        //Position_change_handler _on_position_change;
-        Navigation_handler      _nav_handler;
         Position                _range = 0, _thumb_length = 0;
 
         Range                   _sliding_range;
@@ -106,15 +99,42 @@ namespace cppgui {
         };
     };
 
-    // Standalone specialization ====================================
+    // Customizable specialization ==================================
+
+    template<class Config, bool With_layout>
+    class Custom_vertical_scrollbar: public Vertical_scrollbar_base<Custom_vertical_scrollbar<Config, With_layout>, Config, With_layout>
+    {
+    public:
+        void on_navigation(Navigation_handler);
+
+    protected:
+        friend class Vertical_scrollbar_base<Custom_vertical_scrollbar, Config, With_layout>;
+
+        void move_by_page(int delta);
+        void move_by_elements(int delta);
+        void move_by_fraction(Position initial_pos, const Fraction<int> &delta);
+
+        Navigation_handler      _nav_handler;
+    };
+
+    // Standalone specialization ===================================
 
     template<class Config, bool With_layout>
     class Vertical_scrollbar: public Vertical_scrollbar_base<Vertical_scrollbar<Config, With_layout>, Config, With_layout>
     {
     public:
+        using Position_change_handler = std::function<void(Position)>;
+
+        void on_position_change(Position_change_handler);
+
         void move_by_page(int delta);
         void move_by_elements(int delta);
         void move_by_fraction(Position initial_pos, const Fraction<int> &delta);
+
+    protected:
+        void notify_position_change();
+
+        Position_change_handler _on_pos_chng;
     };
 
 } // ns cppgui

@@ -16,22 +16,7 @@ namespace cppgui {
 
         add_child(&_up_btn  );
         add_child(&_down_btn);
-        //add_child(&_thumb);
     }
-
-    template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::on_navigation(Navigation_handler handler)
-    {
-        _nav_handler = handler;
-    }
-
-    /*
-    template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::on_position_change(Position_change_handler handler)
-    {
-        _on_position_change = handler;
-    }
-    */
 
     template<class Impl, class Config, bool With_layout>
     void Vertical_scrollbar_base<Impl, Config, With_layout>::define_range(Length full, Length shown)
@@ -214,12 +199,9 @@ namespace cppgui {
     template<class Impl, class Config, bool With_layout>
     void Vertical_scrollbar_base<Impl, Config, With_layout>::notify_drag_navigation(Position_delta delta)
     {
-        if (_nav_handler)
+        if (delta != 0)
         {
-            if (delta != 0)
-            {
-                static_cast<Impl*>(this)->move_by_fraction(_drag_start_pos, { delta, static_cast<int>(_sliding_range.l - _thumb_rect.ext.h) });
-            }
+            static_cast<Impl*>(this)->move_by_fraction(_drag_start_pos, { delta, static_cast<int>(_sliding_range.l - _thumb_rect.ext.h) });
         }
     }
 
@@ -247,10 +229,16 @@ namespace cppgui {
         p()->_down_btn.layout();
     }
 
-    // Standalone_vertical_scrollbar ================================
+    // Customizable specialization ==================================
 
     template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::move_by_page(int delta)
+    void Custom_vertical_scrollbar<Config, With_layout>::on_navigation(Navigation_handler handler)
+    {
+        _nav_handler = handler;
+    }
+
+    template<class Config, bool With_layout>
+    void Custom_vertical_scrollbar<Config, With_layout>::move_by_page(int delta)
     {
         // Note: the nav handler must update the position in response
 
@@ -262,7 +250,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::move_by_elements(int delta)
+    void Custom_vertical_scrollbar<Config, With_layout>::move_by_elements(int delta)
     {
         if (_nav_handler)
         {
@@ -272,13 +260,52 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::move_by_fraction(Position initial_pos, const Fraction<int> &delta)
+    void Custom_vertical_scrollbar<Config, With_layout>::move_by_fraction(Position initial_pos, const Fraction<int> &delta)
     {
         if (_nav_handler)
         {
             _nav_handler(Navigation_unit::fraction, initial_pos, delta);
             //invalidate();
         }
+    }
+
+    // Standalone specialization ====================================
+
+    template<class Config, bool With_layout>
+    void cppgui::Vertical_scrollbar<Config, With_layout>::on_position_change(Position_change_handler handler)
+    {
+        _on_pos_chng = handler;
+    }
+
+    template<class Config, bool With_layout>
+    void Vertical_scrollbar<Config, With_layout>::move_by_page(int pages)
+    {
+        auto delta = static_cast<cppgui::Position_delta>(thumb_length()) * pages;
+        change_position(current_position() + delta);
+        notify_position_change();
+    }
+
+    template<class Config, bool With_layout>
+    void Vertical_scrollbar<Config, With_layout>::move_by_elements(int elements)
+    {
+        change_position(current_position() + elements * 10); // TODO: make step configurable
+        notify_position_change();
+        invalidate();
+    }
+
+    template<class Config, bool With_layout>
+    void Vertical_scrollbar<Config, With_layout>::move_by_fraction(Position initial_pos, const Fraction<int>& frac)
+    {
+        auto delta = range() * frac.num / frac.den;
+        if (delta == 0) delta = frac.num * frac.den < 0 ? -1 : 1;
+        change_position(initial_pos + delta);
+        notify_position_change();
+    }
+
+    template<class Config, bool With_layout>
+    void cppgui::Vertical_scrollbar<Config, With_layout>::notify_position_change()
+    {
+        if (_on_pos_chng) _on_pos_chng(current_position());
     }
 
 } // ns cppgui

@@ -37,7 +37,7 @@ namespace cppgui {
         void render(Canvas_t *, const Point &offset) override;
 
     protected:
-        using Vertical_scrollbar_t = Vertical_scrollbar<Config, With_layout>;
+        using Vertical_scrollbar_t = Custom_vertical_scrollbar<Config, With_layout>;
 
         auto& scrollbar() { return _vert_sbar; }
 

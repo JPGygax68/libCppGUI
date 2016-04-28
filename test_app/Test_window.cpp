@@ -100,9 +100,8 @@ Test_window::Test_window(): Parent("Test window")
     _vert_scrollbar.set_position({ 750,  50 });
     _vert_scrollbar.set_extents ({  30, 200 });
     _vert_scrollbar.define_range(150, 40);
-    /* _vert_scrollbar.on_position_change([&](const cppgui::Fraction<> &pos) {
-        _scrollbar_pos.change_text( std::to_string(pos.num) + "/" + std::to_string(pos.den) );
-    }); */
+    _vert_scrollbar.on_position_change([&](cppgui::Position pos) { _scrollbar_pos.change_text( std::to_string(pos) ); });
+    /*
     _vert_scrollbar.on_navigation([&](cppgui::Navigation_unit unit, cppgui::Position initial_pos, const cppgui::Fraction<int> &amount) {
 
         // TODO: all the following could be implemented as default actions on Vertical_scrollbar itself
@@ -130,6 +129,7 @@ Test_window::Test_window(): Parent("Test window")
             _scrollbar_pos.change_text(std::to_string(_vert_scrollbar.current_position()));
         }
     });
+    */
 
     _scrollbar_pos.set_font(dflt_font);
     _scrollbar_pos.set_position({800, 50});

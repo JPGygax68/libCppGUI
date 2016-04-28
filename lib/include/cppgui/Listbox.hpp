@@ -29,7 +29,7 @@ namespace cppgui {
         void add_item(Layoutable_widget_t *);
 
     protected:
-        using Vertical_scrollbar_t = Vertical_scrollbar<Config, With_layout>;
+        using Vertical_scrollbar_t = Custom_vertical_scrollbar<Config, With_layout>;
 
         Container_t             _content_pane;
     };
