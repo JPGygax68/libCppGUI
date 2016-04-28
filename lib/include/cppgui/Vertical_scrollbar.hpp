@@ -55,15 +55,15 @@ namespace cppgui {
         auto current_position() -> Position; // TODO: use rational number instead ?
         void change_position(Position); // TODO: assert() against calling this while not at end of navigation ?
 
-        // Actions
-        void page_up();
-        void page_down();
-
     protected:
         using Glyph_button_t = typename Glyph_button<Config, With_layout>;
 
+        // To be implemented in derived class (via CRTP)
+        void move_by_page(int delta) { static_assert(false); }
+        void move_by_elements(int delta) { static_assert(false); }
+        void move_by_fraction(Position initial_pos, const Fraction<int> &delta) { static_assert(false); }
+
         void move_thumb_to(Position);
-        void move_by_elements(int delta);
         void recalc_thumb();
         void clip_thumb_pos();
         //void notify_position_change();
@@ -106,11 +106,15 @@ namespace cppgui {
         };
     };
 
-    // Standalone_vertical_scrollbar ================================
+    // Standalone specialization ====================================
 
     template<class Config, bool With_layout>
     class Vertical_scrollbar: public Vertical_scrollbar_base<Vertical_scrollbar<Config, With_layout>, Config, With_layout>
     {
+    public:
+        void move_by_page(int delta);
+        void move_by_elements(int delta);
+        void move_by_fraction(Position initial_pos, const Fraction<int> &delta);
     };
 
 } // ns cppgui

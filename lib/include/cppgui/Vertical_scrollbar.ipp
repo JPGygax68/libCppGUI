@@ -11,8 +11,8 @@ namespace cppgui {
         _up_btn  .set_focussable(false);
         _down_btn.set_focussable(false);
 
-        _up_btn  .on_push([this](const Point &) { move_by_elements(-1); });
-        _down_btn.on_push([this](const Point &) { move_by_elements( 1); });
+        _up_btn  .on_push([this](const Point &) { static_cast<Impl*>(this)->move_by_elements(-1); });
+        _down_btn.on_push([this](const Point &) { static_cast<Impl*>(this)->move_by_elements( 1); });
 
         add_child(&_up_btn  );
         add_child(&_down_btn);
@@ -88,12 +88,12 @@ namespace cppgui {
                 // Above thumb ?
                 if (y_rel < 0)
                 {
-                    page_up();
+                    static_cast<Impl*>(this)->move_by_page(-1);
                 }
                 // Below thumb ?
                 else if (y_rel > _thumb_rect.ext.bottom())
                 {
-                    page_down();
+                    static_cast<Impl*>(this)->move_by_page(1);
                 }
                 else // On thumb
                 {
@@ -142,8 +142,7 @@ namespace cppgui {
     template<class Impl, class Config, bool With_layout>
     void Vertical_scrollbar_base<Impl, Config, With_layout>::mouse_wheel(const Vector &delta)
     {
-        //move_thumb_to(_thumb_rect.pos.y - delta.y * _element_length);
-        move_by_elements(-delta.y);
+        static_cast<Impl*>(this)->move_by_elements(-delta.y);
     }
 
     template<class Impl, class Config, bool With_layout>
@@ -180,28 +179,6 @@ namespace cppgui {
     }
 
     template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::page_up()
-    {
-        //_thumb_rect.pos.y -= static_cast<Position>(_thumb_rect.ext.h);
-        clip_thumb_pos();
-        //notify_position_change();
-        // Note: the nav handler must update the position in response
-        if (_nav_handler) _nav_handler(page, current_position(), { -1, 1 });
-        invalidate();
-    }
-
-    template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::page_down()
-    {
-        //_thumb_rect.pos.y += static_cast<Position>(_thumb_rect.ext.h);
-        clip_thumb_pos();
-        //notify_position_change();
-        // Note: the nav handler must update the position in response
-        if (_nav_handler) _nav_handler(page, current_position(), { 1, 1 });
-        invalidate();
-    }
-
-    template<class Impl, class Config, bool With_layout>
     void Vertical_scrollbar_base<Impl, Config, With_layout>::move_thumb_to(Position new_pos)
     {
         new_pos = std::max(new_pos, _sliding_range.start());
@@ -210,17 +187,6 @@ namespace cppgui {
         _thumb_rect.pos = {2, new_pos};
         
         //notify_position_change();
-        invalidate();
-    }
-
-    template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::move_by_elements(int delta)
-    {
-        //_thumb_rect.pos.y += delta * static_cast<Position>((_sliding_range.l - _thumb_rect.ext.h) * _element_length / (_range - _shown_length));
-        //clip_thumb_pos();
-        //notify_position_change();
-        // Note: the navigation handler must update the position in response
-        if (_nav_handler) _nav_handler(Navigation_unit::element, current_position(), { delta, 1 });
         invalidate();
     }
 
@@ -252,18 +218,10 @@ namespace cppgui {
         {
             if (delta != 0)
             {
-                _nav_handler(Navigation_unit::fraction, _drag_start_pos, { delta, static_cast<int>(_sliding_range.l) });
+                static_cast<Impl*>(this)->move_by_fraction(_drag_start_pos, { delta, static_cast<int>(_sliding_range.l - _thumb_rect.ext.h) });
             }
         }
     }
-
-    /*
-    template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::notify_position_change()
-    {
-        if (_on_position_change) _on_position_change( current_position() );
-    }
-    */
 
     // Layouter aspect ----------------------------------------------
 
@@ -287,6 +245,40 @@ namespace cppgui {
 
         p()->_up_btn  .layout();
         p()->_down_btn.layout();
+    }
+
+    // Standalone_vertical_scrollbar ================================
+
+    template<class Config, bool With_layout>
+    void Vertical_scrollbar<Config, With_layout>::move_by_page(int delta)
+    {
+        // Note: the nav handler must update the position in response
+
+        if (_nav_handler)
+        {
+            _nav_handler(Navigation_unit::page, current_position(), { delta, 1 });
+            //invalidate();
+        }
+    }
+
+    template<class Config, bool With_layout>
+    void Vertical_scrollbar<Config, With_layout>::move_by_elements(int delta)
+    {
+        if (_nav_handler)
+        {
+            _nav_handler(Navigation_unit::element, current_position(), { delta, 1 });
+            //invalidate();
+        }
+    }
+
+    template<class Config, bool With_layout>
+    void Vertical_scrollbar<Config, With_layout>::move_by_fraction(Position initial_pos, const Fraction<int> &delta)
+    {
+        if (_nav_handler)
+        {
+            _nav_handler(Navigation_unit::fraction, initial_pos, delta);
+            //invalidate();
+        }
     }
 
 } // ns cppgui
