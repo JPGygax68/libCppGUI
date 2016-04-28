@@ -2,8 +2,8 @@
 
 namespace cppgui {
 
-    template<class Config, bool With_layout>
-    Vertical_scrollbar<Config, With_layout>::Vertical_scrollbar()
+    template<class Impl, class Config, bool With_layout>
+    Vertical_scrollbar_base<Impl, Config, With_layout>::Vertical_scrollbar_base()
     {
         _up_btn  .set_glyph(cppgui::Icon_resources<24>::up_arrow  ());
         _down_btn.set_glyph(cppgui::Icon_resources<24>::down_arrow());
@@ -19,29 +19,29 @@ namespace cppgui {
         //add_child(&_thumb);
     }
 
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::on_navigation(Navigation_handler handler)
+    template<class Impl, class Config, bool With_layout>
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::on_navigation(Navigation_handler handler)
     {
         _nav_handler = handler;
     }
 
     /*
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::on_position_change(Position_change_handler handler)
+    template<class Impl, class Config, bool With_layout>
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::on_position_change(Position_change_handler handler)
     {
         _on_position_change = handler;
     }
     */
 
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::define_range(Length full, Length shown)
+    template<class Impl, class Config, bool With_layout>
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::define_range(Length full, Length shown)
     {
         _range = full;
         _thumb_length = shown;
     }
 
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::init()
+    template<class Impl, class Config, bool With_layout>
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::init()
     {
         Container_t::init();
 
@@ -51,8 +51,8 @@ namespace cppgui {
         recalc_thumb();
     }
 
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::render(Canvas_t *canvas, const Point &offset)
+    template<class Impl, class Config, bool With_layout>
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::render(Canvas_t *canvas, const Point &offset)
     {
         // Background
         // TODO: only draw the part not covered by the buttons ?
@@ -68,16 +68,16 @@ namespace cppgui {
 
     // TODO: test!!
 
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::change_range(Length full, Length shown)
+    template<class Impl, class Config, bool With_layout>
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::change_range(Length full, Length shown)
     {
         define_range(full, shown);
         recalc_thumb();
         invalidate();
     }
 
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state)
+    template<class Impl, class Config, bool With_layout>
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state)
     {
         if (button == 1 && state == Key_state::pressed)
         {
@@ -119,8 +119,8 @@ namespace cppgui {
         Container_t::mouse_button(pos, button, state);
     }
 
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::mouse_motion(const Point &pos)
+    template<class Impl, class Config, bool With_layout>
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::mouse_motion(const Point &pos)
     {
         std::cout << "mouse_motion: " << pos.x << ", " << pos.y << std::endl;
 
@@ -139,15 +139,15 @@ namespace cppgui {
             Container_t::mouse_motion(pos);
     }
 
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::mouse_wheel(const Vector &delta)
+    template<class Impl, class Config, bool With_layout>
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::mouse_wheel(const Vector &delta)
     {
         //move_thumb_to(_thumb_rect.pos.y - delta.y * _element_length);
         move_by_elements(-delta.y);
     }
 
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::mouse_exit()
+    template<class Impl, class Config, bool With_layout>
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::mouse_exit()
     {
         if (_thumb_hovered)
         {
@@ -158,8 +158,8 @@ namespace cppgui {
         Container_t::mouse_exit();
     }
 
-    template<class Config, bool With_layout>
-    auto Vertical_scrollbar<Config, With_layout>::current_position() -> Position // Fraction<>
+    template<class Impl, class Config, bool With_layout>
+    auto Vertical_scrollbar_base<Impl, Config, With_layout>::current_position() -> Position // Fraction<>
     {
         /* return { 
             static_cast<unsigned int>(_thumb_rect.pos.y - _sliding_range.start()), 
@@ -169,8 +169,8 @@ namespace cppgui {
         return _range * (_thumb_rect.pos.y - _sliding_range.start()) / static_cast<Position>(_sliding_range.l - _thumb_rect.ext.h);
     }
 
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::change_position(Position pos)
+    template<class Impl, class Config, bool With_layout>
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::change_position(Position pos)
     {
         if (pos < 0) pos = 0; else if (pos > _range) pos = _range;
 
@@ -179,8 +179,8 @@ namespace cppgui {
         invalidate();
     }
 
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::page_up()
+    template<class Impl, class Config, bool With_layout>
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::page_up()
     {
         //_thumb_rect.pos.y -= static_cast<Position>(_thumb_rect.ext.h);
         clip_thumb_pos();
@@ -190,8 +190,8 @@ namespace cppgui {
         invalidate();
     }
 
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::page_down()
+    template<class Impl, class Config, bool With_layout>
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::page_down()
     {
         //_thumb_rect.pos.y += static_cast<Position>(_thumb_rect.ext.h);
         clip_thumb_pos();
@@ -201,8 +201,8 @@ namespace cppgui {
         invalidate();
     }
 
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::move_thumb_to(Position new_pos)
+    template<class Impl, class Config, bool With_layout>
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::move_thumb_to(Position new_pos)
     {
         new_pos = std::max(new_pos, _sliding_range.start());
         new_pos = std::min(new_pos, _sliding_range.end() - static_cast<Position>(_thumb_rect.ext.h));
@@ -213,8 +213,8 @@ namespace cppgui {
         invalidate();
     }
 
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::move_by_elements(int delta)
+    template<class Impl, class Config, bool With_layout>
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::move_by_elements(int delta)
     {
         //_thumb_rect.pos.y += delta * static_cast<Position>((_sliding_range.l - _thumb_rect.ext.h) * _element_length / (_range - _shown_length));
         //clip_thumb_pos();
@@ -224,16 +224,16 @@ namespace cppgui {
         invalidate();
     }
 
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::recalc_thumb()
+    template<class Impl, class Config, bool With_layout>
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::recalc_thumb()
     {
         _thumb_rect.ext.h = _sliding_range.l * _thumb_length / _range;
 
         clip_thumb_pos();
     }
 
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::clip_thumb_pos()
+    template<class Impl, class Config, bool With_layout>
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::clip_thumb_pos()
     {
         if (_thumb_rect.bottom() > _sliding_range.end())
         {
@@ -245,8 +245,8 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::notify_drag_navigation(Position_delta delta)
+    template<class Impl, class Config, bool With_layout>
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::notify_drag_navigation(Position_delta delta)
     {
         if (_nav_handler)
         {
@@ -258,8 +258,8 @@ namespace cppgui {
     }
 
     /*
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::notify_position_change()
+    template<class Impl, class Config, bool With_layout>
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::notify_position_change()
     {
         if (_on_position_change) _on_position_change( current_position() );
     }
@@ -267,9 +267,9 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template<class Config>
+    template<class Impl, class Config>
     template<class Aspect_parent>
-    void Vertical_scrollbar__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    void Vertical_scrollbar__Layouter<Impl, Config, true>::Aspect<Aspect_parent>::layout()
     {
         auto ext = p()->extents();
 

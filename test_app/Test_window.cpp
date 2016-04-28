@@ -112,6 +112,7 @@ Test_window::Test_window(): Parent("Test window")
 
         if (unit == cppgui::Navigation_unit::element)
         {
+            assert(amount.den == 1);
             _vert_scrollbar.change_position(initial_pos + amount.num * 10);
             _scrollbar_pos.change_text(std::to_string(_vert_scrollbar.current_position()));
         }

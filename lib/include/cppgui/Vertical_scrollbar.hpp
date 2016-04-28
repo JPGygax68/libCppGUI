@@ -8,28 +8,27 @@ namespace cppgui {
 
     // Forward declarations
 
-    template <class Config, bool With_layout>
+    template <class Impl, class Config, bool With_layout>
     struct Vertical_scrollbar__Layouter {
         template <class Aspect_parent> struct Aspect;
     };
 
-    template <class Config, bool With_layout> class Vertical_scrollbar_thumb;
+    // Base class ===================================================
 
     // Class declaration
 
-    template<class Config, bool With_layout>
-    class Vertical_scrollbar: public Vertical_scrollbar__Layouter<Config, With_layout>::template Aspect< Container<Config, With_layout> >
+    template<class Impl, class Config, bool With_layout>
+    class Vertical_scrollbar_base: public Vertical_scrollbar__Layouter<Impl, Config, With_layout>::template Aspect< Container<Config, With_layout> >
     {
     public:
         using Widget_t = typename Widget<Config, With_layout>;
         using Container_t = typename Container<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
-        using Thumb_t = typename Vertical_scrollbar_thumb<Config, With_layout>;
 
         //using Position_change_handler = std::function<void(const Fraction<> &)>;
         using Navigation_handler = std::function<void(Navigation_unit, Position initial_pos, const Fraction<int> &delta)>; //, bool ending)>;
 
-        Vertical_scrollbar();
+        Vertical_scrollbar_base();
 
         //void on_position_change(Position_change_handler);
         void on_navigation(Navigation_handler);
@@ -63,8 +62,6 @@ namespace cppgui {
     protected:
         using Glyph_button_t = typename Glyph_button<Config, With_layout>;
 
-        friend Thumb_t;
-        
         void move_thumb_to(Position);
         void move_by_elements(int delta);
         void recalc_thumb();
@@ -89,8 +86,8 @@ namespace cppgui {
 
     // Layouter aspect
 
-    template <class Config>
-    struct Vertical_scrollbar__Layouter<Config, true> {
+    template <class Impl, class Config>
+    struct Vertical_scrollbar__Layouter<Impl, Config, true> {
         template <class Aspect_parent> struct Aspect: public Aspect_parent {
 
             // Layouter contract
@@ -103,67 +100,18 @@ namespace cppgui {
             // TODO
 
         protected:
-            class Vertical_scrollbar_t: public Vertical_scrollbar<Config, true> { friend struct Aspect; };
+            class Vertical_scrollbar_base_t: public Vertical_scrollbar_base<Impl, Config, true> { friend struct Aspect; };
 
-            auto p() { return static_cast<Vertical_scrollbar_t*>(this); }
+            auto p() { return static_cast<Vertical_scrollbar_base_t*>(this); }
         };
     };
 
-    #ifdef THUMB_AS_WIDGET
-
-    // Thumb --------------------------------------------------------
-
-    template <class Config, bool With_layout> struct Vertical_scrollbar_thumb__Layouter {
-        template<class Aspect_parent> struct Aspect: public Aspect_parent {};
-    };
+    // Standalone_vertical_scrollbar ================================
 
     template<class Config, bool With_layout>
-    class Vertical_scrollbar_thumb: public Vertical_scrollbar_thumb__Layouter<Config, With_layout>::template Aspect< Widget<Config, With_layout> >
+    class Vertical_scrollbar: public Vertical_scrollbar_base<Vertical_scrollbar<Config, With_layout>, Config, With_layout>
     {
-    public:
-        using Widget_t = typename Widget<Config, With_layout>;
-        using Vertical_scrollbar_t = typename Vertical_scrollbar<Config, With_layout>;
-        using Canvas_t = typename Widget_t::Canvas_t;
-
-        void mouse_button(const Point &, int button, Key_state) override;
-        void mouse_motion(const Point &) override;
-        //void mouse_exit() override;
-
-        void render(Canvas_t *, const Point &offset) override;
-
-    protected:
-        using Drag_controller_t = Drag_controller<Config, With_layout>;
-
-        auto scrollbar() { return static_cast<Vertical_scrollbar_t*>(container()); }
-
-        Drag_controller_t       _drag_ctl;
-        Position                  _drag_start_pos;
     };
-
-    // Thumb layouter aspect
-
-    template <class Config>
-    struct Vertical_scrollbar_thumb__Layouter<Config, true> {
-        template <class Aspect_parent> struct Aspect: public Aspect_parent {
-
-            // Layouter contract
-
-            void init_layout() override;
-            auto get_minimal_size() -> Extents override;
-            void layout() override;
-
-            // Extra capabilities coming with layouting
-            // TODO
-
-        protected:
-            class Vertical_scrollbar_thumb_t: public Vertical_scrollbar_thumb<Config, true> { friend struct Aspect; };
-            using Vertical_scrollbar_t = Vertical_scrollbar<Config, true>;
-
-            auto p() { return static_cast<Vertical_scrollbar_thumb_t*>(this); }
-        };
-    };
-
-    #endif
 
 } // ns cppgui
 
