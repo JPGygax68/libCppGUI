@@ -33,7 +33,7 @@ namespace cppgui {
         auto full = h;
         auto h_item = h / content_pane.children().size();
         auto shown = h_item * (p()->content_rect().ext.h / h_item);
-        p()->scrollbar().define_range(full, shown, h_item);
+        p()->scrollbar().define_range(full, shown);
     }
 
 } // ns cppgui

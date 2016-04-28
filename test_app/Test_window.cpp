@@ -105,18 +105,28 @@ Test_window::Test_window(): Parent("Test window")
     }); */
     _vert_scrollbar.on_navigation([&](cppgui::Navigation_unit unit, cppgui::Position initial_pos, const cppgui::Fraction<int> &amount) {
 
+        // TODO: all the following could be implemented as default actions on Vertical_scrollbar itself
+        // Better yet, it could be done via specialization: Vertical_scrollbar_base (calling navigation methods implemented by specializations), 
+        // Slave_vertical_scrollbar (which uses the on_navigation() callback), Vertical_scrollbar or Master_vertical_scrollbar (which handles
+        // navigation by itself and offers a callback to notify changes of value)
+
         if (unit == cppgui::Navigation_unit::element)
         {
-            //_vert_scrollbar.change_position(_vert_scrollbar.current_position() + amount.num * 10);
             _vert_scrollbar.change_position(initial_pos + amount.num * 10);
+            _scrollbar_pos.change_text(std::to_string(_vert_scrollbar.current_position()));
+        }
+        else if (unit == cppgui::Navigation_unit::page)
+        {
+            auto delta = static_cast<cppgui::Position_delta>(_vert_scrollbar.thumb_length()) * amount.num / amount.den;
+            _vert_scrollbar.change_position(initial_pos + delta);
             _scrollbar_pos.change_text(std::to_string(_vert_scrollbar.current_position()));
         }
         else if (unit == cppgui::Navigation_unit::fraction)
         {
-            auto delta = _vert_scrollbar.range_length() * amount.num / amount.den;
+            auto delta = _vert_scrollbar.range() * amount.num / amount.den;
             if (delta == 0) delta = amount.num * amount.den < 0 ? -1 : 1;
-            _scrollbar_pos.change_text(std::to_string(_vert_scrollbar.current_position()));
             _vert_scrollbar.change_position(initial_pos + delta);
+            _scrollbar_pos.change_text(std::to_string(_vert_scrollbar.current_position()));
         }
     });
 

@@ -38,7 +38,7 @@ namespace cppgui {
             range and the "shown" range, visually represented by the "slide" between
             the up/down buttons and the length of the thumb, respectively.
          */
-        void define_range(Position full, Position shown, Position element = 0);
+        void define_range(Length full, Length shown);
 
         void init() override;
 
@@ -49,9 +49,9 @@ namespace cppgui {
 
         void render(Canvas_t *, const Point &offset) override;
 
-        void change_range(Position full, Position shown, Position element = 0);
-        auto range_length() const { return _full_length; }
-        auto covered_length() const { return _covered_length; }
+        void change_range(Length range, Length thumb);
+        auto range() const { return _range; }
+        auto thumb_length() const { return _thumb_length; }
 
         auto current_position() -> Position; // TODO: use rational number instead ?
         void change_position(Position); // TODO: assert() against calling this while not at end of navigation ?
@@ -75,7 +75,7 @@ namespace cppgui {
         Glyph_button_t          _up_btn, _down_btn;
         //Position_change_handler _on_position_change;
         Navigation_handler      _nav_handler;
-        Position                _full_length = 0, _covered_length = 0, _element_length = 0;
+        Position                _range = 0, _thumb_length = 0;
 
         Range                   _sliding_range;
         Rectangle               _thumb_rect;
