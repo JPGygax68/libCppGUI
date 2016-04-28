@@ -47,8 +47,11 @@ namespace cppgui {
         Color       color;
     };
 
-    enum Navigation_step {
-        beginning, end, previous_page, next_page, previous_element, next_element
+    enum Navigation_unit {
+        full_range                  /* 0: to beginning, 1: to end */, 
+        page,
+        fraction                    /* when dragging the thumb, expressed as 1/1000000 of the range */,
+        element
     };
 
 } // ns cppgui

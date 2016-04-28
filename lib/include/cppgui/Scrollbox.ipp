@@ -9,11 +9,14 @@ namespace cppgui {
     {
         _vert_sbar.set_focussable(false);
 
+        /*
         _vert_sbar.on_position_change([this](const Fraction<> &pos) {
 
             _content->set_position({ 0, - static_cast<Position>((_content->extents().h - extents().h) * pos.num / pos.den) });
             invalidate();
         });
+        */
+        // TODO: _vert_sbar.on_navigation(...)
 
         add_child(&_vert_sbar);
     }

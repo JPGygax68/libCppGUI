@@ -51,6 +51,15 @@ To avoid requiring forking Scrollbox, delegated navigation could be introduced i
 
 This appears (and is) somewhat complicated, but does offer the advantage of greater flexibility, and thus less hassle when implementing things like grids and even treeviews later on.
 
+---------
+
+The Scrollbar class is becoming a problem, as one other class to redesign. I believe it is a good strategy to redefine its responsibility now: it should no longer try to keep track of a position by itself (as it does now, in the form of a fraction), but leave that to its client, which will in turn update the position and size of the thumb.
+
+--------------
+
+Idea: implement notification (such as "Position_change" in Scrollbar) as nil-able aspects ?
+
+
 2016-04-27
 ==========
 

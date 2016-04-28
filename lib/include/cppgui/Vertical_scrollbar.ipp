@@ -20,16 +20,24 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Vertical_scrollbar<Config, With_layout>::on_navigation(Navigation_handler handler)
+    {
+        _nav_handler = handler;
+    }
+
+    /*
+    template<class Config, bool With_layout>
     void Vertical_scrollbar<Config, With_layout>::on_position_change(Position_change_handler handler)
     {
         _on_position_change = handler;
     }
+    */
 
     template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::define_range(Length full, Length shown, Length element)
+    void Vertical_scrollbar<Config, With_layout>::define_range(Position full, Position shown, Position element)
     {
         _full_length = full;
-        _shown_length = shown;
+        _covered_length = shown;
         _element_length = element == 0 ? shown / 10 : element;
     }
 
@@ -62,7 +70,7 @@ namespace cppgui {
     // TODO: test!!
 
     template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::change_range(Length full, Length shown, Length element)
+    void Vertical_scrollbar<Config, With_layout>::change_range(Position full, Position shown, Position element)
     {
         define_range(full, shown, element);
         recalc_thumb();
@@ -92,6 +100,7 @@ namespace cppgui {
                 {
                     _thumb_drag_anchor_pos = pos.y;
                     _thumb_drag_start_pos = _thumb_rect.pos.y;
+                    _drag_start_pos = current_position();
                     _dragging_thumb = true;
                     root_widget()->capture_mouse(this);
                 }
@@ -125,8 +134,7 @@ namespace cppgui {
 
         if (Config::Mouse::is_button_down(1) && _dragging_thumb)
         {
-            auto delta = pos.y - _thumb_drag_anchor_pos;
-            move_thumb_to(_thumb_drag_start_pos + delta);
+            notify_drag_navigation(pos.y - _thumb_drag_anchor_pos);
         }
         else
             Container_t::mouse_motion(pos);
@@ -152,29 +160,45 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    auto Vertical_scrollbar<Config, With_layout>::current_position() -> Fraction<>
+    auto Vertical_scrollbar<Config, With_layout>::current_position() -> Position // Fraction<>
     {
-        return { 
+        /* return { 
             static_cast<unsigned int>(_thumb_rect.pos.y - _sliding_range.start()), 
             _sliding_range.l - _thumb_rect.ext.h
-        };
+        }; */
+
+        return _full_length * (_thumb_rect.pos.y - _sliding_range.start()) / static_cast<Position>(_sliding_range.l - _thumb_rect.ext.h);
+    }
+
+    template<class Config, bool With_layout>
+    void Vertical_scrollbar<Config, With_layout>::change_position(Position pos)
+    {
+        if (pos < 0) pos = 0; else if (pos > _full_length) pos = _full_length;
+
+        _thumb_rect.pos.y = _sliding_range.p + static_cast<Position>(pos * (_sliding_range.l - _thumb_rect.ext.h) / _full_length);
+
+        invalidate();
     }
 
     template<class Config, bool With_layout>
     void Vertical_scrollbar<Config, With_layout>::page_up()
     {
-        _thumb_rect.pos.y -= static_cast<Position>(_thumb_rect.ext.h);
+        //_thumb_rect.pos.y -= static_cast<Position>(_thumb_rect.ext.h);
         clip_thumb_pos();
-        notify_position_change();
+        //notify_position_change();
+        // Note: the nav handler must update the position in response
+        if (_nav_handler) _nav_handler(page, current_position(), { -1, 1 });
         invalidate();
     }
 
     template<class Config, bool With_layout>
     void Vertical_scrollbar<Config, With_layout>::page_down()
     {
-        _thumb_rect.pos.y += static_cast<Position>(_thumb_rect.ext.h);
+        //_thumb_rect.pos.y += static_cast<Position>(_thumb_rect.ext.h);
         clip_thumb_pos();
-        notify_position_change();
+        //notify_position_change();
+        // Note: the nav handler must update the position in response
+        if (_nav_handler) _nav_handler(page, current_position(), { 1, 1 });
         invalidate();
     }
 
@@ -186,23 +210,25 @@ namespace cppgui {
 
         _thumb_rect.pos = {2, new_pos};
         
-        notify_position_change();
+        //notify_position_change();
         invalidate();
     }
 
     template<class Config, bool With_layout>
     void Vertical_scrollbar<Config, With_layout>::move_by_elements(int delta)
     {
-        _thumb_rect.pos.y += delta * static_cast<Position>((_sliding_range.l - _thumb_rect.ext.h) * _element_length / (_full_length - _shown_length));
-        clip_thumb_pos();
-        notify_position_change();
+        //_thumb_rect.pos.y += delta * static_cast<Position>((_sliding_range.l - _thumb_rect.ext.h) * _element_length / (_full_length - _shown_length));
+        //clip_thumb_pos();
+        //notify_position_change();
+        // Note: the navigation handler must update the position in response
+        if (_nav_handler) _nav_handler(Navigation_unit::element, current_position(), { delta, 1 });
         invalidate();
     }
 
     template<class Config, bool With_layout>
     void Vertical_scrollbar<Config, With_layout>::recalc_thumb()
     {
-        _thumb_rect.ext.h = _sliding_range.l * _shown_length / _full_length;
+        _thumb_rect.ext.h = _sliding_range.l * _covered_length / _full_length;
 
         clip_thumb_pos();
     }
@@ -221,10 +247,24 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Vertical_scrollbar<Config, With_layout>::notify_drag_navigation(Position_delta delta)
+    {
+        if (_nav_handler)
+        {
+            if (delta != 0)
+            {
+                _nav_handler(Navigation_unit::fraction, _drag_start_pos, { delta, static_cast<int>(_sliding_range.l) });
+            }
+        }
+    }
+
+    /*
+    template<class Config, bool With_layout>
     void Vertical_scrollbar<Config, With_layout>::notify_position_change()
     {
         if (_on_position_change) _on_position_change( current_position() );
     }
+    */
 
     // Layouter aspect ----------------------------------------------
 
@@ -249,66 +289,5 @@ namespace cppgui {
         p()->_up_btn  .layout();
         p()->_down_btn.layout();
     }
-
-
-    // Thumb ========================================================
-
-    #ifdef THUMB_AS_WIDGET
-
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar_thumb<Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state)
-    {
-        if (button == 1 && state == Key_state::pressed)
-        {
-            scrollbar()->start_drag()
-            _drag_ctl.start_drag(scrollbar(), pos);
-            _drag_start_pos = position().y;
-        }
-        else if (button == 1 && state == Key_state::released)
-        {
-            _drag_ctl.end_drag(this);
-        }
-        else
-            Widget_t::mouse_button(pos, button, state);
-    }
-
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar_thumb<Config, With_layout>::render(Canvas_t *canvas, const Point & offset)
-    {
-        // TODO: obtain colors from style sheet
-        auto color = canvas->rgba_to_native(hovered() ? Color {0.9f, 0.9f, 0.9f, 1} : Color {0.8f, 0.8f, 0.8f, 1});
-
-        fill(canvas, offset, color);
-    }
-
-    // Layouter aspect ----------------------------------------------
-
-    template<class Config>
-    template<class Aspect_parent>
-    void Vertical_scrollbar_thumb__Layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
-    {
-        // TODO ?
-    }
-
-    template<class Config>
-    template<class Aspect_parent>
-    auto Vertical_scrollbar_thumb__Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
-    {
-        // TODO!
-
-        return {};
-    }
-
-    template<class Config>
-    template<class Aspect_parent>
-    void Vertical_scrollbar_thumb__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
-    {
-        auto scrollbar = static_cast<Vertical_scrollbar_t*>(p()->container());
-
-        //p()->set_position({ 2, 2 });
-        p()->set_extents ({ scrollbar->extents().w - 4, 10 }); // height is temporary
-    }
-
-    #endif // THUMB_AS_WIDGET
 
 } // ns cppgui

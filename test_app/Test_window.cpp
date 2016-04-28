@@ -100,9 +100,24 @@ Test_window::Test_window(): Parent("Test window")
     _vert_scrollbar.set_position({ 750,  50 });
     _vert_scrollbar.set_extents ({  30, 200 });
     _vert_scrollbar.define_range(150, 40);
-    _vert_scrollbar.on_position_change([&](const cppgui::Fraction<> &pos) {
-
+    /* _vert_scrollbar.on_position_change([&](const cppgui::Fraction<> &pos) {
         _scrollbar_pos.change_text( std::to_string(pos.num) + "/" + std::to_string(pos.den) );
+    }); */
+    _vert_scrollbar.on_navigation([&](cppgui::Navigation_unit unit, cppgui::Position initial_pos, const cppgui::Fraction<int> &amount) {
+
+        if (unit == cppgui::Navigation_unit::element)
+        {
+            //_vert_scrollbar.change_position(_vert_scrollbar.current_position() + amount.num * 10);
+            _vert_scrollbar.change_position(initial_pos + amount.num * 10);
+            _scrollbar_pos.change_text(std::to_string(_vert_scrollbar.current_position()));
+        }
+        else if (unit == cppgui::Navigation_unit::fraction)
+        {
+            auto delta = _vert_scrollbar.range_length() * amount.num / amount.den;
+            if (delta == 0) delta = amount.num * amount.den < 0 ? -1 : 1;
+            _scrollbar_pos.change_text(std::to_string(_vert_scrollbar.current_position()));
+            _vert_scrollbar.change_position(initial_pos + delta);
+        }
     });
 
     _scrollbar_pos.set_font(dflt_font);

@@ -7,6 +7,7 @@ namespace cppgui {
     // 1D ----------------------------
 
     using Position = int;
+    using Position_delta = Position;
     using Length = unsigned int;
     using Width = Length;
 
