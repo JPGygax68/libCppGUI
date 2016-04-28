@@ -7,7 +7,7 @@ namespace cppgui {
     {
         _content_pane.set_layout_type(Layout_type::stack); // TODO: will need adapting
 
-        set_content(&_content_pane);
+        set_content_pane(&_content_pane);
     }
 
     template<class Config, bool With_layout>
