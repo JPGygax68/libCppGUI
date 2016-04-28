@@ -16,18 +16,24 @@ namespace cppgui {
         _content_pane.add_child(item);
     }
 
+    // Layouter aspect ----------------------------------------------
+
     template<class Config>
     template<class Aspect_parent>
     void Listbox__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
-        p()->_content_pane.set_extents({ p()->content_rect().ext.w, p()->_content_pane.get_minimal_size().h });
+        auto& content_pane = p()->_content_pane;
+        auto w = p()->content_rect().ext.w;
+        auto h = content_pane.get_minimal_size().h;
+        //h = n * ((h + content_pane.children()[0]->extents().h - 1) / n); // TODO: graceful failure when there are no children
+        p()->_content_pane.set_extents({ w, h });
 
         Scrollbox_t::layout();
 
-        auto full  = p()->_content_pane.children().size();
-        auto shown = full * p()->content_rect().ext.h / p()->_content_pane.extents().h;
-
-        p()->scrollbar().define_range(full, shown, 1);
+        auto full = h;
+        auto h_item = h / content_pane.children().size();
+        auto shown = h_item * (p()->content_rect().ext.h / h_item);
+        p()->scrollbar().define_range(full, shown, h_item);
     }
 
 } // ns cppgui
