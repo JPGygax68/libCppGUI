@@ -1,3 +1,56 @@
+2016-04-28
+==========
+
+First implementation attempt of the Listbox failed (as in "almost worked").
+
+Working on it revealed a problem I had forgotten about: the fact that the thumb cannot usually be perfectly synchronized with the content area it is linked with.
+
+It is therefore important, when moving the thumb by dragging it, that the thumb *movement* be used as input, and NOT its position!
+
+It may also be helpful to "normalize" the thumb's position after a dragging operation has ended - in fact, that would probably be the only way to ensure that the thumb can reliably be moved to either end position.
+
+It may also mean that implementing the Listbox as a specialization of Scrollbox was a bad idea. Though the current implementation of the Scrollbox only has a vertical scrollbar, that will change in the future, while a Listbox usually does not have a horizontal scrollbox; in fact, it would be possible to compute the minimal width of a Listbox on the basis of the widest of its contained items, all but removing the remaining similarities.
+  
+  -> Q: is there a legitimate use case for a list box with a horizontal scrollbar ? -> YES, thinking about it, this is quite possible
+  
+Therefore, is it still possible and a good idea to implement Listbox as a derivation of Scrollbox ?
+
+I think the answer is YES: all it really takes is a way to customize the navigation, i.e. to leave it to the concrete implementation to decide by how much to travel when one of the buttons is pushed, the mousewheel is used, the slide range is clicked either before or after the thumb, or the equivalent action is performed via the keyboard.
+
+Touch-based navigation, implementation of which hasn't started yet, is another incentive to have a single implementation.
+
+Instead of derivation, how about using composition ? Let the scrollbox ask its content pane how far to travel, while to scrollbox still does the travelling itself ?
+
+  -> Might work, but what about selecting/focusing/highlighting items ?
+    
+    -> This must be done using a "bring into view" mechanism, which is quite distinct from scrolling itself:
+      - Scrollbox gets input (scrollbar, keyboard) for "up/down one item"
+      - Scrollbox sends that input along to its content pane
+      - Content pane changes its "selected item", notes its position
+      - Content pane tells container scrollbox to "bring into view" rectangle of newly selected item
+  
+About travelling:
+
+  - With a standard scrollbox, the travelled amount is arbitrary for "single step", while the amount for "page up" / "page down" is simply the visible size (= the inner rect of the scrollbox), possibly minus a configurable "overlap".
+  
+  - With a listbox, the "single step" is the step from the beginning of the first visible item to the beginning of the next one.
+    
+Possible approach:
+
+- Scrollable_pane as a specialization of Container, adding the ability to communicate with the scroll box:
+  - notify the scrollbox of changes to its size (scrollbox then updates the offset of the pane, and the position of the thumb)
+
+- Grid_pane (or, for the time being, List_pane), as a specialization of Scrollable_pane, adding the abilities:
+  - Informing the container (the scrollbox) about the travelling distance for "up" and "down" (separately), which may depend on the height of the first/last item
+  
+The problem with this is that it requires either unecessary virtual methods, or two separate specializations of Scrollbox.
+
+An acceptable compromise would be combine delegated navigation with default navigation, by giving precedence to the former.
+
+To avoid requiring forking Scrollbox, delegated navigation could be introduced in Scrollable_pane as inline no-ops (even constexpr); the concrete type of the content pane could then be injected into Scrollbox as a template parameter.
+
+This appears (and is) somewhat complicated, but does offer the advantage of greater flexibility, and thus less hassle when implementing things like grids and even treeviews later on.
+
 2016-04-27
 ==========
 
@@ -20,6 +73,7 @@ What is to be done?
 - Regardless of possible differences in height, each "item widget" counts as a single step navigation-wise
 
 - Layouting of the scrollbox will be based on a configurable number (on the layouter aspect) of "maximum visible items"
+  -> NO, that is not possible -> it might be done for get_minimal_size() though
 
 - It is probably best to put the items into a sub-container with "stack" layouting (which may need to be slightly adapted)
 

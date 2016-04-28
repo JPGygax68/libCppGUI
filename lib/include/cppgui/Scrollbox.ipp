@@ -4,8 +4,8 @@ namespace cppgui {
 
     // Main class -----------------------------------------
 
-    template<class Config, bool With_layout>
-    Scrollbox<Config, With_layout>::Scrollbox()
+    template<class Config, bool With_layout, class Pane>
+    Scrollbox<Config, With_layout, Pane>::Scrollbox()
     {
         _vert_sbar.set_focussable(false);
 
@@ -18,14 +18,14 @@ namespace cppgui {
         add_child(&_vert_sbar);
     }
 
-    template<class Config, bool With_layout>
-    void Scrollbox<Config, With_layout>::on_navigation(Navigation_handler handler)
+    template<class Config, bool With_layout, class Pane>
+    void Scrollbox<Config, With_layout, Pane>::on_navigation(Navigation_handler handler)
     {
         _on_navigation = handler;
     }
 
-    template<class Config, bool With_layout>
-    void Scrollbox<Config, With_layout>::set_content_pane(Container_t *content)
+    template<class Config, bool With_layout, class Pane>
+    void Scrollbox<Config, With_layout, Pane>::set_content_pane(Container_t *content)
     {
         assert(!_content);
 
@@ -35,15 +35,15 @@ namespace cppgui {
         add_child(content);
     }
 
-    template<class Config, bool With_layout>
-    void Scrollbox<Config, With_layout>::mouse_wheel(const Vector &delta)
+    template<class Config, bool With_layout, class Pane>
+    void Scrollbox<Config, With_layout, Pane>::mouse_wheel(const Vector &delta)
     {
         // TODO: better way than just redirecting input events ?
         _vert_sbar.mouse_wheel(delta);
     }
 
-    template<class Config, bool With_layout>
-    void Scrollbox<Config, With_layout>::render(Canvas_t *canvas, const Point &offset)
+    template<class Config, bool With_layout, class Pane>
+    void Scrollbox<Config, With_layout, Pane>::render(Canvas_t *canvas, const Point &offset)
     {
         Rectangle r { rectangle() };
 
@@ -58,9 +58,9 @@ namespace cppgui {
 
     // Layouter aspect ------------------------------------
 
-    template<class Config>
+    template<class Config, class Pane>
     template<class Aspect_parent>
-    void Scrollbox__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    void Scrollbox__Layouter<Config, true, Pane>::Aspect<Aspect_parent>::layout()
     {
         auto exts = p()->extents();
 
@@ -78,9 +78,9 @@ namespace cppgui {
         p()->_content->layout();
     }
 
-    template<class Config>
+    template<class Config, class Pane>
     template<class Aspect_parent>
-    auto Scrollbox__Layouter<Config, true>::Aspect<Aspect_parent>::content_rect() -> Rectangle
+    auto Scrollbox__Layouter<Config, true, Pane>::Aspect<Aspect_parent>::content_rect() -> Rectangle
     {
         return { 
             0, 0, 

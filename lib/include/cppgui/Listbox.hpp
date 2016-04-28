@@ -4,14 +4,18 @@
 
 namespace cppgui {
 
+    // Listbox ======================================================
+
     // Forward declarations
 
     template<class Config, bool With_layout> struct Listbox__Layouter { template<class Aspect_parent> struct Aspect: Aspect_parent {}; };
 
+    template<class Config, bool With_layout> class List_pane;
+
     // Class definition
 
     template<class Config, bool With_layout>
-    class Listbox: public Listbox__Layouter<Config, With_layout>::template Aspect< Scrollbox<Config, With_layout> >
+    class Listbox: public Listbox__Layouter<Config, With_layout>::template Aspect< Scrollbox<Config, With_layout, List_pane<Config, With_layout>> >
     {
     public:
         using Container_t = Container<Config, With_layout>;
@@ -37,13 +41,20 @@ namespace cppgui {
 
         template<class Aspect_parent> struct Aspect: Aspect_parent {
 
-            using Scrollbox_t = Scrollbox<Config, true>;
+            using Scrollbox_t = Scrollbox<Config, true, List_pane<Config, true>>;
 
             struct Listbox_t: public Listbox<Config, true> { friend struct Aspect; };
             auto p() { return static_cast<Listbox_t*>(this); }
 
             void layout() override;
         };
+    };
+
+    // List_pane ====================================================
+
+    template<class Config, bool With_layout>
+    class List_pane: public Scrollable_pane<Config, With_layout>
+    {
     };
 
 } // ns cppgui

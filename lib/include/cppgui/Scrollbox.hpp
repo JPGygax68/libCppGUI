@@ -8,12 +8,15 @@ namespace cppgui {
 
     // Forward declarations
 
-    template<class Config, bool With_layout> struct Scrollbox__Layouter { template<class Aspect_parent> struct Aspect: Aspect_parent {}; };
+    template<class Config, bool With_layout, class Pane> struct Scrollbox__Layouter { template<class Aspect_parent> struct Aspect: Aspect_parent {}; };
+    template<class Config, bool With_layout> class Scrollable_pane;
 
     // Class definition
 
-    template<class Config, bool With_layout>
-    class Scrollbox: public Scrollbox__Layouter<Config, With_layout>::template Aspect< Container<Config, With_layout> >
+    // TODO: rename to Scrollbox_base ?
+
+    template<class Config, bool With_layout, class Pane = Scrollable_pane<Config, With_layout>>
+    class Scrollbox: public Scrollbox__Layouter<Config, With_layout, Pane>::template Aspect< Container<Config, With_layout> >
     {
     public:
         using Container_t = Container<Config, With_layout>;
@@ -46,12 +49,12 @@ namespace cppgui {
 
     // Layouter aspect
 
-    template<class Config>
-    struct Scrollbox__Layouter<Config, true> {
+    template<class Config, class Pane>
+    struct Scrollbox__Layouter<Config, true, Pane> {
 
         template<class Aspect_parent> struct Aspect: Aspect_parent {
 
-            struct Scrollbox_t: public Scrollbox<Config, true> { friend struct Aspect; };
+            struct Scrollbox_t: public Scrollbox<Config, true, Pane> { friend struct Aspect; };
             auto p() { return static_cast<Scrollbox_t*>(this); }
 
             void layout() override;
@@ -59,6 +62,16 @@ namespace cppgui {
         protected:
             auto content_rect() -> Rectangle;
         };
+    };
+
+    // Scrollable pane ==============================================
+
+    template<class Config, bool With_layout>
+    class Scrollable_pane: public Container<Config, With_layout>
+    {
+    public:
+
+        bool handle_item_navigation(int delta) { return false; }
     };
 
 } // ns cppgui

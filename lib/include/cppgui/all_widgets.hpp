@@ -25,9 +25,10 @@
     using Container          = cppgui::Container         <Config, With_layout>; \
     using Stack              = cppgui::Stack             <Config, With_layout>; \
     using Vertical_scrollbar = cppgui::Vertical_scrollbar<Config, With_layout>; \
-    /*using List_pane          = cppgui::List_pane         <Config, With_layout>; */ \
-    using Scrollbox          = cppgui::Scrollbox         <Config, With_layout>; \
+    using Scrollbox          = cppgui::Scrollbox         <Config, With_layout>; /* Note: default Scrollbox */ \
+    using Scrollable_pane    = cppgui::Scrollable_pane   <Config, With_layout>; \
     using Listbox            = cppgui::Listbox           <Config, With_layout>; \
+    using List_pane          = cppgui::List_pane         <Config, With_layout>;
     //using Canvas_t = cppgui::Canvas<Renderer>; 
 
 #define CPPGUI_INSTANTIATE_WIDGET_TYPES(Config, With_layout) \
@@ -49,6 +50,7 @@
     template cppgui::Container                        <Config, With_layout>; \
     template cppgui::Stack                            <Config, With_layout>; \
     template cppgui::Vertical_scrollbar               <Config, With_layout>; \
+    template cppgui::Scrollbox                        <Config, With_layout>; \
+    template cppgui::Scrollable_pane                  <Config, With_layout>; \
     template cppgui::List_pane                        <Config, With_layout>; \
-    template cppgui::List_box                         <Config, With_layout>; \
-    template cppgui::Scrollbox                        <Config, With_layout>; 
+    template cppgui::List_box                         <Config, With_layout>;
