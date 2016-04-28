@@ -115,11 +115,11 @@ Test_window::Test_window(): Parent("Test window")
     {
         _sb_buttons[i].set_font(dflt_font);
         _sb_buttons[i].set_label(std::u32string{U"Scrollbox button #"} + char32_t(U'1' + i));
-        _sb_content.add_child(&_sb_buttons[i]);
+        _sb_pane.add_child(&_sb_buttons[i]);
     }
-    _sb_content.set_layout_type(cppgui::Layout_type::stack);
-    _sb_content.set_extents({ 500, 400 });
-    _scrollbox.set_content(&_sb_content);
+    _sb_pane.set_layout_type(cppgui::Layout_type::stack);
+    _sb_pane.set_extents({ 500, 400 });
+    _scrollbox.set_content_pane(&_sb_pane);
     _scrollbox.set_position({ 750, 300 });
     _scrollbox.set_extents ({ 400, 300 });
 

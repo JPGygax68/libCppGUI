@@ -9,7 +9,7 @@ namespace cppgui {
     }
 
     template<class Renderer>
-    void Box<Renderer>::set_content(Widget *content)
+    void Box<Renderer>::set_content_pane(Widget *content)
     {
         _content = content;
     }

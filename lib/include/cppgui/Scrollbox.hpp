@@ -20,9 +20,13 @@ namespace cppgui {
         using Canvas_t = typename Canvas<typename Config::Renderer>;
         //using List_pane_t = List_pane<Config, With_layout>;
 
+        using Navigation_handler = std::function<void(Navigation_step)>;
+
         Scrollbox();
 
-        void set_content(Container_t *);
+        void on_navigation(Navigation_handler);
+
+        void set_content_pane(Container_t *);
         //auto& content_pane() { return _content_pane; }
 
         void mouse_wheel(const Vector &) override;
@@ -35,6 +39,7 @@ namespace cppgui {
         auto& scrollbar() { return _vert_sbar; }
 
         //List_pane_t             _content_pane;
+        Navigation_handler      _on_navigation;
         Container_t            *_content = nullptr;
         Vertical_scrollbar_t    _vert_sbar;
     };
