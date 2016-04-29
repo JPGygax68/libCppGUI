@@ -16,24 +16,176 @@ namespace cppgui {
         _content_pane.add_child(item);
     }
 
+    template<class Config, bool With_layout>
+    void Listbox<Config, With_layout>::init()
+    {
+        Scrollbox_t::init();
+    }
+
+    template<class Config, bool With_layout>
+    void Listbox<Config, With_layout>::bring_item_into_view(int item_index)
+    {
+        auto item = _content_pane.children()[item_index];
+
+        auto y1 = _content_pane.position().y + item->position().y; // TODO: subtract border/padding (use "inner rect" ?)
+        auto y2 = y1 + static_cast<Position_delta>(item->extents().h);
+        Position_delta delta_y = 0;
+
+        if (y1 < 0)
+        {
+            delta_y = - y1;
+        }
+        else if (y2 > extents().bottom_edge()) // TODO: use "inner rect"
+        {
+            delta_y = - (y2 - static_cast<Position_delta>(extents().h));
+        }
+
+        if (delta_y != 0)
+        {
+            // TODO: this following two should be bundled and abstracted as a shift operation
+            _content_pane.set_position({ _content_pane.position().x, _content_pane.position().y + delta_y });
+            invalidate();
+
+            //scrollbar().change_position()
+        }
+
+        //item->take_focus();
+    }
+
     // Layouter aspect ----------------------------------------------
 
     template<class Config>
     template<class Aspect_parent>
     void Listbox__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
-        auto& content_pane = p()->_content_pane;
-        auto w = p()->content_rect().ext.w;
-        auto h = content_pane.get_minimal_size().h;
-        //h = n * ((h + content_pane.children()[0]->extents().h - 1) / n); // TODO: graceful failure when there are no children
-        p()->_content_pane.set_extents({ w, h });
+        p()->_content_pane.set_extents( p()->_content_pane.get_minimal_size() );
 
         Scrollbox_t::layout();
+    }
 
-        auto full = h;
-        auto h_item = h / content_pane.children().size();
-        auto shown = h_item * (p()->content_rect().ext.h / h_item);
-        p()->scrollbar().define_range(full, shown);
+    // List_pane ====================================================
+
+    template<class Config, bool With_layout>
+    void List_pane<Config, With_layout>::init()
+    {
+        Parent_class::init();
+
+        compute_visible_item_range();
+    }
+
+    template<class Config, bool With_layout>
+    void List_pane<Config, With_layout>::scroll(Navigation_unit unit, Position initial_pos, Fraction<int> delta)
+    {
+        if (children().empty()) return;
+
+        if (unit == Navigation_unit::element)
+        {
+            assert(delta.den == 1);
+
+            if (delta.num < 0)
+            {
+                // TODO: emit sound if already on first item (or none in the list)
+
+                if (_first_visible_item_index > 0)
+                {
+                    _first_visible_item_index --;
+                    Position_delta delta_y = static_cast<Position_delta>(children()[_first_visible_item_index]->extents().h);
+                    for (; _last_visible_item_index >= _first_visible_item_index; _last_visible_item_index --)
+                    {
+                        auto child = children()[_last_visible_item_index];
+                        auto bottom_child = position().y + child->position().y + static_cast<Position>(child->extents().h);
+                        if (bottom_child <= listbox()->content_rectangle().bottom()) break;
+                    }
+                    // TODO: the following should be packed into an optimizable SHIFT operation
+                    set_position({ position().x, position().y + delta_y });
+                    invalidate();
+                }
+            }
+            else if (delta.num > 0)
+            {
+                // TODO: emit sound if already on last item (or none in the list)
+
+                if (_last_visible_item_index < static_cast<int>(children().size() - 1))
+                {
+                    _first_visible_item_index ++;
+                    Position_delta delta_y = - static_cast<Position_delta>(children()[_first_visible_item_index]->extents().h);
+                    for (; _last_visible_item_index < children().size() -1; _last_visible_item_index ++)
+                    {
+                        auto child = children()[_last_visible_item_index];
+                        auto bottom_child = position().y + child->position().y + static_cast<Position>(child->extents().h);
+                        if (bottom_child > listbox()->content_rectangle().bottom()) break;
+                    }
+                    // TODO: the following should be packed into an optimizable SHIFT operation
+                    set_position({ position().x, position().y + delta_y });
+                    invalidate();
+
+                    // TODO: special case of arriving at bottom ?
+                }
+            }
+
+            //listbox()->bring_item_into_view(_selected_item_index);
+        }
+        else {
+            assert(false); // TODO
+        }
+    }
+
+    template<class Config, bool With_layout>
+    void List_pane<Config, With_layout>::compute_visible_item_range()
+    {
+        unsigned int first, last;
+
+        for (first = 0; first < children().size(); first ++)
+        {
+            if (position().y + children()[first]->position().y >= 0) break;
+        }
+
+        for (last = first; last < children().size(); last ++)
+        {
+            if (position().y + children()[last]->rectangle().bottom() > listbox()->content_rectangle().bottom()) break;
+        }
+
+        _first_visible_item_index = first;
+        _last_visible_item_index = last;
+    }
+
+    // Layouter aspect ----------------------------------------------
+
+    template<class Config>
+    template<class Aspect_parent>
+    auto List_pane__Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
+    {
+        Position y = 0;
+        Width w_min = 0;
+
+        for (auto child: p()->children())
+        {
+            auto minsz = child->get_minimal_size();
+            if (minsz.w > w_min) w_min = minsz.w;
+            y += static_cast<Position_delta>(minsz.h);
+        }
+
+        return { w_min, static_cast<Length>(y) };
+    }
+
+    template<class Config>
+    template<class Aspect_parent>
+    void List_pane__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    {
+        auto w = extents().w;
+
+        Position y = 0;
+
+        for (auto child: p()->children())
+        {
+            auto minsz = child->get_minimal_size();
+
+            child->set_position({ 0, y       });
+            child->set_extents ({ w, minsz.h });
+            child->layout();
+
+            y += static_cast<Position_delta>(minsz.h);
+        }
     }
 
 } // ns cppgui

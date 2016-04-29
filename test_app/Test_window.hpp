@@ -54,9 +54,9 @@ private:
     Vertical_scrollbar          _vert_scrollbar;   
     Textbox                     _scrollbar_pos;
     //Container                   _sb_content;
-    Container                   _sb_pane;
+    List_pane                   _sb_pane;
     std::vector<Button>         _sb_buttons;
-    Scrollbox                   _scrollbox;
+    //Scrollbox                   _scrollbox;
     std::vector<Button>         _lb_buttons;
     Listbox                     _listbox;
 };

@@ -43,9 +43,9 @@ Possible approach:
 - Grid_pane (or, for the time being, List_pane), as a specialization of Scrollable_pane, adding the abilities:
   - Informing the container (the scrollbox) about the travelling distance for "up" and "down" (separately), which may depend on the height of the first/last item
   
-The problem with this is that it requires either unecessary virtual methods, or two separate specializations of Scrollbox.
+The problem with this is that it requires either unnecessary virtual methods, or two separate specializations of Scrollbox.
 
-An acceptable compromise would be combine delegated navigation with default navigation, by giving precedence to the former.
+An acceptable compromise would be to combine delegated navigation with default navigation, by giving precedence to the former.
 
 To avoid requiring forking Scrollbox, delegated navigation could be introduced in Scrollable_pane as inline no-ops (even constexpr); the concrete type of the content pane could then be injected into Scrollbox as a template parameter.
 
