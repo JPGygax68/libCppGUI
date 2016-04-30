@@ -85,7 +85,9 @@ namespace cppgui {
         bool child_fully_before_bottom(Widget_t *child);
         auto first_visible_child() { return children()[_first_visible_item]; }
         auto last_visible_child() { return children()[_last_visible_item]; }
-        void update_scrollbar_position();
+        void scroll_by_items(int delta);
+        void scroll_down_one_item();
+        void scroll_up_one_item  ();
 
         Index _first_visible_item, _last_visible_item;
     };

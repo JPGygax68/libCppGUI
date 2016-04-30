@@ -33,13 +33,16 @@ namespace cppgui {
 
         if (y1 < 0)
         {
+            // TODO: replace with shift_down()
             delta_y = - y1;
         }
         else if (y2 > extents().bottom_edge()) // TODO: use "inner rect"
         {
+            // TODO: replace with shift_up()
             delta_y = - (y2 - static_cast<Position_delta>(extents().h));
         }
 
+        // TODO: remove as soon as shift_up() & shift_down() are being used
         if (delta_y != 0)
         {
             // TODO: this following two should be bundled and abstracted as a shift operation
@@ -54,6 +57,7 @@ namespace cppgui {
 
     template<class Config, bool With_layout>
     void Listbox<Config, With_layout>::update_scrollbar_position()
+        // Bring the position of the scrollbar in sync with the current vertical offset of the content pane
     {
         vertical_scrollbar().change_position(- _content_pane.position().y );
     }
@@ -89,40 +93,7 @@ namespace cppgui {
         if (unit == Navigation_unit::element)
         {
             assert(delta.den == 1);
-
-            if (delta.num < 0)
-            {
-                if (_first_visible_item > 0)
-                {
-                    _first_visible_item --;
-                    
-                    shift_down( first_visible_child()->extents().h );
-
-                    _last_visible_item = find_last_child(_last_visible_item, [this](auto child) { return child_fully_before_bottom(child); });
-                    assert(_last_visible_item >= 0);
-                }
-                // else ... TODO: emit sound ?
-            }
-            else if (delta.num > 0)
-            {
-                if (!child_fully_before_bottom(last_child()))
-                {
-                    shift_up( first_visible_child()->extents().h );
-
-                    _first_visible_item ++;
-
-                    _last_visible_item = find_first_child(_last_visible_item, [this](auto child) { return child_fully_before_bottom(child); });
-                    assert(_last_visible_item >= 0);
-
-                    // TODO: special case of arriving at bottom ?
-                }
-                // else ... TODO: emit sound ?
-            }
-            else
-                assert(false);
-
-            listbox()->update_scrollbar_position();
-            //listbox()->bring_item_into_view(_selected_item_index);
+            scroll_by_items(delta.num);
         }
         else {
             assert(false); // TODO
@@ -154,13 +125,57 @@ namespace cppgui {
         return position().y + child->rectangle().bottom() <= listbox()->extents().bottom_edge();
     }
 
-    /*
     template<class Config, bool With_layout>
-    void List_pane<Config, With_layout>::update_scrollbar_position()
+    void List_pane<Config, With_layout>::scroll_by_items(int delta)
     {
-        listbox()->vertical_scrollbar().change_position(- position().y );
+        if (delta < 0)
+        {
+            assert(delta == - 1); // TODO: clarify whether other values are possible
+            scroll_down_one_item();
+        }
+        else if (delta > 0)
+        {
+            assert(delta == 1); // TODO: clarify whether other values are possible
+            scroll_up_one_item();
+        }
+        else
+            assert(false);
+
+        listbox()->update_scrollbar_position();
+        //listbox()->bring_item_into_view(_selected_item_index);
     }
-    */
+
+    template<class Config, bool With_layout>
+    void List_pane<Config, With_layout>::scroll_down_one_item()
+    {
+        if (_first_visible_item > 0)
+        {
+            _first_visible_item --;
+
+            shift_down( first_visible_child()->extents().h );
+
+            _last_visible_item = find_last_child(_last_visible_item, [this](auto child) { return child_fully_before_bottom(child); });
+            assert(_last_visible_item >= 0);
+        }
+        // else ... TODO: emit sound ?
+    }
+
+    template<class Config, bool With_layout>
+    void List_pane<Config, With_layout>::scroll_up_one_item()
+    {
+        if (!child_fully_before_bottom(last_child()))
+        {
+            shift_up( first_visible_child()->extents().h );
+
+            _first_visible_item ++;
+
+            _last_visible_item = find_first_child(_last_visible_item, [this](auto child) { return child_fully_before_bottom(child); });
+            assert(_last_visible_item >= 0);
+
+            // TODO: special case of arriving at bottom ?
+        }
+        // else ... TODO: emit sound ?
+    }
 
     // Layouter aspect ----------------------------------------------
 
