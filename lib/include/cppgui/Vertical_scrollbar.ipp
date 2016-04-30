@@ -292,7 +292,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Vertical_scrollbar<Config, With_layout>::move_by_page(int pages)
     {
-        auto delta = static_cast<cppgui::Position_delta>(thumb_length()) * pages;
+        auto delta = static_cast<cppgui::Position_delta>(fraction()) * pages;
         change_position(current_position() + delta);
         notify_position_change();
     }
@@ -308,7 +308,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Vertical_scrollbar<Config, With_layout>::move_by_fraction(Position initial_pos, const Fraction<int>& frac)
     {
-        auto delta = range() * frac.num / frac.den;
+        auto delta = full_range() * frac.num / frac.den;
         if (delta == 0) delta = frac.num * frac.den < 0 ? -1 : 1;
         change_position(initial_pos + delta);
         notify_position_change();

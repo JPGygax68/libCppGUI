@@ -50,8 +50,8 @@ namespace cppgui {
         void render(Canvas_t *, const Point &offset) override;
 
         void change_values(Length range, Length thumb);
-        auto range() const { return _full_range; }
-        auto thumb_length() const { return _fraction; }
+        auto full_range() const { return _full_range; }
+        auto fraction() const { return _fraction; }
 
         auto current_position() -> Position; // TODO: use rational number instead ?
         void change_position(Position); // TODO: assert() against calling this while not at end of navigation ?
