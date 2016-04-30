@@ -167,6 +167,30 @@ namespace cppgui {
             return true;
     }
 
+    template<class Config, bool With_layout>
+    template<class Pred>
+    auto Abstract_container<Config, With_layout>::find_first_child(Index from, Pred pred) -> Index
+    {
+        for (auto i = from; i < (Index) _children.size(); i ++)
+        {
+            if (pred(_children[i])) return i;
+        }
+
+        return -1;
+    }
+
+    template<class Config, bool With_layout>
+    template<class Pred>
+    auto Abstract_container<Config, With_layout>::find_last_child(Index from, Pred pred) -> Index
+    {
+        for (Index i = from; i >= 0; i --)
+        {
+            if (pred(_children[i])) return i;
+        }
+
+        return -1;
+    }
+
     // Layouter aspect ----------------------------------------------
 
     template<class Config>

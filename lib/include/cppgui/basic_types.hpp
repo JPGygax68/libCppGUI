@@ -21,6 +21,8 @@ namespace cppgui {
     using Color             = gpc::gui::rgba_norm;
     using Mono_value        = gpc::gui::mono_norm;
 
+    using Index             = int; // Index is signed so that -1 can be used to report "invalid" or "not found"
+
     template<typename T = unsigned int>
     struct Fraction {
         T num, den;

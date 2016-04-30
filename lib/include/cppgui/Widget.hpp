@@ -188,6 +188,8 @@ namespace cppgui {
         // Graphics system integration
         void shift_horizontally(Position_delta);
         void shift_vertically(Position_delta);
+        void shift_up  (Length);
+        void shift_down(Length);
 
         // Static styles
         // TODO: move to "stylesheet"

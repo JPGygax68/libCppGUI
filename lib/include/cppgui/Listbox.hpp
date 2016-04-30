@@ -36,7 +36,7 @@ namespace cppgui {
         using Vertical_scrollbar_t = Custom_vertical_scrollbar<Config, With_layout>;
 
         List_pane_t         _content_pane;
-        unsigned int        _first_visible_item_index, _last_visible_item_index;
+        unsigned int        _first_visible_item, _last_visible_item;
     };
 
     // Layouter aspect
@@ -85,8 +85,10 @@ namespace cppgui {
 
         void compute_visible_item_range();
         bool child_fully_before_bottom(Widget_t *child);
+        auto first_visible_child() { return children()[_first_visible_item]; }
+        auto last_visible_child() { return children()[_last_visible_item]; }
 
-        unsigned int _first_visible_item_index, _last_visible_item_index;
+        Index _first_visible_item, _last_visible_item;
     };
 
     // Layouter aspect

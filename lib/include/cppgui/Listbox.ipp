@@ -76,6 +76,8 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void List_pane<Config, With_layout>::scroll(Navigation_unit unit, Position initial_pos, Fraction<int> delta)
     {
+        using std::begin; using std::end; using std::rbegin; using std::rend; using std::reverse_iterator; using std::find_if;
+
         if (children().empty()) return;
 
         if (unit == Navigation_unit::element)
@@ -84,45 +86,31 @@ namespace cppgui {
 
             if (delta.num < 0)
             {
-                // TODO: emit sound if already on first item (or none in the list)
-
-                if (_first_visible_item_index > 0)
+                if (_first_visible_item > 0)
                 {
-                    _first_visible_item_index --;
+                    _first_visible_item --;
                     
-                    shift_vertically( static_cast<Position_delta>(children()[_first_visible_item_index]->extents().h) );
+                    shift_down( first_visible_child()->extents().h );
 
-                    // Update the index of the last fully visible item
-                    auto i = _last_visible_item_index;
-                    for (; i >= _first_visible_item_index; i --)
-                    {
-                        if (child_fully_before_bottom(children()[i])) break;
-                    }
-
-                    _last_visible_item_index = i;
+                    _last_visible_item = find_last_child(_last_visible_item, [this](auto child) { return child_fully_before_bottom(child); });
+                    assert(_last_visible_item >= 0);
                 }
+                // else ... TODO: emit sound ?
             }
             else if (delta.num > 0)
             {
-                // TODO: emit sound if already on last item (or none in the list)
-
                 if (!child_fully_before_bottom(last_child()))
                 {
-                    shift_vertically(- static_cast<Position_delta>(children()[_first_visible_item_index]->extents().h) );
+                    shift_up( first_visible_child()->extents().h );
 
-                    _first_visible_item_index ++;
+                    _first_visible_item ++;
 
-                    // Update the index of the last visible item
-                    auto i = _last_visible_item_index;
-                    for ( ; i < children().size() - 1; i ++)
-                    {
-                        if (!child_fully_before_bottom(children()[i])) break;
-                    }
-
-                    _last_visible_item_index = i;
+                    _last_visible_item = find_first_child(_last_visible_item, [this](auto child) { return child_fully_before_bottom(child); });
+                    assert(_last_visible_item >= 0);
 
                     // TODO: special case of arriving at bottom ?
                 }
+                // else ... TODO: emit sound ?
             }
 
             //listbox()->bring_item_into_view(_selected_item_index);
@@ -147,8 +135,8 @@ namespace cppgui {
             if (position().y + children()[last]->rectangle().bottom() > listbox()->content_rectangle().bottom()) break;
         }
 
-        _first_visible_item_index = first;
-        _last_visible_item_index = last;
+        _first_visible_item = first;
+        _last_visible_item = last;
     }
 
     template<class Config, bool With_layout>

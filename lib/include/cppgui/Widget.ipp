@@ -260,6 +260,18 @@ namespace cppgui {
         invalidate();
     }
 
+    template<class Config, bool With_layout>
+    void Widget<Config, With_layout>::shift_up(Length length)
+    {
+        shift_vertically( - static_cast<Position_delta>(length) );
+    }
+
+    template<class Config, bool With_layout>
+    void Widget<Config, With_layout>::shift_down(Length length)
+    {
+        shift_vertically( static_cast<Position_delta>(length) );
+    }
+
     // Style
 
     template<class Config, bool With_layout>
