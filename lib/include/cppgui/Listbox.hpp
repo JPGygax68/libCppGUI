@@ -32,11 +32,12 @@ namespace cppgui {
 
         void bring_item_into_view(int item_index);
 
+        void update_scrollbar_position();
+
     protected:
         using Vertical_scrollbar_t = Custom_vertical_scrollbar<Config, With_layout>;
 
         List_pane_t         _content_pane;
-        unsigned int        _first_visible_item, _last_visible_item;
     };
 
     // Layouter aspect
@@ -59,10 +60,7 @@ namespace cppgui {
 
     // List_pane ====================================================
 
-    template <class Config, bool With_layout>
-    struct List_pane__Layouter {
-        template <class Aspect_parent> struct Aspect;
-    };
+    template <class Config, bool With_layout> struct List_pane__Layouter { template <class Aspect_parent> struct Aspect; };
 
 
     template<class Config, bool With_layout>
@@ -87,6 +85,7 @@ namespace cppgui {
         bool child_fully_before_bottom(Widget_t *child);
         auto first_visible_child() { return children()[_first_visible_item]; }
         auto last_visible_child() { return children()[_last_visible_item]; }
+        void update_scrollbar_position();
 
         Index _first_visible_item, _last_visible_item;
     };

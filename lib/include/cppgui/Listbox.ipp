@@ -52,6 +52,12 @@ namespace cppgui {
         //item->take_focus();
     }
 
+    template<class Config, bool With_layout>
+    void Listbox<Config, With_layout>::update_scrollbar_position()
+    {
+        vertical_scrollbar().change_position(- _content_pane.position().y );
+    }
+
     // Layouter aspect ----------------------------------------------
 
     template<class Config>
@@ -112,7 +118,10 @@ namespace cppgui {
                 }
                 // else ... TODO: emit sound ?
             }
+            else
+                assert(false);
 
+            listbox()->update_scrollbar_position();
             //listbox()->bring_item_into_view(_selected_item_index);
         }
         else {
@@ -144,6 +153,14 @@ namespace cppgui {
     {
         return position().y + child->rectangle().bottom() <= listbox()->extents().bottom_edge();
     }
+
+    /*
+    template<class Config, bool With_layout>
+    void List_pane<Config, With_layout>::update_scrollbar_position()
+    {
+        listbox()->vertical_scrollbar().change_position(- position().y );
+    }
+    */
 
     // Layouter aspect ----------------------------------------------
 

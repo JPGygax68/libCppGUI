@@ -29,11 +29,16 @@ namespace cppgui {
 
         Vertical_scrollbar_base();
 
-        /** Defines the range to be covered by the scrollbar, consisting of the "full"
-            range and the "shown" range, visually represented by the "slide" between
-            the up/down buttons and the length of the thumb, respectively.
+        /** Defines the values that the scrollbar is going to represent, consisting of 
+            the "full" range and the "fraction" range. The former will be represented
+            by the "slide" between the the up and down buttons, while the latter is
+            reflected by the length of the "thumb".
+
+            Note that this does *not* work as a slider: the highest value that can
+            be defined and/or represented by the scrollbar is (full - fraction),
+            NOT full.
          */
-        void define_range(Length full, Length shown);
+        void define_values(Length full, Length fraction);
 
         void init() override;
 
@@ -44,9 +49,9 @@ namespace cppgui {
 
         void render(Canvas_t *, const Point &offset) override;
 
-        void change_range(Length range, Length thumb);
-        auto range() const { return _range; }
-        auto thumb_length() const { return _thumb_length; }
+        void change_values(Length range, Length thumb);
+        auto range() const { return _full_range; }
+        auto thumb_length() const { return _fraction; }
 
         auto current_position() -> Position; // TODO: use rational number instead ?
         void change_position(Position); // TODO: assert() against calling this while not at end of navigation ?
@@ -65,7 +70,7 @@ namespace cppgui {
         void notify_drag_navigation(Position_delta);
 
         Glyph_button_t          _up_btn, _down_btn;
-        Position                _range = 0, _thumb_length = 0;
+        Position                _full_range = 0, _fraction = 0;
 
         Range                   _sliding_range;
         Rectangle               _thumb_rect;

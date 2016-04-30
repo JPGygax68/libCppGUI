@@ -26,10 +26,10 @@ namespace cppgui {
     template<class Config, bool With_layout, class Pane>
     void Scrollbox<Config, With_layout, Pane>::init()
     {
-        // Must be done first, other scrollbar will produce division by zero
-        _vert_sbar.define_range(_content->extents().h, extents().h);
+        // Must be done first, otherwise scrollbar will produce division by zero
+        _vert_sbar.define_values(_content->extents().h, extents().h);
 
-        Container_t::init();
+        Container_t::init(); // will also init scrollbar
     }
 
     template<class Config, bool With_layout, class Pane>
@@ -103,7 +103,7 @@ namespace cppgui {
 
         // TODO: the following must also be done in the main aspect when the content pane changes
         // TODO: better yet, this should be done at init() time ?
-        //p()->_vert_sbar.define_range(p()->_content->extents().h, exts.h);
+        //p()->_vert_sbar.define_values(p()->_content->extents().h, exts.h);
 
         p()->_vert_sbar.layout();
 

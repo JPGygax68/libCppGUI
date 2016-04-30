@@ -35,6 +35,8 @@ namespace cppgui {
         void set_content_pane(Scrollable_pane_t *);
         auto content_pane() { return _content_pane; }
 
+        auto& vertical_scrollbar() { return _vert_sbar; }
+
         void mouse_wheel(const Vector &) override;
         // TODO: keyboard navigation
 
@@ -44,8 +46,6 @@ namespace cppgui {
 
     protected:
         using Vertical_scrollbar_t = Custom_vertical_scrollbar<Config, With_layout>;
-
-        auto& scrollbar() { return _vert_sbar; }
 
         Vertical_scrollbar_t    _vert_sbar;
         Rectangle               _content_rect; // set by layouter

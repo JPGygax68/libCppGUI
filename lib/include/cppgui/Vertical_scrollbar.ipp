@@ -19,10 +19,10 @@ namespace cppgui {
     }
 
     template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::define_range(Length full, Length shown)
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::define_values(Length full, Length shown)
     {
-        _range = full;
-        _thumb_length = shown;
+        _full_range = full;
+        _fraction = shown;
     }
 
     template<class Impl, class Config, bool With_layout>
@@ -54,9 +54,9 @@ namespace cppgui {
     // TODO: test!!
 
     template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::change_range(Length full, Length shown)
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::change_values(Length full, Length shown)
     {
-        define_range(full, shown);
+        define_values(full, shown);
         recalc_thumb();
         invalidate();
     }
@@ -150,15 +150,16 @@ namespace cppgui {
             _sliding_range.l - _thumb_rect.ext.h
         }; */
 
-        return _range * (_thumb_rect.pos.y - _sliding_range.start()) / static_cast<Position>(_sliding_range.l - _thumb_rect.ext.h);
+        return (_full_range - _fraction) * (_thumb_rect.pos.y - _sliding_range.start()) / static_cast<Position>(_sliding_range.l - _thumb_rect.ext.h);
     }
 
     template<class Impl, class Config, bool With_layout>
     void Vertical_scrollbar_base<Impl, Config, With_layout>::change_position(Position pos)
     {
-        if (pos < 0) pos = 0; else if (pos > _range) pos = _range;
+        if (pos < 0) pos = 0; else if (pos > _full_range - _fraction) pos = _full_range - _fraction;
 
-        _thumb_rect.pos.y = _sliding_range.p + static_cast<Position>(pos * (_sliding_range.l - _thumb_rect.ext.h) / _range);
+        _thumb_rect.pos.y = _sliding_range.p + static_cast<Position>(pos * (_sliding_range.l - _thumb_rect.ext.h) / (_full_range - _fraction));
+        //_thumb_rect.pos.y = _sliding_range.p + static_cast<Position>(pos * (_sliding_range.l - _thumb_rect.ext.h) / _full_range);
 
         invalidate();
     }
@@ -178,7 +179,7 @@ namespace cppgui {
     template<class Impl, class Config, bool With_layout>
     void Vertical_scrollbar_base<Impl, Config, With_layout>::recalc_thumb()
     {
-        _thumb_rect.ext.h = _sliding_range.l * _thumb_length / _range;
+        _thumb_rect.ext.h = _sliding_range.l * _fraction / _full_range;
 
         clip_thumb_pos();
     }
