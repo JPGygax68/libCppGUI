@@ -244,6 +244,22 @@ namespace cppgui {
         }
     }
 
+    template<class Config, bool With_layout>
+    void Widget<Config, With_layout>::shift_horizontally(Position_delta delta)
+    {
+        // TODO: 
+        set_position({ position().x + delta, position().y });
+        invalidate();
+    }
+
+    template<class Config, bool With_layout>
+    void Widget<Config, With_layout>::shift_vertically(Position_delta delta)
+    {
+        // TODO: 
+        set_position({ position().x, position().y + delta });
+        invalidate();
+    }
+
     // Style
 
     template<class Config, bool With_layout>

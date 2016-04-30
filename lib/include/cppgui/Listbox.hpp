@@ -69,6 +69,7 @@ namespace cppgui {
     class List_pane: public List_pane__Layouter<Config, With_layout>::template Aspect< Scrollable_pane<Config, With_layout> >
     {
     public:
+        using Widget_t = Widget<Config, With_layout>;
         using Listbox_t = Listbox<Config, With_layout>;
         using Scrollable_pane_t = Scrollable_pane<Config, With_layout>;
         using Parent_class = Scrollable_pane<Config, With_layout>;
@@ -83,6 +84,7 @@ namespace cppgui {
         auto listbox() { return static_cast<Listbox_t*>(container()); }
 
         void compute_visible_item_range();
+        bool child_fully_before_bottom(Widget_t *child);
 
         unsigned int _first_visible_item_index, _last_visible_item_index;
     };

@@ -89,35 +89,37 @@ namespace cppgui {
                 if (_first_visible_item_index > 0)
                 {
                     _first_visible_item_index --;
-                    Position_delta delta_y = static_cast<Position_delta>(children()[_first_visible_item_index]->extents().h);
-                    for (; _last_visible_item_index >= _first_visible_item_index; _last_visible_item_index --)
+                    
+                    shift_vertically( static_cast<Position_delta>(children()[_first_visible_item_index]->extents().h) );
+
+                    // Update the index of the last fully visible item
+                    auto i = _last_visible_item_index;
+                    for (; i >= _first_visible_item_index; i --)
                     {
-                        auto child = children()[_last_visible_item_index];
-                        auto bottom_child = position().y + child->position().y + static_cast<Position>(child->extents().h);
-                        if (bottom_child <= listbox()->content_rectangle().bottom()) break;
+                        if (child_fully_before_bottom(children()[i])) break;
                     }
-                    // TODO: the following should be packed into an optimizable SHIFT operation
-                    set_position({ position().x, position().y + delta_y });
-                    invalidate();
+
+                    _last_visible_item_index = i;
                 }
             }
             else if (delta.num > 0)
             {
                 // TODO: emit sound if already on last item (or none in the list)
 
-                if (_last_visible_item_index < static_cast<int>(children().size() - 1))
+                if (!child_fully_before_bottom(last_child()))
                 {
+                    shift_vertically(- static_cast<Position_delta>(children()[_first_visible_item_index]->extents().h) );
+
                     _first_visible_item_index ++;
-                    Position_delta delta_y = - static_cast<Position_delta>(children()[_first_visible_item_index]->extents().h);
-                    for (; _last_visible_item_index < children().size() -1; _last_visible_item_index ++)
+
+                    // Update the index of the last visible item
+                    auto i = _last_visible_item_index;
+                    for ( ; i < children().size() - 1; i ++)
                     {
-                        auto child = children()[_last_visible_item_index];
-                        auto bottom_child = position().y + child->position().y + static_cast<Position>(child->extents().h);
-                        if (bottom_child > listbox()->content_rectangle().bottom()) break;
+                        if (!child_fully_before_bottom(children()[i])) break;
                     }
-                    // TODO: the following should be packed into an optimizable SHIFT operation
-                    set_position({ position().x, position().y + delta_y });
-                    invalidate();
+
+                    _last_visible_item_index = i;
 
                     // TODO: special case of arriving at bottom ?
                 }
@@ -147,6 +149,12 @@ namespace cppgui {
 
         _first_visible_item_index = first;
         _last_visible_item_index = last;
+    }
+
+    template<class Config, bool With_layout>
+    bool List_pane<Config, With_layout>::child_fully_before_bottom(Widget_t * child)
+    {
+        return position().y + child->rectangle().bottom() <= listbox()->extents().bottom_edge();
     }
 
     // Layouter aspect ----------------------------------------------

@@ -185,6 +185,10 @@ namespace cppgui {
         auto container() const { return _container; }
         auto root_widget() -> Root_widget_t * override { return _container->container_root_widget(); }
 
+        // Graphics system integration
+        void shift_horizontally(Position_delta);
+        void shift_vertically(Position_delta);
+
         // Static styles
         // TODO: move to "stylesheet"
         static auto default_dialog_background_color() -> Color { return {0.6f, 0.6f, 0.6f, 1}; }
