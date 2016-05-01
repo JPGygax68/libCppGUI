@@ -45,7 +45,7 @@ namespace cppgui {
         // TODO: remove as soon as shift_up() & shift_down() are being used
         if (delta_y != 0)
         {
-            // TODO: this following two should be bundled and abstracted as a shift operation
+            // TODO: these following two lines should be bundled and abstracted as a shift operation
             _content_pane.set_position({ _content_pane.position().x, _content_pane.position().y + delta_y });
             invalidate();
 
@@ -95,18 +95,16 @@ namespace cppgui {
             }
             else if (unit == Navigation_unit::fraction)
             {
-                // Compute item index from initial_pos (which is in pixels)
-                if (extents().h > listbox()->extents().h)
+                // We can only scroll if the pane is higher than the listbox's content rectangle
+                if (extents().h > listbox()->content_rectangle().ext.h)
                 {
+                    // Compute item index from initial_pos (which is in pixels)
                     auto initial_item = children().size() * (initial_pos + first_visible_child()->extents().h / 2) / extents().h;
                     //int steps = static_cast<int>(hidden_items()) * delta.num / delta.den - initial_item;
                     int new_pos = initial_item + static_cast<int>(hidden_items()) * delta.num / delta.den;
                     //std::cout << "new_pos = " << new_pos << ", initial_item = " << initial_item << std::endl;
                     int dist = new_pos - _first_visible_item;
-                    if (dist != 0)
-                    {
-                        scroll_by_items(dist);
-                    }
+                    if (dist != 0) scroll_by_items(dist);
                 }
             }
             else {
