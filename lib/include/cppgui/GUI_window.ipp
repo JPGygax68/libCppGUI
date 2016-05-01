@@ -55,8 +55,9 @@ namespace cppgui {
     inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::size_changed(int w, int h)
     {
         _root_widget.set_extents({ (unsigned)w, (unsigned)h });
-        _root_widget.layout();
         _canvas->define_viewport(0, 0, w, h);
+        _root_widget.layout();
+        _root_widget.init(); // TODO: this should only be called the first time
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>

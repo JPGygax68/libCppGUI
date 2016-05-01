@@ -176,8 +176,10 @@ namespace cppgui {
 
             switch (ev.event)
             {
-            case SDL_WINDOWEVENT_RESIZED: 
             case SDL_WINDOWEVENT_SIZE_CHANGED: 
+                // TODO: is this needed ? difference to SIZE_CHANGE ?
+                break;
+            case SDL_WINDOWEVENT_RESIZED:
                 p()->size_changed(ev.data1, ev.data2);
                 invalidate();
                 break;

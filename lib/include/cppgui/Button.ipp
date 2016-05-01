@@ -1,4 +1,5 @@
 #include "./layouting.hpp"
+#include "./unicode.hpp"
 
 #include "./Button.hpp"
 
@@ -14,6 +15,12 @@ namespace cppgui {
     void Button<Config, With_layout>::set_label(const std::u32string &label)
     {
         _label = label;
+    }
+
+    template<class Config, bool With_layout>
+    void Button<Config, With_layout>::set_label(const std::string &label)
+    {
+        set_label( utf8_to_utf32(label) );
     }
 
     template<class Config, bool With_layout>

@@ -112,7 +112,7 @@ namespace cppgui {
 
 
         protected:
-            auto content_rect() -> Rectangle;
+            //auto content_rect() -> Rectangle;
         };
     };
 

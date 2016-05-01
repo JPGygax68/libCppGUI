@@ -1,5 +1,7 @@
-#include <locale>
-#include <codecvt>
+//#include <locale>
+//#include <codecvt>
+
+#include "./unicode.hpp"
 
 #include "./Textbox.hpp"
 
@@ -25,6 +27,12 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Textbox<Config, With_layout>::set_text(const std::string &text)
+    {
+        _text = utf8_to_utf32(text);
+    }
+
+    template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::change_text(const std::u32string &text)
     {
         set_text(text);
@@ -45,6 +53,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::change_text(const std::string &text)
     {
+        /*
         #if _MSC_VER == 1900
         std::wstring_convert<std::codecvt_utf8<int32_t>, int32_t> conv;
         auto inter = conv.from_bytes(text);
@@ -53,8 +62,9 @@ namespace cppgui {
         std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> conv;
         auto converted = conv.from_bytes(text);
         #endif
+        */
 
-        change_text(converted);
+        change_text( utf8_to_utf32(text) );
     }
 
     template<class Config, bool With_layout>

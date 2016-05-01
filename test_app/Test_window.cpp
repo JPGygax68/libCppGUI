@@ -23,6 +23,7 @@ static cppgui::Rasterized_font *glyph_font;     // TODO: move this to a reusable
 Test_window::Test_window(): Parent("Test window")
 {
     using Default_font = GUI_configuration::Default_font;
+    using namespace std::string_literals;
 
     init_window();
 
@@ -152,11 +153,11 @@ Test_window::Test_window(): Parent("Test window")
     */
 
     // Listbox
-    _lb_buttons.resize(9);
+    _lb_buttons.resize(25);
     for (auto i = 0U; i < _lb_buttons.size(); i ++)
     {
         _lb_buttons[i].set_font(dflt_font);
-        _lb_buttons[i].set_label(std::u32string{U"Scrollbox button #"} + char32_t(U'1' + i));
+        _lb_buttons[i].set_label("Scrollbox button #"s + std::to_string(i + 1));
         _listbox.add_item(&_lb_buttons[i]);
     }
     _listbox.set_position({ 750, 650 });
@@ -184,7 +185,7 @@ Test_window::Test_window(): Parent("Test window")
 
     root_widget()->on_invalidated([this]() { invalidate(); });
 
-    root_widget()->init_layout();
-    root_widget()->layout();
-    root_widget()->init();
+    root_widget()->init_layout(); // layout() and init() will be called upon by the Window
+    //root_widget()->layout();
+    //root_widget()->init();
 }

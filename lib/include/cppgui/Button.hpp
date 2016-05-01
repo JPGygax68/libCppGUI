@@ -28,6 +28,7 @@ namespace cppgui {
         void set_font(const Rasterized_font *);
         auto font() const { return _font; }
         void set_label(const std::u32string &);
+        void set_label(const std::string &);
         auto label() const { return _label; }
 
         void init() override;

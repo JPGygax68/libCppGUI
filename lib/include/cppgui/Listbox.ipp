@@ -98,14 +98,21 @@ namespace cppgui {
                 // We can only scroll if the pane is higher than the listbox's content rectangle
                 if (extents().h > listbox()->content_rectangle().ext.h)
                 {
-                    // Compute item index from initial_pos (which is in pixels)
+                    // Compute item index from initial_pos (which is in pixels), then add fraction
+                    // TODO: it may be more precise to compute the movement first and translate that to items afterwards
                     auto initial_item = children().size() * (initial_pos + first_visible_child()->extents().h / 2) / extents().h;
-                    //int steps = static_cast<int>(hidden_items()) * delta.num / delta.den - initial_item;
-                    int new_pos = initial_item + static_cast<int>(hidden_items()) * delta.num / delta.den;
-                    //std::cout << "new_pos = " << new_pos << ", initial_item = " << initial_item << std::endl;
-                    int dist = new_pos - _first_visible_item;
-                    if (dist != 0) scroll_by_items(dist);
+                    int new_pos = initial_item + (int) hidden_items() * delta.num / delta.den;
+                    if (new_pos != _first_visible_item)
+                    {
+                        scroll_by_items(new_pos - _first_visible_item);
+                    }
                 }
+            }
+            else if (unit == Navigation_unit::page)
+            {
+                assert(delta.den == 1);
+                int items = (int) children().size() * delta.num * (int) listbox()->content_rectangle().ext.h / (int) extents().h;
+                scroll_by_items( items );
             }
             else {
                 assert(false); // TODO
@@ -149,6 +156,8 @@ namespace cppgui {
         listbox()->update_scrollbar_position();
     }
 
+    // TODO: return a boolean to indicate whether scrolling was possible or not ?
+
     template<class Config, bool With_layout>
     void List_pane<Config, With_layout>::scroll_up(Count items)
         // Note: scrolling UP means shifting the pane DOWN!
@@ -160,8 +169,6 @@ namespace cppgui {
             dy += children()[_first_visible_item - 1]->extents().h;
 
             _first_visible_item --;
-
-            // TODO: special case of arriving at bottom (close gap) ?
         }
 
         shift_down( dy );
@@ -171,6 +178,8 @@ namespace cppgui {
 
         //std::cout << "scroll_down() -> _first_visible_item = " << _first_visible_item << ", _last_visible_item = " << _last_visible_item << std::endl;
     }
+
+    // TODO: return a boolean to indicate whether scrolling was possible or not ?
 
     template<class Config, bool With_layout>
     void List_pane<Config, With_layout>::scroll_down(Count items)
@@ -183,9 +192,9 @@ namespace cppgui {
             dy += first_visible_child()->extents().h;
 
             _first_visible_item ++;
-
-            // TODO: special case of arriving at bottom (close gap) ?
         }
+
+        // TODO: special case of arriving at bottom (close gap) ?
 
         shift_up( dy );
 

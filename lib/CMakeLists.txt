@@ -124,6 +124,7 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/basic_types.hpp
     include/cppgui/geometry.hpp
     include/cppgui/aspects.hpp
+    include/cppgui/unicode.hpp
 
     #include/cppgui/Text_element.hpp                 include/cppgui/Text_element.ipp
     #include/cppgui/Drag_controller.hpp              include/Drag_controller.ipp

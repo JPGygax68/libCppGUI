@@ -67,7 +67,7 @@ namespace cppgui {
             void layout() override;
 
         protected:
-            auto content_rect() -> Rectangle;
+            //auto content_rect() -> Rectangle;
         };
     };
 

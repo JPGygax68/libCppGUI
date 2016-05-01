@@ -25,17 +25,18 @@ namespace cppgui {
     class Textbox: public Textbox__Layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >
     {
     public:
-        using Renderer = typename Config::Renderer;
-        using Keycode  = typename Config::Keyboard::Keycode;
-        using Widget_t = typename Widget<Config, With_layout>;
-        using Textbox_t = typename Textbox<Config, With_layout>;
-        using Canvas_t = typename Widget_t::Canvas_t;
+        using Renderer    = typename Config::Renderer;
+        using Keycode     = typename Config::Keyboard::Keycode;
+        using Widget_t    = typename Widget<Config, With_layout>;
+        using Textbox_t   = typename Textbox<Config, With_layout>;
+        using Canvas_t    = typename Widget_t::Canvas_t;
         using Font_handle = typename Widget_t::Font_handle;
 
         // TODO: implement "set" and "change" variants
         void set_font(const Rasterized_font *);
         auto font() const { return _font; }
         void set_text(const std::u32string &);
+        void set_text(const std::string &);
         void change_text(const std::u32string &);
         void change_text(const std::string &);
         auto text() const { return _text; }

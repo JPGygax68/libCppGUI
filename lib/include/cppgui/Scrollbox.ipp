@@ -110,14 +110,4 @@ namespace cppgui {
         p()->_content->layout();
     }
 
-    template<class Config, class Pane>
-    template<class Aspect_parent>
-    auto Scrollbox__Layouter<Config, true, Pane>::Aspect<Aspect_parent>::content_rect() -> Rectangle
-    {
-        return { 
-            0, 0, 
-            p()->extents().w - p()->_vert_sbar.extents().w, p()->extents().h
-        };
-    }
-
 } // ns cppgui
