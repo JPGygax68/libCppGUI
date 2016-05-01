@@ -111,8 +111,7 @@ namespace cppgui {
             else if (unit == Navigation_unit::page)
             {
                 assert(delta.den == 1);
-                int items = (int) children().size() * delta.num * (int) listbox()->content_rectangle().ext.h / (int) extents().h;
-                scroll_by_items( items );
+                scroll_by_pages(delta.num);
             }
             else {
                 assert(false); // TODO
@@ -177,6 +176,16 @@ namespace cppgui {
         assert(_last_visible_item >= 0);
 
         //std::cout << "scroll_down() -> _first_visible_item = " << _first_visible_item << ", _last_visible_item = " << _last_visible_item << std::endl;
+    }
+
+    template<class Config, bool With_layout>
+    void List_pane<Config, With_layout>::scroll_by_pages(int delta)
+    {
+        int items = (int) children().size() * delta * (int) listbox()->content_rectangle().ext.h / (int) extents().h;
+
+        scroll_by_items( items );
+
+        listbox()->update_scrollbar_position(); // TODO: call this from within scroll_page_up() / scroll_page_down() ?
     }
 
     // TODO: return a boolean to indicate whether scrolling was possible or not ?

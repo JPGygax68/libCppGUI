@@ -20,8 +20,11 @@ namespace cppgui {
     {
     public:
         using Container_t = Container<Config, With_layout>;
+        using Parent_t = Container_t;
         using Canvas_t = typename Canvas<typename Config::Renderer>;
-        using Scrollable_pane_t = Scrollable_pane<Config, With_layout>;
+        using Scrollable_pane_t = Pane; // Scrollable_pane<Config, With_layout>;
+        using Keyboard = typename Config::Keyboard;
+        using Keycode = typename Keyboard::Keycode;
         //using List_pane_t = List_pane<Config, With_layout>;
 
         using Navigation_handler = std::function<void(Navigation_unit)>;
@@ -38,7 +41,7 @@ namespace cppgui {
         auto& vertical_scrollbar() { return _vert_sbar; }
 
         void mouse_wheel(const Vector &) override;
-        // TODO: keyboard navigation
+        void key_down(const Keycode &) override;
 
         void render(Canvas_t *, const Point &offset) override;
 
@@ -46,6 +49,8 @@ namespace cppgui {
 
     protected:
         using Vertical_scrollbar_t = Custom_vertical_scrollbar<Config, With_layout>;
+
+        auto pane() { return static_cast<Scrollable_pane_t*>(_content); }
 
         Vertical_scrollbar_t    _vert_sbar;
         Rectangle               _content_rect; // set by layouter

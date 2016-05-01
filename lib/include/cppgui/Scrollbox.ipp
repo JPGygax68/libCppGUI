@@ -52,8 +52,17 @@ namespace cppgui {
     template<class Config, bool With_layout, class Pane>
     void Scrollbox<Config, With_layout, Pane>::mouse_wheel(const Vector &delta)
     {
-        // TODO: better way than just redirecting input events ?
+        // TODO: better way than just redirecting input events ? e.g. call Impl::move_by_items() ?
         _vert_sbar.mouse_wheel(delta);
+    }
+
+    template<class Config, bool With_layout, class Pane>
+    void Scrollbox<Config, With_layout, Pane>::key_down(const Keycode &code)
+    {
+        if      (Keyboard::is_page_down(code)) pane()->scroll_by_pages(  1 );
+        else if (Keyboard::is_page_up  (code)) pane()->scroll_by_pages( -1 );
+        else
+            Parent_t::key_down(code);
     }
 
     template<class Config, bool With_layout, class Pane>
