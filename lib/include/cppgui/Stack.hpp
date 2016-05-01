@@ -103,8 +103,8 @@ namespace cppgui {
         friend class Stack<Config, With_layout>;
 
         // Actions
-        void scroll_up  ();
         void scroll_down();
+        void scroll_up  ();
 
         // Hooks
         void child_has_obtained_focus(Widget_t *child) override;

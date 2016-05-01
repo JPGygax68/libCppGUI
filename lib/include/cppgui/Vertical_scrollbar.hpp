@@ -53,7 +53,7 @@ namespace cppgui {
         auto full_range() const { return _full_range; }
         auto fraction() const { return _fraction; }
 
-        auto current_position() -> Position; // TODO: use rational number instead ?
+        auto current_position() -> Fraction<>;
         void change_position(Position); // TODO: assert() against calling this while not at end of navigation ?
 
     protected:

@@ -86,23 +86,53 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void List_pane<Config, With_layout>::scroll(Navigation_unit unit, Position initial_pos, Fraction<int> delta)
     {
-        using std::begin; using std::end; using std::rbegin; using std::rend; using std::reverse_iterator; using std::find_if;
-
-        if (children().empty()) return;
-
-        if (unit == Navigation_unit::element)
+        if (!children().empty())
         {
-            assert(delta.den == 1);
-            scroll_by_items(delta.num);
-        }
-        else {
-            assert(false); // TODO
+            if (unit == Navigation_unit::element)
+            {
+                assert(delta.den == 1);
+                scroll_by_items(delta.num);
+            }
+            else if (unit == Navigation_unit::fraction)
+            {
+                // Compute item index from initial_pos (which is in pixels)
+                if (extents().h > listbox()->extents().h)
+                {
+                    auto initial_item = children().size() * (initial_pos + first_visible_child()->extents().h / 2) / extents().h;
+                    //int steps = static_cast<int>(hidden_items()) * delta.num / delta.den - initial_item;
+                    int new_pos = initial_item + static_cast<int>(hidden_items()) * delta.num / delta.den;
+                    std::cout << "new_pos = " << new_pos << ", initial_item = " << initial_item << std::endl;
+                    int dist = new_pos - _first_visible_item;
+                    if (dist != 0)
+                    {
+                        scroll_by_items(dist);
+                    }
+                    /* if (new_pos < _first_visible_item)
+                    {
+                        scroll
+                    }
+                    else if (new_pos > _first_visible_item)
+                    {
+                    } */
+                    //scroll_by_items(steps)
+                }
+            }
+            else {
+                assert(false); // TODO
+            }
         }
     }
 
     template<class Config, bool With_layout>
     void List_pane<Config, With_layout>::compute_visible_item_range()
     {
+        // TODO: use new methods
+        _first_visible_item = scan_children_forward(0, [this](auto child) { return child_fully_after_top(child); });
+        _last_visible_item  = scan_children_forward(_first_visible_item, [this](auto child) { return !child_fully_before_bottom(child); }) - 1;
+
+        /*
+        return;
+
         unsigned int first, last;
 
         for (first = 0; first < children().size(); first ++)
@@ -117,12 +147,19 @@ namespace cppgui {
 
         _first_visible_item = first;
         _last_visible_item = last;
+        */
     }
 
     template<class Config, bool With_layout>
-    bool List_pane<Config, With_layout>::child_fully_before_bottom(Widget_t * child)
+    bool List_pane<Config, With_layout>::child_fully_after_top(Widget_t * child, Position_delta offset)
     {
-        return position().y + child->rectangle().bottom() <= listbox()->extents().bottom_edge();
+        return position().y + offset + child->position().y >= 0;
+    }
+
+    template<class Config, bool With_layout>
+    bool List_pane<Config, With_layout>::child_fully_before_bottom(Widget_t * child, Position_delta offset)
+    {
+        return position().y + offset + child->rectangle().bottom() <= listbox()->extents().bottom_edge();
     }
 
     template<class Config, bool With_layout>
@@ -130,13 +167,13 @@ namespace cppgui {
     {
         if (delta < 0)
         {
-            assert(delta == - 1); // TODO: clarify whether other values are possible
-            scroll_down_one_item();
+            //assert(delta == - 1); // TODO: clarify whether other values are possible
+            scroll_up  ( - delta );
         }
         else if (delta > 0)
         {
-            assert(delta == 1); // TODO: clarify whether other values are possible
-            scroll_up_one_item();
+            //assert(delta == 1); // TODO: clarify whether other values are possible
+            scroll_down( delta );
         }
         else
             assert(false);
@@ -144,6 +181,8 @@ namespace cppgui {
         listbox()->update_scrollbar_position();
         //listbox()->bring_item_into_view(_selected_item_index);
     }
+
+    // TODO: remove and replace with scroll_down() ?
 
     template<class Config, bool With_layout>
     void List_pane<Config, With_layout>::scroll_down_one_item()
@@ -154,11 +193,13 @@ namespace cppgui {
 
             shift_down( first_visible_child()->extents().h );
 
-            _last_visible_item = find_last_child(_last_visible_item, [this](auto child) { return child_fully_before_bottom(child); });
+            _last_visible_item = scan_children_backward(_last_visible_item, [this](auto child) { return child_fully_before_bottom(child); });
             assert(_last_visible_item >= 0);
         }
         // else ... TODO: emit sound ?
     }
+
+    // TODO: remove and replace with scroll_up()
 
     template<class Config, bool With_layout>
     void List_pane<Config, With_layout>::scroll_up_one_item()
@@ -169,12 +210,58 @@ namespace cppgui {
 
             _first_visible_item ++;
 
-            _last_visible_item = find_first_child(_last_visible_item, [this](auto child) { return child_fully_before_bottom(child); });
+            _last_visible_item = scan_children_forward(_last_visible_item, [this](auto child) { return !child_fully_before_bottom(child); }) + 1;
             assert(_last_visible_item >= 0);
 
             // TODO: special case of arriving at bottom ?
         }
         // else ... TODO: emit sound ?
+    }
+
+    template<class Config, bool With_layout>
+    void List_pane<Config, With_layout>::scroll_up(Count items)
+        // Note: scrolling UP means shifting the pane DOWN!
+    {
+        Length dy = 0;
+
+        while (items -- > 0 && _first_visible_item > 0)
+        {
+            dy += children()[_first_visible_item - 1]->extents().h;
+
+            _first_visible_item --;
+
+            // TODO: special case of arriving at bottom (close gap) ?
+        }
+
+        shift_down( dy );
+
+        _last_visible_item = scan_children_backward(_last_visible_item, [=, this](auto child) { return child_fully_before_bottom(child); });
+        assert(_last_visible_item >= 0);
+
+        //std::cout << "scroll_down() -> _first_visible_item = " << _first_visible_item << ", _last_visible_item = " << _last_visible_item << std::endl;
+    }
+
+    template<class Config, bool With_layout>
+    void List_pane<Config, With_layout>::scroll_down(Count items)
+        // Note: scrolling DOWN means shifting the pane UP!
+    {
+        Length dy = 0;
+
+        while (items-- > 0 && !child_fully_before_bottom(last_child(), - (Position_delta) dy))
+        {
+            dy += first_visible_child()->extents().h;
+
+            _first_visible_item ++;
+
+            // TODO: special case of arriving at bottom (close gap) ?
+        }
+
+        shift_up( dy );
+
+        _last_visible_item = scan_children_forward(_last_visible_item, [=, this](auto child) { return !child_fully_before_bottom(child); }) - 1;
+        assert(_last_visible_item >= 0);
+
+        //std::cout << "scroll_down() -> _first_visible_item = " << _first_visible_item << ", _last_visible_item = " << _last_visible_item << std::endl;
     }
 
     // Layouter aspect ----------------------------------------------

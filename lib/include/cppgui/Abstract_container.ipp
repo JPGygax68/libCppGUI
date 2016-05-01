@@ -169,26 +169,26 @@ namespace cppgui {
 
     template<class Config, bool With_layout>
     template<class Pred>
-    auto Abstract_container<Config, With_layout>::find_first_child(Index from, Pred pred) -> Index
+    auto Abstract_container<Config, With_layout>::scan_children_forward(Index from, Pred pred) -> Index
     {
         for (auto i = from; i < (Index) _children.size(); i ++)
         {
             if (pred(_children[i])) return i;
         }
 
-        return -1;
+        return (Index) _children.size();
     }
 
     template<class Config, bool With_layout>
     template<class Pred>
-    auto Abstract_container<Config, With_layout>::find_last_child(Index from, Pred pred) -> Index
+    auto Abstract_container<Config, With_layout>::scan_children_backward(Index from, Pred pred) -> Index
     {
-        for (Index i = from; i >= 0; i --)
+        for (Index i = from; i >= 0; i--)
         {
             if (pred(_children[i])) return i;
         }
 
-        return -1;
+        return - 1;
     }
 
     // Layouter aspect ----------------------------------------------

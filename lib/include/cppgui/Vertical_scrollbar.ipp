@@ -19,10 +19,10 @@ namespace cppgui {
     }
 
     template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::define_values(Length full, Length shown)
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::define_values(Length full, Length fraction)
     {
         _full_range = full;
-        _fraction = shown;
+        _fraction = fraction;
     }
 
     template<class Impl, class Config, bool With_layout>
@@ -84,7 +84,8 @@ namespace cppgui {
                 {
                     _thumb_drag_anchor_pos = pos.y;
                     _thumb_drag_start_pos = _thumb_rect.pos.y;
-                    _drag_start_pos = current_position();
+                    auto cur_pos = current_position();
+                    _drag_start_pos = cur_pos.num / cur_pos.den; // TODO: implement conversion on Fraction<> (or create Rational<>)
                     _dragging_thumb = true;
                     root_widget()->capture_mouse(this);
                 }
@@ -143,9 +144,16 @@ namespace cppgui {
     }
 
     template<class Impl, class Config, bool With_layout>
-    auto Vertical_scrollbar_base<Impl, Config, With_layout>::current_position() -> Position // Fraction<>
+    auto Vertical_scrollbar_base<Impl, Config, With_layout>::current_position() -> Fraction<> // Position
     {
-        return (_full_range - _fraction) * (_thumb_rect.pos.y - _sliding_range.start()) / static_cast<Position>(_sliding_range.l - _thumb_rect.ext.h);
+        /*
+        return (_full_range - _fraction) * (_thumb_rect.pos.y - _sliding_range.start()) / 
+               static_cast<Position>(_sliding_range.l - _thumb_rect.ext.h);
+        */
+        return {
+            (_full_range - _fraction) * static_cast<Length>(_thumb_rect.pos.y - _sliding_range.start()),
+            _sliding_range.l - _thumb_rect.ext.h
+        };
     }
 
     template<class Impl, class Config, bool With_layout>

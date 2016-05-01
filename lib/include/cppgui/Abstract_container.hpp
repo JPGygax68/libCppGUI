@@ -34,13 +34,8 @@ namespace cppgui {
         auto first_child() -> Widget_t * { assert(!_children.empty()); return _children.front(); }
         auto last_child () -> Widget_t * { assert(!_children.empty()); return _children.back (); }
 
-        /** Search for a child using the specified predicate.
-            Note that the "from" paramter is inclusive in both cases (e.g. the first child
-            that find_last_child(7, ...) would check the predicate on would be the child
-            at index 7.
-         */
-        template<class Pred> auto find_first_child(Index from, Pred) -> Index;
-        template<class Pred> auto find_last_child (Index from, Pred) -> Index;
+        template<class Pred> auto scan_children_forward (Index from, Pred) -> Index;
+        template<class Pred> auto scan_children_backward(Index from, Pred) -> Index;
 
     protected:
 

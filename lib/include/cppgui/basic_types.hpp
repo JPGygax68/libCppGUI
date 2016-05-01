@@ -22,6 +22,7 @@ namespace cppgui {
     using Mono_value        = gpc::gui::mono_norm;
 
     using Index             = int; // Index is signed so that -1 can be used to report "invalid" or "not found"
+    using Count             = unsigned int;
 
     template<typename T = unsigned int>
     struct Fraction {
@@ -29,6 +30,8 @@ namespace cppgui {
 
         template<typename Float>
         constexpr auto Float() const -> Float { return static_cast<Float>(static_cast<double>(num) / static_cast<double>(den)); }
+       
+        constexpr operator T () const { return num / den; }
     };
 
     /*
