@@ -1,3 +1,41 @@
+2016-05-01
+==========
+
+I have made good, if slow, progress on the Listbox these past days. A few things are worth noting:
+
+- take_focus() now propagates upwards, in the sense that if a widget refuses to take the focus, it will still inform its container, so that the container, in turn, may take the focus upon itself (which it should do anyway to put itself in the focus chain).
+
+- There is a need to have visual feedback clearly indicating which widget has the focus. In particular, it is annoying that, even though a listbox can now be (indirectly) focus by clicking on its scrollbar (or any of its children, though with a list of buttons, that cannot be done without clicking one of the buttons), there is no indication that the listbox is now ready to be navigated with the cursor keys.
+
+### Other things to think about
+
+- Exception safety:
+  - When is it ok for a widget to throw an exception ? 
+  - Can it be ensured that the GUI will stay in a stable state after an exception was thrown ?
+  - Callbacks should be upgraded to real events
+    - Is there a motivation to use aspects to support both simple callbacks or full-blown signal/slot handling ?
+  - What about concurrency ?
+    - Must all operations on the GUI be serialized, or is concurrency allowable (and useful) in certain cases ?
+      - e.g. a worker thread reporting progress via a progress bar ?
+        - typically, the worker thread might change the value of the progress bar, then call invalidate() which would be responsible for queueing a redraw by the main thread
+      - loading an image (e.g. for a supposed image viewer widget) and preparing that image for use by the graphics subsystem could be done in a worker thread IF the graphics wrapper supports this (e.g. with OpenGL, a secondary context could be created). If however it does not, then the graphics wrapper should provide a means to bring that operation into the main thread transparently (doable via a lambda, which the compiler can (hopefully) optimise into inline code when deferring is unnecessary)
+
+- States in debug builds ?
+  - It may be useful at some point to protect library users (or developers, just as much) from avoidable mistakes by enforcing (in debug builds only) discrete states, with all methods being associated with one or more of those states and only valid for calling when the widget (or entire GUI) is in one of those states. E.g.:
+    - defining the user interface (through set_...() methods) may only be done when in "setup" state
+    - the "layouting" state is only available if the library is configured to carry that aspect
+      - However layouting can still occur for specific widgets if the aspect has been specifically enabled on them. In such a case, however, "layouting" would be a secondary state and concurrent to the GUI's "main" state.
+    - init() will put the GUI into "initializing" state (and only be allowed following the "setup" or the "layout" state)
+    - event handlers require the "ready" state
+      - ? is there a way to prevent loops in event handling ?
+        -> probably yes, but not with a state machine - it might involve a lot of "friend" statements instead
+    - rendering requires the "drawable" state (which can only be entered via the platform adapter) (actually, the exact interplay between the platform adapter and the library proper will need some thinking about)
+    - some states could be thread-local, while most would probably be global (to a given root widget, or even to the whole process)
+  
+  - Another thought: all adapters (graphics, keyboard, mouse, sound, etc.) should define a method them of state changes. Of course those methods are only allowed to carry out checks - they musn't do any work required in release builds because they won't be called then.
+  
+  - The state machine would most certainly "live" in the root widget.
+  
 2016-04-28
 ==========
 
