@@ -59,7 +59,9 @@ namespace cppgui {
     template<class Config, bool With_layout, class Pane>
     void Scrollbox<Config, With_layout, Pane>::key_down(const Keycode &code)
     {
-        if      (Keyboard::is_page_down(code)) pane()->scroll_by_pages(  1 );
+        if      (Keyboard::is_down     (code)) pane()->scroll_by_items(  1 );
+        else if (Keyboard::is_up       (code)) pane()->scroll_by_items( -1 );
+        else if (Keyboard::is_page_down(code)) pane()->scroll_by_pages(  1 );
         else if (Keyboard::is_page_up  (code)) pane()->scroll_by_pages( -1 );
         else
             Parent_t::key_down(code);

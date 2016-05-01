@@ -19,13 +19,14 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Container<Config, With_layout>::child_has_obtained_focus(Widget_t *child)
+    void Container<Config, With_layout>::container_take_focus(Widget_t *child)
     {
         // Inform former focused child, update focused_child property
-        Abstract_container_t::child_has_obtained_focus(child);
+        Abstract_container_t::container_take_focus(child);
 
-        // Propagate upwards
-        container()->child_has_obtained_focus(this);
+        // Propagate
+        //container()->container_take_focus(this);
+        take_focus();
     }
 
     template<class Config, bool With_layout>
@@ -65,6 +66,8 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Container<Config, With_layout>::mouse_click(const Point &pos, int button, int count)
     {
+        Widget_t::mouse_click(pos, button, count);
+
         container_mouse_click(pos, button, count);
     }
 
@@ -135,7 +138,7 @@ namespace cppgui {
             if (it != std::end(children()))
             {
                 (*it)->gained_focus();
-                child_has_obtained_focus(*it);
+                container_take_focus(*it);
                 return true;
             }
             else {
@@ -171,11 +174,11 @@ namespace cppgui {
             if (it != std::rend(children()))
             {
                 (*it)->gained_focus();
-                child_has_obtained_focus(*it);
+                container_take_focus(*it);
                 return true;
             }
             else {
-                return false; // child_has_obtained_focus(nullptr);
+                return false; // container_take_focus(nullptr);
             }
 
         }

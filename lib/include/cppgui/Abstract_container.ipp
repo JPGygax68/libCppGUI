@@ -7,7 +7,7 @@
 namespace cppgui {
 
     template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::child_has_obtained_focus(Widget_t *child)
+    void Abstract_container<Config, With_layout>::container_take_focus(Widget_t *child)
     {
         if (_focused_child)
         {

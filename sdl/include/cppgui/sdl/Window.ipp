@@ -172,7 +172,7 @@ namespace cppgui {
         template <class Impl>
         void Window<Impl>::handle_window_event(SDL_WindowEvent &ev)
         {
-            std::cout << "Window::handle_window_event()" << std::endl;
+            //std::cout << "Window::handle_window_event()" << std::endl;
 
             switch (ev.event)
             {

@@ -107,7 +107,7 @@ namespace cppgui {
         void scroll_up  ();
 
         // Hooks
-        void child_has_obtained_focus(Widget_t *child) override;
+        void container_take_focus(Widget_t *child) override;
 
         // Helpers
         void bring_child_into_view(Widget_t *);

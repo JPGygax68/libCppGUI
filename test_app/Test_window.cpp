@@ -77,7 +77,7 @@ Test_window::Test_window(): Parent("Test window")
     for (auto i = 0U; i < _button_list.size(); i ++)
     {
         _button_list[i].set_font(dflt_font);
-        _button_list[i].set_label(std::u32string{U"This is button #"} + char32_t(U'1' + i));
+        _button_list[i].set_label("This is button #"s + std::to_string(i + 1));
         _stack.add_child(&_button_list[i]);
     }
 
@@ -160,7 +160,7 @@ Test_window::Test_window(): Parent("Test window")
         _lb_buttons[i].set_label("Scrollbox button #"s + std::to_string(i + 1));
         _listbox.add_item(&_lb_buttons[i]);
     }
-    _listbox.set_position({ 800,  50 });
+    _listbox.set_position({ 800,  90 });
     _listbox.set_extents ({ 400, 120 });
 
     root_widget()->set_background_color({0, 0.6f, 0.2f, 1});

@@ -175,11 +175,11 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Inner_stack<Config, With_layout>::child_has_obtained_focus(Widget_t * child)
+    void Inner_stack<Config, With_layout>::container_take_focus(Widget_t * child)
     {
         if (child) bring_child_into_view(child);
 
-        Container_t::child_has_obtained_focus(child);
+        Container_t::container_take_focus(child);
     }
 
     template<class Config, bool With_layout>

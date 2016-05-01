@@ -173,17 +173,15 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    bool Widget<Config, With_layout>::take_focus()
+    void Widget<Config, With_layout>::take_focus()
     {
-        if (!_focussable)
-        {
-            return false;
-        }
-        else
+        if (_focussable)
         {
             gained_focus();
-            container()->child_has_obtained_focus(this);
-            return true;
+            container()->container_take_focus(this);
+        }
+        else {
+            container()->container_take_focus(nullptr);
         }
     }
 
@@ -231,6 +229,8 @@ namespace cppgui {
     template<class Config, bool With_layouting>
     void Widget<Config, With_layouting>::mouse_click(const Point &pos, int button, int count)
     {
+        take_focus();
+
         if (_click_hndlr) _click_hndlr(pos, button, count);
     }
 
