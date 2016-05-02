@@ -36,7 +36,7 @@ namespace cppgui {
         void on_navigation(Navigation_handler);
 
         void set_content_pane(Scrollable_pane_t *);
-        auto content_pane() { return _content_pane; }
+        auto content_pane() { return _content; }
 
         auto& vertical_scrollbar() { return _vert_sbar; }
 
@@ -86,7 +86,7 @@ namespace cppgui {
 
         // To implement in CRTP descendant class:
 
-        //void scroll(Navigation_unit unit, Position initial_pos, Fraction<int> delta) { static_assert(false, "Scrollable_pane::navigate()"); }
+        void scroll(Navigation_unit unit, Position initial_pos, Fraction<int> delta) { static_assert(false, "Scrollable_pane::navigate()"); }
 
         /** TODO: inform container scrollbox that the extents of the pane have changed,
             and to update the scrollbar(s) accordingly

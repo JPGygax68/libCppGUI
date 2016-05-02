@@ -51,7 +51,7 @@
     template cppgui::Container                        <Config, With_layout>; \
     template cppgui::Stack                            <Config, With_layout>; \
     template cppgui::Custom_vertical_scrollbar               <Config, With_layout>; \
-    template cppgui::Scrollbox                        <Config, With_layout>; \
-    template cppgui::Scrollable_pane                  <Config, With_layout>; \
+    /* template cppgui::Scrollbox                        <Config, With_layout>; */ \
+    /* template cppgui::Scrollable_pane                  <Config, With_layout>; */ \
     template cppgui::List_pane                        <Config, With_layout>; \
-    template cppgui::List_box                         <Config, With_layout>;
+    template cppgui::Listbox                          <Config, With_layout>;

@@ -91,8 +91,6 @@ namespace cppgui {
         auto last_visible_child() { return children()[_last_visible_item]; }
         void scroll_down(Count items = 1);
         void scroll_up  (Count items = 1);
-        //void scroll_page_down(Count pages = 1);
-        //void scroll_page_up  (Count pages = 1);
         auto visible_items() const { return _last_visible_item - _first_visible_item + 1;  }
         auto hidden_items() { return visible_items() < (int) children().size() ? (int) (children().size()) - visible_items() : 0; }
 
