@@ -9,13 +9,6 @@ namespace cppgui {
 
     namespace sdl {
 
-        /*
-        template <class WinT>
-        auto Application<WinT>::main_window() -> WinT &
-        {
-        }
-        */
-
         template <class WinT>
         int Application<WinT>::run()
         {
@@ -23,18 +16,22 @@ namespace cppgui {
             
             for (;;)
             {
+                int err;
+
                 if (SDL_WaitEvent(&ev) != 1) throw Error("waiting for event");
 
-                // Custom event ?
-                auto it = event_map().find(ev.type);
-                if (it != event_map().end())
+                do 
                 {
-                    it->second(ev.user);
-                }
-                else {
-
-                    switch (ev.type)
+                    // Custom event ?
+                    auto it = event_map().find(ev.type);
+                    if (it != event_map().end())
                     {
+                        it->second(ev.user);
+                    }
+                    else 
+                    {
+                        switch (ev.type)
+                        {
                         case SDL_QUIT: 
                             return 1; // TODO: is this the right return value ?
                         case SDL_WINDOWEVENT:
@@ -58,8 +55,12 @@ namespace cppgui {
                         case SDL_KEYDOWN:
                             WinT::dispatch_keydown_event(ev.key);
                             break;
+                        }
                     }
                 }
+                while ((err = SDL_PollEvent(&ev)) == 1);
+
+                WinT::for_each_window([](WinT *window) { window->end_of_event_burst(); });
             }
         }
 
@@ -71,11 +72,6 @@ namespace cppgui {
             event_map()[id] = handler;
 
             return id;
-        }
-
-        template<class WinT>
-        void Application<WinT>::dispatch_redraw(SDL_UserEvent &)
-        {
         }
 
         template<class WinT>

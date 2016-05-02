@@ -3,7 +3,9 @@
 #include <cstdint>
 #include <functional>
 #include <map>
+#include <set>
 
+union SDL_Event;
 struct SDL_UserEvent;
 
 namespace cppgui {
@@ -17,8 +19,6 @@ namespace cppgui {
 
             // Concept implementation
 
-            //auto main_window() -> WinT &;
-
             int run();
 
             // Additional methods
@@ -30,9 +30,12 @@ namespace cppgui {
             // void post_custom_event(const SDL_UserEvent &);
 
         private:
-            void dispatch_redraw(SDL_UserEvent &);
 
             static auto event_map() -> std::map<uint32_t, Custom_event_handler> &;
+
+            static auto instance_pointer() -> Application * &;
+
+            std::set<WinT*>     windows;
         };
 
     } // ns sdl

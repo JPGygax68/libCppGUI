@@ -240,8 +240,28 @@ namespace cppgui {
         template<class Impl>
         void Window<Impl>::handle_redraw()
         {
-            p()->make_renderer_context_current();
-            p()->redraw();
+            _must_redraw = true;
+
+        }
+
+        template<class Impl>
+        void Window<Impl>::for_each_window(std::function<void(Impl*)> callback)
+        {
+            for (auto& iter: window_map())
+            {
+                callback(iter.second);
+            }
+        }
+
+        template<class Impl>
+        void Window<Impl>::end_of_event_burst()
+        {
+            if (_must_redraw)
+            {
+                p()->make_renderer_context_current();
+                p()->redraw();
+                _must_redraw = false;
+            }
         }
 
         template <class Impl>

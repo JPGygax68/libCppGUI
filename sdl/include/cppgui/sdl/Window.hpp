@@ -70,6 +70,12 @@ namespace cppgui {
             static void dispatch_redraw(uint32_t win_id);
             static void dispatch_custom_event(uint32_t win_id);
 
+            // Interface towards Application<>
+
+            static void for_each_window(std::function<void(Impl*)>);
+
+            void end_of_event_burst();
+
         protected:
 
             void init_window(); // use CRTP-override
@@ -97,6 +103,7 @@ namespace cppgui {
             static auto window_map() -> std::map<uint32_t, Impl*> &;
 
             Pointer         _win;
+            bool            _must_redraw;
         };
 
     } // ns sdl
