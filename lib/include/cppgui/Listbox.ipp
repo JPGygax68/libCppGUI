@@ -73,6 +73,21 @@ namespace cppgui {
         Scrollbox_t::layout();
     }
 
+    template<class Config>
+    template<class Aspect_parent>
+    auto Listbox__Layouter<Config, true>::Aspect<Aspect_parent>::get_preferred_size() -> Extents
+    {
+        // TODO: borders, padding, separation
+
+        auto pane_size  = p()->_content_pane.get_preferred_size();
+        auto vsbar_size = p()->vertical_scrollbar().get_preferred_size();
+
+        auto w = pane_size.w + vsbar_size.w;
+        auto h = std::max( pane_size.h, vsbar_size.h );
+
+        return { w, h };
+    }
+
     // List_pane ====================================================
 
     template<class Config, bool With_layout>
@@ -135,7 +150,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     bool List_pane<Config, With_layout>::child_fully_before_bottom(Widget_t * child, Position_delta offset)
     {
-        return position().y + offset + child->rectangle().bottom() <= listbox()->extents().bottom_edge();
+        return position().y + offset + child->rectangle().bottom() <= listbox()->content_rectangle().bottom();
     }
 
     template<class Config, bool With_layout>

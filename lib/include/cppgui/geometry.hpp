@@ -135,6 +135,9 @@ namespace cppgui {
 
         auto offset(const Point &offs) const -> Rectangle { return { pos.x + offs.x, pos.y + offs.y, ext.w, ext.h }; }
 
+        auto operator + (const Point &offs) const { return offset(offs); }
+        auto operator - (const Point &offs) const { return offset({ - offs.x, - offs.y }); }
+
         auto shrink(Length l) const -> Rectangle { return shrink({ l, l }); }
 
         auto shrink(const Extents &delta) const -> Rectangle { 

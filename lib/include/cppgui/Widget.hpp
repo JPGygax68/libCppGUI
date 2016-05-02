@@ -268,8 +268,8 @@ namespace cppgui {
             // Layouter aspect contract
 
             virtual void init_layout() = 0;
-            virtual auto get_minimal_size() -> Extents = 0; // TODO: evolve to get_minimal_bounding_box()
-                                                            // TODO: replace with non-virtual property accessor ?
+            virtual auto get_minimal_size  () -> Extents = 0;
+            virtual auto get_preferred_size() -> Extents { return get_minimal_size(); }
             virtual void layout() = 0;
 
             void set_padding(Width);

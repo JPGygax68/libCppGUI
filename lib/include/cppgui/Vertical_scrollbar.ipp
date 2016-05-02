@@ -146,14 +146,15 @@ namespace cppgui {
     template<class Impl, class Config, bool With_layout>
     auto Vertical_scrollbar_base<Impl, Config, With_layout>::current_position() -> Fraction<> // Position
     {
-        /*
-        return (_full_range - _fraction) * (_thumb_rect.pos.y - _sliding_range.start()) / 
-               static_cast<Position>(_sliding_range.l - _thumb_rect.ext.h);
-        */
-        return {
-            (_full_range - _fraction) * static_cast<Length>(_thumb_rect.pos.y - _sliding_range.start()),
-            _sliding_range.l - _thumb_rect.ext.h
-        };
+        if (_sliding_range.l > _thumb_rect.ext.h)
+        {
+            return {
+                (_full_range - _fraction) * static_cast<Length>(_thumb_rect.pos.y - _sliding_range.start()),
+                _sliding_range.l - _thumb_rect.ext.h
+            };
+        }
+        else
+            return { 0, 1 };
     }
 
     template<class Impl, class Config, bool With_layout>
@@ -161,7 +162,11 @@ namespace cppgui {
     {
         if (pos < 0) pos = 0; else if (pos > _full_range - _fraction) pos = _full_range - _fraction;
 
-        _thumb_rect.pos.y = _sliding_range.p + static_cast<Position>(pos * (_sliding_range.l - _thumb_rect.ext.h) / (_full_range - _fraction));
+        assert(_full_range >= _fraction);
+        if (_full_range > _fraction)
+        {
+            _thumb_rect.pos.y = _sliding_range.p + static_cast<Position>(pos * (_sliding_range.l - _thumb_rect.ext.h) / (_full_range - _fraction));
+        }
 
         invalidate();
     }

@@ -70,7 +70,7 @@ namespace cppgui {
     template<class Config, bool With_layout, class Pane>
     void Scrollbox<Config, With_layout, Pane>::render(Canvas_t *canvas, const Point &offset)
     {
-        Rectangle r { rectangle() };
+        Rectangle r { rectangle() + offset };
 
         canvas->set_clipping_rect(r.pos.x, r.pos.y, r.ext.w, r.ext.h);
 

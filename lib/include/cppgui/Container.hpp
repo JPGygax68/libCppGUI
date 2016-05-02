@@ -113,15 +113,15 @@ namespace cppgui {
             // Layout contract
 
             void init_layout() override;
-            auto get_minimal_size() -> Extents override { return _comp_min_size; }
+            auto get_minimal_size() -> Extents override;
+            auto get_preferred_size() -> Extents override;
             void layout() override;
 
             // Specific interface
 
             void set_layout_type(Layout_type type ) { _layout_type = type; }
-            void recalc_minimal_size();
 
-            void insert_child(Widget_t *);
+            void insert_child(Widget_t *); // TODO: find a better name OR support insertion index
             void drop_child(Widget_t *);
 
             void set_spacing(Length spacing) { _spacing = spacing; }
@@ -129,7 +129,8 @@ namespace cppgui {
         private:
             Layout_type     _layout_type = Layout_type::none;
             Length          _spacing = 0;
-            Extents         _comp_min_size = { 0, 0 };
+            //Extents         _comp_min_size  = { 0, 0 };
+            //Extents         _comp_pref_size = { 0, 0 };
         };
     };
 
@@ -140,7 +141,7 @@ namespace cppgui {
 
         template <class Aspect_parent> struct Aspect : public Aspect_parent {
 
-            void recalc_minimal_size() {}
+            // void recalc_sizes() {}
         };
     };
         

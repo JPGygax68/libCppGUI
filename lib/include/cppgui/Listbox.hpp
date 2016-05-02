@@ -55,6 +55,8 @@ namespace cppgui {
             auto p() { return static_cast<Listbox_t*>(this); }
 
             void layout() override;
+
+            auto get_preferred_size() -> Extents override;
         };
     };
 

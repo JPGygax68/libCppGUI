@@ -219,74 +219,146 @@ namespace cppgui {
         {
             child->init_layout();
         }
-
-        recalc_minimal_size();
     }
 
     template <class Config>
     template<class Aspect_parent>
-    inline void Container__Layouter<Config, true>::Aspect<Aspect_parent>::recalc_minimal_size()
+    inline auto Container__Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
     {
         // TODO: use polymorphic delegate class 
 
-        if (_layout_type == Layout_type::none) return;
+        Extents result;
 
-        if (_layout_type == Layout_type::header_content || _layout_type == Layout_type::content_footer)
+        if (_layout_type == Layout_type::none)
+        {            
+        }
+        else if (_layout_type == Layout_type::header_content || _layout_type == Layout_type::content_footer)
         {
-            _comp_min_size.h = 0, _comp_min_size.w = 0;
-
             for(auto child: p()->children())
             {
-                auto min_sz = child->get_minimal_size();
+                auto min_sz  = child->get_minimal_size();
 
-                // Accumulate minimal height
-                _comp_min_size.h += min_sz.h;
+                // Accumulate minimal, preferred height
+                result.h  += min_sz.h;
 
                 // Use greatest minimal width
-                if (min_sz.w > _comp_min_size.w) _comp_min_size.w = min_sz.w;
+                if (min_sz .w > result.w) result.w = min_sz .w;
             }
         }
         else if (_layout_type == Layout_type::content_tail)
         {
-            _comp_min_size.w = 0, _comp_min_size.h = 0;
+            result.w = 0, result.h = 0;
 
             for(auto child: p()->children())
             {
                 auto min_sz = child->get_minimal_size();
 
                 // Accumulate minimal width
-                _comp_min_size.w += min_sz.w;
+                result.w += min_sz.w;
 
                 // Use greatest minimal height
-                if (min_sz.h > _comp_min_size.h) _comp_min_size.h = min_sz.h;
+                if (min_sz.h > result.h) result.h = min_sz.h;
             }
 
-            _comp_min_size.h += _padding[0] + _padding[2];
-            _comp_min_size.w += (p()->children().size() - 1) * _spacing + _padding[3] + _padding[1];
+            result.h += _padding[0] + _padding[2];
+            result.w += (p()->children().size() - 1) * _spacing + _padding[3] + _padding[1];
         }
         else if (_layout_type == Layout_type::stack)
         {
-            _comp_min_size.w = 0, _comp_min_size.h = 0;
+            result.w = 0, result.h = 0;
 
             for(auto child: p()->children())
             {
                 auto min_sz = child->get_minimal_size();
 
                 // Use greatest minimal width
-                if (min_sz.w > _comp_min_size.w) _comp_min_size.w = min_sz.w;
+                if (min_sz.w > result.w) result.w = min_sz.w;
 
                 // Add heights
-                _comp_min_size.h += min_sz.h;
+                result.h += min_sz.h;
             }
 
-            _comp_min_size.h += (p()->children().size() - 1) * _spacing;
+            result.h += (p()->children().size() - 1) * _spacing;
 
-            _comp_min_size.h += _padding[0] + _padding[2];
-            _comp_min_size.w += (p()->children().size() - 1) * _spacing + _padding[3] + _padding[1];
+            result.h += _padding[0] + _padding[2];
+            result.w += (p()->children().size() - 1) * _spacing + _padding[3] + _padding[1];
         }
         else {
             assert(false); 
         }
+
+        return result;
+    }
+
+    template <class Config>
+    template<class Aspect_parent>
+    inline auto Container__Layouter<Config, true>::Aspect<Aspect_parent>::get_preferred_size() -> Extents
+    {
+        // TODO: use polymorphic delegate class 
+
+        Extents result;
+
+        if (_layout_type == Layout_type::none)
+        {
+        }
+        else if (_layout_type == Layout_type::header_content || _layout_type == Layout_type::content_footer)
+        {
+            for(auto child: p()->children())
+            {
+                auto pref_sz = child->get_preferred_size(); 
+
+                // Accumulate minimal, preferred height
+                result.h += pref_sz.h;
+
+                // Use greatest minimal width
+                if (pref_sz.w > result.w) result.w = pref_sz.w;
+            }
+        }
+        else if (_layout_type == Layout_type::content_tail)
+        {
+            result.w = 0, result.h = 0;
+
+            for(auto child: p()->children())
+            {
+                auto min_sz = child->get_preferred_size();
+
+                // Accumulate minimal width
+                result.w += min_sz.w;
+
+                // Use greatest preferred height
+                if (min_sz.h > result.h) result.h = min_sz.h;
+            }
+
+            result.h += _padding[0] + _padding[2];
+            result.w += (p()->children().size() - 1) * _spacing + _padding[3] + _padding[1];
+        }
+        else if (_layout_type == Layout_type::stack)
+        {
+            result.w = 0, result.h = 0;
+
+            for(auto child: p()->children())
+            {
+                auto min_sz = child->get_preferred_size();
+
+                // Use greatest preferred width
+                if (min_sz.w > result.w) result.w = min_sz.w;
+
+                // Add heights
+                result.h += min_sz.h;
+            }
+
+            result.h += (p()->children().size() - 1) * _spacing;
+
+        }
+        else {
+            assert(false); 
+        }
+
+        // Add borders
+        result.h += _padding[0] + _padding[2];
+        result.w += (p()->children().size() - 1) * _spacing + _padding[3] + _padding[1];
+
+        return result;
     }
 
     template <class Config>
@@ -400,7 +472,6 @@ namespace cppgui {
     inline void Container__Layouter<Config, true>::Aspect<Aspect_parent>::insert_child(Widget_t *child)
     {
         p()->add_child(child);
-        recalc_minimal_size();
         layout();
     }
 
@@ -409,7 +480,6 @@ namespace cppgui {
     inline void Container__Layouter<Config, true>::Aspect<Aspect_parent>::drop_child(Widget_t *child)
     {
         p()->remove_child(child);
-        recalc_minimal_size();
         layout();
     }
 
