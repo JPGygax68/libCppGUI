@@ -154,7 +154,7 @@ namespace cppgui {
 
         // Focus rectangle
         // TODO: stylesheet control
-        p()->_focus_rect = add_padding( p()->extents() );
+        p()->_focus_rect = add_padding( Rectangle{ p()->extents() } );
     }
 
 } // ns cppgui
