@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include <cppgui/basic_types.hpp>
 #include <cppgui/all_widgets.hpp>
 /*
 #include <cppgui/Container.hpp>
@@ -13,6 +14,8 @@ template <class Config, bool With_layout>
 class Text_input_dialog: public cppgui::Container<Config, With_layout>
 {
 public:
+    using Parent_t = cppgui::Container<Config, With_layout>;
+    using Canvas_t = typename cppgui::Widget<Config, With_layout>::Canvas_t;
 
     Text_input_dialog();
 
@@ -24,6 +27,8 @@ public:
     
     void set_prompt(const std::u32string &);
 
+    void render(Canvas_t *, const cppgui::Point &offset) override;
+
 private:
     CPPGUI_DEFINE_WIDGET_TYPES(Config, With_layout);
 
@@ -31,6 +36,7 @@ private:
     //using Container_t = cppgui::Container<Config, With_layout>;
     //using Textbox_t = cppgui::Textbox<Config, With_layout>;
 
+    cppgui::Border                  _border = {0};
     cppgui::Rasterized_font         _glyph_font;
     Container                       _header_bar;
     Label                           _caption_label;

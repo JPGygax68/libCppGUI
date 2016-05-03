@@ -25,6 +25,8 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Listbox<Config, With_layout>::bring_item_into_view(int item_index)
     {
+        // TODO: this will need adapting to the new content_rectangle() (not just extents anymore)
+
         auto item = _content_pane.children()[item_index];
 
         auto y1 = _content_pane.position().y + item->position().y; // TODO: subtract border/padding (use "inner rect" ?)
@@ -39,7 +41,7 @@ namespace cppgui {
         else if (y2 > extents().bottom_edge()) // TODO: use "inner rect"
         {
             // TODO: replace with shift_up()
-            delta_y = - (y2 - static_cast<Position_delta>(extents().h));
+            delta_y = -(y2 - (Position_delta) (extents().h));
         }
 
         // TODO: remove as soon as shift_up() & shift_down() are being used
@@ -59,7 +61,7 @@ namespace cppgui {
     void Listbox<Config, With_layout>::update_scrollbar_position()
         // Bring the position of the scrollbar in sync with the current vertical offset of the content pane
     {
-        vertical_scrollbar().change_position(- _content_pane.position().y );
+        vertical_scrollbar().change_position( - (_content_pane.position().y - content_rectangle().pos.y) );
     }
 
     // Layouter aspect ----------------------------------------------
@@ -85,7 +87,7 @@ namespace cppgui {
         auto w = pane_size.w + vsbar_size.w;
         auto h = std::max( pane_size.h, vsbar_size.h );
 
-        return { w, h };
+        return { w + 2 * p()->_border.width, h + 2 * p()->_border.width };
     }
 
     // List_pane ====================================================
@@ -144,7 +146,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     bool List_pane<Config, With_layout>::child_fully_after_top(Widget_t * child, Position_delta offset)
     {
-        return position().y + offset + child->position().y >= 0;
+        return position().y + offset + child->position().y >= listbox()->content_rectangle().pos.y;
     }
 
     template<class Config, bool With_layout>

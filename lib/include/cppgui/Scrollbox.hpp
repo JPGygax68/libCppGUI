@@ -31,6 +31,8 @@ namespace cppgui {
 
         Scrollbox();
 
+        void set_border(const Border &);
+
         void init() override;
 
         void on_navigation(Navigation_handler);
@@ -52,8 +54,11 @@ namespace cppgui {
 
         auto pane() { return static_cast<Scrollable_pane_t*>(_content); }
 
+        Border                  _border    = { 4, {0, 0.2f, 0.6f, 1} };     // encompasses both content area and scrollbar(s)
+        Separator               _separator = { 3, {0, 0.4f, 0.8f, 1} };
         Vertical_scrollbar_t    _vert_sbar;
-        Rectangle               _content_rect; // set by layouter
+        Rectangle               _content_rect;      // set by layouter
+        Position                _vert_sep_pos;      // positions of the separators (vertical = x, horizontal = y)
         Navigation_handler      _on_navigation;
         Scrollable_pane_t      *_content = nullptr;
     };

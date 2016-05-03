@@ -5,6 +5,9 @@ namespace cppgui {
     template<class Impl, class Config, bool With_layout>
     Vertical_scrollbar_base<Impl, Config, With_layout>::Vertical_scrollbar_base()
     {
+        _up_btn  .enable_border(false);
+        _down_btn.enable_border(false);
+
         _up_btn  .set_glyph(cppgui::Icon_resources<24>::up_arrow  ());
         _down_btn.set_glyph(cppgui::Icon_resources<24>::down_arrow());
 

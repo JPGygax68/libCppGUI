@@ -5,12 +5,6 @@
 namespace cppgui {
 
     template<class Config, bool With_layout>
-    void Container<Config, With_layout>::set_border(const Border &border)
-    {
-        _border = border;
-    }
-
-    template<class Config, bool With_layout>
     void Container<Config, With_layout>::init()
     {
         init_children_resources();
@@ -204,7 +198,6 @@ namespace cppgui {
     void Container<Config, With_layout>::render(Canvas_t *cv, const Point &offs)
     {
         fill(cv, offs, background_color());
-        draw_borders(cv, offs, _border.width, _border.color);
 
         render_children(cv, offs + position());
     }

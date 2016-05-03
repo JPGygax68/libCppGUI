@@ -24,6 +24,12 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout, class Pane>
+    void Scrollbox<Config, With_layout, Pane>::set_border(const Border &border)
+    {
+        _border = border;
+    }
+
+    template<class Config, bool With_layout, class Pane>
     void Scrollbox<Config, With_layout, Pane>::init()
     {
         // Must be done first, otherwise scrollbar will produce division by zero
@@ -44,9 +50,11 @@ namespace cppgui {
         assert(!_content);
 
         _content = content;
-        _content->set_border({1, Color{ 1, 1, 0, 1 }});
+        //_content->set_border({1, Color{ 1, 1, 0, 1 }});
 
-        add_child(content);
+        add_child(_content);
+
+        //_content->set_position({ (Position) _border.width, (Position) _border.width });
     }
 
     template<class Config, bool With_layout, class Pane>
@@ -78,7 +86,10 @@ namespace cppgui {
 
         canvas->cancel_clipping();
 
-        draw_borders(canvas, offset, 1, {1, 0.2f, 0, 1});
+        draw_borders(canvas, offset, _border.width, _border.color);
+
+        fill_rect(canvas, { _vert_sep_pos, (Position) _border.width, _separator.width, extents().h - 2 * _border.width }, 
+            r.pos, canvas->rgba_to_native(_separator.color) );
     }
 
     // Layouter aspect ------------------------------------
@@ -103,14 +114,21 @@ namespace cppgui {
         auto sb_minsz = p()->_vert_sbar.get_minimal_size();
 
         // TODO: use configurable or stylable width for the scrollbar
-        p()->_vert_sbar.set_position({ exts.right() - static_cast<Position_delta>(sb_minsz.w), 0 });
+        p()->_vert_sbar.set_position({ exts.right() - (Position_delta) (sb_minsz.w + p()->_border.width), 0 });
         p()->_vert_sbar.set_extents ({ sb_minsz.w, exts.h });
 
         // Content rectangle
-        p()->_content_rect = { 0, 0 , exts.w - sb_minsz.w, exts.h }; // TODO: border, padding ?
+        p()->_content_rect = { 
+            (Position) p()->_border.width, (Position) p()->_border.width, 
+            exts.w - sb_minsz.w - 2 * p()->_border.width - p()->_separator.width, exts.h - 2 * p()->_border.width
+        }; // TODO: padding ? separator ?
+
+        // Vertical separator between content rectangle and vertical scrollbar
+        p()->_vert_sep_pos = exts.w - p()->_border.width - sb_minsz.w - p()->_separator.width;
 
         // Content pane: adjust width, leave height untouched
-        p()->_content->set_extents({ exts.w - p()->_vert_sbar.extents().w, p()->_content->extents().h });
+        // TODO: padding
+        p()->_content->set_extents({ p()->_content_rect.ext.w, p()->_content->extents().h });
 
         // TODO: the following must also be done in the main aspect when the content pane changes
         // TODO: better yet, this should be done at init() time ?
@@ -118,6 +136,7 @@ namespace cppgui {
 
         p()->_vert_sbar.layout();
 
+        p()->_content->set_position({ p()->_content_rect.pos.x, p()->_content_rect.pos.y });
         p()->_content->layout();
     }
 

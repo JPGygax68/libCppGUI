@@ -52,6 +52,8 @@ namespace cppgui {
         Color       color;
     };
 
+    using Separator = Border; // TODO: if Border gets more sophisticated, this will need to become its own structure
+
     enum Navigation_unit {
         full_range                  /* 0: to beginning, 1: to end */, 
         page,

@@ -8,7 +8,7 @@ Text_input_dialog<Config, With_layout>::Text_input_dialog()
 
     set_layout_type(cppgui::Layout_type::header_content);
     set_background_color(default_dialog_background_color());
-    set_border({1, {0, 0, 0, 1}});
+    _border = {1, {0, 0, 0, 1}};
     set_padding(1);
 
     _header_bar.set_layout_type(cppgui::Layout_type::content_tail);
@@ -41,6 +41,14 @@ Text_input_dialog<Config, With_layout>::Text_input_dialog()
     add_child(&_main_body);
 }
 
+/*
+template<class Config, bool With_layout>
+void Text_input_dialog<Config, With_layout>::set_border(const Border &border)
+{
+    _border = border;
+}
+*/
+
 template<class Config, bool With_layout>
 void Text_input_dialog<Config, With_layout>::set_default_font(const cppgui::Rasterized_font *font)
 {
@@ -65,4 +73,12 @@ template<class Config, bool With_layout>
 void Text_input_dialog<Config, With_layout>::set_prompt(const std::u32string &text)
 {
     _prompt_label.set_text(text);
+}
+
+template<class Config, bool With_layout>
+void Text_input_dialog<Config, With_layout>::render(Canvas_t *canvas, const cppgui::Point &offset)
+{
+    Parent_t::render(canvas, offset);
+
+    draw_borders(canvas, offset, _border.width, _border.color);
 }
