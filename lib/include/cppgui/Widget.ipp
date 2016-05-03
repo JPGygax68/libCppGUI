@@ -314,20 +314,6 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_padding(Width w)
-    {
-        set_padding({w, w, w, w});
-    }
-
-    template<class Config>
-    template<class Aspect_parent>
-    inline void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_padding(const std::initializer_list<Length> &padding)
-    {
-        std::copy(std::begin(padding), std::end(padding), std::begin(_padding));
-    }
-
-    template<class Config>
-    template<class Aspect_parent>
     void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle(const Point &nw, const Point &se)
     {
         p()->set_position(nw);
@@ -364,20 +350,6 @@ namespace cppgui {
     {
         p()->set_position({ pos.x - static_cast<Position>(ext.w), pos.y - static_cast<Position>(ext.h) });
         p()->set_extents(ext);
-    }
-
-    template<class Config>
-    template<class Aspect_parent>
-    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::compute_inner_rect()
-    {
-        auto ext = p()->extents();
-
-        // TODO: adjust for border as well
-
-        p()->_inner_rect = {
-            static_cast<Position>(_padding[3]), static_cast<Position>(_padding[0]),
-            ext.w - _padding[3] - _padding[1], ext.h - _padding[0] - _padding[2]
-        };
     }
 
 } // ns cppgui

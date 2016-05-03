@@ -24,12 +24,6 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout, class Pane>
-    void Scrollbox<Config, With_layout, Pane>::set_border(const Border &border)
-    {
-        _border = border;
-    }
-
-    template<class Config, bool With_layout, class Pane>
     void Scrollbox<Config, With_layout, Pane>::init()
     {
         // Must be done first, otherwise scrollbar will produce division by zero

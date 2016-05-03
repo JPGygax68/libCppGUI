@@ -81,6 +81,9 @@ namespace cppgui {
         // Actions (return value indicates success)
         bool cycle_focus_forward ();
         bool cycle_focus_backward();
+
+        // TODO: this is TEMPORARY, remove! (or replace the whole Container<> class)
+        //Rectangle               _inner_rect;
     };
 
     // Container_updater aspect

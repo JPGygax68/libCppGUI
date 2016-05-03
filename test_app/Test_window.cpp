@@ -51,8 +51,8 @@ Test_window::Test_window(): Parent("Test window")
     _textbox.set_text(U"Abc1234567890");
     
     _button.set_font(dflt_font);
-    _button.set_position({50, 160});
-    _button.set_extents({200, 30});
+    _button.set_position({  50, 160 });
+    _button.set_extents ({ 200,  30 });
     _button.set_label(U"Click Me!");
 
     _button2.set_font(dflt_font);
@@ -84,7 +84,7 @@ Test_window::Test_window(): Parent("Test window")
     _menu_header.set_font(dflt_font);
     _menu_header.set_text(U"Look at this:");
     _menu_header.set_background_color({ 1, 1, 1, 1 });
-    _menu_header.set_padding({ 3, 3, 3, 3 });
+    //_menu_header.set_padding({ 3, 3, 3, 3 });
     _menu.set_layout_type(cppgui::Layout_type::header_content);
     _menu.add_child(&_menu_header);
     _menu.add_child(&_stack);
@@ -100,57 +100,12 @@ Test_window::Test_window(): Parent("Test window")
 
     _vert_scrollbar.set_position({ 750,  50 });
     _vert_scrollbar.set_extents ({  30, 200 });
-    _vert_scrollbar.define_values(150, 40);
+    _vert_scrollbar.define_values( 150, 40 );
     _vert_scrollbar.on_position_change([&](cppgui::Position pos) { _scrollbar_pos.change_text( std::to_string(pos) ); });
-    /*
-    _vert_scrollbar.on_navigation([&](cppgui::Navigation_unit unit, cppgui::Position initial_pos, const cppgui::Fraction<int> &amount) {
-
-        // TODO: all the following could be implemented as default actions on Vertical_scrollbar itself
-        // Better yet, it could be done via specialization: Vertical_scrollbar_base (calling navigation methods implemented by specializations), 
-        // Slave_vertical_scrollbar (which uses the on_navigation() callback), Vertical_scrollbar or Master_vertical_scrollbar (which handles
-        // navigation by itself and offers a callback to notify changes of value)
-
-        if (unit == cppgui::Navigation_unit::element)
-        {
-            assert(amount.den == 1);
-            _vert_scrollbar.change_position(initial_pos + amount.num * 10);
-            _scrollbar_pos.change_text(std::to_string(_vert_scrollbar.current_position()));
-        }
-        else if (unit == cppgui::Navigation_unit::page)
-        {
-            auto delta = static_cast<cppgui::Position_delta>(_vert_scrollbar.thumb_length()) * amount.num / amount.den;
-            _vert_scrollbar.change_position(initial_pos + delta);
-            _scrollbar_pos.change_text(std::to_string(_vert_scrollbar.current_position()));
-        }
-        else if (unit == cppgui::Navigation_unit::fraction)
-        {
-            auto delta = _vert_scrollbar.range() * amount.num / amount.den;
-            if (delta == 0) delta = amount.num * amount.den < 0 ? -1 : 1;
-            _vert_scrollbar.change_position(initial_pos + delta);
-            _scrollbar_pos.change_text(std::to_string(_vert_scrollbar.current_position()));
-        }
-    });
-    */
 
     _scrollbar_pos.set_font(dflt_font);
-    _scrollbar_pos.set_position({800, 50});
-    _scrollbar_pos.set_extents ({100, 30});
-
-    // Scrollbox
-    /*
-    _sb_buttons.resize(9);
-    for (auto i = 0U; i < _sb_buttons.size(); i ++)
-    {
-        _sb_buttons[i].set_font(dflt_font);
-        _sb_buttons[i].set_label(std::u32string{U"Scrollbox button #"} + char32_t(U'1' + i));
-        _sb_pane.add_child(&_sb_buttons[i]);
-    }
-    _sb_pane.set_layout_type(cppgui::Layout_type::stack);
-    _sb_pane.set_extents({ 500, 400 });
-    _scrollbox.set_content_pane(&_sb_pane);
-    _scrollbox.set_position({ 750, 300 });
-    _scrollbox.set_extents ({ 400, 300 });
-    */
+    _scrollbar_pos.set_position({ 800, 50 });
+    //_scrollbar_pos.set_extents ({ 100, 30 });
 
     // Listbox
     _lb_buttons.resize(25);
@@ -171,17 +126,17 @@ Test_window::Test_window(): Parent("Test window")
     root_widget()->add_child(&_button2);
     root_widget()->add_child(&_glyph_btn);
     root_widget()->add_child(&_checkbox);
-    root_widget()->add_child(&_menu);
+    //root_widget()->add_child(&_menu);
     root_widget()->add_child(&_input_dlg);
     root_widget()->add_child(&_vert_scrollbar);
     root_widget()->add_child(&_scrollbar_pos);
-    //root_widget()->add_child(&_scrollbox);
+    ////root_widget()->add_child(&_scrollbox);
     root_widget()->add_child(&_listbox);
 
     //_menu.take_focus();
     //root_widget()->set_focus_to(&_menu); // ); // &_textbox);
     //_scrollbox.take_focus();
-    _listbox.take_focus();
+    //_listbox.take_focus();
 
     root_widget()->on_invalidated([this]() { invalidate(); });
 

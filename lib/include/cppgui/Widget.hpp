@@ -204,7 +204,7 @@ namespace cppgui {
 
         Abstract_container_t   *_container = nullptr;
 
-        Rectangle               _inner_rect;
+        //Rectangle               _inner_rect;
 
     private:
         friend class Drag_controller;
@@ -272,8 +272,8 @@ namespace cppgui {
             virtual auto get_preferred_size() -> Extents { return get_minimal_size(); }
             virtual void layout() = 0;
 
-            void set_padding(Width);
-            void set_padding(const std::initializer_list<Width> &);
+            //void set_padding(Width);
+            //void set_padding(const std::initializer_list<Width> &);
 
             void set_rectangle(const Point &nw, const Point &se);
             void set_rectangle_nw(const Point &, const Extents &);
@@ -286,11 +286,12 @@ namespace cppgui {
             class Widget_t: public Widget<Config, true> { friend struct Aspect; };
             auto p() { return static_cast<Widget_t*>(this); }
 
+            // "Stylesheet" TODO: make this into another aspect ?
             static constexpr auto button_padding() -> Padding { return { 5, 5, 5, 5 }; }
 
-            void compute_inner_rect();
+            // void compute_inner_rect();
 
-            Padding                 _padding = {};  // TODO: provide accessor ?
+            //Padding                 _padding = {};  // TODO: provide accessor ?
         };
     };
 

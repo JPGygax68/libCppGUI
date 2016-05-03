@@ -33,7 +33,7 @@ namespace cppgui {
 
             static auto event_map() -> std::map<uint32_t, Custom_event_handler> &;
 
-            static auto instance_pointer() -> Application * &;
+            //static auto instance_pointer() -> Application * &;
 
             std::set<WinT*>     windows;
         };

@@ -11,6 +11,7 @@
 #include "./layouting.ipp"
 //#include "./Font_resources.ipp" // now a .cpp file
 #include "./Widget.ipp"
+#include "./Box.ipp"
 #include "./Button.ipp"
 #include "./Glyph_button.ipp"
 #include "./Label.ipp"

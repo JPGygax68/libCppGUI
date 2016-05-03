@@ -3,6 +3,7 @@
 #include <string>
 
 #include "./Widget.hpp"
+#include "./Box.hpp"
 
 namespace cppgui {
 
@@ -17,7 +18,9 @@ namespace cppgui {
     // Glyph_button declaration 
 
     template<class Config, bool With_layout>
-    class Glyph_button: public Glyph_button__Layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> > {
+    class Glyph_button: public Glyph_button__Layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >,
+        public Bordered_box<Glyph_button<Config, With_layout>>
+    {
     public:
         using Widget_t = Widget<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
@@ -50,7 +53,8 @@ namespace cppgui {
         bool                            _border_enabled = true;
 
         Point                           _label_pos;
-        Rectangle                       _label_rect;
+        //Rectangle                       _label_rect;
+        Rectangle                       _focus_rect;
         Point                           _glyph_pos;
 
     private:
@@ -63,7 +67,8 @@ namespace cppgui {
     template <class Config>
     struct Glyph_button__Layouter<Config, true> {
 
-        template <class Aspect_parent> struct Aspect: public Aspect_parent
+        template <class Aspect_parent> struct Aspect: public Aspect_parent, 
+            Box__Layouter<Glyph_button<Config, true>>
         {
             Aspect() { _padding = this->button_padding(); }
 

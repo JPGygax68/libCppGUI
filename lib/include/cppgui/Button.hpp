@@ -5,6 +5,7 @@
 //#include "./layouting.hpp"
 
 #include "./Widget.hpp"
+#include "./Box.hpp"
 
 namespace cppgui {
 
@@ -52,9 +53,9 @@ namespace cppgui {
 
     template <class Config>
     struct Button__Layouter<Config, true> {
-        template <class Aspect_parent> struct Aspect: public Aspect_parent {
+        template <class Aspect_parent> struct Aspect: public Aspect_parent, public Box__Layouter< Button<Config, true> >  {
 
-            Aspect() { _padding = p()->button_padding(); }
+            Aspect() { _padding = this->button_padding(); }
 
             // Layouter contract
 
@@ -90,8 +91,7 @@ namespace cppgui {
 
     template <class Config>
     struct Button__Layouter<Config, false> {
-        template <class Aspect_parent> struct Aspect: public Aspect_parent {
-
+        template <class Aspect_parent> struct Aspect: public Aspect_parent  {
             void layout() {} // called from init
             void font_changed() {}
             void text_changed() {}

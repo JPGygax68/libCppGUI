@@ -1,7 +1,7 @@
 #pragma once
 
 #include "./Widget.hpp"
-//#include "./List_pane.hpp"
+#include "./Box.hpp"
 #include "./Vertical_scrollbar.hpp"
 
 namespace cppgui {
@@ -16,7 +16,8 @@ namespace cppgui {
     // TODO: rename to Scrollbox_base ?
 
     template<class Config, bool With_layout, class Pane = Scrollable_pane<Config, With_layout>>
-    class Scrollbox: public Scrollbox__Layouter<Config, With_layout, Pane>::template Aspect< Container<Config, With_layout> >
+    class Scrollbox: public Scrollbox__Layouter<Config, With_layout, Pane>::template Aspect< Container<Config, With_layout> >,
+        public Bordered_box<Scrollbox<Config, With_layout, Pane>>
     {
     public:
         using Container_t = Container<Config, With_layout>;
@@ -30,8 +31,6 @@ namespace cppgui {
         using Navigation_handler = std::function<void(Navigation_unit)>;
 
         Scrollbox();
-
-        void set_border(const Border &);
 
         void init() override;
 

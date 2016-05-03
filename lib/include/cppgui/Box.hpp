@@ -1,23 +1,31 @@
 #pragma once
 
-#include "./Container.hpp"
+#include "./basic_types.hpp"
 
 namespace cppgui {
 
-    template <class Config, bool With_layout> class Widget;
-
-    template <class Config, bool With_layout>
-    class Box: public Container<Config, With_layout> 
+    template<class Impl>
+    class Bordered_box
     {
     public:
-        using Widget_t = Widget<Config, With_layout>;
 
-        void set_header(Widget *);
-        void set_content_pane(Widget *);
-        void set_footer(Widget *);
+        void set_border(const Border &);
+        // TODO: set_border( .. one setting per cardinal direction ...)
 
-    private:
-        Widget_t *_header, *_content, *_footer;
+    protected:
+        Border      _border; // TODO: support different borders for each cardinal direction ?
+    };
+
+    template<class Impl>
+    struct Box__Layouter
+    {
+        void set_padding(Width);
+        void set_padding(const std::initializer_list<Length> &);
+
+        auto add_padding(const Rectangle &) -> Rectangle;
+        auto add_padding(const Extents   &) -> Extents;
+
+        Padding     _padding;
     };
 
 } // ns cppgui

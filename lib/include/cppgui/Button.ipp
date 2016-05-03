@@ -52,7 +52,7 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    inline void Button__Layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
+    void Button__Layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
     {
         // TODO: implement configurable alignment ?
         _layout.set_major_alignment(Alignment::cultural_major_middle);
@@ -62,16 +62,16 @@ namespace cppgui {
 
     template<class Config>
     template<class Aspect_parent>
-    inline auto Button__Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
+    auto Button__Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
     {
-        return _layout.compute_minimal_size(_padding);
+        return add_padding( _layout.compute_minimal_size() );
     }
 
     template<class Config>
     template<class Aspect_parent>
     void Button__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
-        _layout.compute_layout(p()->extents(), _padding);
+        _layout.compute_layout( p()->extents() );
     }
 
     /*

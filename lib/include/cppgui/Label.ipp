@@ -58,14 +58,14 @@ namespace cppgui {
     {
         assert(!p()->text().empty()); // TODO: TENTATIVE RULE: layouting may not occur before conditions are met (font, text must be set) ?
 
-        return _layout.compute_minimal_size(_padding);
+        return _layout.compute_minimal_size(); // _padding);
     }
 
     template<class Config>
     template<class Aspect_parent>
     void Label__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
-        _layout.compute_layout(p()->extents(), _padding);
+        _layout.compute_layout(p()->extents()); // , _padding);
 
         #ifdef NOT_DEFINED
 

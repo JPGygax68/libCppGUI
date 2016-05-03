@@ -48,17 +48,18 @@ namespace cppgui {
         {
             cnv->render_text(_label_font_hnd, pos.x + _label_pos.x, pos.y + _label_pos.y, _label.data(), _label.size());
         }
-        if (has_focus())
-        {
-            // TODO: draw the rectangle along the border instead of around the label ?
-            auto r = _label_rect.grow({3, 3});
-            cnv->draw_stippled_rectangle_outline(pos.x + r.pos.x, pos.y + r.pos.y, r.ext.w, r.ext.h, {0, 0, 0.5f, 1});
-        }
 
         // Glyph
         if (_glyph_cp)
         {
             cnv->render_text(_glyph_font_hnd, pos.x + _glyph_pos.x, pos.y + _glyph_pos.y, &_glyph_cp, 1);
+        }
+
+        if (has_focus())
+        {
+            // TODO: draw the rectangle along the border instead of around the label ?
+            auto &r = _focus_rect; // _label_rect.grow({3, 3});
+            cnv->draw_stippled_rectangle_outline(pos.x + r.pos.x, pos.y + r.pos.y, r.ext.w, r.ext.h, {0, 0, 0.5f, 1});
         }
     }
 
@@ -128,27 +129,32 @@ namespace cppgui {
 
         if (!p()->_label.empty())
         {
-            p()->_label_pos = {
-                static_cast<Position>(_padding[3]),
-                static_cast<Position>((ext.h - _label_bounds.height()) / 2) + _label_bounds.y_max
+            p()->_label_pos = { 
+                (Position) _padding[3], 
+                (Position) ((ext.h - _label_bounds.height()) / 2) + _label_bounds.y_max 
             };
 
-            p()->_label_rect = {
+            /* p()->_label_rect = {
                 p()->_label_pos.x, p()->_label_pos.y - _label_bounds.y_max,
                 _label_bounds.width(), _label_bounds.height()
-            };
+            }; */
 
             p()->_glyph_pos = {
-                static_cast<Position>(ext.w - _padding[1] - _glyph_min_edge),
-                static_cast<Position>((ext.h - _glyph_min_edge) / 2) + _glyph_bounds.y_max
+                (Position) (ext.w - _padding[1] - _glyph_min_edge),
+                (Position) ((ext.h - _glyph_min_edge) / 2) + _glyph_bounds.y_max
             };
+
         }
         else {
             p()->_glyph_pos = {
-                static_cast<Position>((ext.w - _glyph_bounds.width ()) / 2), // - _glyph_bounds.x_min,
-                static_cast<Position>((ext.h - _glyph_bounds.height()) / 2) + _glyph_bounds.y_max
+                (Position) ((ext.w - _glyph_bounds.width ()) / 2), // - _glyph_bounds.x_min,
+                (Position) ((ext.h - _glyph_bounds.height()) / 2) + _glyph_bounds.y_max
             };
         }
+
+        // Focus rectangle
+        // TODO: stylesheet control
+        p()->_focus_rect = add_padding( p()->extents() );
     }
 
 } // ns cppgui

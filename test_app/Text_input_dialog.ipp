@@ -9,11 +9,11 @@ Text_input_dialog<Config, With_layout>::Text_input_dialog()
     set_layout_type(cppgui::Layout_type::header_content);
     set_background_color(default_dialog_background_color());
     _border = {1, {0, 0, 0, 1}};
-    set_padding(1);
+    //set_padding(1);
 
     _header_bar.set_layout_type(cppgui::Layout_type::content_tail);
     _caption_label.set_background_color({0.8f, 0.8f, 0.8f, 1});
-    _caption_label.set_padding({5, 3, 5, 3});
+    //_caption_label.set_padding({5, 3, 5, 3});
     // TODO: mechanism to choose between available sizes dynamically ?
     _close_btn.set_glyph(cppgui::Icon_resources<16>::close());
     _close_btn.enable_border(false);
@@ -22,18 +22,18 @@ Text_input_dialog<Config, With_layout>::Text_input_dialog()
 
     _prompt_label.set_minor_alignment(cppgui::Alignment::cultural_minor_start);
     _prompt_label.set_major_alignment(cppgui::Alignment::cultural_major_middle);
-    _prompt_label.set_padding(0); // {3, 3, 3, 3});
+    //_prompt_label.set_padding(0); // {3, 3, 3, 3});
 
     _input_row.set_layout_type(cppgui::Layout_type::content_tail);
-    _input_row.set_padding(0);
+    //_input_row.set_padding(0);
     _input_row.set_spacing(5);
-    _textbox.set_padding(3);
+    //_textbox.set_padding(3);
     _input_row.add_child(&_textbox);
     _ok_btn.set_label(U"Ok");
     _input_row.add_child(&_ok_btn);
 
     _main_body.set_layout_type(cppgui::Layout_type::content_footer);
-    _main_body.set_padding(8);
+    //_main_body.set_padding(8);
     _main_body.add_child(&_prompt_label);
     _main_body.add_child(&_input_row);
 

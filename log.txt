@@ -1,3 +1,11 @@
+2016-05-03
+==========
+
+A thought about borders: I think I should change the way I used to think about them. Borders are NOT a universal concept to be applied everywhere - I guess that sort of thinking came chiefly from my experience with CSS.
+
+Instead, borders should be used where needed, and only there: around text input fields ("textbox"), list boxes, "combo" boxes, etc. (in fact the presence of the word "box" is a clear indicator of where borders are of use).
+
+
 2016-05-01
 ==========
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "./Widget.hpp"
+#include "./Box.hpp"
 
 namespace cppgui {
 
@@ -22,7 +23,8 @@ namespace cppgui {
     // TODO: do not stretch vertically to fill all available space, instead display a strip with border and padding to fit the font size
 
     template <class Config, bool With_layout>
-    class Textbox: public Textbox__Layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >
+    class Textbox: public Textbox__Layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >,
+        public Bordered_box< Textbox<Config, With_layout> >
     {
     public:
         using Renderer    = typename Config::Renderer;
@@ -91,7 +93,8 @@ namespace cppgui {
 
         int                     _ascent, _descent; // TODO: support vertical writing
         int                     _mean_char_width;
-        Point                _txpos;
+        Rectangle               _inner_rect;
+        Point                   _txpos;
         //int                     _txmaxlen;
 
         std::u32string          _text;
@@ -113,11 +116,14 @@ namespace cppgui {
     template <class Config>
     struct Textbox__Layouter<Config, true> {
 
-        template <class Aspect_parent> struct Aspect : public Aspect_parent {
-        
+        template <class Aspect_parent> struct Aspect : public Aspect_parent,
+            public Box__Layouter< Textbox<Config, true> >
+        {
             class Textbox_t: public Textbox<Config, true> { friend struct Aspect; };
 
             auto p() { return static_cast<Textbox_t*>(this); }
+
+            Aspect();
 
             void change_font(const Rasterized_font *);
 
@@ -126,6 +132,9 @@ namespace cppgui {
             void init_layout() override;
             auto get_minimal_size() -> Extents override;
             void layout() override;
+
+            // "Stylesheet"
+            static constexpr auto default_padding() -> Padding { return { 3, 3, 3, 3 }; }
         };
     };
 

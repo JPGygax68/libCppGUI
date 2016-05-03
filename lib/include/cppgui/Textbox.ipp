@@ -205,7 +205,7 @@ namespace cppgui {
             _sel_end_pixel_pos - _sel_start_pixel_pos, _ascent - _descent, rgba_to_native(r, bg_clr));
 
         // Text
-        if (!_text.empty())
+        if (!_text.empty() && _first_vis_char_idx < _text.size())
         {
             r->render_text(_fnthnd, pos.x + _txpos.x, pos.y + _txpos.y, 
                 _text.data() + _first_vis_char_idx, _text.size() - _first_vis_char_idx, _inner_rect.ext.w);
@@ -380,9 +380,11 @@ namespace cppgui {
             auto glyph = _font->lookup_glyph(0, _text[_caret_char_idx - 1]); // TODO: support font variants ?
             _caret_pixel_pos -= glyph->cbox.adv_x;
             _caret_char_idx --;
-            _text = _text.substr(0, _caret_char_idx) + _text.substr(_caret_char_idx + 1);
+            auto new_text = _text.substr(0, _caret_char_idx) + _text.substr(_caret_char_idx + 1);
             collapse_selection_to_caret();
             bring_caret_into_view();
+            _text = new_text;
+            // TODO: automatically scroll forward if there are characters scrolled away to the left ?
             invalidate();
         }
         else {
@@ -549,13 +551,14 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void cppgui::Textbox<Config, With_layout>::delete_selected()
+    void Textbox<Config, With_layout>::delete_selected()
     {
-        _text = _text.substr(0, _sel_start_char_idx) + _text.substr(_sel_end_char_idx);
+        auto new_text = _text.substr(0, _sel_start_char_idx) + _text.substr(_sel_end_char_idx);
         _caret_char_idx = _sel_start_char_idx;
         _caret_pixel_pos = _sel_start_pixel_pos;
         collapse_selection_to_caret();
         bring_caret_into_view();
+        _text = new_text;
     }
 
     // Layouter aspect ----------------------------------------------
@@ -566,6 +569,13 @@ namespace cppgui {
     {
         compute_text_extents();
         this->layout();
+    }
+
+    template<class Config>
+    template<class Aspect_parent>
+    Textbox__Layouter<Config, true>::Aspect<Aspect_parent>::Aspect()
+    {
+        _padding = default_padding();
     }
 
     template<class Config>
@@ -601,8 +611,8 @@ namespace cppgui {
         // TODO: replace "10" with const
         // TODO: adjust for border, too
         return { 
-            _padding[3] + static_cast<Length>(10 * p()->_mean_char_width) + _padding[1], 
-            _padding[0] + static_cast<Length>(p()->_ascent - p()->_descent) + _padding[2] 
+            _padding[3] + (Length) (10 * p()->_mean_char_width  ) + _padding[1], 
+            _padding[0] + (Length) (p()->_ascent - p()->_descent) + _padding[2] 
         };
     }
 
@@ -610,9 +620,14 @@ namespace cppgui {
     template<class Aspect_parent>
     inline void Textbox__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
-        compute_inner_rect();
+        auto ext = p()->extents();
 
-        p()->_txpos = {_inner_rect.pos.x, _inner_rect.pos.y + p()->_ascent };
+        p()->_inner_rect = {
+            (Position) _padding[3], (Position) _padding[0],
+            ext.w - _padding[3] - _padding[1], ext.h - _padding[0] - _padding[1]
+        };
+
+        p()->_txpos = { p()->_inner_rect.pos.x, p()->_inner_rect.pos.y + p()->_ascent };
     }
 
 } // ns cppgui
