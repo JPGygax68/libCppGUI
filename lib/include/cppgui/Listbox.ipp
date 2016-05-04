@@ -243,10 +243,10 @@ namespace cppgui {
         {
             auto minsz = child->get_minimal_size();
             if (minsz.w > w_min) w_min = minsz.w;
-            y += static_cast<Position_delta>(minsz.h);
+            y += (Position_delta) minsz.h;
         }
 
-        return { w_min, static_cast<Length>(y) };
+        return { w_min, (Length) y };
     }
 
     template<class Config>
@@ -265,7 +265,7 @@ namespace cppgui {
             child->set_extents ({ w, minsz.h });
             child->layout();
 
-            y += static_cast<Position_delta>(minsz.h);
+            y += (Position_delta) minsz.h;
         }
     }
 

@@ -55,7 +55,9 @@
     template cppgui::Abstract_container               <Config, With_layout>; \
     template cppgui::Abstract_container__Layouter     <Config, With_layout>; \
     template cppgui::Container_base                   <Config, With_layout>; \
+    template cppgui::Bordered_box                     <cppgui::Container<Config, With_layout>>; \
     template cppgui::Container                        <Config, With_layout>; \
+    template cppgui::Box__Layouter                    <cppgui::Container<Config, With_layout>>; \
     template cppgui::Container__Layouter              <Config, With_layout>; \
     template cppgui::Custom_vertical_scrollbar        <Config, With_layout>; \
     /* template cppgui::Scrollbox                        <Config, With_layout>; */ \

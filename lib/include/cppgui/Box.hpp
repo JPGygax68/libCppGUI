@@ -31,7 +31,7 @@ namespace cppgui {
         void add_padding(Extents &);
         auto add_padding(const Extents   &) -> Extents;
 
-        Padding     _padding;
+        Padding     _padding = { 0 };
     };
 
 } // ns cppgui

@@ -34,8 +34,7 @@ namespace cppgui {
         container specialization (and possibly other, yet-to-defined specializations).
      */
     template <class Config, bool With_layout>
-    class Container: 
-        public Container__Layouter<Config, With_layout>::template Aspect< Container_base<Config, With_layout> >
+    class Container: public Container__Layouter<Config, With_layout>::template Aspect< Container_base<Config, With_layout> >
     {
     public:
 
@@ -48,12 +47,10 @@ namespace cppgui {
     template <class Config>
     struct Container__Layouter<Config, true> {
 
-        template <class Aspect_parent> struct Aspect : public Aspect_parent {
+        template <class Aspect_parent> struct Aspect : Aspect_parent, Box__Layouter<Container<Config, true>> {
 
             using Widget_t = typename Widget<Config, true>;
             class Container_t: public Container<Config, true> { friend struct Aspect; };
-
-            auto p() { return static_cast<Container_t*>(this); }
 
             // Layout contract
 
@@ -72,6 +69,8 @@ namespace cppgui {
             void set_spacing(Length spacing) { _spacing = spacing; }
 
         private:
+            auto p() { return static_cast<Container_t*>(this); }
+
             Layout_type     _layout_type = Layout_type::none;
             Length          _spacing = 0;
             //Extents         _comp_min_size  = { 0, 0 };

@@ -55,8 +55,7 @@ namespace cppgui {
                 if (min_sz.h > result.h) result.h = min_sz.h;
             }
 
-            //result.h += _padding[0] + _padding[2];
-            result.w += (p()->children().size() - 1) * _spacing; // + _padding[3] + _padding[1];
+            result.w += (p()->children().size() - 1) * _spacing;
         }
         else if (_layout_type == Layout_type::stack)
         {
@@ -74,13 +73,14 @@ namespace cppgui {
             }
 
             result.h += (p()->children().size() - 1) * _spacing;
-
-            //result.h += _padding[0] + _padding[2];
-            result.w += (p()->children().size() - 1) * _spacing; // + _padding[3] + _padding[1];
         }
         else {
             assert(false); 
         }
+
+        // Add borders
+        result.h += _padding[0] + _padding[2];
+        result.w += _padding[3] + _padding[1];
 
         return result;
     }
@@ -150,8 +150,8 @@ namespace cppgui {
         }
 
         // Add borders
-        // result.h += _padding[0] + _padding[2];
-        result.w += (p()->children().size() - 1) * _spacing; // + _padding[3] + _padding[1];
+        result.h += _padding[0] + _padding[2];
+        result.w += _padding[3] + _padding[1];
 
         return result;
     }
@@ -174,19 +174,19 @@ namespace cppgui {
             Widget_t *header  = p()->children()[0];
             Widget_t *content = p()->children()[1];
 
-            Length h_rem = ext.h;
+            Length h_rem = ext.h - _padding[0] - _padding[2];
             Length h;
-            Position y = 0;
+            Position y = _padding[0];
             
             h = header->get_minimal_size().h;
 
-            header->set_position({ 0, y });
-            header->set_extents ({ ext.w, h });
+            header->set_position({ (Position) _padding[3], y });
+            header->set_extents ({ ext.w - _padding[3] - _padding[2], h });
             y += (Position) h;
             h_rem -= h;
 
-            content->set_position({ 0, y });
-            content->set_extents ({ ext.w, h_rem });
+            content->set_position({ (Position) _padding[3], y });
+            content->set_extents ({ ext.w - _padding[3] - _padding[1], h_rem });
 
             for (auto child : p()->children()) child->layout();
         }
@@ -197,19 +197,19 @@ namespace cppgui {
             Widget_t *content = p()->children()[0];
             Widget_t *footer  = p()->children()[1];
 
-            Length h_rem = ext.h; // "remaining" height
+            Length h_rem = ext.h - _padding[0] - _padding[2]; // "remaining" height
             Length h;
-            Position y = (Position) ext.h;
+            Position y = (Position) ext.h - _padding[2];
 
             h = footer->get_minimal_size().h;
 
             y -= static_cast<Position>(h);
-            footer->set_position({ 0, y });
-            footer->set_extents ({ ext.w, h });
+            footer->set_position({ (Position) _padding[3], y });
+            footer->set_extents ({ ext.w - _padding[3] - _padding[2], h });
             h_rem -= h;
 
-            content->set_position({ 0, 0 });
-            content->set_extents ({ ext.w, h_rem });
+            content->set_position({ (Position) _padding[3], (Position) _padding[0] });
+            content->set_extents ({ ext.w - _padding[3] - _padding[2], h_rem });
 
             for (auto child : p()->children()) child->layout();
         }
@@ -220,21 +220,21 @@ namespace cppgui {
             Widget_t *content = p()->children()[0];
             Widget_t *tail    = p()->children()[1];
 
-            Length w_rem = ext.w; // "remaining" width
+            Length w_rem = ext.w - _padding[1] - _padding[3]; // "remaining" width
             Length w;
-            Position x = (Position) ext.w;
+            Position x = (Position) ext.w - _padding[1];
 
             w = tail->get_minimal_size().w;
 
-            x -= static_cast<Position>(w);
-            tail->set_position({ x, 0 });
-            tail->set_extents ({ w, ext.h });
+            x -= (Position) w;
+            tail->set_position({ x, (Position) _padding[0] });
+            tail->set_extents ({ w, ext.h - _padding[0] - _padding[2] });
             w_rem -= w;
 
             w_rem -= _spacing;
 
-            content->set_position({ 0, 0 });
-            content->set_extents ({ w_rem, ext.h });
+            content->set_position({ (Position) _padding[3], (Position) _padding[0] });
+            content->set_extents ({ w_rem, ext.h - _padding[0] - _padding[2] });
 
             for (auto child : p()->children()) child->layout();
         }

@@ -73,7 +73,7 @@ namespace cppgui {
         }
         else if (major_alignment == Alignment::cultural_major_end)
         {
-            text_origin->y = extents.h - padding[3] + bounding_box.y_min;
+            text_origin->y = (Position) (extents.h - padding[3]) + bounding_box.y_min;
         }
 
         // Rectangle around text

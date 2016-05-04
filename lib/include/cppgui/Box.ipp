@@ -3,6 +3,12 @@
 namespace cppgui {
 
     template<class Impl>
+    void Bordered_box<Impl>::set_border(const Border &border)
+    {
+        _border = border;
+    }
+
+    template<class Impl>
     void Box__Layouter<Impl>::set_padding(Width w)
     {
         set_padding({ w, w, w, w });
