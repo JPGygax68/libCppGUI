@@ -20,7 +20,7 @@ namespace cppgui {
 
         // Propagate
         //container()->container_take_focus(this);
-        take_focus();
+        pass_up_and_notify_focus();
     }
 
     template<class Config, bool With_layout>

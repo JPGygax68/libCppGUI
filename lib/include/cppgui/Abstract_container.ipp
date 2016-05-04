@@ -7,14 +7,23 @@
 namespace cppgui {
 
     template<class Config, bool With_layout>
+    void Abstract_container<Config, With_layout>::set_initial_focus(Widget_t *child)
+    {
+        _focused_child = child;
+    }
+
+    template<class Config, bool With_layout>
     void Abstract_container<Config, With_layout>::container_take_focus(Widget_t *child)
     {
-        if (_focused_child)
+        if (child != _focused_child)
         {
-            _focused_child->loosing_focus(); // TODO: support veto-ing loss of focus ?
-        }
+            if (_focused_child)
+            {
+                _focused_child->loosing_focus(); // TODO: support veto-ing loss of focus ?
+            }
 
-        _focused_child = child;
+            _focused_child = child;
+        }
     }
 
     template <class Config, bool With_layout>

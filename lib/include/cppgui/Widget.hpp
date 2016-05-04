@@ -186,6 +186,8 @@ namespace cppgui {
         auto container() const { return _container; }
         auto root_widget() -> Root_widget_t * override { return _container->container_root_widget(); }
 
+        void pass_up_and_notify_focus(); // default take_focus() action
+
         // Graphics system integration
         void shift_horizontally(Position_delta);
         void shift_vertically(Position_delta);

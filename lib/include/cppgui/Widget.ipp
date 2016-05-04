@@ -175,13 +175,22 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Widget<Config, With_layout>::take_focus()
     {
-        if (_focussable)
+        pass_up_and_notify_focus();
+    }
+
+    template<class Config, bool With_layout>
+    void Widget<Config, With_layout>::pass_up_and_notify_focus()
+    {
+        if (!has_focus())
         {
-            gained_focus();
-            container()->container_take_focus(this);
-        }
-        else {
-            container()->container_take_focus(nullptr);
+            if (_focussable)
+            {
+                container()->container_take_focus(this);
+                gained_focus();
+            }
+            else {
+                container()->container_take_focus(nullptr);
+            }
         }
     }
 

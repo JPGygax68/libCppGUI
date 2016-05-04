@@ -20,6 +20,8 @@ namespace cppgui {
 
         Abstract_container(): _hovered_child { nullptr } {}
 
+        void set_initial_focus(Widget_t *);
+
         auto& children() { return _children; }
 
         /** Called when a key_down event could not be handled by the child it was sent to
