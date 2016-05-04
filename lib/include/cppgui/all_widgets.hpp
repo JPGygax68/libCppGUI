@@ -7,8 +7,10 @@
 #include <cppgui/Checkbox.hpp>
 #include <cppgui/Button.hpp>
 #include <cppgui/Glyph_button.hpp>
-#include <cppgui/Stack.hpp>
 #include <cppgui/Vertical_scrollbar.hpp>
+#include <cppgui/Abstract_container.hpp>
+#include <cppgui/Container_base.hpp>
+#include <cppgui/Container.hpp>
 //#include <cppgui/List_pane.hpp>
 #include <cppgui/Scrollbox.hpp>
 #include <cppgui/Listbox.hpp>
@@ -22,9 +24,9 @@
     using Root_widget               = cppgui::Root_widget               <Config, With_layout>; \
     using Textbox                   = cppgui::Textbox                   <Config, With_layout>; \
     using Checkbox                  = cppgui::Checkbox                  <Config, With_layout>; \
-    using Abstract_container        = cppgui::Container                 <Config, With_layout>; \
+    using Abstract_container        = cppgui::Abstract_container        <Config, With_layout>; \
+    using Container_base            = cppgui::Container_base            <Config, With_layout>; \
     using Container                 = cppgui::Container                 <Config, With_layout>; \
-    using Stack                     = cppgui::Stack                     <Config, With_layout>; \
     using Custom_vertical_scrollbar = cppgui::Custom_vertical_scrollbar <Config, With_layout>; \
     using Vertical_scrollbar        = cppgui::Vertical_scrollbar        <Config, With_layout>; \
     using Scrollbox                 = cppgui::Scrollbox                 <Config, With_layout>; /* Note: default Scrollbox */ \
@@ -40,6 +42,7 @@
     template cppgui::Box__Layouter                    <cppgui::Label<Config, With_layout>>; \
     template cppgui::Label__Layouter                  <Config, With_layout>; \
     template cppgui::Button                           <Config, With_layout>; \
+    template cppgui::Button__Layouter                 <Config, With_layout>; \
     template cppgui::Glyph_button                     <Config, With_layout>; \
     template cppgui::Glyph_button__Layouter           <Config, With_layout>; \
     template cppgui::Root_widget                      <Config, With_layout>; \
@@ -51,9 +54,10 @@
     template cppgui::Checkbox                         <Config, With_layout>; \
     template cppgui::Abstract_container               <Config, With_layout>; \
     template cppgui::Abstract_container__Layouter     <Config, With_layout>; \
+    template cppgui::Container_base                   <Config, With_layout>; \
     template cppgui::Container                        <Config, With_layout>; \
-    template cppgui::Stack                            <Config, With_layout>; \
-    template cppgui::Custom_vertical_scrollbar               <Config, With_layout>; \
+    template cppgui::Container__Layouter              <Config, With_layout>; \
+    template cppgui::Custom_vertical_scrollbar        <Config, With_layout>; \
     /* template cppgui::Scrollbox                        <Config, With_layout>; */ \
     /* template cppgui::Scrollable_pane                  <Config, With_layout>; */ \
     template cppgui::List_pane                        <Config, With_layout>; \

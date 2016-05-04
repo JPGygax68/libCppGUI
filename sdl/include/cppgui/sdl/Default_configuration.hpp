@@ -34,8 +34,8 @@ namespace cppgui {
             template<class Aspect_parent> using Abstract_container_Container_updater = typename 
                 Default_Abstract_container_Container_updater<Configuration, With_layout>::template Aspect<Aspect_parent>;
 
-            template <class Aspect_parent> using Container_Container_updater = typename 
-                Default__Container__Container_updater<Configuration, With_layout>::template Aspect<Aspect_parent>;
+            template <class Aspect_parent> using Container_base__Container_updater = typename 
+                Default__Container_base__Container_updater<Configuration, With_layout>::template Aspect<Aspect_parent>;
 
             template <class Aspect_parent> using Root_widget__Updater = typename 
                 Default__Root_widget__Updater<Configuration, With_layout>::template Aspect<Aspect_parent>;

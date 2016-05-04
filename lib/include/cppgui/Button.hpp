@@ -82,7 +82,7 @@ namespace cppgui {
             auto p() { return static_cast<Button_t*>(this); }
             void compute_bounding_box();
 
-            //Text_bounding_box   _bbox;
+            Text_bounding_box       _bbox;
             Single_element_layout   _layout;
         };
     };

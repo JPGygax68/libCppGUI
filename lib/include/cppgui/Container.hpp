@@ -1,7 +1,7 @@
 #pragma once
 
 #include "./Widget.hpp"
-#include "./Abstract_container.hpp"
+#include "./Container_base.hpp"
 
 namespace cppgui {
 
@@ -35,73 +35,12 @@ namespace cppgui {
      */
     template <class Config, bool With_layout>
     class Container: 
-        public Container__Layouter<Config, With_layout>::template Aspect < Widget<Config, With_layout> >, 
-        public Config::template Container_Container_updater< Abstract_container<Config, With_layout> >
+        public Container__Layouter<Config, With_layout>::template Aspect< Container_base<Config, With_layout> >
     {
     public:
-        using Renderer = typename Config::Renderer;
-        using Widget_t = typename Widget<Config, With_layout>;
-        using Canvas_t = typename Widget_t::Canvas_t;
-        using Abstract_container_t = typename Abstract_container<Config, With_layout>;
-        using Keyboard = typename Config::Keyboard;
-        using Keycode = typename Keyboard::Keycode;
-
-        void init() override;
-
-        using Abstract_container_t::add_child;
-        using Abstract_container_t::remove_child;
-        using Abstract_container_t::remove_all_children;
-
-        bool container_has_focus() override { return has_focus(); }
-
-        void container_take_focus(Widget_t *) override;
-        void gained_focus() override;
-        void loosing_focus() override;
-
-        void mouse_motion(const Point &) override;
-        void mouse_button(const Point &, int button, Key_state) override;
-        void mouse_click(const Point &, int button, int count) override;
-        void mouse_wheel(const Vector &) override;
-        void text_input(const char32_t *, size_t) override;
-        void key_down(const Keycode &) override;
-
-        void mouse_exit() override;
-
-        /** Handle key_down event that has "bubbled" back up from the child it was send to.
-         */
-        void child_key_down(const Keycode &key) override;
-
-        void render(Canvas_t *, const Point &) override;
 
     protected:
-        auto paper_margin() -> unsigned int { return 2; } // TODO: remove (or move to Stack<>)
-
-        bool handle_key_down(const Keycode &) override;
-
-        // Actions (return value indicates success)
-        bool cycle_focus_forward ();
-        bool cycle_focus_backward();
-
-        // TODO: this is TEMPORARY, remove! (or replace the whole Container<> class)
-        //Rectangle               _inner_rect;
-    };
-
-    // Container_updater aspect
-
-    template <class Config, bool With_layout>
-    struct Default__Container__Container_updater {
-
-        template <class Aspect_parent> struct Aspect: public Aspect_parent {
-
-            class Container_t: public Container<Config, true> { friend struct Aspect; };
-            using Widget_t = Widget<Config, true>;
-
-            auto p() { return static_cast<Container_t*>(this); }
-
-            void child_invalidated(Widget_t *) override;
-
-            auto container_root_widget() { return p()->root_widget(); }
-        };
+        //auto paper_margin() -> unsigned int { return 2; } // TODO: remove (or move to Stack<>)
     };
 
     // Layouter aspect
