@@ -80,9 +80,9 @@ namespace cppgui {
         void set_minor_alignment(Alignment al) { minor_alignment = al; }
         void set_major_alignment(Alignment al) { major_alignment = al; }
 
-        auto compute_minimal_size(/* const Padding & */) -> Extents;
+        auto compute_minimal_size(const Padding & = {}) -> Extents;
 
-        void compute_layout(const Extents & /*, const Padding & */);
+        void compute_layout(const Extents &, const Padding & = {});
 
     private:
         Text_bounding_box   bounding_box;

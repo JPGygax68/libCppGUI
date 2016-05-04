@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cppgui/Box.hpp>
 #include <cppgui/Root_widget.hpp>
 #include <cppgui/Label.hpp>
 #include <cppgui/Textbox.hpp>
@@ -36,6 +37,7 @@
     template cppgui::Widget                           <Config, With_layout>; \
     template cppgui::Widget__Layouter                 <Config, With_layout>; \
     template cppgui::Label                            <Config, With_layout>; \
+    template cppgui::Box__Layouter                    <cppgui::Label<Config, With_layout>>; \
     template cppgui::Label__Layouter                  <Config, With_layout>; \
     template cppgui::Button                           <Config, With_layout>; \
     template cppgui::Glyph_button                     <Config, With_layout>; \
@@ -44,6 +46,7 @@
     template cppgui::Default__Root_widget__Updater    <Config, With_layout>; \
     template cppgui::Root_widget__Layouter            <Config, With_layout>; \
     template cppgui::Textbox                          <Config, With_layout>; \
+    template cppgui::Box__Layouter                    <cppgui::Textbox<Config, With_layout>>; \
     template cppgui::Textbox__Layouter                <Config, With_layout>; \
     template cppgui::Checkbox                         <Config, With_layout>; \
     template cppgui::Abstract_container               <Config, With_layout>; \

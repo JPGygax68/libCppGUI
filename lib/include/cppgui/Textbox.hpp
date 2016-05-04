@@ -23,7 +23,8 @@ namespace cppgui {
     // TODO: do not stretch vertically to fill all available space, instead display a strip with border and padding to fit the font size
 
     template <class Config, bool With_layout>
-    class Textbox: public Textbox__Layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >,
+    class Textbox: 
+        public Textbox__Layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >,
         public Bordered_box< Textbox<Config, With_layout> >
     {
     public:

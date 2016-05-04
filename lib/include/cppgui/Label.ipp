@@ -58,57 +58,14 @@ namespace cppgui {
     {
         assert(!p()->text().empty()); // TODO: TENTATIVE RULE: layouting may not occur before conditions are met (font, text must be set) ?
 
-        return _layout.compute_minimal_size(); // _padding);
+        return _layout.compute_minimal_size(_padding);
     }
 
     template<class Config>
     template<class Aspect_parent>
     void Label__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
     {
-        _layout.compute_layout(p()->extents()); // , _padding);
-
-        #ifdef NOT_DEFINED
-
-        auto txb = p()->_font->compute_text_extents(0, p()->_text.data(), p()->_text.size());
-        auto ext = extents();
-
-        // TODO: select alignment
-        Length w = ext.w - _padding[1] - _padding[3];
-        Length h = ext.h - _padding[0] - _padding[2];
-
-        if (_horz_align == Alignment::left)
-        {
-            p()->_text_orig.x = _padding[3];
-        }
-        else if (_horz_align == Alignment::center)
-        {
-            p()->_text_orig.x = static_cast<Position>((w - txb.width()) / 2);
-        }
-        else if (_horz_align == Alignment::right)
-        {
-            p()->_text_orig.x = static_cast<Position>(w - txb.width());
-        }
-
-        if (_vert_align == Alignment::top)
-        {
-            p()->_text_orig.y = _padding[0] + txb.y_max;
-        }
-        else if (_vert_align == Alignment::middle)
-        {
-            p()->_text_orig.y = static_cast<Position>(_padding[0] + (h - txb.height()) / 2 + txb.y_max);
-        }
-        else if (_vert_align == Alignment::bottom)
-        {
-            p()->_text_orig.y = ext.h - _padding[3] + txb.y_min;
-        }
-
-        // Rectangle around text
-        p()->_text_rect = {
-            p()->_text_orig.x + txb.x_min, p()->_text_orig.y - txb.y_max,
-            txb.width(), txb.height()
-        };
-
-        #endif
+        _layout.compute_layout( p()->extents(), _padding);
     }
 
 } // ns cppgui

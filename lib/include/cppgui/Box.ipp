@@ -15,14 +15,20 @@ namespace cppgui {
     }
 
     template<class Impl>
+    void Box__Layouter<Impl>::add_padding(Rectangle &rect)
+    {
+        rect.pos.x += _padding[3] - 2;
+        rect.pos.y += _padding[0] - 2;
+        rect.ext.w -= _padding[3] + _padding[1] - 2 * 2;
+        rect.ext.h -= _padding[0] + _padding[2] - 2 * 2;
+    }
+
+    template<class Impl>
     auto Box__Layouter<Impl>::add_padding(const Rectangle &rect) -> Rectangle
     {
         Rectangle res { rect };
 
-        res.pos.x += _padding[3] - 2;
-        res.pos.y += _padding[0] - 2;
-        res.ext.w -= _padding[3] + _padding[1] - 2 * 2;
-        res.ext.h -= _padding[0] + _padding[2] - 2 * 2;
+        add_padding( res );
 
         return res;
     }
@@ -36,6 +42,13 @@ namespace cppgui {
         res.h += _padding[0] + _padding[2];
 
         return res;
+    }
+
+    template<class Impl>
+    void Box__Layouter<Impl>::add_padding(Extents &ext)
+    {
+        ext.w += _padding[3] + _padding[1];
+        ext.h += _padding[0] + _padding[2];
     }
 
 } // ns cppgui

@@ -38,12 +38,12 @@ namespace cppgui {
 
         void render(Canvas_t *, const Point &offset) override;
 
-        void change_text(const std::u32string &);
+        // void change_text(const std::u32string &);
 
     protected:
         const Rasterized_font  *_font = nullptr;
         std::u32string          _text;
-        Point                _text_origin; // origin of first character of label
+        Point                   _text_origin; // origin of first character of label
         Rectangle               _text_rect;
 
         Font_handle             _fnthnd;
@@ -54,7 +54,7 @@ namespace cppgui {
     template <class Config>
     struct Label__Layouter<Config, true> {
 
-        template<class Aspect_parent> struct Aspect: Aspect_parent {
+        template<class Aspect_parent> struct Aspect: Aspect_parent, Box__Layouter< Label<Config, true> > {
 
             // Layouter aspect contract
 

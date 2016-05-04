@@ -70,7 +70,8 @@ namespace cppgui {
         void notify_drag_navigation(Position_delta);
 
         Glyph_button_t          _up_btn, _down_btn;
-        Position                _full_range = 0, _fraction = 0;
+        Position                _full_range = 0;    // the range represented by the full length of the "slide" (= strip on which the thumb moves)
+        Position                _fraction = 0;      // the range represented by the length of the thumb
 
         Range                   _sliding_range;
         Rectangle               _thumb_rect;

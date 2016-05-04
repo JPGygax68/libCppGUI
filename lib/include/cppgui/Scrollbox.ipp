@@ -27,7 +27,7 @@ namespace cppgui {
     void Scrollbox<Config, With_layout, Pane>::init()
     {
         // Must be done first, otherwise scrollbar will produce division by zero
-        _vert_sbar.define_values(_content->extents().h, extents().h);
+        _vert_sbar.define_values(_content->extents().h, _content_rect.ext.h);
 
         Container_t::init(); // will also init scrollbar
     }

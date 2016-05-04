@@ -107,6 +107,8 @@ namespace cppgui {
             return map;
         }
 
+        // TODO: protect all dispatchers again ev.windowID == 0 
+
         template <class Impl>
         void Window<Impl>::dispatch_window_event(SDL_WindowEvent &ev)
         {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "./basic_types.hpp"
+#include "./layouting.hpp"
 
 namespace cppgui {
 
@@ -22,7 +23,9 @@ namespace cppgui {
         void set_padding(Width);
         void set_padding(const std::initializer_list<Length> &);
 
+        void add_padding(Rectangle &);
         auto add_padding(const Rectangle &) -> Rectangle;
+        void add_padding(Extents &);
         auto add_padding(const Extents   &) -> Extents;
 
         Padding     _padding;
