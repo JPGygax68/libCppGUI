@@ -8,10 +8,16 @@ namespace cppgui {
         set_padding({ w, w, w, w });
     }
 
-    template<class Impl>
+    /* template<class Impl>
     void Box__Layouter<Impl>::set_padding(const std::initializer_list<Length> &padding)
     {
         std::copy(std::begin(padding), std::end(padding), std::begin(_padding));
+    } */
+
+    template<class Impl>
+    void Box__Layouter<Impl>::set_padding(const std::array<Length, 4> &padding)
+    {
+        _padding = padding; // std::copy(std::begin(padding), std::end(padding), std::begin(_padding));
     }
 
     template<class Impl>

@@ -56,6 +56,8 @@ namespace cppgui {
 
         template<class Aspect_parent> struct Aspect: Aspect_parent, Box__Layouter< Label<Config, true> > {
 
+            Aspect();
+
             // Layouter aspect contract
 
             void init_layout() override;
@@ -71,6 +73,9 @@ namespace cppgui {
         private:
             class Label_t: public Label<Config, true> { friend struct Aspect; };
             auto p() { return static_cast<Label_t*>(this); }
+
+            // "Stylesheet"
+            static constexpr auto default_padding() -> Padding { return { 4, 4, 4, 4 }; }
 
             Alignment               _minor_alignment = Alignment::cultural_minor_middle;
             Alignment               _major_alignment = Alignment::cultural_major_middle;

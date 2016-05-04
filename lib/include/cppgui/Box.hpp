@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 #include "./basic_types.hpp"
 #include "./layouting.hpp"
 
@@ -21,7 +23,8 @@ namespace cppgui {
     struct Box__Layouter
     {
         void set_padding(Width);
-        void set_padding(const std::initializer_list<Length> &);
+        //void set_padding(const std::initializer_list<Length> &);
+        void set_padding(const std::array<Width, 4> &);
 
         void add_padding(Rectangle &);
         auto add_padding(const Rectangle &) -> Rectangle;

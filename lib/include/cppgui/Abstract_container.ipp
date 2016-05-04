@@ -15,13 +15,6 @@ namespace cppgui {
         }
 
         _focused_child = child;
-
-        /* REMOVED: notification originates from newly focused child -> no need to call back
-        if (_focused_child)
-        {
-            _focused_child->gained_focus();
-        }
-        */
     }
 
     template <class Config, bool With_layout>
