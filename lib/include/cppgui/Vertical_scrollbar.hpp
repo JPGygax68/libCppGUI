@@ -2,6 +2,7 @@
 
 #include "./Container.hpp"
 #include "./Glyph_button.hpp"
+#include "./Resource.hpp"
 //#include "./Drag_controller.hpp"
 
 namespace cppgui {
@@ -15,15 +16,34 @@ namespace cppgui {
 
     // Base class ===================================================
 
+    // Resources struct
+
+    namespace {
+
+        namespace {
+            // TODO: make this adaptive in case color does need translating
+            struct slide_bgcol        : Non_mapped_resource<Color> {};
+            struct thumb_color        : Non_mapped_resource<Color> {};
+            struct thumb_hovered_color: Non_mapped_resource<Color> {};
+        }
+
+        template<class Config>
+        using Resources = Resource_struct<slide_bgcol, thumb_color, thumb_hovered_color>;
+    }
+
     // Class declaration
 
     template<class Impl, class Config, bool With_layout>
-    class Vertical_scrollbar_base: public Vertical_scrollbar__Layouter<Impl, Config, With_layout>::template Aspect< Container<Config, With_layout> >
+    class Vertical_scrollbar_base: 
+        public Vertical_scrollbar__Layouter<Impl, Config, With_layout>::template Aspect< Container<Config, With_layout> >,
+        public Resources<Config>
     {
     public:
         using Widget_t = typename Widget<Config, With_layout>;
         using Container_t = typename Container<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
+
+        using Native_color = typename Widget_t::Native_color;
 
         using Navigation_handler = std::function<void(Navigation_unit, Position initial_pos, const Fraction<int> &delta)>; //, bool ending)>;
 
@@ -62,7 +82,7 @@ namespace cppgui {
         // To be implemented in derived class (via CRTP)
         void move_by_page(int delta) { static_assert(false); }
         void move_by_elements(int delta) { static_assert(false); }
-        void move_by_fraction(Position initial_pos, const Fraction<int> &delta) { static_assert(false); }
+        void move_by_fraction(Position initial_pos, const Fraction<int> &delta) { static_assert(false, "Vertical_scrollbar_base::move_by_fraction()"); }
 
         void move_thumb_to(Position);
         void recalc_thumb();
@@ -145,3 +165,7 @@ namespace cppgui {
 
 } // ns cppgui
 
+#define CPPGUI_INSTANTIATE_VERTICAL_SCROLLBAR(Config, With_layout) \
+    template cppgui::Vertical_scrollbar       <Config, With_layout>; \
+    /* template cppgui::Vertical_scrollbar_base  <cppgui::Vertical_scrollbar<Config, With_layout>, Config, With_layout>; */ \
+    template cppgui::Custom_vertical_scrollbar<Config, With_layout>;

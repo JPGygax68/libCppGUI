@@ -1,6 +1,7 @@
 #pragma once
 
 #include "./Widget.hpp"
+#include "./Box.hpp"
 #include "./Container_base.hpp"
 
 namespace cppgui {
@@ -47,8 +48,9 @@ namespace cppgui {
     template <class Config>
     struct Container__Layouter<Config, true> {
 
-        template <class Aspect_parent> struct Aspect : Aspect_parent, Box__Layouter<Container<Config, true>> {
-
+        template <class Aspect_parent> 
+        struct Aspect: Aspect_parent, Box__Layouter< Container<Config, true> > 
+        {
             using Widget_t = typename Widget<Config, true>;
             class Container_t: public Container<Config, true> { friend struct Aspect; };
 
@@ -73,8 +75,6 @@ namespace cppgui {
 
             Layout_type     _layout_type = Layout_type::none;
             Length          _spacing = 0;
-            //Extents         _comp_min_size  = { 0, 0 };
-            //Extents         _comp_pref_size = { 0, 0 };
         };
     };
 
@@ -90,3 +90,9 @@ namespace cppgui {
     };
         
 } // ns cppgui
+
+#define CPPGUI_INSTANTIATE_CONTAINER(Config, With_layout) \
+    template cppgui::Bordered_box       <cppgui::Container<Config, With_layout>>; \
+    template cppgui::Container          <Config, With_layout>; \
+    template cppgui::Box__Layouter      <cppgui::Container<Config, With_layout>>; \
+    template cppgui::Container__Layouter<Config, With_layout>;

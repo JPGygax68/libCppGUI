@@ -18,13 +18,16 @@ namespace cppgui {
             in the layouting aspect ?
      */
     template <class Config, bool With_layout>
-    class Button: public Button__Layouter<Config, With_layout>::template Aspect< Widget<Config, With_layout> >
+    class Button: public Button__Layouter<Config, With_layout>::template Aspect< Widget<Config, With_layout> >,
+        public Bordered_box< Button<Config, With_layout> >
     {
     public:
         using Renderer = typename Config::Renderer;
         using Font_handle = typename Renderer::font_handle;
         using Widget_t = Widget<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
+
+        Button();
 
         void set_font(const Rasterized_font *);
         auto font() const { return _font; }
@@ -99,3 +102,7 @@ namespace cppgui {
     };
 
 } // ns cppgui
+
+#define CPPGUI_INSTANTIATE_BUTTON(Config, With_layout) \
+    template cppgui::Button          <Config, With_layout>; \
+    template cppgui::Button__Layouter<Config, With_layout>;

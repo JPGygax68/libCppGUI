@@ -94,3 +94,7 @@ namespace cppgui {
 
 
 } // ns cppui
+
+#define CPPGUI_INSTANTIATE_GLYPH_BUTTON(Config, With_layout) \
+    template cppgui::Glyph_button          <Config, With_layout>; \
+    template cppgui::Glyph_button__Layouter<Config, With_layout>;

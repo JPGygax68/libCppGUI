@@ -46,17 +46,13 @@ private:
     Glyph_button                _button2;
     Textbox                     _textbox;
     Checkbox                    _checkbox;
-    std::vector<Button>         _button_list;
-    Stack                       _stack;
     Container                   _menu;
     Label                       _menu_header;
     Text_input_dialog_t         _input_dlg;
     Vertical_scrollbar          _vert_scrollbar;   
     Textbox                     _scrollbar_pos;
-    //Container                   _sb_content;
     List_pane                   _sb_pane;
     std::vector<Button>         _sb_buttons;
-    //Scrollbox                   _scrollbox;
     std::vector<Button>         _lb_buttons;
     Listbox                     _listbox;
 };

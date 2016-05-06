@@ -5,6 +5,10 @@ namespace cppgui {
     template<class Impl, class Config, bool With_layout>
     Vertical_scrollbar_base<Impl, Config, With_layout>::Vertical_scrollbar_base()
     {
+        this->slide_bgcol        ::assign({ 0.7f, 0.7f, 0.7f, 1 });   // TODO: obtain from static value or stylesheet
+        this->thumb_color        ::assign({ 0.8f, 0.8f, 0.8f, 1 });
+        this->thumb_hovered_color::assign({ 0.9f, 0.9f, 0.9f, 1 });
+
         _up_btn  .enable_border(false);
         _down_btn.enable_border(false);
 
@@ -35,6 +39,10 @@ namespace cppgui {
     {
         Container_t::init();
 
+        slide_bgcol::map();
+        thumb_color::map();
+        thumb_hovered_color::map();
+
         _thumb_rect.pos = { 2, _sliding_range.p };
             // TODO: position from style
 
@@ -46,11 +54,10 @@ namespace cppgui {
     {
         // Background
         // TODO: only draw the part not covered by the buttons ?
-        fill(canvas, offset, canvas->rgba_to_native({0.7f, 0.7f, 0.7f, 1})); // TODO: get color from style
+        fill(canvas, offset, this->slide_bgcol::get()); 
 
         // Thumb
-        auto thumb_color = canvas->rgba_to_native(_thumb_hovered ? Color {0.9f, 0.9f, 0.9f, 1} : Color {0.8f, 0.8f, 0.8f, 1});
-        fill_rect(canvas, _thumb_rect, offset + position(), thumb_color);
+        fill_rect(canvas, _thumb_rect, offset + position(), _thumb_hovered ? thumb_hovered_color::get() : thumb_color::get());
 
         // Children: up and down buttons
         Container_t::render(canvas, offset);

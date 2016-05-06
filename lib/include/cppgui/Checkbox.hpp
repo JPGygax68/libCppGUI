@@ -93,3 +93,6 @@ namespace cppgui {
     };
 
 } // ns cppgui
+
+#define CPPGUI_INSTANTIATE_CHECKBOX(Config, With_layout) \
+    template cppgui::Checkbox<Config, With_layout>;

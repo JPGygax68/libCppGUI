@@ -6,6 +6,12 @@
 namespace cppgui {
 
     template<class Config, bool With_layout>
+    Button<Config, With_layout>::Button()
+    {
+        // set_border( default_border() ); // TODO: make this stylable
+    }
+
+    template<class Config, bool With_layout>
     inline void cppgui::Button<Config, With_layout>::set_font(const Rasterized_font *font)
     {
         _font = font;
@@ -33,6 +39,8 @@ namespace cppgui {
     void Button<Config, With_layout>::render(Canvas_t *cnv, const Point &offs)
     {
         fill(cnv, offs, rgba_to_native(cnv, button_face_color()));
+
+
         auto border_ntvclr = rgba_to_native(cnv, button_border_color());
         draw_borders(cnv, rectangle(), offs, button_border_width(), border_ntvclr, border_ntvclr, border_ntvclr, border_ntvclr);
 

@@ -119,3 +119,7 @@ namespace cppgui {
     };
 
 } // ns cppgui
+
+#define CPPGUI_INSTANTIATE_LISTBOX(Config, With_layout) \
+    template cppgui::Listbox  <Config, With_layout>; \
+    template cppgui::List_pane<Config, With_layout>;

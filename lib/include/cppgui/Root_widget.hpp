@@ -45,6 +45,7 @@ namespace cppgui {
         void set_background_color(const Color &color) { _bkgnd_clr = color; }
 
         void set_canvas(Canvas_t *);
+        auto canvas() { return _canvas; }
 
         void init() override;
         void cleanup();
@@ -167,3 +168,8 @@ namespace cppgui {
     };
 
 } // ns cppgui
+
+#define CPPGUI_INSTANTIATE_ROOT_WIDGET(Config, With_layout) \
+    template cppgui::Root_widget                  <Config, With_layout>; \
+    template cppgui::Default__Root_widget__Updater<Config, With_layout>; \
+    template cppgui::Root_widget__Layouter        <Config, With_layout>;

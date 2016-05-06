@@ -38,6 +38,12 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    auto Abstract_widget<Config, With_layout>::rgba_to_native(const Color &color) -> Native_color
+    {
+        return rgba_to_native( root_widget()->canvas(), color );
+    }
+
+    template<class Config, bool With_layout>
     void Abstract_widget<Config, With_layout>::fill_rect(Canvas_t *r, const Rectangle &rect, const Native_color &color)
     {
         r->fill_rect(rect.pos.x, rect.pos.y, rect.ext.w, rect.ext.h, color);

@@ -11,7 +11,7 @@ namespace cppgui {
         a backend. Depending on the type of the resource and the way a particular backend
         works, the mapping can be anywhere between completely unnecessary (for example, the 
         OpenGL rendering backend can use color definitions in Rgba_float format exactly as 
-        they are) and rather expensive (such as the same backend using images, which it
+        they are) and rather expensive (such as that same backend using images, which it
         needs to translate to textures, which must later be deleted to free video or driver
         resources).
 

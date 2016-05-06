@@ -54,6 +54,7 @@ namespace cppgui {
         //static auto button_face_color        () { return Color{ 0.8f, 0.8f, 0.8f, 1 }; }
         //static auto button_face_hovered_color() { return Color{ 0.9f, 0.9f, 0.9f, 1 }; }
 
+        // TODO: change signature to include the canvas and other subsystem handles
         virtual void init() {}
 
         virtual auto root_widget() -> Root_widget_t * = 0;
@@ -89,6 +90,7 @@ namespace cppgui {
         // Rendering conveniences
 
         auto rgba_to_native(Canvas_t *, const Color &) -> Native_color;
+        auto rgba_to_native(const Color &) -> Native_color;
         void fill_rect(Canvas_t *, const Rectangle &rect, const Native_color &);
         void fill_rect(Canvas_t *, const Rectangle &rect, const Point &offs, const Native_color &);
         void fill_rect(Canvas_t *, const Point &pos, const Extents &ext, const Native_color &);
@@ -298,3 +300,8 @@ namespace cppgui {
     };
 
 } // ns cppgui
+
+#define CPPGUI_INSTANTIATE_WIDGET(Config, With_layout) \
+    template cppgui::Widget           <Config, With_layout>; \
+    template cppgui::Widget__Layouter <Config, With_layout>;
+

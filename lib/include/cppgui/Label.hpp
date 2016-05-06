@@ -84,3 +84,8 @@ namespace cppgui {
     };
 
 } // ns cppgui
+
+#define CPPGUI_INSTANTIATE_LABEL(Config, With_layout) \
+    template cppgui::Box__Layouter<cppgui::Label<Config, With_layout>>; \
+    template cppgui::Label__Layouter<Config, With_layout>; \
+    template cppgui::Label<Config, With_layout>;

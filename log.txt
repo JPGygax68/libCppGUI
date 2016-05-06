@@ -1,3 +1,74 @@
+2016-05-06
+==========
+
+My thinking process regarding stylesheets does not seem to be making real progress. I'll now try to come up with a pragmatic approach that will enable me to continue without getting bogged down by a big re-design. What do I need ?
+
+- Styling parameters (colors, border withs, font parameters) must be defined outside of the code itself (there are many such stopgaps in the current code)
+
+- Some of these parameters must be adapted for use by the subsystems (graphics, sound later on)
+  - This happens during init()
+    - init() is therefore the opportunity to "kill two birds with one stone": 1) obtain the style definitions (which could be a somewhat involved process once stylesheets finally come into play) 2) obtain the adapted resources (primarily fonts)
+      - It also means that style changes would require a cleanup() (yet-to-be introduced opposite of init()) followed by a new execution of init(). This actually looks like a rather elegant compromise (between full CSS-like freedom and lightweight implementation)
+
+- Inheriting style definitions from containers will have to happen, though not necessarily now.
+
+- The same is true of run-time assignable stylesheets - though actually, this is a feature that would usually not be needed at all and that I therefore relegate to low priority.
+
+So, the way forward for now looks like this:
+
+- All style definitions are moved to inheritable methods.
+  - These methods can be static or constexpr for now.
+  - Later on, these methods will redirect to stylesheets [actually, the support for stylesheets could be encapsulated into aspects, of which there could then be variants with and without stylesheet support]
+
+---
+
+Addendum: self-aware structs (http://duriansoftware.com/joe/Self-aware-struct-like-types-in-C++11.html, though the "self-aware" part may not be needed) might be of use to access resources without caring about whether or not they need adapting (works around the C++ limitation of not supporting 0-sized structs):
+  - for each resource:
+    - define a struct that has entry points for init() and cleanup() plus an accessor get()
+      - init() and cleanup() can be no-ops if the resource does not need translating
+      - get() will either be a pass-through or return the handle of the translated resource
+    - have the widget class inherit from that struct OR put it into a grouping struct
+    
+If resource structs are grouped, meta-programming (apply()) can be used for initialization and cleanup
+
+
+2016-05-05
+==========
+
+About styles, again
+-------------------
+
+- Is it really necessary/desirable that they can be changed at run-time ?
+  - Possible "middle ground": do not allow switching at run-time, but re-generate the UI (possibly using persistency to minimize the impact on the user) ?
+  
+- Is it desirable to make stylesheets static ?
+  - PROs: less run-time costs
+  - CONs: types are no longer identical -> unnecessary polymorphism (with an extra inheritance level) would be required to "hide" differences
+  
+=> Design decision: stylesheets are consulted at run-time (not specifying when exactly yet)
+
+- How / when are stylesheets applied ?
+  - Because they can influence layouting, stylesheets are needed when layouting (which may be at design-time or at run-time)
+    - This may also mean that some style definitions are not needed in layout-less instantiations, such as padding
+    
+- Should styles really cascade ? Does it make sense that e.g. the button border width may be defined anywhere in a hierarchy ?
+  - While this makes sense in the browser, I'm not convinced it serves a real need in a standard GUI.
+    - Example 1: A property panel embedded in a larger UI, where properties are displayed with a smaller font to save space.
+      - the font size need only be known at layout time
+      - the canvas font handle (NOT the rasterized font) should be inherited from the panel
+        -> individual widgets should probably cache the font handle so they don't have to climb the hierarchy to get it
+  
+- The content of stylesheets should be computed statically, so that the compiler and linker can throw away unneeded stuff.
+  - But in order to avoid polymorphism either via virtual methods (run-time bloat) or template parameters on the consumers (which would introduce type incompatibilities between otherwise identical components, see above), the structure of the stylesheets needs to be normalized
+    -> Templatized factories producing normalized stylesheet objects (via a constexpr factory method) ?
+    
+- How to make stylesheets extendable, e.g. to support third-party widgets ?
+  - Relatively easily: by deriving. The problem however is when multiple third-party extensions are involved that do not know each other.
+    - Each widget defines a struct with the run-time styles it needs
+    - 
+    
+... trailing off ...
+  
 2016-05-03
 ==========
 
