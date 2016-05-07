@@ -73,12 +73,24 @@ Test_window::Test_window(): Parent("Test window")
     _checkbox.set_extents({200, 40});
     _checkbox.set_label(U"Check me!");
 
+
+    /*
+    _button_list.resize(9);
+    for (auto i = 0U; i < _button_list.size(); i ++)
+    {
+        _button_list[i].set_font(dflt_font);
+        _button_list[i].set_label("This is button #"s + std::to_string(i + 1));
+        _stack.add_child(&_button_list[i]);
+    }
+    */
+
     _menu_header.set_font(dflt_font);
     _menu_header.set_text(U"Look at this:");
     _menu_header.set_background_color({ 1, 1, 1, 1 });
     //_menu_header.set_padding({ 3, 3, 3, 3 });
     _menu.set_layout_type(cppgui::Layout_type::header_content);
     _menu.add_child(&_menu_header);
+    //_menu.add_child(&_stack);
     _menu.set_position({  50, 250 });
     _menu.set_extents ({ 200, 207 });
 
