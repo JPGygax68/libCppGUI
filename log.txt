@@ -1,3 +1,22 @@
+- Remove Default_font_mapper.hpp
+
+2016-05-09
+==========
+
+I let myself get bogged down by over-thinking this stylesheet business. I'll try to recap before letting the matter rest for now.
+
+- The management of font handles is probably implemented in the wrong place right now, i.e. in the root widget, when it acually belongs with the Canvas (which might delegate it further to a "resource holder" if the graphics resources should be shared with other Canvas instances)
+
+- At this time, colors are described statically, so there is no need for member variables to hold their untranslated values; and since translation is trivial and build-time (constexpr), there is no need to store the translated values either.
+  - This will change when stylesheets are introduced. It will make sense then to store the translated value at "style application" time (no need to cache the untranslated value).
+  
+So, even though at the current time there are resources (i.e. colors) that require neither the untranslated nor the translated value to be store, this situation is temporary, and there is little point trying to use the "members-via-inheritance" trick to work around the waste of space that would otherwise be introduced by the "no zero-sized data members" rule of C++.
+
+What is required though is a specializable template that is capable of holding either untranslated, translated or both handles of a given resource, with hooks for init() and cleanup().
+
+I'm going to spend the next couple of hours implementing this.
+
+
 2016-05-06
 ==========
 

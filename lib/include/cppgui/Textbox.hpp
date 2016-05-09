@@ -28,12 +28,12 @@ namespace cppgui {
         public Bordered_box< Textbox<Config, With_layout> >
     {
     public:
-        using Renderer    = typename Config::Renderer;
-        using Keycode     = typename Config::Keyboard::Keycode;
-        using Widget_t    = typename Widget<Config, With_layout>;
-        using Textbox_t   = typename Textbox<Config, With_layout>;
-        using Canvas_t    = typename Widget_t::Canvas_t;
-        using Font_handle = typename Widget_t::Font_handle;
+        using Renderer      = typename Config::Renderer;
+        using Keycode       = typename Config::Keyboard::Keycode;
+        using Widget_t      = typename Widget<Config, With_layout>;
+        using Textbox_t     = typename Textbox<Config, With_layout>;
+        using Canvas_t      = typename Widget_t::Canvas_t;
+        using Font_resource = typename Widget_t::Font_resource;
 
         // TODO: implement "set" and "change" variants
         void set_font(const Rasterized_font *);
@@ -90,7 +90,7 @@ namespace cppgui {
         auto selected_text_background_color() -> Color;
         auto caret_color() -> Color;
 
-        const Rasterized_font  *_font = nullptr; // TODO: avoid setting default value
+        Font_resource           _font;
 
         int                     _ascent, _descent; // TODO: support vertical writing
         int                     _mean_char_width;
@@ -99,7 +99,6 @@ namespace cppgui {
         //int                     _txmaxlen;
 
         std::u32string          _text;
-        Font_handle             _fnthnd;
         unsigned int            _caret_char_idx , _sel_start_char_idx , _sel_end_char_idx ;
         int                     _caret_pixel_pos, _sel_start_pixel_pos, _sel_end_pixel_pos;
         unsigned int            _first_vis_char_idx = 0;

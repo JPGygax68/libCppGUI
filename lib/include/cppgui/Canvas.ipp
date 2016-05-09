@@ -23,6 +23,14 @@ namespace cppgui {
         Renderer::cleanup();
     }
 
+    /*
+    template<class Renderer>
+    auto Canvas<Renderer>::translate_resource(const Rasterized_font *font) -> Font_handle
+    {
+        return _font_mapper.get_resource(this, font);
+    }
+    */
+
     template<class Renderer>
     void Canvas<Renderer>::draw_stippled_rectangle_outline(int x, int y, int w, int h, const Rgba_norm &color)
     {

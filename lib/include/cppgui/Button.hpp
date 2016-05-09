@@ -26,11 +26,12 @@ namespace cppgui {
         using Font_handle = typename Renderer::font_handle;
         using Widget_t = Widget<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
+        using Font_resource = typename Widget_t::Font_resource;
 
         Button();
 
         void set_font(const Rasterized_font *);
-        auto font() const { return _font; }
+        auto font() const { return _font.source(); }
         void set_label(const std::u32string &);
         void set_label(const std::string &);
         auto label() const { return _label; }
@@ -42,12 +43,10 @@ namespace cppgui {
         // TODO: visual feedback on mouse down / up
 
     protected:
-        const Rasterized_font  *_font = nullptr;
+        Font_resource           _font;
         std::u32string          _label;
         Point                   _label_origin;
         Rectangle               _label_rect;
-
-        Font_handle             _fnthnd;
     };
 
     // Layouter aspect

@@ -17,7 +17,7 @@ namespace cppgui {
             font_changed();
         }
         */
-        _font = font;
+        _font.assign(font);
     }
 
     template<class Config, bool With_layout>
@@ -40,7 +40,7 @@ namespace cppgui {
         _first_vis_char_idx = 0;
         _scroll_offs = 0;
 
-        if (font()) // TODO: is there a way to avoid this check ? (i.e. use different set_text() before font is set ?)
+        if (font().source()) // TODO: is there a way to avoid this check ? (i.e. use different set_text() before font is set ?)
         {
             internal_select_all();
             _caret_char_idx = _sel_start_char_idx;
@@ -70,7 +70,8 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::init()
     {
-        _fnthnd = root_widget()->get_font_handle(_font);
+        //_fnthnd = root_widget()->get_font_handle(_font);
+        _font.translate( root_widget()->canvas() );
         _caret_char_idx = 0;
         _caret_pixel_pos = 0;
         _first_vis_char_idx = 0;
@@ -192,7 +193,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     inline void Textbox<Config, With_layout>::render(Canvas_t *r, const Point &offs)
     {
-        fill(r, offs, rgba_to_native(r, {1, 1, 1, 1})); // TODO: (VERY MUCH) PROVISIONAL, GET REAL COLOR!
+        fill(r, offs, rgba_to_native({ 1, 1, 1, 1 })); // TODO: (VERY MUCH) PROVISIONAL, GET REAL COLOR!
 
         auto pos = offs + position();
 
@@ -202,12 +203,12 @@ namespace cppgui {
         auto bg_clr = selected_text_background_color();
 
         r->fill_rect(pos.x + _txpos.x + _scroll_offs + _sel_start_pixel_pos, pos.y + _txpos.y - _ascent, 
-            _sel_end_pixel_pos - _sel_start_pixel_pos, _ascent - _descent, rgba_to_native(r, bg_clr));
+            _sel_end_pixel_pos - _sel_start_pixel_pos, _ascent - _descent, rgba_to_native(bg_clr));
 
         // Text
         if (!_text.empty() && _first_vis_char_idx < _text.size())
         {
-            r->render_text(_fnthnd, pos.x + _txpos.x, pos.y + _txpos.y, 
+            r->render_text(_font.get(), pos.x + _txpos.x, pos.y + _txpos.y, 
                 _text.data() + _first_vis_char_idx, _text.size() - _first_vis_char_idx, _inner_rect.ext.w);
         }
 
@@ -215,7 +216,7 @@ namespace cppgui {
         if (has_focus())
         {
             r->fill_rect(pos.x + _txpos.x + _scroll_offs + _caret_pixel_pos, pos.y + _txpos.y - _ascent, 
-                1, _ascent - _descent, rgba_to_native(r, caret_color())); // TODO: width from stylesheet
+                1, _ascent - _descent, rgba_to_native(caret_color())); // TODO: width from stylesheet
         }
 
         r->cancel_clipping();
@@ -239,7 +240,7 @@ namespace cppgui {
         if (_caret_char_idx > 0)
         {
             _caret_char_idx--;
-            auto glyph = font()->lookup_glyph(0, _text[_caret_char_idx]); // TODO: support font variants ?
+            auto glyph = font().source()->lookup_glyph(0, _text[_caret_char_idx]); // TODO: support font variants ?
             _caret_pixel_pos -= glyph->cbox.adv_x; // TODO: support vertical advance
             if (extend_sel)
             {
@@ -270,7 +271,7 @@ namespace cppgui {
     {
         if (_caret_char_idx < _text.size())
         {
-            auto glyph = font()->lookup_glyph(0, _text[_caret_char_idx]); // TODO: support font variants ?
+            auto glyph = font().source()->lookup_glyph(0, _text[_caret_char_idx]); // TODO: support font variants ?
             _caret_char_idx ++;
             _caret_pixel_pos += glyph->cbox.adv_x; // TODO: support vertical advance
             if (extend_sel)
@@ -305,7 +306,7 @@ namespace cppgui {
             while (_caret_char_idx > 0)
             {
                 _caret_char_idx--;
-                auto glyph = font()->lookup_glyph(0, _text[_caret_char_idx]); // TODO: support font variants ?
+                auto glyph = font().source()->lookup_glyph(0, _text[_caret_char_idx]); // TODO: support font variants ?
                 _caret_pixel_pos -= glyph->cbox.adv_x; // TODO: support vertical advance
             }
             if (extend_sel)
@@ -331,7 +332,7 @@ namespace cppgui {
         {
             while (_caret_char_idx < _text.size())
             {
-                auto glyph = font()->lookup_glyph(0, _text[_caret_char_idx]); // TODO: support font variants ?
+                auto glyph = font().source()->lookup_glyph(0, _text[_caret_char_idx]); // TODO: support font variants ?
                 _caret_char_idx++;
                 _caret_pixel_pos += glyph->cbox.adv_x; // TODO: support vertical advanc
             }
@@ -358,7 +359,7 @@ namespace cppgui {
 
         for (size_t i = 0; i < count; i++)
         {
-            auto glyph = _font->lookup_glyph(0, text[i]); // TODO: support font variants ?
+            auto glyph = _font.source()->lookup_glyph(0, text[i]); // TODO: support font variants ?
             _caret_pixel_pos += glyph->cbox.adv_x;
         }
 
@@ -377,7 +378,7 @@ namespace cppgui {
         }
         else if (_caret_char_idx > 0)
         {
-            auto glyph = _font->lookup_glyph(0, _text[_caret_char_idx - 1]); // TODO: support font variants ?
+            auto glyph = _font.source()->lookup_glyph(0, _text[_caret_char_idx - 1]); // TODO: support font variants ?
             _caret_pixel_pos -= glyph->cbox.adv_x;
             _caret_char_idx --;
             auto new_text = _text.substr(0, _caret_char_idx) + _text.substr(_caret_char_idx + 1);
@@ -444,7 +445,7 @@ namespace cppgui {
         unsigned i;
         for (i = 0; i < _text.size(); i++)
         {
-            auto glyph = font()->lookup_glyph(0, _text[i]);
+            auto glyph = font().source()->lookup_glyph(0, _text[i]);
             auto w = glyph->cbox.bounds.x_max - glyph->cbox.bounds.x_min;
 
             if (pos.x < _scroll_offs + x + w / 2) break;
@@ -462,14 +463,14 @@ namespace cppgui {
         {
             assert(_first_vis_char_idx > 0);
             _first_vis_char_idx --;
-            auto glyph = font()->lookup_glyph(0, _text[_first_vis_char_idx]);
+            auto glyph = font().source()->lookup_glyph(0, _text[_first_vis_char_idx]);
             _scroll_offs += glyph->cbox.adv_x;
         }
 
         while ((_scroll_offs + _caret_pixel_pos) > (int) _inner_rect.ext.w)
         {
             assert(_first_vis_char_idx < (_text.size() - 1));
-            auto glyph = font()->lookup_glyph(0, _text[_first_vis_char_idx]);
+            auto glyph = font().source()->lookup_glyph(0, _text[_first_vis_char_idx]);
             _first_vis_char_idx ++;
             _scroll_offs -= glyph->cbox.adv_x;
         }
@@ -522,7 +523,7 @@ namespace cppgui {
 
         if (_sel_start_char_idx > 0)
         {
-            cbox = advance_to_glyph_at(font(), _text, 0, _sel_start_char_idx, pos);
+            cbox = advance_to_glyph_at(font().source(), _text, 0, _sel_start_char_idx, pos);
             //_sel_start_pixel_pos = pos.x + cbox->bounds.x_min;
             _sel_start_pixel_pos = pos.x;
         }
@@ -532,7 +533,7 @@ namespace cppgui {
 
         if (_sel_end_char_idx > _sel_start_char_idx)
         {
-            cbox = advance_to_glyph_at(font(), _text, _sel_start_char_idx, _sel_end_char_idx - 1, pos);
+            cbox = advance_to_glyph_at(font().source(), _text, _sel_start_char_idx, _sel_end_char_idx - 1, pos);
             //_sel_end_pixel_pos = pos.x + cbox->bounds.x_max;
             _sel_end_pixel_pos = pos.x + cbox->adv_x;
         }
@@ -593,11 +594,11 @@ namespace cppgui {
     {
         // TODO: free the font handle
 
-        if (p()->_font)
+        if (p()->_font.source())
         {
             //p()->_fnthnd = p()->root_widget()->get_font_handle(p()->_font);
             // TODO: support other cultures
-            auto bbox = p()->_font->compute_text_extents(0, U"My", 2);
+            auto bbox = p()->_font.source()->compute_text_extents(0, U"My", 2);
             p()->_ascent = bbox.y_max;
             p()->_descent = bbox.y_min;
             p()->_mean_char_width = (bbox.width() + 1) / 2;

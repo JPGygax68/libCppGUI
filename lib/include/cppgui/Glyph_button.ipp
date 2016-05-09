@@ -13,18 +13,18 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Glyph_button<Config, With_layout>::set_glyph(const Icon_glyph &icgl)
     {
-        _glyph_fnt = gpc::fonts::get(icgl.data_store);
+        _glyph_font.assign( gpc::fonts::get(icgl.data_store) );
         _glyph_cp  = icgl.code_point;
     }
 
     template<class Config, bool With_layout>
     inline void Glyph_button<Config, With_layout>::init()
     {
-        if (_label_fnt) _label_font_hnd = root_widget()->get_font_handle(_label_fnt);
+        if (_label_font.source()) _label_font.translate( root_widget()->canvas() );
 
         if (_glyph_cp)
         {
-            _glyph_font_hnd = root_widget()->get_font_handle(_glyph_fnt);
+            _glyph_font.translate( root_widget()->canvas() );
         }
     }
 
@@ -32,12 +32,12 @@ namespace cppgui {
     void Glyph_button<Config, With_layout>::render(Canvas_t *cnv, const Point & offset)
     {
         // Background
-        fill(cnv, offset, rgba_to_native(cnv, button_face_color()));
+        fill(cnv, offset, rgba_to_native( button_face_color() ));
 
         // Border
         if (_border_enabled)
         {
-            auto border_ntvclr = rgba_to_native(cnv, button_border_color());
+            auto border_ntvclr = rgba_to_native( button_border_color() );
             draw_borders(cnv, rectangle(), offset, button_border_width(), border_ntvclr, border_ntvclr, border_ntvclr, border_ntvclr);
         }
 
@@ -46,13 +46,13 @@ namespace cppgui {
         // Label
         if (!_label.empty())
         {
-            cnv->render_text(_label_font_hnd, pos.x + _label_pos.x, pos.y + _label_pos.y, _label.data(), _label.size());
+            cnv->render_text(_label_font.get(), pos.x + _label_pos.x, pos.y + _label_pos.y, _label.data(), _label.size());
         }
 
         // Glyph
         if (_glyph_cp)
         {
-            cnv->render_text(_glyph_font_hnd, pos.x + _glyph_pos.x, pos.y + _glyph_pos.y, &_glyph_cp, 1);
+            cnv->render_text(_glyph_font.get(), pos.x + _glyph_pos.x, pos.y + _glyph_pos.y, &_glyph_cp, 1);
         }
 
         if (has_focus())
@@ -92,7 +92,7 @@ namespace cppgui {
     {
         if (p()->_glyph_cp)
         {
-            _glyph_bounds = p()->_glyph_fnt->lookup_glyph(0, p()->_glyph_cp)->cbox.bounds;
+            _glyph_bounds = p()->_glyph_font.source()->lookup_glyph(0, p()->_glyph_cp)->cbox.bounds;
             _glyph_min_edge = std::max(_glyph_bounds.width(), _glyph_bounds.height());
         }
         else {
@@ -102,7 +102,7 @@ namespace cppgui {
 
         if (!p()->_label.empty())
         {
-            _label_bounds = p()->_label_fnt->compute_text_extents(0, p()->_label.data(), p()->_label.size());
+            _label_bounds = p()->_label_font.source()->compute_text_extents(0, p()->_label.data(), p()->_label.size());
             _spacing = _glyph_min_edge > 0 ? 4 : 0; // TODO: replace with value based on EM, or stylesheet setting
         }
         else {

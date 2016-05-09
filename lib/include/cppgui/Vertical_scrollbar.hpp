@@ -18,6 +18,7 @@ namespace cppgui {
 
     // Resources struct
 
+    /*
     namespace {
 
         namespace {
@@ -30,13 +31,13 @@ namespace cppgui {
         template<class Config>
         using Resources = Resource_struct<slide_bgcol, thumb_color, thumb_hovered_color>;
     }
+    */
 
     // Class declaration
 
     template<class Impl, class Config, bool With_layout>
     class Vertical_scrollbar_base: 
-        public Vertical_scrollbar__Layouter<Impl, Config, With_layout>::template Aspect< Container<Config, With_layout> >,
-        public Resources<Config>
+        public Vertical_scrollbar__Layouter<Impl, Config, With_layout>::template Aspect< Container<Config, With_layout> >
     {
     public:
         using Widget_t = typename Widget<Config, With_layout>;
@@ -78,6 +79,7 @@ namespace cppgui {
 
     protected:
         using Glyph_button_t = typename Glyph_button<Config, With_layout>;
+        using Color_resource = typename Widget_t::Color_resource;
 
         // To be implemented in derived class (via CRTP)
         void move_by_page(int delta) { static_assert(false); }
@@ -88,6 +90,10 @@ namespace cppgui {
         void recalc_thumb();
         void clip_thumb_pos();
         void notify_drag_navigation(Position_delta);
+
+        Color_resource          _slide_bgcol;
+        Color_resource          _thumb_color;
+        Color_resource          _thumb_hovered_color;
 
         Glyph_button_t          _up_btn, _down_btn;
         Position                _full_range = 0;    // the range represented by the full length of the "slide" (= strip on which the thumb moves)

@@ -23,7 +23,6 @@ namespace cppgui {
     template <class Config, bool With_layout>
     class Root_widget: 
         public Root_widget__Layouter<Config, With_layout>::template Aspect< Config::template Root_widget__Updater< Abstract_widget<Config, With_layout> > >,
-        public Config::Font_mapper,
         public Config::template Root_widget__Container_updater< Abstract_container<Config, With_layout> >
     {
     public:
@@ -33,7 +32,7 @@ namespace cppgui {
         using Abstract_widget_t = typename Abstract_widget<Config, With_layout>;
         using Canvas_t = typename Abstract_widget_t::Canvas_t;
         using Abstract_container_t = Abstract_container<Config, With_layout>;
-        using Font_mapper = typename Config::Font_mapper;
+        //using Font_mapper = typename Config::Font_mapper;
         using Font_handle = typename Canvas_t::Font_handle;
         using Cursor_handle = typename Config::Mouse::Cursor_handle;
 
@@ -59,8 +58,6 @@ namespace cppgui {
         void push_cursor(Cursor_handle);
         void pop_cursor();
 
-        auto get_font_handle(const Rasterized_font *) -> Font_handle;
-
         void mouse_motion(const Point &) override;
         void mouse_button(const Point &, int button, Key_state) override;
         void mouse_click(const Point &, int button, int count) override;
@@ -82,13 +79,12 @@ namespace cppgui {
         void render(Canvas_t *, const Point &) override;
 
     private:
-        Font_mapper                 _font_mapper;
         Color                       _bkgnd_clr = { 0, 0, 0, 0 };
         Canvas_t                   *_canvas = nullptr;
         //Widget_t                   *_focused_widget = nullptr;
         std::stack<Cursor_handle>   _cursor_stack;
         Widget_t                   *_mouse_holder = nullptr;
-        Point                    _capture_offset;
+        Point                       _capture_offset;
     };
 
     // Default implementation for Widget_updater aspect

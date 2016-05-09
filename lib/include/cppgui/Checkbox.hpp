@@ -22,12 +22,14 @@ namespace cppgui {
     class Checkbox: public Checkbox__Layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >
     {
     public:
-        using Widget_t = Widget<Config, With_layout>;
-        using Canvas_t = typename Widget_t::Canvas_t;
-        using Font_handle = typename Widget_t::Font_handle;
+        using Widget_t      = Widget<Config, With_layout>;
+        using Canvas_t      = typename Widget_t::Canvas_t;
+        //using Font_handle = typename Widget_t::Font_handle;
+        using Font_resource = typename Widget_t::Font_resource;
+
         using State_change_handler = std::function<void(bool)>;
 
-        void set_font(const Rasterized_font *font) { _label_font = font; }
+        void set_font(const Rasterized_font *font) { _label_font.assign(font); }
         auto font() const { return _label_font; }
         void set_tick_glyph(const Rasterized_font *, const Font_icon_descr &); // TODO: use improved Icon_resources methods
         void set_label(const std::u32string &label) { _label = label; }
@@ -45,19 +47,17 @@ namespace cppgui {
 
     protected: // for access by Layouter aspect
         
-        const Rasterized_font  *_label_font;
-        const Rasterized_font  *_glyph_font;    // TODO: rename to _tick_font ?
+        Font_resource           _label_font;
+        Font_resource           _glyph_font;    // TODO: rename to _tick_font ?
         Font_icon_descr         _tick_descr;
         std::u32string          _label;
         State_change_handler    _state_change_handler;
 
-        Point                _label_pos;
-        Point                _tick_pos;
+        Point                   _label_pos;
+        Point                   _tick_pos;
         Rectangle               _box_rect;
 
     private:
-        Font_handle             _fnthnd;
-        Font_handle             _glyphfnthnd;
         bool                    _checked;
     };
 

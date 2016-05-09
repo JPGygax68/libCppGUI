@@ -12,6 +12,7 @@
 #include "./layouting.hpp"
 
 //#include "./Stylesheet.hpp"
+#include "./Resource.hpp"
 #include "./Full_resource_mapper.hpp"
 
 namespace cppgui {
@@ -30,7 +31,7 @@ namespace cppgui {
         to function as an element in a container.
      */
     template <class Config, bool With_layout>
-    class Abstract_widget: public Config::Color_mapper
+    class Abstract_widget
     {
     public:
         using Abstract_widget_t = Abstract_widget;
@@ -40,6 +41,9 @@ namespace cppgui {
         using Font_handle       = typename Canvas_t::Font_handle;
         using Keyboard          = typename Config::Keyboard;
         using Keycode           = typename Keyboard::Keycode;
+        // TODO: move the following resource type definitions into a special struct and inherit from that ?
+        using Color_resource    = Resource<const Color &, Native_color, Canvas_t, true>;
+        using Font_resource     = Resource<const Rasterized_font *, Font_handle, Canvas_t, false>;
 
         using Click_handler     = std::function<void(const Point &, int button, int clicks)>; // TODO: support return value ?
         using Push_handler      = std::function<void(const Point &)>; // for buttons
@@ -89,7 +93,7 @@ namespace cppgui {
 
         // Rendering conveniences
 
-        auto rgba_to_native(Canvas_t *, const Color &) -> Native_color;
+        // auto rgba_to_native(Canvas_t *, const Color &) -> Native_color;
         auto rgba_to_native(const Color &) -> Native_color;
         void fill_rect(Canvas_t *, const Rectangle &rect, const Native_color &);
         void fill_rect(Canvas_t *, const Rectangle &rect, const Point &offs, const Native_color &);

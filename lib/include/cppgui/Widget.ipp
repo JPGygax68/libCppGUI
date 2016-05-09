@@ -31,16 +31,18 @@ namespace cppgui {
         }
     }
 
+    /*
     template <class Config, bool With_layout>
-    auto Abstract_widget<Config, With_layout>::rgba_to_native(Canvas_t *r, const Color &color) -> Native_color
+    auto Abstract_widget<Config, With_layout>::rgba_to_native(Canvas_t *, const Color &color) -> Native_color
     {
-        return get_resource(r, color);
+        return Canvas_t::adapt_resource(color);
     }
+    */
 
     template<class Config, bool With_layout>
     auto Abstract_widget<Config, With_layout>::rgba_to_native(const Color &color) -> Native_color
     {
-        return rgba_to_native( root_widget()->canvas(), color );
+        return Canvas_t::rgba_to_native( color );
     }
 
     template<class Config, bool With_layout>

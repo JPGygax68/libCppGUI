@@ -77,12 +77,6 @@ namespace cppgui {
         _cursor_stack.pop();
     }
 
-    template<class Config, bool With_layout>
-    auto Root_widget<Config, With_layout>::get_font_handle(const Rasterized_font *font) -> Font_handle
-    {
-        return _font_mapper.get_resource(_canvas, font);
-    }
-
     template<class Config, bool WithLayout>
     void Root_widget<Config, WithLayout>::mouse_motion(const Point &pos)
     {

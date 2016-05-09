@@ -19,9 +19,9 @@ namespace cppgui {
     {
     public:
 
-        auto get_resource(Backend *b, const SourceType &src) -> MappedType;
+        auto adapt_resource  (Backend *b, const SourceType &src) -> MappedType;
 
-        void release_resource(const SourceType &);
+        void release_resource(Backend *b, const SourceType &);
 
     private:
         std::map<SourceType, MappedType>    _map;

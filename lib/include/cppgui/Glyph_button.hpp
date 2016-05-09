@@ -26,10 +26,12 @@ namespace cppgui {
         using Canvas_t = typename Widget_t::Canvas_t;
         using Font_handle = typename Widget_t::Font_handle;
         using Push_handler = typename Widget_t::Push_handler;
+        using Font_resource = typename Widget_t::Font_resource;
 
         void on_push(Push_handler);
 
-        void set_font(const Rasterized_font *font) { _label_fnt = font; }
+        void set_font(const Rasterized_font *font) { 
+            _label_font.assign(font); }
 
         void set_label(const std::u32string &label) { _label = label; }
 
@@ -46,9 +48,9 @@ namespace cppgui {
     protected:
         //Click_handler                   _on_click;
         Push_handler                    _on_push;
-        const Rasterized_font          *_label_fnt = nullptr;
+        Font_resource                   _label_font;
         std::u32string                  _label;
-        const Rasterized_font          *_glyph_fnt;
+        Font_resource                   _glyph_font;
         char32_t                        _glyph_cp;
         bool                            _border_enabled = true;
 
@@ -56,10 +58,6 @@ namespace cppgui {
         //Rectangle                       _label_rect;
         Rectangle                       _focus_rect;
         Point                           _glyph_pos;
-
-    private:
-        Font_handle                     _glyph_font_hnd;
-        Font_handle                     _label_font_hnd;
     };
 
     // Layouter aspect

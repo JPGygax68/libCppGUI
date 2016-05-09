@@ -15,7 +15,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Checkbox<Config, With_layout>::set_tick_glyph(const Rasterized_font *font, const Font_icon_descr &descr)
     {
-        _glyph_font = font;
+        _glyph_font.assign( font );
         _tick_descr = descr;
     }
 
@@ -29,8 +29,8 @@ namespace cppgui {
     template<class Config, bool With_layout>
     inline void Checkbox<Config, With_layout>::init()
     {
-        _fnthnd      = root_widget()->get_font_handle(_label_font);
-        _glyphfnthnd = root_widget()->get_font_handle(_glyph_font);
+        _label_font.translate( root_widget()->canvas() );
+        _glyph_font.translate( root_widget()->canvas() );
     }
 
     template<class Config, bool With_layout>
@@ -40,14 +40,14 @@ namespace cppgui {
 
         fill(cv, offs, {1, 1, 0.5f, 1});
 
-        cv->render_text(_fnthnd, pos.x + _label_pos.x, pos.y + _label_pos.y, _label.data(), _label.size());
+        cv->render_text(_label_font.get(), pos.x + _label_pos.x, pos.y + _label_pos.y, _label.data(), _label.size());
 
         fill_rect(cv, _box_rect, pos, paper_color());
         draw_borders(cv, _box_rect, pos, stroke_width(), stroke_color());
 
         if (_checked)
         {
-            cv->render_text(_glyphfnthnd, pos.x + _tick_pos.x, pos.y + _tick_pos.y, &_tick_descr.code_point, 1);
+            cv->render_text(_glyph_font.get(), pos.x + _tick_pos.x, pos.y + _tick_pos.y, &_tick_descr.code_point, 1);
         }
     }
 
@@ -82,7 +82,7 @@ namespace cppgui {
     {
         // TODO: adapt for multi-cultural use
 
-        _em_bounds = p()->font()->compute_text_extents(0, U"M", 1);
+        _em_bounds = p()->font().source()->compute_text_extents(0, U"M", 1);
 
         //_box_edge = _em_bounds.height() + _padding[3] + _padding[1];
         _box_edge = _em_bounds.height() + 2 * (p()->padding() + p()->stroke_width());
@@ -92,14 +92,14 @@ namespace cppgui {
     template <class Aspect_parent>
     inline void Checkbox__Layouter<Config, true>::Aspect<Aspect_parent>::compute_label_size()
     {
-        _label_bounds = p()->font()->compute_text_extents(0, p()->_label.data(), p()->_label.size());
+        _label_bounds = p()->font().source()->compute_text_extents(0, p()->_label.data(), p()->_label.size());
     }
 
     template<class Config>
     template<class Aspect_parent>
     void Checkbox__Layouter<Config, true>::Aspect<Aspect_parent>::get_tick_metrics()
     {
-        _tick_bounds = p()->_glyph_font->compute_text_extents(0, &p()->_tick_descr.code_point, 1);
+        _tick_bounds = p()->_glyph_font.source()->compute_text_extents(0, &p()->_tick_descr.code_point, 1);
 
         _tick_extents = Extents { _tick_bounds.width(), _tick_bounds.height() };
     }

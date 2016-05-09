@@ -14,7 +14,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     inline void cppgui::Button<Config, With_layout>::set_font(const Rasterized_font *font)
     {
-        _font = font;
+        _font.assign(font);
     }
 
     template<class Config, bool With_layout>
@@ -32,21 +32,22 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Button<Config, With_layout>::init()
     {
-        _fnthnd = root_widget()->get_font_handle(_font);
+        //_fnthnd = root_widget()->get_font_handle(_font);
+        _font.translate( root_widget()->canvas() );
     }
 
     template<class Config, bool With_layout>
     void Button<Config, With_layout>::render(Canvas_t *cnv, const Point &offs)
     {
-        fill(cnv, offs, rgba_to_native(cnv, button_face_color()));
+        fill(cnv, offs, rgba_to_native( button_face_color() ));
 
 
-        auto border_ntvclr = rgba_to_native(cnv, button_border_color());
+        auto border_ntvclr = rgba_to_native( button_border_color() );
         draw_borders(cnv, rectangle(), offs, button_border_width(), border_ntvclr, border_ntvclr, border_ntvclr, border_ntvclr);
 
         auto pos = offs + position();
 
-        cnv->render_text(_fnthnd, pos.x + _label_origin.x, pos.y + _label_origin.y, _label.data(), _label.size());
+        cnv->render_text(_font.get(), pos.x + _label_origin.x, pos.y + _label_origin.y, _label.data(), _label.size());
 
         if (has_focus())
         {

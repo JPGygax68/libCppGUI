@@ -24,13 +24,14 @@ namespace cppgui {
     {
     public:
         using Renderer = typename Config::Renderer;
-        using Font_handle = typename Renderer::font_handle;
+        //using Font_handle = typename Renderer::font_handle;
         using Root_widget_t = Root_widget<Config, With_layout>;
         using Widget_t = Widget<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
+        using Font_resource = typename Widget_t::Font_resource;
 
         void set_font(const Rasterized_font *);
-        auto font() const { return _font; }
+        auto font() const { return _font.source(); }
         void set_text(const std::u32string &);
         auto text() const { return _text; }
 
@@ -41,12 +42,13 @@ namespace cppgui {
         // void change_text(const std::u32string &);
 
     protected:
-        const Rasterized_font  *_font = nullptr;
+        //const Rasterized_font  *_font = nullptr;
+        Font_resource           _font;
         std::u32string          _text;
         Point                   _text_origin; // origin of first character of label
         Rectangle               _text_rect;
 
-        Font_handle             _fnthnd;
+        //Font_handle             _fnthnd;
     };
 
     class Single_element_layout;

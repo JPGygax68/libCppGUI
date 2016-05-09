@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cppgui/Resource_mapper.hpp>
-#include <cppgui/Default_font_mapper.hpp>
+//#include <cppgui/Resource_mapper.hpp>
+//#include <cppgui/Default_font_mapper.hpp>
 #include <cppgui/Widget.hpp>
 #include <cppgui/Container.hpp>
 #include <cppgui/Root_widget.hpp>
@@ -46,8 +46,8 @@ namespace cppgui {
             // We override the color mapper
             // TODO: this should not be necessary, the identity mapper should be chosen automatically
             // according to a static boolean set in the renderer class
-            using Color_mapper = ::cppgui::Identity_mapper<Renderer, cppgui::Color>;
-            using Font_mapper  = ::cppgui::Default_font_mapper<Renderer>;
+            //using Color_mapper = ::cppgui::Identity_mapper<Renderer, cppgui::Color>;
+            //using Font_mapper  = ::cppgui::Default_font_mapper<Renderer>;
 
             using Keyboard = ::cppgui::sdl::Keyboard_adapter;
 

@@ -11,7 +11,7 @@ namespace cppgui {
     template<class Config, bool WithLayout>
     inline void Label<Config, WithLayout>::set_font(const Rasterized_font *font)
     {
-        _font = font;
+        _font.assign(font);
     }
 
     template<class Config, bool WithLayout>
@@ -23,16 +23,17 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Label<Config, With_layout>::init()
     {
-        _fnthnd = root_widget()->get_font_handle(_font);
+        //_fnthnd = root_widget()->get_font_handle(_font);
+        _font.translate( root_widget()->canvas() );
     }
 
     template<class Config, bool WithLayout>
     inline void Label<Config, WithLayout>::render(Canvas_t *cnv, const Point &offs)
     {
-        fill(cnv, offs, rgba_to_native(cnv, background_color())); 
+        fill(cnv, offs, rgba_to_native(background_color())); 
 
         auto pos = offs + position();
-        cnv->render_text(_fnthnd, pos.x + _text_origin.x, pos.y + _text_origin.y, _text.data(), _text.size());
+        cnv->render_text(_font.get(), pos.x + _text_origin.x, pos.y + _text_origin.y, _text.data(), _text.size());
 
         if (has_focus())
         {
