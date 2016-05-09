@@ -1,27 +1,35 @@
 #pragma once
 
-template<typename SourceType, typename AdaptedType, class BackendType, bool StaticTranslation>
-struct Resource 
+template<class Impl, typename SourceType, typename AdaptedType, class BackendType>
+struct Resource_concept 
 {
-    void assign   (SourceType)                   { static_assert(false, "Resource<>::assign(): not implemented!"); }
-    void translate(BackendType *)                { static_assert(false, "Resource<>::translate(): not implemented!"); }
-    void release  (BackendType *)                { static_assert(false, "Resource<>::release(): not implemented!"); }
-    auto get      ()              -> AdaptedType { static_assert(false, "Resource<>::get(): not implemented!"); return (AdaptedType) 0; }
+    using Implementation = typename Impl;
+
+    void assign     (const SourceType &) { static_assert(false, "Resource<>::assign(): not implemented!"); }
+    void translate  (BackendType *)      { static_assert(false, "Resource<>::translate(): not implemented!"); }
+    void release    (BackendType *)      { static_assert(false, "Resource<>::release(): not implemented!"); }
+    auto get        () -> AdaptedType    { static_assert(false, "Resource<>::get(): not implemented!"); return (AdaptedType) 0; }
+
+    auto Resource_concept::operator = (const SourceType &resource) -> Resource_concept &
+    {
+        static_cast<Impl*>(this)->assign(resource);
+        return *this;
+    }
 };
 
-template<typename SourceType, typename AdaptedType, typename BackendType>
-struct Resource<SourceType, AdaptedType, BackendType, true /* StaticTranslation */> 
-{
-    Resource() = default;
+template<typename SourceType, typename AdaptedType, class BackendType, bool StaticTranslation>
+struct Resource;
 
-    Resource(SourceType resource)
-        // TODO: assignment at construction is a convience, but should most likely be prohibited once stylesheets
-        // have been introduced.
+template<typename SourceType, typename AdaptedType, typename BackendType>
+struct Resource<SourceType, AdaptedType, BackendType, true>: 
+    public Resource_concept<Resource<SourceType, AdaptedType, BackendType, true>, SourceType, AdaptedType, BackendType>
+{
+    Resource::Resource(const SourceType &resource)
     {
         assign(resource);
     }
 
-    void assign(SourceType resource)
+    void assign(const SourceType &resource)
     {
         _adapted = BackendType::adapt_resource(resource); // TODO: can detect a build time whether method is static ?
     }
@@ -42,13 +50,17 @@ struct Resource<SourceType, AdaptedType, BackendType, true /* StaticTranslation 
     }
 
 private:
-    AdaptedType     _adapted = {};
+    AdaptedType     _adapted;
 };
 
 template<typename SourceType, typename AdaptedType, typename BackendType>
-struct Resource<SourceType, AdaptedType, BackendType, false /* StaticTranslation */> 
+struct Resource<SourceType, AdaptedType, BackendType, false>: 
+    public Resource_concept<Resource<SourceType, AdaptedType, BackendType, false>, SourceType, AdaptedType, BackendType>
 {
-    void assign(SourceType resource)
+    using Resource_concept::Resource_concept;
+    using Resource_concept::operator =;
+
+    void assign(const SourceType &resource)
     {
         // TODO: implement debug-only check forbidding this when already translated
 

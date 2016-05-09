@@ -30,8 +30,7 @@ namespace cppgui {
 
         void on_push(Push_handler);
 
-        void set_font(const Rasterized_font *font) { 
-            _label_font.assign(font); }
+        void set_font(const Rasterized_font *font) { _label_font = font; }
 
         void set_label(const std::u32string &label) { _label = label; }
 

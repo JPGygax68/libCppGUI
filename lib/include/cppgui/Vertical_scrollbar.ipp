@@ -3,11 +3,12 @@
 namespace cppgui {
 
     template<class Impl, class Config, bool With_layout>
-    Vertical_scrollbar_base<Impl, Config, With_layout>::Vertical_scrollbar_base()
+    Vertical_scrollbar_base<Impl, Config, With_layout>::Vertical_scrollbar_base():
+        // TODO: obtain from static value or stylesheet:
+        _slide_bgcol        ({ 0.7f, 0.7f, 0.7f, 1 }), 
+        _thumb_color        ({ 0.8f, 0.8f, 0.8f, 1 }),
+        _thumb_hovered_color({ 0.9f, 0.9f, 0.9f, 1 })
     {
-        _slide_bgcol        .assign({ 0.7f, 0.7f, 0.7f, 1 });   // TODO: obtain from static value or stylesheet
-        _thumb_color        .assign({ 0.8f, 0.8f, 0.8f, 1 });
-        _thumb_hovered_color.assign({ 0.9f, 0.9f, 0.9f, 1 });
 
         _up_btn  .enable_border(false);
         _down_btn.enable_border(false);

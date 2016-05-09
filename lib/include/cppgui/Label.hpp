@@ -42,13 +42,10 @@ namespace cppgui {
         // void change_text(const std::u32string &);
 
     protected:
-        //const Rasterized_font  *_font = nullptr;
         Font_resource           _font;
         std::u32string          _text;
         Point                   _text_origin; // origin of first character of label
         Rectangle               _text_rect;
-
-        //Font_handle             _fnthnd;
     };
 
     class Single_element_layout;
