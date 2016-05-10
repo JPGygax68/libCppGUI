@@ -90,7 +90,18 @@ namespace cppgui {
         template<class Impl>
         void Window<Impl>::make_gl_context_current(SDL_GLContext ctx)
         {
-            if (SDL_GL_MakeCurrent(_win.get(), ctx) < 0) throw sdl::Error("trying to make GL context current");
+            //if (SDL_GL_MakeCurrent(_win.get(), ctx) < 0) throw sdl::Error("trying to make GL context current");
+            int err;
+            int count;
+            for (count = 0; ;)
+            {
+                count ++;
+                err = SDL_GL_MakeCurrent(_win.get(), ctx);
+                if (err == 0) break;
+                if (count >= 10) throw sdl::Error("trying to make GL context current (repeated attempts to call SDL_GL_MakeCurrent())");
+                SDL_Delay(1);
+            }
+            if (count > 1) std::cerr << "cppgui::sdl::Window<>::make_gl_context_current() has required " << count << " attempts" << std::endl;
         }
 
         template<class Impl>

@@ -114,7 +114,7 @@ namespace cppgui {
     template<class Aspect_parent>
     void Button__Layouter<Config, true>::Aspect<Aspect_parent>::compute_bounding_box()
     {
-        _bbox = p()->_font->compute_text_extents(0, p()->_label.data(), p()->_label.size());
+        _bbox = p()->_font.source()->compute_text_extents(0, p()->_label.data(), p()->_label.size());
     }
 
 } // ns cppgui

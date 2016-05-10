@@ -31,14 +31,6 @@ namespace cppgui {
         }
     }
 
-    /*
-    template <class Config, bool With_layout>
-    auto Abstract_widget<Config, With_layout>::rgba_to_native(Canvas_t *, const Color &color) -> Native_color
-    {
-        return Canvas_t::adapt_resource(color);
-    }
-    */
-
     template<class Config, bool With_layout>
     auto Abstract_widget<Config, With_layout>::rgba_to_native(const Color &color) -> Native_color
     {
