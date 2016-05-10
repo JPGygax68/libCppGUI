@@ -51,7 +51,7 @@ namespace cppgui {
             _content_pane.set_position({ _content_pane.position().x, _content_pane.position().y + delta_y });
             invalidate();
 
-            //scrollbar().update_thumb_position()
+            //scrollbar().update_position()
         }
 
         //item->take_focus();
@@ -61,7 +61,7 @@ namespace cppgui {
     void Listbox<Config, With_layout>::update_scrollbar_position()
         // Bring the position of the scrollbar in sync with the current vertical offset of the content pane
     {
-        vertical_scrollbar().update_thumb_position( - (_content_pane.position().y - content_rectangle().pos.y) );
+        vertical_scrollbar().update_position( - (_content_pane.position().y - content_rectangle().pos.y) );
     }
 
     // Layouter aspect ----------------------------------------------

@@ -74,10 +74,8 @@ namespace cppgui {
         auto full_range() const { return _full_range; }
         auto fraction() const { return _fraction; }
 
-        auto current_thumb_position() -> Fraction<>;
-        void update_thumb_position(Position); // TODO: assert() against calling this while not at end of navigation ?
-
-        //void update_thumboutput_position(Position);
+        auto current_position() -> Fraction<>;
+        void update_position(Position); // TODO: assert() against calling this while not at end of navigation ?
 
     protected:
         using Glyph_button_t = typename Glyph_button<Config, With_layout>;
@@ -86,7 +84,6 @@ namespace cppgui {
         // To be implemented in derived class (via CRTP)
         void move_by_page(int delta) { static_assert(false); }
         void move_by_elements(int delta) { static_assert(false); }
-        //void move_by_fraction(Position initial_pos, const Fraction<int> &delta) { static_assert(false, "Vertical_scrollbar_base::move_by_fraction()"); }
         void move_by_fraction(const Fraction<int> &delta) { static_assert(false, "Vertical_scrollbar_base::move_by_fraction()"); }
 
         void move_thumb_to(Position);
