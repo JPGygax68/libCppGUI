@@ -46,7 +46,7 @@ namespace cppgui {
 
         using Native_color = typename Widget_t::Native_color;
 
-        using Navigation_handler = std::function<void(Navigation_unit, Position initial_pos, const Fraction<int> &delta)>; //, bool ending)>;
+        using Navigation_handler = std::function<void(Navigation_unit, /* Position initial_pos, */ const Fraction<int> &delta)>; //, bool ending)>;
 
         Vertical_scrollbar_base();
 
@@ -74,8 +74,10 @@ namespace cppgui {
         auto full_range() const { return _full_range; }
         auto fraction() const { return _fraction; }
 
-        auto current_position() -> Fraction<>;
-        void change_position(Position); // TODO: assert() against calling this while not at end of navigation ?
+        auto current_thumb_position() -> Fraction<>;
+        void update_thumb_position(Position); // TODO: assert() against calling this while not at end of navigation ?
+
+        //void update_thumboutput_position(Position);
 
     protected:
         using Glyph_button_t = typename Glyph_button<Config, With_layout>;
@@ -84,7 +86,8 @@ namespace cppgui {
         // To be implemented in derived class (via CRTP)
         void move_by_page(int delta) { static_assert(false); }
         void move_by_elements(int delta) { static_assert(false); }
-        void move_by_fraction(Position initial_pos, const Fraction<int> &delta) { static_assert(false, "Vertical_scrollbar_base::move_by_fraction()"); }
+        //void move_by_fraction(Position initial_pos, const Fraction<int> &delta) { static_assert(false, "Vertical_scrollbar_base::move_by_fraction()"); }
+        void move_by_fraction(const Fraction<int> &delta) { static_assert(false, "Vertical_scrollbar_base::move_by_fraction()"); }
 
         void move_thumb_to(Position);
         void recalc_thumb();
@@ -103,9 +106,8 @@ namespace cppgui {
         Rectangle               _thumb_rect;
 
         bool                    _thumb_hovered = false;
-        Position                _thumb_drag_start_pos;
-        Position                _thumb_drag_anchor_pos;
-        Position                _drag_start_pos;
+        Position                _drag_anchor_pos;
+        Position                _curr_drag_pos;
         bool                    _dragging_thumb = false;
     };
 
@@ -144,7 +146,8 @@ namespace cppgui {
 
         void move_by_page(int delta);
         void move_by_elements(int delta);
-        void move_by_fraction(Position initial_pos, const Fraction<int> &delta);
+        //void move_by_fraction(Position initial_pos, const Fraction<int> &delta);
+        void move_by_fraction(const Fraction<int> &delta);
 
         Navigation_handler      _nav_handler;
     };
@@ -161,7 +164,8 @@ namespace cppgui {
 
         void move_by_page(int delta);
         void move_by_elements(int delta);
-        void move_by_fraction(Position initial_pos, const Fraction<int> &delta);
+        //void move_by_fraction(Position initial_pos, const Fraction<int> &delta);
+        void move_by_fraction(const Fraction<int> &delta);
 
     protected:
         void notify_position_change();

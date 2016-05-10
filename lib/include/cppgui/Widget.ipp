@@ -222,7 +222,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     inline void Widget<Config, With_layout>::mouse_enter()
     {
-        std::cout << "Widget::mouse_enter()" << std::endl;
+        //std::cout << "Widget::mouse_enter()" << std::endl;
         _hovered = true;
         invalidate();
     }
@@ -230,7 +230,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     inline void Widget<Config, With_layout>::mouse_exit()
     {
-        std::cout << "Widget::mouse_exit()" << std::endl;
+        //std::cout << "Widget::mouse_exit()" << std::endl;
         _hovered = false;
         invalidate();
     }

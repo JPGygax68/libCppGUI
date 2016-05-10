@@ -78,8 +78,7 @@ namespace cppgui {
 
         // Interface with Scrollbox container
 
-        void scroll(Navigation_unit, Position initial_pos, Fraction<int> delta);
-
+        void scroll(Navigation_unit, /* Position initial_pos, */ Fraction<int> delta);
         void scroll_by_items(int delta);
         void scroll_by_pages(int delta);
 
@@ -110,11 +109,10 @@ namespace cppgui {
             auto p() { return static_cast<List_pane_t*>(this); }
 
             auto get_minimal_size() -> Extents override;
+
+            void compute_and_set_extents(const Extents &container_extents);
+
             void layout() override;
-
-
-        protected:
-            //auto content_rect() -> Rectangle;
         };
     };
 

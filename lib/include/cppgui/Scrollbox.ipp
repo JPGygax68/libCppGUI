@@ -15,9 +15,9 @@ namespace cppgui {
             invalidate();
         }); */
         
-        _vert_sbar.on_navigation([this](Navigation_unit unit, Position initial_pos, const Fraction<int> &delta) {
+        _vert_sbar.on_navigation([this](Navigation_unit unit, /* Position initial_pos, */ const Fraction<int> &delta) {
 
-            static_cast<Pane*>(_content)->scroll(unit, initial_pos, delta);
+            static_cast<Pane*>(_content)->scroll(unit, /* initial_pos, */ delta);
         });
 
         add_child(&_vert_sbar);
@@ -121,8 +121,8 @@ namespace cppgui {
         p()->_vert_sep_pos = exts.w - p()->_border.width - sb_minsz.w - p()->_separator.width;
 
         // Content pane: adjust width, leave height untouched
-        // TODO: padding
-        p()->_content->set_extents({ p()->_content_rect.ext.w, p()->_content->extents().h });
+        p()->_content->compute_and_set_extents( p()->_content_rect.ext );
+        //p()->_content->set_extents({ p()->_content_rect.ext.w, p()->_content->extents().h }); // TODO: set both w and h to content rect ?
 
         // TODO: the following must also be done in the main aspect when the content pane changes
         // TODO: better yet, this should be done at init() time ?
@@ -131,7 +131,7 @@ namespace cppgui {
         p()->_vert_sbar.layout();
 
         p()->_content->set_position({ p()->_content_rect.pos.x, p()->_content_rect.pos.y });
-        p()->_content->layout();
+        p()->_content->layout(); // may modify extents set above
     }
 
 } // ns cppgui

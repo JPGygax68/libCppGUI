@@ -51,7 +51,7 @@ namespace cppgui {
             _content_pane.set_position({ _content_pane.position().x, _content_pane.position().y + delta_y });
             invalidate();
 
-            //scrollbar().change_position()
+            //scrollbar().update_thumb_position()
         }
 
         //item->take_focus();
@@ -61,7 +61,7 @@ namespace cppgui {
     void Listbox<Config, With_layout>::update_scrollbar_position()
         // Bring the position of the scrollbar in sync with the current vertical offset of the content pane
     {
-        vertical_scrollbar().change_position( - (_content_pane.position().y - content_rectangle().pos.y) );
+        vertical_scrollbar().update_thumb_position( - (_content_pane.position().y - content_rectangle().pos.y) );
     }
 
     // Layouter aspect ----------------------------------------------
@@ -101,7 +101,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void List_pane<Config, With_layout>::scroll(Navigation_unit unit, Position initial_pos, Fraction<int> delta)
+    void List_pane<Config, With_layout>::scroll(Navigation_unit unit, /* Position initial_pos, */ Fraction<int> delta)
     {
         if (!children().empty())
         {
@@ -115,10 +115,15 @@ namespace cppgui {
                 // We can only scroll if the pane is higher than the listbox's content rectangle
                 if (extents().h > listbox()->content_rectangle().ext.h)
                 {
+                    #ifdef NOT_DEFINED
                     // Compute item index from initial_pos (which is in pixels), then add fraction
                     // TODO: it may be more precise to compute the movement first and translate that to items afterwards
                     auto initial_item = children().size() * (initial_pos + first_visible_child()->extents().h / 2) / extents().h;
                     int new_pos = initial_item + (int) hidden_items() * delta.num / delta.den;
+                    #else
+                    int dist = (int) hidden_items() * delta.num / delta.den;
+                    int new_pos = (int) _first_visible_item + dist;
+                    #endif
                     if (new_pos != _first_visible_item)
                     {
                         scroll_by_items(new_pos - _first_visible_item);
@@ -247,6 +252,13 @@ namespace cppgui {
         }
 
         return { w_min, (Length) y };
+    }
+
+    template<class Config>
+    template<class Aspect_parent>
+    void List_pane__Layouter<Config, true>::Aspect<Aspect_parent>::compute_and_set_extents(const Extents &container_extents)
+    {
+        p()->set_extents({ container_extents.w, p()->extents().h });
     }
 
     template<class Config>
