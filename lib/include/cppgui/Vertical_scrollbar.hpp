@@ -35,6 +35,15 @@ namespace cppgui {
 
     // Class declaration
 
+    /** TODO: the current implementation works by maintaining a bidirectional, "locked"
+            relationship between the position of the thumb and the value it represents.
+            This is not necessarily the best approach, since the scrollbar's output value 
+            can have a significantly higher resolution than the sliding distance of the
+            scrollbar's thumb.
+            A better implementation could store the output value as a separate (rational)
+            value, and do a one-way synchronization from that value to the thumb's
+            position, under the control of the consumer.
+     */
     template<class Impl, class Config, bool With_layout>
     class Vertical_scrollbar_base: 
         public Vertical_scrollbar__Layouter<Impl, Config, With_layout>::template Aspect< Container<Config, With_layout> >
@@ -80,11 +89,6 @@ namespace cppgui {
     protected:
         using Glyph_button_t = typename Glyph_button<Config, With_layout>;
         using Color_resource = typename Widget_t::Color_resource;
-
-        // To be implemented in derived class (via CRTP)
-        void move_by_page(int delta) { static_assert(false); }
-        void move_by_elements(int delta) { static_assert(false); }
-        void move_by_fraction(const Fraction<int> &delta) { static_assert(false, "Vertical_scrollbar_base::move_by_fraction()"); }
 
         void move_thumb_to(Position);
         void recalc_thumb();

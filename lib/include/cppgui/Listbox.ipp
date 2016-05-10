@@ -115,15 +115,8 @@ namespace cppgui {
                 // We can only scroll if the pane is higher than the listbox's content rectangle
                 if (extents().h > listbox()->content_rectangle().ext.h)
                 {
-                    #ifdef NOT_DEFINED
-                    // Compute item index from initial_pos (which is in pixels), then add fraction
-                    // TODO: it may be more precise to compute the movement first and translate that to items afterwards
-                    auto initial_item = children().size() * (initial_pos + first_visible_child()->extents().h / 2) / extents().h;
-                    int new_pos = initial_item + (int) hidden_items() * delta.num / delta.den;
-                    #else
                     int dist = (int) hidden_items() * delta.num / delta.den;
                     int new_pos = (int) _first_visible_item + dist;
-                    #endif
                     if (new_pos != _first_visible_item)
                     {
                         scroll_by_items(new_pos - _first_visible_item);

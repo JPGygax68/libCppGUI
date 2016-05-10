@@ -79,8 +79,6 @@ namespace cppgui {
         // Interface with Scrollbox container
 
         void scroll(Navigation_unit, /* Position initial_pos, */ Fraction<int> delta);
-        void scroll_by_items(int delta);
-        void scroll_by_pages(int delta);
 
     protected:
         auto listbox() { return static_cast<Listbox_t*>(container()); }
@@ -92,6 +90,8 @@ namespace cppgui {
         auto last_visible_child() { return children()[_last_visible_item]; }
         void scroll_down(Count items = 1);
         void scroll_up  (Count items = 1);
+        void scroll_by_items(int delta);
+        void scroll_by_pages(int delta);
         auto visible_items() const { return _last_visible_item - _first_visible_item + 1;  }
         auto hidden_items() { return visible_items() < (int) children().size() ? (int) (children().size()) - visible_items() : 0; }
 
