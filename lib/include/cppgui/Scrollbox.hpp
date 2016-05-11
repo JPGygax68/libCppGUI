@@ -126,7 +126,11 @@ namespace cppgui {
             struct Scrollable_pane_t: public Scrollable_pane<Config, true> { friend struct Aspect; };
             auto p() { return static_cast<Scrollable_pane_t*>(this); }
 
-            void compute_and_set_extents(const Extents &container_extents) { static_assert(false, "CRPT"); }
+            /** Because the size of a scrollable pane can by definition exceed that of its container,
+                this additional (CRTP) entry point is provided as an occasion for the pane implementation
+                to adapt (in whatever way) to the size of the content rectangle of the scrollbox.
+             */
+            void compute_and_set_extents(const Extents &content_rect) { static_assert(false, "CRPT"); }
 
             //auto get_minimal_size() -> Extents override;
             //void layout() override;
