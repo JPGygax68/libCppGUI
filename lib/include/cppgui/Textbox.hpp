@@ -45,6 +45,7 @@ namespace cppgui {
         auto text() const { return _text; }
 
         void init() override;
+        void compute_view_from_data() override;
 
         void mouse_motion(const Point &) override;
         void mouse_button(const Point &, int button, Key_state) override;

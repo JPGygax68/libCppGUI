@@ -17,12 +17,6 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Listbox<Config, With_layout>::init()
-    {
-        Scrollbox_t::init();
-    }
-
-    template<class Config, bool With_layout>
     void Listbox<Config, With_layout>::bring_item_into_view(int item_index)
     {
         // TODO: this will need adapting to the new content_rectangle() (not just extents anymore)

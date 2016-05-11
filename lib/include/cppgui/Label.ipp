@@ -23,7 +23,6 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Label<Config, With_layout>::init()
     {
-        //_fnthnd = root_widget()->get_font_handle(_font);
         _font.translate( root_widget()->canvas() );
     }
 

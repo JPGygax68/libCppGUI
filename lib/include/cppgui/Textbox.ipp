@@ -70,8 +70,12 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::init()
     {
-        //_fnthnd = root_widget()->get_font_handle(_font);
         _font.translate( root_widget()->canvas() );
+    }
+
+    template<class Config, bool With_layout>
+    void Textbox<Config, With_layout>::compute_view_from_data()
+    {
         _caret_char_idx = 0;
         _caret_pixel_pos = 0;
         _first_vis_char_idx = 0;

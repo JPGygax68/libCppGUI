@@ -28,8 +28,6 @@ namespace cppgui {
         // TODO: a variant that does not require the item to be layoutable
         void add_item(Layoutable_widget_t *);
 
-        void init() override;
-
         void bring_item_into_view(int item_index);
 
         void update_scrollbar_position();
