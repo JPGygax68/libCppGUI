@@ -162,3 +162,12 @@ namespace cppgui {
 
 } // ns cppgui
 
+namespace std {
+
+    inline auto max(const cppgui::Extents &a, const cppgui::Extents &b) -> cppgui::Extents
+    {
+        return { max(a.w, b.w), max(a.h, b.h) };
+    }
+
+} // ns std
+

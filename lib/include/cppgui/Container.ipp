@@ -174,6 +174,7 @@ namespace cppgui {
 
         if (_layout_type == Layout_type::none) 
         {
+            for (auto child: p()->children()) child->layout();
         }
         else if (_layout_type == Layout_type::header_content)
         {

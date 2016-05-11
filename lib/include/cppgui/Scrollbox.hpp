@@ -111,7 +111,8 @@ namespace cppgui {
     // Main class template
 
     template<class Config, bool With_layout>
-    class Scrollable_pane: public Scrollable_pane__Layouter<Config, With_layout>::template Aspect< Scrollable_pane_base<Config, With_layout> >
+    class Scrollable_pane: 
+        public Scrollable_pane__Layouter<Config, With_layout>::template Aspect< Scrollable_pane_base<Config, With_layout> >
     {
     };
 

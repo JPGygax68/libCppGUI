@@ -29,7 +29,8 @@ namespace cppgui {
     template<class Impl, class Config, bool With_layout>
     void Vertical_scrollbar_base<Impl, Config, With_layout>::define_values(Length full, Length fraction)
     {
-        assert(full >= fraction);
+        // assert(full >= fraction);
+        if (full < fraction) full = fraction; // TODO: better way ?
 
         _full_range = full;
         _fraction = fraction;
