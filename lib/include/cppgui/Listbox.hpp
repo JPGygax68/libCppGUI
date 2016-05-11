@@ -81,7 +81,7 @@ namespace cppgui {
 
         // Interface with Scrollbox container
 
-        void scroll(Navigation_unit, /* Position initial_pos, */ Fraction<int> delta);
+        void scroll(Navigation_unit, Fraction<int> delta);
 
     protected:
         auto listbox() { return static_cast<Listbox_t*>(container()); }

@@ -109,7 +109,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void List_pane<Config, With_layout>::scroll(Navigation_unit unit, /* Position initial_pos, */ Fraction<int> delta)
+    void List_pane<Config, With_layout>::scroll(Navigation_unit unit, Fraction<int> delta)
     {
         if (!children().empty())
         {
@@ -124,10 +124,9 @@ namespace cppgui {
                 if (extents().h > listbox()->content_rectangle().ext.h)
                 {
                     int dist = (int) hidden_items() * delta.num / delta.den;
-                    int new_pos = (int) _first_visible_item + dist;
-                    if (new_pos != _first_visible_item)
+                    if (dist != 0)
                     {
-                        scroll_by_items(new_pos - _first_visible_item);
+                        scroll_by_items(dist);
                     }
                 }
             }
