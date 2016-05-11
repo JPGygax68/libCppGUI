@@ -97,6 +97,14 @@ namespace cppgui {
     {
         Parent_class::init();
 
+        // Future...
+    }
+
+    template<class Config, bool With_layout>
+    void List_pane<Config, With_layout>::compute_view_from_data()
+    {
+        Parent_class::compute_view_from_data();
+
         compute_visible_item_range();
     }
 

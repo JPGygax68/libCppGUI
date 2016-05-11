@@ -47,7 +47,9 @@ namespace cppgui {
         auto canvas() { return _canvas; }
 
         void init() override;
-        void cleanup();
+        void cleanup(); // TODO: override!
+
+        void compute_view_from_data() override;
 
         // TODO: request mechanism ?
         bool container_has_focus() override { return true; } // TODO: only return true if owning window is active ?

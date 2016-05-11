@@ -74,11 +74,20 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::init_children_resources()
+    void Abstract_container<Config, With_layout>::init_child_resources()
     {
         for (auto child : children())
         {
             child->init();
+        }
+    }
+
+    template<class Config, bool With_layout>
+    void Abstract_container<Config, With_layout>::compute_child_views()
+    {
+        for (auto& child : children())
+        {
+            child->compute_view_from_data();
         }
     }
 

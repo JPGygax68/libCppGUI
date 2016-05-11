@@ -39,6 +39,8 @@ namespace cppgui {
     {
     public:
 
+        void compute_view_from_data() override;
+
     protected:
         //auto paper_margin() -> unsigned int { return 2; } // TODO: remove (or move to Stack<>)
     };

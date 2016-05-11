@@ -31,7 +31,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::init()
     {
-        init_children_resources();
+        init_child_resources();
 
         Abstract_widget_t::init();
     }
@@ -43,6 +43,14 @@ namespace cppgui {
 
         //_canvas->cleanup();
             // see init()
+    }
+
+    template<class Config, bool With_layout>
+    void Root_widget<Config, With_layout>::compute_view_from_data()
+    {
+        compute_child_views();
+
+        Abstract_widget_t::compute_view_from_data();
     }
 
     /*

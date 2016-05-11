@@ -58,8 +58,15 @@ namespace cppgui {
         //static auto button_face_color        () { return Color{ 0.8f, 0.8f, 0.8f, 1 }; }
         //static auto button_face_hovered_color() { return Color{ 0.9f, 0.9f, 0.9f, 1 }; }
 
-        // TODO: change signature to include the canvas and other subsystem handles
+        /** The init() entry point is where a widget "connects" to its backends (the most important of
+            which being the canvas).
+         */
         virtual void init() {}
+
+        /** The update_view_from_data() entry point must be called after init(), and also after 
+            layout() if run-time layouting is enabled.
+         */
+        virtual void compute_view_from_data() {}
 
         virtual auto root_widget() -> Root_widget_t * = 0;
 

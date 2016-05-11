@@ -72,9 +72,12 @@ namespace cppgui {
         using Widget_t = Widget<Config, With_layout>;
         using Listbox_t = Listbox<Config, With_layout>;
         using Scrollable_pane_t = Scrollable_pane<Config, With_layout>;
+        using Parent_t = Scrollable_pane_t;
         using Parent_class = Scrollable_pane<Config, With_layout>;
 
         void init() override;
+
+        void compute_view_from_data() override;
 
         // Interface with Scrollbox container
 

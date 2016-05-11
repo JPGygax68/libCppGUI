@@ -7,7 +7,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Container_base<Config, With_layout>::init()
     {
-        init_children_resources();
+        init_child_resources();
 
         Widget_t::init();
     }

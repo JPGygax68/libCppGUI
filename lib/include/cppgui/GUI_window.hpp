@@ -48,6 +48,9 @@ namespace cppgui {
         void init_window();
         void cleanup_window();
 
+        //void init_gui();
+        // void cleanup_gui();
+
         void redraw();
 
         void size_changed(int w, int h);
@@ -65,6 +68,7 @@ namespace cppgui {
 
         Canvas_t                   *_canvas;        // TODO: use unique_ptr<>
         Root_widget                 _root_widget;
+        //bool                        _init_done = false;
     };
 
 } // ns cppgui

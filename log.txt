@@ -1,4 +1,23 @@
-- Remove Default_font_mapper.hpp
+2016-05-11
+==========
+
+There are open questions concerning the relationship between layout() and init().
+
+The fundamental problem is that layout() is designed to be called before init(), yet can also be called afterwards (such as after a resize of the containing window).
+
+So far, I've ignored the implications - but they do exist. For example, the thumb of an already operating scrollbar will need to be updated after a reflow, both because the scrollbar itself has changed in length, but also because it is very likely that the scrollable it is connect to has changed too.
+
+What is needed here is an additional entry point in the Layouter aspect hierarchy, to be called automatically from init() but also after a reflow. The definition of this entry point is something like "compute view from data" (e.g. for the scrollbar, the data is the position that it represents/controls).
+
+compute_view_from_data() should be a virtual function defined in Abstract_widget<>. Most existing widgets should be updated accordingly.
+
+Addendum:
+
+I had some confusion about the right time / place to call Root_widget<>::init(). This was owed to the fact that init(), before now, had two distinct responsibilities: to connect the GUI elements with the backends, and to compute the views. Because layouting was kept separate, I had so far missed that latter part because it appeared to be a small one (which is actually not true, because the Textbox at least needs to do quite a bit of stuff there).
+
+Having cleared that up, it becomes clear now that init() must be implemented in such a way as to be completely independent of the layouting and other view-related parameters, so that it can be called *before* run-time layout().
+
+Actually, it might be a good idea to rename init() to something more explicit, such as connect_backends().
 
 2016-05-09
 ==========

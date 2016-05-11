@@ -14,6 +14,8 @@ namespace cppgui {
 
     /** Caution! the following is called from the constructor of the concrete class derived from
         GUI_window<>.
+
+        TODO: better name for this method ?
     */
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class RendererAdapter>
     inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::init_window()
@@ -24,7 +26,8 @@ namespace cppgui {
         _canvas->init();
 
         _root_widget.set_canvas(_canvas);
-        _root_widget.init(); // TODO: combine with setting the canvas ?
+
+        _root_widget.init();
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
@@ -37,6 +40,18 @@ namespace cppgui {
 
         WindowBaseT::cleanup_window();
     }
+
+    /*
+    template<class Impl, class GUIConfig, class WindowBaseT, template <class> class RendererAdapter>
+    inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::init_gui()
+    {
+        if (!_init_done)
+        {
+            _root_widget.init();
+            _init_done = true;
+        }
+    }
+    */
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
     inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::redraw()
@@ -57,7 +72,8 @@ namespace cppgui {
         _root_widget.set_extents({ (unsigned)w, (unsigned)h });
         _canvas->define_viewport(0, 0, w, h);
         _root_widget.layout();
-        _root_widget.init(); // TODO: this should only be called the first time
+        //init_gui();
+        _root_widget.compute_view_from_data();
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>

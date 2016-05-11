@@ -25,8 +25,6 @@ Test_window::Test_window(): Parent("Test window")
     using Default_font = GUI_configuration::Default_font;
     using namespace std::string_literals;
 
-    init_window();
-
     // TODO: doesn't really belong here (could be executed more than once)
     auto dflt_font_data = Default_font::get();
     dflt_font = gpc::fonts::get(dflt_font_data.first, dflt_font_data.second);
@@ -146,4 +144,6 @@ Test_window::Test_window(): Parent("Test window")
     root_widget()->init_layout(); // layout() and init() will be called upon by the Window
     //root_widget()->layout();
     //root_widget()->init();
+
+    init_window(); // will initialize the GUI and must therefore come last here
 }

@@ -34,6 +34,8 @@ namespace cppgui {
 
         void init() override;
 
+        void compute_view_from_data() override;
+
         void on_navigation(Navigation_handler);
 
         void set_content_pane(Scrollable_pane_t *);
@@ -99,8 +101,6 @@ namespace cppgui {
         // TODO: the interface should probably be reduced to the single scroll() method; however initial_pos 
         //      should be handled by the scrollbar
         void scroll(Navigation_unit unit, /* Position initial_pos, */ Fraction<int> delta) { static_assert(false, "Scrollable_pane::navigate()"); }
-        void scroll_by_items(int delta) { static_assert(false, "Scrollable_pane::scroll_by_items()"); };
-        void scroll_by_pages(int delta) { static_assert(false, "Scrollable_pane::scroll_by_pages()"); };
 
         /** TODO: inform container scrollbox that the extents of the pane have changed,
             and to update the scrollbar(s) accordingly

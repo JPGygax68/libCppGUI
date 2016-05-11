@@ -43,9 +43,13 @@ namespace cppgui {
         _slide_bgcol        .translate( root_widget()->canvas() );
         _thumb_color        .translate( root_widget()->canvas() );
         _thumb_hovered_color.translate( root_widget()->canvas() );
+    }
 
+    template<class Impl, class Config, bool With_layout>
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::compute_view_from_data()
+    {
         _thumb_rect.pos = { 2, _sliding_range.p };
-            // TODO: position from style
+        // TODO: position from style
 
         recalc_thumb();
     }

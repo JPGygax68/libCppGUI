@@ -26,10 +26,16 @@ namespace cppgui {
     template<class Config, bool With_layout, class Pane>
     void Scrollbox<Config, With_layout, Pane>::init()
     {
-        // Must be done first, otherwise scrollbar will produce division by zero
+        Container_t::init(); // will also init scrollbar
+    }
+
+    template<class Config, bool With_layout, class Pane>
+    void Scrollbox<Config, With_layout, Pane>::compute_view_from_data()
+    {
+        // Content pane must have its size set at this point
         _vert_sbar.define_values(_content->extents().h, _content_rect.ext.h);
 
-        Container_t::init(); // will also init scrollbar
+        Parent_t::compute_view_from_data();
     }
 
     template<class Config, bool With_layout, class Pane>
