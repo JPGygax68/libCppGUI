@@ -35,11 +35,14 @@ namespace cppgui {
         fill(cnv, offset, rgba_to_native( button_face_color() ));
 
         // Border
+        /*
         if (_border_enabled)
         {
             auto border_ntvclr = rgba_to_native( button_border_color() );
             draw_borders(cnv, rectangle(), offset, button_border_width(), border_ntvclr, border_ntvclr, border_ntvclr, border_ntvclr);
         }
+        */
+        draw_border(cnv, offset);
 
         auto pos = offset + position();
 

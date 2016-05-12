@@ -53,7 +53,9 @@ namespace cppgui {
     template <class Config>
     struct Label__Layouter<Config, true> {
 
-        template<class Aspect_parent> struct Aspect: Aspect_parent, Box__Layouter< Label<Config, true> > {
+        template<class Aspect_parent> 
+        struct Aspect: Box__Layouter<Config, true>::template Aspect< Aspect_parent >
+        {
 
             Aspect();
 
@@ -85,6 +87,6 @@ namespace cppgui {
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_LABEL(Config, With_layout) \
-    template cppgui::Box__Layouter<cppgui::Label<Config, With_layout>>; \
+    template cppgui::Box__Layouter<Config, With_layout>; \
     template cppgui::Label__Layouter<Config, With_layout>; \
     template cppgui::Label<Config, With_layout>;

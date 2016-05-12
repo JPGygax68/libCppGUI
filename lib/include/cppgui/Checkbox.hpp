@@ -2,6 +2,7 @@
 
 #include <functional>
 
+#include "./Box.hpp"
 #include "./Widget.hpp"
 #include "./Icon_resources.hpp"
 
@@ -13,13 +14,14 @@ namespace gpc { namespace fonts {
 namespace cppgui {
 
     template <class Config, bool With_layout> struct Checkbox__Layouter {
-        template <class Parent_aspect> struct Aspect;
+        template <class Parent_aspect> struct Aspect: public Aspect_parent {};
     };
 
     struct Font_icon_descr;
 
     template <class Config, bool With_layout>
-    class Checkbox: public Checkbox__Layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >
+    class Checkbox: public Checkbox__Layouter<Config, With_layout>::template Aspect< 
+            Widget<Config, With_layout> >
     {
     public:
         using Widget_t      = Widget<Config, With_layout>;

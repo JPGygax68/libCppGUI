@@ -106,13 +106,13 @@ namespace cppgui {
         void fill_rect(Canvas_t *, const Rectangle &rect, const Point &offs, const Native_color &);
         void fill_rect(Canvas_t *, const Point &pos, const Extents &ext, const Native_color &);
         void fill(Canvas_t *, const Point &offs, const Native_color &);
-        void draw_borders(Canvas_t *, const Point &offs, Width width, const Color &color);
-        void draw_borders(Canvas_t *, const Rectangle &rect, const Point &offs, Width width, const Color &color);
-        void draw_borders(Canvas_t *, const Rectangle &rect, const Point &offs, 
-            Width width, const Color &top, const Color &right, const Color &bottom, const Color &left);
         auto convert_position_to_inner(const Point &) -> Point;
         auto advance_to_glyph_at(const Rasterized_font *, const std::u32string &text, size_t from, size_t to, Point &pos) 
             -> const Glyph_control_box *;
+        void draw_borders(Canvas_t *, const Point & offs, Width width, const Color &color);
+        void draw_borders(Canvas_t *, const Rectangle &rect, const Point &offs, Width width, const Color &color);
+        void draw_borders(Canvas_t *, const Rectangle &rect, const Point &offs, 
+            Width width, const Color & top, const Color & right, const Color & bottom, const Color & left);
         // PROVISIONAL
         void draw_stippled_inner_rect(Canvas_t *, const Rectangle &, const Point &offs);
 
@@ -131,7 +131,7 @@ namespace cppgui {
 
     template <class Config, bool With_layout> struct Widget__Layouter {
 
-        template <class Aspect_parent> struct Aspect {
+        template <class Aspect_parent> struct Aspect: Aspect_parent {
             void init_layout() {}
         };
     };
@@ -140,8 +140,9 @@ namespace cppgui {
 
     template <class Config, bool With_layout>
     class Widget: 
-        public Config::template Widget_updater< Abstract_widget<Config, With_layout> >,
-        public Widget__Layouter<Config, With_layout>::template Aspect<Nil_struct>
+        public Config::template Widget_updater< 
+            Widget__Layouter<Config, With_layout>::template Aspect<
+                Abstract_widget<Config, With_layout> > >
     {
     public:
         using Renderer = typename Config::Renderer;

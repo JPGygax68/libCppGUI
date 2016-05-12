@@ -40,9 +40,7 @@ namespace cppgui {
     {
         fill(cnv, offs, rgba_to_native( button_face_color() ));
 
-
-        auto border_ntvclr = rgba_to_native( button_border_color() );
-        draw_borders(cnv, rectangle(), offs, button_border_width(), border_ntvclr, border_ntvclr, border_ntvclr, border_ntvclr);
+        draw_border(cnv, offs);
 
         auto pos = offs + position();
 

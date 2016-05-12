@@ -10,7 +10,7 @@ namespace cppgui {
     template <class Config, bool With_layout>
     struct Textbox__Layouter {
 
-        template <class Aspect_parent> struct Aspect: public Aspect_parent {
+        template <class Aspect_parent> struct Aspect: Aspect_parent {
 
             void font_changed() { static_assert(false, "Concept: Textbox__Layouter::font_changed(): must never be used"); }
             auto get_minimal_size() -> Extents { static_assert(false, "Concept: Textbox__Layouter::get_minimal_size(): must never be used"); return {}; }
@@ -24,8 +24,7 @@ namespace cppgui {
 
     template <class Config, bool With_layout>
     class Textbox: 
-        public Textbox__Layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >,
-        public Bordered_box< Textbox<Config, With_layout> >
+        public Textbox__Layouter<Config, With_layout>::template Aspect< Bordered_box<Config, With_layout>::template Aspect< Widget<Config, With_layout> > >
     {
     public:
         using Renderer      = typename Config::Renderer;
@@ -111,14 +110,14 @@ namespace cppgui {
     template <class Config>
     struct Textbox__Layouter<Config, false> {
 
-        template <class Aspect_parent> struct Aspect : public Aspect_parent {};
+        template <class Aspect_parent> struct Aspect : Aspect_parent {};
     };
 
     template <class Config>
-    struct Textbox__Layouter<Config, true> {
-
-        template <class Aspect_parent> struct Aspect : public Aspect_parent,
-            public Box__Layouter< Textbox<Config, true> >
+    struct Textbox__Layouter<Config, true>
+    {
+        template <class Aspect_parent> 
+        struct Aspect: Box__Layouter<Config, true>::template Aspect< Aspect_parent >
         {
             class Textbox_t: public Textbox<Config, true> { friend struct Aspect; };
 
@@ -143,5 +142,5 @@ namespace cppgui {
 
 #define CPPGUI_INSTANTIATE_TEXTBOX(Config, With_layout) \
     template cppgui::Textbox          <Config, With_layout>; \
-    template cppgui::Box__Layouter    <cppgui::Textbox<Config, With_layout>>; \
+    template cppgui::Box__Layouter    <Config, With_layout>; \
     template cppgui::Textbox__Layouter<Config, With_layout>;

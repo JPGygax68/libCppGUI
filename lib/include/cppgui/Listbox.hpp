@@ -15,7 +15,9 @@ namespace cppgui {
     /** The Listbox 
      */
     template<class Config, bool With_layout>
-    class Listbox: public Listbox__Layouter<Config, With_layout>::template Aspect< Scrollbox<Config, With_layout, List_pane<Config, With_layout>> >
+    class Listbox: 
+        public Listbox__Layouter<Config, With_layout>::template Aspect< 
+            Scrollbox<Config, With_layout, List_pane<Config, With_layout> > >
     {
     public:
         using Container_t = Container<Config, With_layout>;

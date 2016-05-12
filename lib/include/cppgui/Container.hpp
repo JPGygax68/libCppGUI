@@ -51,7 +51,7 @@ namespace cppgui {
     struct Container__Layouter<Config, true> {
 
         template <class Aspect_parent> 
-        struct Aspect: Aspect_parent, Box__Layouter< Container<Config, true> > 
+        struct Aspect: Box__Layouter<Config, true>::template Aspect< Aspect_parent >
         {
             using Widget_t = typename Widget<Config, true>;
             class Container_t: public Container<Config, true> { friend struct Aspect; };
@@ -94,7 +94,7 @@ namespace cppgui {
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_CONTAINER(Config, With_layout) \
-    template cppgui::Bordered_box       <cppgui::Container<Config, With_layout>>; \
+    template cppgui::Bordered_box       <Config, With_layout>; \
     template cppgui::Container          <Config, With_layout>; \
-    template cppgui::Box__Layouter      <cppgui::Container<Config, With_layout>>; \
+    template cppgui::Box__Layouter      <Config, With_layout>; \
     template cppgui::Container__Layouter<Config, With_layout>;

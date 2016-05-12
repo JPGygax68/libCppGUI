@@ -12,14 +12,16 @@ namespace cppgui {
     struct Icon_glyph;
 
     template <class Config, bool With_layout> struct Glyph_button__Layouter {
-        template <class Parent_aspect> struct Aspect;
+        template <class Parent_aspect> struct Aspect: Aspect_parent {};
     };
 
     // Glyph_button declaration 
 
     template<class Config, bool With_layout>
-    class Glyph_button: public Glyph_button__Layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >,
-        public Bordered_box<Glyph_button<Config, With_layout>>
+    class Glyph_button: 
+        public Glyph_button__Layouter<Config, With_layout>::template Aspect< 
+            Bordered_box<Config, With_layout>::template Aspect< 
+                Widget<Config, With_layout> > >
     {
     public:
         using Widget_t = Widget<Config, With_layout>;
@@ -36,7 +38,7 @@ namespace cppgui {
 
         void set_glyph(const Icon_glyph &);
 
-        void enable_border(bool enabled) { _border_enabled = enabled; }
+        //void enable_border(bool enabled) { _border_enabled = enabled; }
 
         void init() override;
 
@@ -51,7 +53,7 @@ namespace cppgui {
         std::u32string                  _label;
         Font_resource                   _glyph_font;
         char32_t                        _glyph_cp;
-        bool                            _border_enabled = true;
+        //bool                            _border_enabled = true;
 
         Point                           _label_pos;
         //Rectangle                       _label_rect;
@@ -64,8 +66,8 @@ namespace cppgui {
     template <class Config>
     struct Glyph_button__Layouter<Config, true> {
 
-        template <class Aspect_parent> struct Aspect: public Aspect_parent, 
-            Box__Layouter<Glyph_button<Config, true>>
+        template <class Aspect_parent>
+        struct Aspect: public Box__Layouter<Config, true>::template Aspect< Aspect_parent >
         {
             Aspect() { _padding = this->button_padding(); }
 
@@ -93,5 +95,6 @@ namespace cppgui {
 } // ns cppui
 
 #define CPPGUI_INSTANTIATE_GLYPH_BUTTON(Config, With_layout) \
+    template cppgui::Bordered_box          <Config, With_layout>; \
     template cppgui::Glyph_button          <Config, With_layout>; \
     template cppgui::Glyph_button__Layouter<Config, With_layout>;

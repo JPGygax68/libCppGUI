@@ -18,8 +18,9 @@ namespace cppgui {
             in the layouting aspect ?
      */
     template <class Config, bool With_layout>
-    class Button: public Button__Layouter<Config, With_layout>::template Aspect< Widget<Config, With_layout> >,
-        public Bordered_box< Button<Config, With_layout> >
+    class Button: 
+        public Button__Layouter<Config, With_layout>::template Aspect< 
+            Bordered_box<Config, With_layout>::template Aspect< Widget<Config, With_layout> > >
     {
     public:
         using Renderer = typename Config::Renderer;
@@ -55,8 +56,8 @@ namespace cppgui {
 
     template <class Config>
     struct Button__Layouter<Config, true> {
-        template <class Aspect_parent> struct Aspect: public Aspect_parent, public Box__Layouter< Button<Config, true> >  {
-
+        template <class Aspect_parent> struct Aspect: Box__Layouter<Config, true>::template Aspect< Aspect_parent >  
+        {
             Aspect() { _padding = this->button_padding(); }
 
             // Layouter contract
@@ -103,5 +104,6 @@ namespace cppgui {
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_BUTTON(Config, With_layout) \
+    template cppgui::Bordered_box    <Config, With_layout>; \
     template cppgui::Button          <Config, With_layout>; \
     template cppgui::Button__Layouter<Config, With_layout>;

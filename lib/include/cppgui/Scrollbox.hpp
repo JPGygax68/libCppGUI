@@ -16,8 +16,10 @@ namespace cppgui {
     // TODO: rename to Scrollbox_base ?
 
     template<class Config, bool With_layout, class Pane> // = Scrollable_pane<Config, With_layout>>
-    class Scrollbox: public Scrollbox__Layouter<Config, With_layout, Pane>::template Aspect< Container<Config, With_layout> >,
-        public Bordered_box<Scrollbox<Config, With_layout, Pane>>
+    class Scrollbox: 
+        public Scrollbox__Layouter<Config, With_layout, Pane>::template Aspect< 
+            Bordered_box<Config, With_layout>::template Aspect<
+                Container<Config, With_layout> > >
     {
     public:
         using Container_t = Container<Config, With_layout>;
@@ -55,8 +57,8 @@ namespace cppgui {
 
         auto pane() { return static_cast<Scrollable_pane_t*>(_content); }
 
-        Border                  _border    = { 4, {0, 0.2f, 0.6f, 1} };     // encompasses both content area and scrollbar(s)
-        Separator               _separator = { 3, {0, 0.4f, 0.8f, 1} };
+        //Border                  _border    = { 4, {0, 0.2f, 0.6f, 1} };     // encompasses both content area and scrollbar(s)
+        Separator               _separator = { 1, {0.2f, 0.2f, 0.2f, 1} };
         Vertical_scrollbar_t    _vert_sbar;
         Rectangle               _content_rect;      // set by layouter
         Position                _vert_sep_pos;      // positions of the separators (vertical = x, horizontal = y)

@@ -134,7 +134,7 @@ namespace cppgui {
         auto bottom_left() const -> Point { return { pos.x, pos.y + static_cast<Position>(ext.h) }; }
         auto left() const { return pos.x; }
         auto top() const { return pos.y; }
-        auto right() const { return pos.y + static_cast<Position>(ext.w); }
+        auto right() const { return pos.x + static_cast<Position>(ext.w); }
         auto bottom() const { return pos.y + static_cast<Position>(ext.h); }
         auto width() const { return ext.w; }
         auto height() const { return ext.h; }
