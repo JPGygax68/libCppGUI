@@ -65,6 +65,11 @@ namespace cppgui {
                 && static_cast<Length>(pos.x) < w && static_cast<Length>(pos.y) < h; 
         }
 
+        bool can_contain(const Extents &rect)
+        {
+            return rect.w < w && rect.h < h;
+        }
+
         auto operator + (const Extents_delta &delta) const -> Extents {
 
             assert(static_cast<Position>(w) + delta.x >= 0);
@@ -112,6 +117,7 @@ namespace cppgui {
         Extents  ext;
 
         Rectangle(): pos {}, ext {} {}
+        Rectangle(const Point &pos_, const Extents &ext_): pos {pos_}, ext { ext_ } {}
         Rectangle(const Extents &ext_): pos {}, ext {ext_} {}
         Rectangle(const Rectangle &) = default;
         Rectangle(Rectangle &&) = default;

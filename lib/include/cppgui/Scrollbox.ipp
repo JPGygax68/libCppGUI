@@ -109,35 +109,66 @@ namespace cppgui {
     template<class Aspect_parent>
     void Scrollbox__Layouter<Config, true, Pane>::Aspect<Aspect_parent>::layout()
     {
+        /** TODO: this whole algorithm must also be accessible outside of the layouting aspect,
+                because it should be triggered whenever the pane notifies a change in size.
+         */
+
+        // Preparations
+
         auto exts = p()->extents();
+        auto vertsb_minsz = p()->_vert_sbar.get_minimal_size();
+        //auto horzsb_minsz = p()->_horz_sbar.get_minimal_size();
 
-        auto sb_minsz = p()->_vert_sbar.get_minimal_size();
+        // Try without scrollbars first, then add scrollbars as needed
 
-        // TODO: use configurable or stylable width for the scrollbar
-        p()->_vert_sbar.set_position({ exts.right() - (Position_delta) (sb_minsz.w + p()->_border.width), 0 });
-        p()->_vert_sbar.set_extents ({ sb_minsz.w, exts.h });
+        //bool have_horz_sbar = false;    // TODO: future: may be forced on
+        bool have_vert_sbar = false;    // ditto
 
-        // Content rectangle
-        p()->_content_rect = { 
-            (Position) p()->_border.width, (Position) p()->_border.width, 
-            exts.w - sb_minsz.w - 2 * p()->_border.width - p()->_separator.width, exts.h - 2 * p()->_border.width
-        }; // TODO: padding ? separator ?
+        Extents cont_exts; // output of this algorithm
 
-        // Vertical separator between content rectangle and vertical scrollbar
-        p()->_vert_sep_pos = exts.w - p()->_border.width - sb_minsz.w - p()->_separator.width;
+        for ( ;; )
+        {
+            // Compute container extents
+            cont_exts = { exts.w - 2 * p()->_border.width, exts.h - 2 * p()->_border.width };
+            if (have_vert_sbar) cont_exts.w -= p()->_separator.width + vertsb_minsz.w;
+            //if (horz_scrollbar) cont_exts.h -= p()->_separator.width + horzsb_minsz.w;
 
-        // Content pane: adjust width, leave height untouched
-        p()->_content->compute_and_set_extents( p()->_content_rect.ext );
-        //p()->_content->set_extents({ p()->_content_rect.ext.w, p()->_content->extents().h }); // TODO: set both w and h to content rect ?
+            // Ask content pane to adjust and check its resulting extents
+            p()->_content->compute_and_set_extents( cont_exts );
+            auto pane_exts = p()->_content->extents();
 
-        // TODO: the following must also be done in the main aspect when the content pane changes
-        // TODO: better yet, this should be done at init() time ?
-        //p()->_vert_sbar.define_values(p()->_content->extents().h, exts.h);
+            if      (pane_exts.h > cont_exts.h && !have_vert_sbar) have_vert_sbar = true;
+            //else if (pane_exts.w > cont_exts.w && !have_horz_sbar) have_horz_sbar = true;
+            else 
+                break; // done
+        }
 
-        p()->_vert_sbar.layout();
+        // Enable the scrollbars we need
+        p()->_vert_sbar.set_visible( have_vert_sbar );
+        //p()->_horz_sbar.set_visible( have_horz_sbar );
 
+        // Position and layout the components:
+
+        // Content pane and its containing rectangle
+        p()->_content_rect = Rectangle { Point { (Position) p()->_border.width, (Position) p()->_border.width }, cont_exts };
         p()->_content->set_position({ p()->_content_rect.pos.x, p()->_content_rect.pos.y });
-        p()->_content->layout(); // may modify extents set above
+        p()->_content->layout(); // usually won't do much (already done by compute_and_set_extents()
+
+        // Scrollbars and their separators
+        if (have_vert_sbar)
+        {
+            p()->_vert_sep_pos = exts.w - p()->_border.width - vertsb_minsz.w - p()->_separator.width;
+            p()->_vert_sbar.set_position({ exts.right() - (Position_delta) (vertsb_minsz.w + p()->_border.width), 0 });
+            p()->_vert_sbar.set_extents ({ vertsb_minsz.w, exts.h });
+            p()->_vert_sbar.layout();
+        }
+        /* if (have_horz_sbar)
+        {
+            p()->_horz_sep_pos = exts.h - p()->_border.width - sb_minsz.h - p()->_separator.width;
+            p()->_horz_sbar.set_position({ exts.bottom() - (Position_delta) (vertsb_minsz.h + p()->_border.width), 0 });
+            p()->_horz_sbar.set_extents ({ exts.w, horzsb_minsz.h });
+            p()->_horz_sbar.layout();
+        } */
     }
 
 } // ns cppgui

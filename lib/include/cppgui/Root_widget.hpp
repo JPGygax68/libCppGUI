@@ -44,7 +44,7 @@ namespace cppgui {
         void set_background_color(const Color &color) { _bkgnd_clr = color; }
 
         void set_canvas(Canvas_t *);
-        auto canvas() { return _canvas; }
+        auto canvas() const { return _canvas; }
 
         void init() override;
         void cleanup(); // TODO: override!
