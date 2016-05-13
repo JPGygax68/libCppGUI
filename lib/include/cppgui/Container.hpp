@@ -30,9 +30,6 @@ namespace cppgui {
     /** This generic container class exists primarily to combine the functionalities of 
         Abstract_container with those of Widget. At the present (2016-05-03), it also offers 
         a choice of layouting algorithms, but that is bad design and will be removed.
-        The same is true of its built-in support for borders, which is probably not needed
-        at this level - it would probably be better to move that feature to the Scrollbox
-        container specialization (and possibly other, yet-to-defined specializations).
      */
     template <class Config, bool With_layout>
     class Container: public Container__Layouter<Config, With_layout>::template Aspect< Container_base<Config, With_layout> >

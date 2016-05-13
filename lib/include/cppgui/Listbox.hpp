@@ -20,6 +20,7 @@ namespace cppgui {
             Scrollbox<Config, With_layout, List_pane<Config, With_layout> > >
     {
     public:
+        using Widget_t = Widget<Config, With_layout>;
         using Container_t = Container<Config, With_layout>;
         //using Canvas_t = typename Canvas<typename Config::Renderer>;
         using List_pane_t = List_pane<Config, With_layout>;
@@ -27,10 +28,13 @@ namespace cppgui {
 
         Listbox();
 
+        void ensure_item_in_view(int item_index);
+
         // TODO: a variant that does not require the item to be layoutable
         void add_item(Layoutable_widget_t *);
 
-        void bring_item_into_view(int item_index);
+        auto selected_item() -> Index;
+        auto item_index(Widget_t *) -> Index;
 
         void update_scrollbar_position();
 
@@ -84,13 +88,15 @@ namespace cppgui {
         void scroll(Navigation_unit, Fraction<int> delta);
 
     protected:
+        friend class Listbox_t;
+
         auto listbox() { return static_cast<Listbox_t*>(container()); }
 
         void compute_visible_item_range();
         bool child_fully_after_top    (Widget_t *child, Position_delta offset = 0);
         bool child_fully_before_bottom(Widget_t *child, Position_delta offset = 0);
         auto first_visible_child() { return children()[_first_visible_item]; }
-        auto last_visible_child() { return children()[_last_visible_item]; }
+        auto last_visible_child () { return children()[_last_visible_item]; }
         void scroll_down(Count items = 1);
         void scroll_up  (Count items = 1);
         void scroll_by_items(int delta);

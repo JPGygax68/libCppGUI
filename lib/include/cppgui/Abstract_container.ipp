@@ -26,6 +26,14 @@ namespace cppgui {
         }
     }
 
+    template<class Config, bool With_layout>
+    auto Abstract_container<Config, With_layout>::child_index(Widget_t *child) -> Index
+    {
+        using namespace std;
+
+        return std::distance(begin(_children), find(begin(_children), end(_children), child) );
+    }
+
     template <class Config, bool With_layout>
     inline void Abstract_container<Config, With_layout>::add_child(Widget_t *child)
     {

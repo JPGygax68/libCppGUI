@@ -36,6 +36,8 @@ namespace cppgui {
         auto first_child() -> Widget_t * { assert(!_children.empty()); return _children.front(); }
         auto last_child () -> Widget_t * { assert(!_children.empty()); return _children.back (); }
 
+        auto child_index(Widget_t *child) -> Index;
+
         template<class Pred> auto scan_children_forward (Index from, Pred) -> Index;
         template<class Pred> auto scan_children_backward(Index from, Pred) -> Index;
 

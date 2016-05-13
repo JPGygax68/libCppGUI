@@ -50,6 +50,7 @@ namespace cppgui {
 
         void render(Canvas_t *, const Point &offset) override;
 
+        // TODO: it may be better to let the pane access the member directly via friend declaration
         auto content_rectangle() const -> const Rectangle & { return _content_rect; } // to be accessed by Scrollable_pane (or derived)
 
     protected:

@@ -17,9 +17,55 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Listbox<Config, With_layout>::bring_item_into_view(int item_index)
+    auto Listbox<Config, With_layout>::selected_item() -> Index
     {
-        // TODO: this will need adapting to the new content_rectangle() (not just extents anymore)
+        return _content_pane.child_index( focused_child() );
+    }
+
+    template<class Config, bool With_layout>
+    auto Listbox<Config, With_layout>::item_index(Widget_t *child) -> Index
+    {
+        return _content_pane.child_index( child );
+    }
+
+    /** TODO: there wil eventually have to be two different variants of this, one for view computation
+            time, which calculates a position but does not invalidate, and one that will scroll() 
+            (with the invalidation that this usually means, depending on the Updater aspect).
+     */
+    template<class Config, bool With_layout>
+    void Listbox<Config, With_layout>::ensure_item_in_view(int item_index)
+    {
+        // TODO: make sure this method can only be called in "view loading" state
+
+        #ifndef NOT_DEFINED
+
+        auto item = _content_pane.children()[item_index];
+
+        auto y1_item = item->rectangle().top(), y2_item = item->rectangle().bottom();
+
+        // Item not already fully visible ?
+        if (!(y1_item >= 0 && y2_item <= _content_rect.ext.h))
+        {
+            Position_delta dy = 0;
+            Index first = 0;
+
+            for (auto i = 0U; i < _content_pane.children().size(); i++)
+            {
+                if (y2_item + dy <= _content_rect.ext.h) break;
+
+                dy = - _content_pane.children()[++first]->position().y;
+            }
+
+            _content_pane._first_visible_item = first;
+            _content_pane.position().y = _content_rect.pos.y + dy;
+            update_scrollbar_position();
+        }
+
+        #else
+
+        /** TODO: this implementation is *wrong* for the Listbox (though it might be ok for Scrollbox).
+        The Listbox implementation needs to move forward item by item.
+        */
 
         auto item = _content_pane.children()[item_index];
 
@@ -45,10 +91,12 @@ namespace cppgui {
             _content_pane.set_position({ _content_pane.position().x, _content_pane.position().y + delta_y });
             invalidate();
 
-            //scrollbar().update_position()
+            update_scrollbar_position();
         }
 
         //item->take_focus();
+
+        #endif
     }
 
     template<class Config, bool With_layout>
