@@ -12,6 +12,12 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Button<Config, With_layout>::on_pushed(Pushed_handler handler)
+    {
+        _on_pushed = handler;
+    }
+
+    template<class Config, bool With_layout>
     inline void cppgui::Button<Config, With_layout>::set_font(const Rasterized_font *font)
     {
         _font.assign(font);
@@ -51,6 +57,19 @@ namespace cppgui {
             // TODO: draw the rectangle along the border instead of around the label ?
             auto r = _label_rect.grow({3, 3});
             cnv->draw_stippled_rectangle_outline(pos.x + r.pos.x, pos.y + r.pos.y, r.ext.w, r.ext.h, {0, 0, 0.5f, 1});
+        }
+    }
+
+    template<class Config, bool With_layout>
+    void Button<Config, With_layout>::mouse_click(const Point &pos, int button, int count)
+    {
+        if (button == 1 && count == 1)
+        {
+            if (_on_pushed) _on_pushed();
+        }
+        else 
+        {
+            Parent_t::mouse_click(pos, button, count);
         }
     }
 

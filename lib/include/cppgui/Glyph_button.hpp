@@ -27,10 +27,10 @@ namespace cppgui {
         using Widget_t = Widget<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
         using Font_handle = typename Widget_t::Font_handle;
-        using Push_handler = typename Widget_t::Push_handler;
+        using Pushed_handler = typename Widget_t::Pushed_handler;
         using Font_resource = typename Widget_t::Font_resource;
 
-        void on_push(Push_handler);
+        void on_pushed(Pushed_handler);
 
         void set_font(const Rasterized_font *font) { _label_font = font; }
 
@@ -48,7 +48,7 @@ namespace cppgui {
 
     protected:
         //Click_handler                   _on_click;
-        Push_handler                    _on_push;
+        Pushed_handler                  _on_pushed;
         Font_resource                   _label_font;
         std::u32string                  _label;
         Font_resource                   _glyph_font;

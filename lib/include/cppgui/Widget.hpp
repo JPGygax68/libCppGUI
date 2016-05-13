@@ -46,7 +46,7 @@ namespace cppgui {
         using Font_resource     = Resource<const Rasterized_font *, Font_handle, Canvas_t, false>;
 
         using Click_handler     = std::function<void(const Point &, int button, int clicks)>; // TODO: support return value ?
-        using Push_handler      = std::function<void(const Point &)>; // for buttons
+        using Pushed_handler    = std::function<void()>; // for buttons
 
         auto& rectangle() const { return _rect; }
         auto& position() const { return _rect.pos; }

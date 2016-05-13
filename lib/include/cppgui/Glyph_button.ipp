@@ -5,9 +5,9 @@ namespace cppgui {
     // Main class implementation ------------------------------------
 
     template<class Config, bool With_layout>
-    void Glyph_button<Config, With_layout>::on_push(Push_handler handler)
+    void Glyph_button<Config, With_layout>::on_pushed(Pushed_handler handler)
     {
-        _on_push = handler;
+        _on_pushed = handler;
     }
 
     template<class Config, bool With_layout>
@@ -71,7 +71,7 @@ namespace cppgui {
     {
         if (button == 1 && state == Key_state::pressed)
         {
-            if (_on_push) _on_push(point);
+            if (_on_pushed) _on_pushed();
         }
 
         Widget_t::mouse_button(point, button, state);

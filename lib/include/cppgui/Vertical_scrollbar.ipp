@@ -21,8 +21,8 @@ namespace cppgui {
         _up_btn  .set_focussable(false);
         _down_btn.set_focussable(false);
 
-        _up_btn  .on_push([this](const Point &) { static_cast<Impl*>(this)->move_by_elements(-1); });
-        _down_btn.on_push([this](const Point &) { static_cast<Impl*>(this)->move_by_elements( 1); });
+        _up_btn  .on_pushed([this]() { static_cast<Impl*>(this)->move_by_elements(-1); });
+        _down_btn.on_pushed([this]() { static_cast<Impl*>(this)->move_by_elements( 1); });
 
         add_child(&_up_btn  );
         add_child(&_down_btn);
