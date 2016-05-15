@@ -275,6 +275,8 @@ namespace cppgui {
 
     // Layouting aspect
 
+    /** TODO: rename to reflect the fact that this is abstract ?
+     */
     template <class Config> struct Widget__Layouter<Config, true> {
 
         template <class Aspect_parent> struct Aspect: public Aspect_parent {
