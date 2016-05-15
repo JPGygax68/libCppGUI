@@ -9,18 +9,15 @@
 
 namespace cppgui {
 
-    template <class Config, bool With_layout>
-    struct Button__Layouter {
-        template <class Aspect_parent> struct Aspect;
-    };
+    template <class Config, bool With_layout, class Parent> struct Button__Layouter;
 
     /** TODO: how to support changing label (and later on, icon) at runtime without mixing
             in the layouting aspect ?
      */
     template <class Config, bool With_layout>
     class Button: 
-        public Button__Layouter<Config, With_layout>::template Aspect< 
-            Bordered_box<Config, With_layout>::template Aspect< Widget<Config, With_layout> > >
+        public Button__Layouter<Config, With_layout,
+            Bordered_box<Config, With_layout, Widget<Config, With_layout> > >
     {
     public:
         using Renderer = typename Config::Renderer;
@@ -62,51 +59,48 @@ namespace cppgui {
 
     class Single_element_layout;
 
-    template <class Config>
-    struct Button__Layouter<Config, true> {
-        template <class Aspect_parent> struct Aspect: Box__Layouter<Config, true>::template Aspect< Aspect_parent >  
-        {
-            Aspect() { _padding = this->button_padding(); }
+    template <class Config, class Parent>
+    struct Button__Layouter<Config, true, Parent>: public Box__Layouter<Config, true, Parent>  
+    {
+        Button__Layouter() { _padding = this->button_padding(); }
 
-            // Layouter contract
+        // Layouter contract
 
-            void init_layout() override;
-            auto get_minimal_size() -> Extents override;
-            void layout() override;
+        void init_layout() override;
+        auto get_minimal_size() -> Extents override;
+        void layout() override;
 
-            // Extra capabilities coming with layouting
-            // TODO
-            // void change_font(const Rasterized_font *);
-            // void change_label(const std::u32string &);
+        // Extra capabilities coming with layouting
+        // TODO
+        // void change_font(const Rasterized_font *);
+        // void change_label(const std::u32string &);
 
-            // Extra properties
-            //auto minimal_padding() -> int; // THIS *INCLUDES* THE BORDER WIDTH (unlike the CSS box model!)
+        // Extra properties
+        //auto minimal_padding() -> int; // THIS *INCLUDES* THE BORDER WIDTH (unlike the CSS box model!)
 
-            // Interface with main class (Button)
+        // Interface with main class (Button)
 
-            void font_changed();
-            void text_changed();
+        void font_changed();
+        void text_changed();
 
-        protected:
-            class Button_t: public Button<Config, true> { friend struct Aspect; };
+    protected:
+        class Button_t: public Button<Config, true> { friend struct Button__Layouter; };
 
-            auto p() { return static_cast<Button_t*>(this); }
-            void compute_bounding_box();
+        auto p() { return static_cast<Button_t*>(this); }
+        void compute_bounding_box();
 
-            Text_bounding_box       _bbox;
-            Single_element_layout   _layout;
-        };
+        Text_bounding_box       _bbox;
+        Single_element_layout   _layout;
     };
 
     // Nil implementation (must short out interface with main class)
 
-    template <class Config>
-    struct Button__Layouter<Config, false> {
-        template <class Aspect_parent> struct Aspect: public Aspect_parent  {
-            void layout() {} // called from init
-            void font_changed() {}
-            void text_changed() {}
-        };
+    template <class Config, class Parent>
+    struct Button__Layouter<Config, false, Parent>: public Parent 
+    {
+        void layout() {} // called from init
+        void font_changed() {}
+        void text_changed() {}
     };
 
 } // ns cppgui

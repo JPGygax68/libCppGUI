@@ -82,16 +82,14 @@ namespace cppgui {
 
     // TODO: 1) write a layout class that can handle a label + a glyph  2) use it here
 
-    template <class Config>
-    template <class Aspect_parent>
-    inline void Glyph_button__Layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
+    template <class Config, class Parent>
+    inline void Glyph_button__Layouter<Config, true, Parent>::init_layout()
     {
         compute_sizes();
     }
 
-    template <class Config>
-    template <class Aspect_parent>
-    inline void Glyph_button__Layouter<Config, true>::Aspect<Aspect_parent>::compute_sizes()
+    template <class Config, class Parent>
+    inline void Glyph_button__Layouter<Config, true, Parent>::compute_sizes()
     {
         if (p()->_glyph_cp)
         {
@@ -114,9 +112,8 @@ namespace cppgui {
         }
     }
 
-    template <class Config>
-    template <class Aspect_parent>
-    inline auto Glyph_button__Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
+    template <class Config, class Parent>
+    inline auto Glyph_button__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
     {
         return { 
             _padding[3] + _label_bounds.width () + _spacing + _glyph_min_edge + _padding[1], 
@@ -124,9 +121,8 @@ namespace cppgui {
         };
     }
 
-    template <class Config>
-    template <class Aspect_parent>
-    inline void Glyph_button__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    template <class Config, class Parent>
+    inline void Glyph_button__Layouter<Config, true, Parent>::layout()
     {
         auto ext = p()->extents();
 

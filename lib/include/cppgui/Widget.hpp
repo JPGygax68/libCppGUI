@@ -8,7 +8,6 @@
 
 #include "./basic_types.hpp"
 #include "./geometry.hpp"
-#include "./aspects.hpp"
 #include "./layouting.hpp"
 
 //#include "./Stylesheet.hpp"
@@ -16,6 +15,8 @@
 #include "./Full_resource_mapper.hpp"
 
 namespace cppgui {
+
+    struct Nil_struct {}; // to end aspect chains
 
     // Forward declarations 
 
@@ -132,19 +133,14 @@ namespace cppgui {
         Rectangle   _rect = {};
     };
 
-    template <class Config, bool With_layout> struct Widget__Layouter {
-
-        template <class Aspect_parent> struct Aspect: Aspect_parent {
-            void init_layout() {}
-        };
-    };
+    template <class Config, bool With_layout, class Parent> struct Widget__Layouter;
 
     // Widget 
 
     template <class Config, bool With_layout>
     class Widget: 
         public Config::template Widget_updater< 
-            Widget__Layouter<Config, With_layout>::template Aspect<
+            Widget__Layouter<Config, With_layout,
                 Abstract_widget<Config, With_layout> > >
     {
     public:
@@ -256,69 +252,63 @@ namespace cppgui {
         methods associated with it, should be moved to the Widget<> stem class.
      */
     template<class Config, bool With_layout> class Abstract_container;
-    template<class Config, bool With_layout> class Default_container_updater;
+    template<class Config, bool With_layout, class Parent> class Default_container_updater;
 
-    template<class Config, bool With_layout>
-    struct Default__Widget__Updater {
-        
-        template<class Aspect_parent> struct Aspect: public Aspect_parent
-        {
-            class Widget_t: public Widget<Config, true> { friend struct Aspect; };
-            using Abstract_container_t = Abstract_container<Config, With_layout>;
+    template<class Config, bool With_layout, class Parent>
+    struct Default__Widget__Updater: public Parent
+    {
+        class Widget_t: public Widget<Config, true> { friend struct Default__Widget__Updater; };
+        using Abstract_container_t = Abstract_container<Config, With_layout>;
 
-            void invalidate();
+        void invalidate();
 
-        private:
-            auto p() { return static_cast<Widget_t*>(this); }
-        };
+    private:
+        auto p() { return static_cast<Widget_t*>(this); }
     };
 
     // Layouting aspect
 
     /** TODO: rename to reflect the fact that this is abstract ?
      */
-    template <class Config> struct Widget__Layouter<Config, true> {
+    template <class Config, class Parent> 
+    struct Widget__Layouter<Config, true, Parent>: public Parent
+    {
+        /** It is up to the implementation to guarantee that any internal state/data
+        needed for layouting (including computing/returning the get_minimal_size())
+        is kept up to date.
+        */
 
-        template <class Aspect_parent> struct Aspect: public Aspect_parent {
+        // Layouter aspect contract
 
-            /** It is up to the implementation to guarantee that any internal state/data
-            needed for layouting (including computing/returning the get_minimal_size())
-            is kept up to date.
-            */
+        virtual void init_layout() = 0;
+        virtual auto get_minimal_size  () -> Extents = 0;
+        virtual auto get_preferred_size() -> Extents { return get_minimal_size(); }
+        virtual void layout() = 0;
 
-            // Layouter aspect contract
+        //void set_padding(Width);
+        //void set_padding(const std::initializer_list<Width> &);
 
-            virtual void init_layout() = 0;
-            virtual auto get_minimal_size  () -> Extents = 0;
-            virtual auto get_preferred_size() -> Extents { return get_minimal_size(); }
-            virtual void layout() = 0;
+        void set_rectangle(const Point &nw, const Point &se);
+        void set_rectangle_nw(const Point &, const Extents &);
+        void set_rectangle_ne(const Point &, const Extents &);
+        void set_rectangle_se(const Point &, const Extents &);
+        void set_rectangle_sw(const Point &, const Extents &);
 
-            //void set_padding(Width);
-            //void set_padding(const std::initializer_list<Width> &);
+    protected:
 
-            void set_rectangle(const Point &nw, const Point &se);
-            void set_rectangle_nw(const Point &, const Extents &);
-            void set_rectangle_ne(const Point &, const Extents &);
-            void set_rectangle_se(const Point &, const Extents &);
-            void set_rectangle_sw(const Point &, const Extents &);
+        class Widget_t: public Widget<Config, true> { friend struct Widget__Layouter; };
+        auto p() { return static_cast<Widget_t*>(this); }
 
-        protected:
+        // "Stylesheet" TODO: make this into another aspect ?
+        static constexpr auto button_padding() -> Padding { return { 5, 5, 5, 5 }; }
 
-            class Widget_t: public Widget<Config, true> { friend struct Aspect; };
-            auto p() { return static_cast<Widget_t*>(this); }
+        // void compute_inner_rect();
 
-            // "Stylesheet" TODO: make this into another aspect ?
-            static constexpr auto button_padding() -> Padding { return { 5, 5, 5, 5 }; }
-
-            // void compute_inner_rect();
-
-            //Padding                 _padding = {};  // TODO: provide accessor ?
-        };
+        //Padding                 _padding = {};  // TODO: provide accessor ?
     };
 
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_WIDGET(Config, With_layout) \
-    template cppgui::Widget           <Config, With_layout>; \
-    template cppgui::Widget__Layouter <Config, With_layout>;
+    template cppgui::Widget           <Config, With_layout>;
 

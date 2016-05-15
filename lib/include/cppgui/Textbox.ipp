@@ -557,33 +557,29 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template<class Config>
-    template<class Aspect_parent>
-    inline void Textbox__Layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
+    template<class Config, class Parent>
+    inline void Textbox__Layouter<Config, true, Parent>::init_layout()
     {
         compute_text_extents();
         this->layout();
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    Textbox__Layouter<Config, true>::Aspect<Aspect_parent>::Aspect()
+    template<class Config, class Parent>
+    Textbox__Layouter<Config, true, Parent>::Textbox__Layouter()
     {
         _padding = default_padding();
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    inline void Textbox__Layouter<Config, true>::Aspect<Aspect_parent>::change_font(const Rasterized_font *font)
+    template<class Config, class Parent>
+    inline void Textbox__Layouter<Config, true, Parent>::change_font(const Rasterized_font *font)
     {
         p()->_font = font;
         compute_text_extents();
         this->layout();
     }
 
-    template <class Config>
-    template <class Aspect_parent>
-    inline void Textbox__Layouter<Config, true>::Aspect<Aspect_parent>::compute_text_extents()
+    template<class Config, class Parent>
+    inline void Textbox__Layouter<Config, true, Parent>::compute_text_extents()
     {
         // TODO: free the font handle
 
@@ -598,9 +594,8 @@ namespace cppgui {
         }
     }
 
-    template <class Config>
-    template <class Aspect_parent>
-    inline auto Textbox__Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
+    template<class Config, class Parent>
+    inline auto Textbox__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
     {
         // TODO: replace "10" with const
         // TODO: adjust for border, too
@@ -610,9 +605,8 @@ namespace cppgui {
         };
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    inline void Textbox__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    template<class Config, class Parent>
+    inline void Textbox__Layouter<Config, true, Parent>::layout()
     {
         auto ext = p()->extents();
 

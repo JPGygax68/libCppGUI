@@ -11,16 +11,14 @@ namespace gpc { namespace fonts {
 
 namespace cppgui {
 
-    template <class Config, bool With_layout> struct Label__Layouter {
-        CPPGUI_DEFINE_ASPECT(Aspect) {};
-    };
+    template <class Config, bool With_layout, class Parent> struct Label__Layouter;
 
     template <class Config, bool With_layout> class Root_widget;
 
     /** Label, without layouting.
      */
     template <class Config, bool With_layout>
-    class Label: public Label__Layouter<Config, With_layout>::Aspect< Widget<Config, With_layout> >
+    class Label: public Label__Layouter<Config, With_layout, Widget<Config, With_layout> >
     {
     public:
         using Renderer = typename Config::Renderer;
@@ -50,43 +48,37 @@ namespace cppgui {
 
     class Single_element_layout;
 
-    template <class Config>
-    struct Label__Layouter<Config, true> {
+    template <class Config, class Parent>
+    struct Label__Layouter<Config, true, Parent>: 
+        public Box__Layouter<Config, true, Parent>
+    {
+        Label__Layouter();
 
-        template<class Aspect_parent> 
-        struct Aspect: Box__Layouter<Config, true>::template Aspect< Aspect_parent >
-        {
+        // Layouter aspect contract
 
-            Aspect();
+        void init_layout() override;
+        auto get_minimal_size() -> Extents override;
+        void layout() override;
 
-            // Layouter aspect contract
+        // Own methods
 
-            void init_layout() override;
-            auto get_minimal_size() -> Extents override;
-            void layout() override;
+        void set_minor_alignment(Alignment align) { _minor_alignment = align; }
+        void set_major_alignment(Alignment align) { _major_alignment = align; }
+        // TODO: "change" versions of the above that update layout
 
-            // Own methods
+    private:
+        class Label_t: public Label<Config, true> { friend struct Label__Layouter; };
+        auto p() { return static_cast<Label_t*>(this); }
 
-            void set_minor_alignment(Alignment align) { _minor_alignment = align; }
-            void set_major_alignment(Alignment align) { _major_alignment = align; }
-            // TODO: "change" versions of the above that update layout
+        // "Stylesheet"
+        static constexpr auto default_padding() -> Padding { return { 4, 4, 4, 4 }; }
 
-        private:
-            class Label_t: public Label<Config, true> { friend struct Aspect; };
-            auto p() { return static_cast<Label_t*>(this); }
-
-            // "Stylesheet"
-            static constexpr auto default_padding() -> Padding { return { 4, 4, 4, 4 }; }
-
-            Alignment               _minor_alignment = Alignment::cultural_minor_middle;
-            Alignment               _major_alignment = Alignment::cultural_major_middle;
-            Single_element_layout   _layout;
-        };
+        Alignment               _minor_alignment = Alignment::cultural_minor_middle;
+        Alignment               _major_alignment = Alignment::cultural_major_middle;
+        Single_element_layout   _layout;
     };
 
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_LABEL(Config, With_layout) \
-    template cppgui::Box__Layouter<Config, With_layout>; \
-    template cppgui::Label__Layouter<Config, With_layout>; \
     template cppgui::Label<Config, With_layout>;

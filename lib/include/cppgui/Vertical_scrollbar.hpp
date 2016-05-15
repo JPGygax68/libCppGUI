@@ -9,10 +9,7 @@ namespace cppgui {
 
     // Forward declarations
 
-    template <class Impl, class Config, bool With_layout>
-    struct Vertical_scrollbar__Layouter {
-        template <class Aspect_parent> struct Aspect;
-    };
+    template <class Impl, class Config, bool With_layout, class Parent> struct Vertical_scrollbar__Layouter;
 
     // Base class ===================================================
 
@@ -46,7 +43,7 @@ namespace cppgui {
      */
     template<class Impl, class Config, bool With_layout>
     class Vertical_scrollbar_base: 
-        public Vertical_scrollbar__Layouter<Impl, Config, With_layout>::template Aspect< Container<Config, With_layout> >
+        public Vertical_scrollbar__Layouter<Impl, Config, With_layout, Container<Config, With_layout> >
     {
     public:
         using Widget_t = typename Widget<Config, With_layout>;
@@ -116,30 +113,30 @@ namespace cppgui {
 
     // Layouter aspect
 
-    template <class Impl, class Config>
-    struct Vertical_scrollbar__Layouter<Impl, Config, true> {
-        template <class Aspect_parent> struct Aspect: public Aspect_parent {
+    template <class Impl, class Config, class Parent>
+    struct Vertical_scrollbar__Layouter<Impl, Config, true, Parent>: public Parent 
+    {
+        // Layouter contract
 
-            // Layouter contract
+        //void init_layout() override;
+        auto get_minimal_size() -> Extents override;
+        void layout() override;
 
-            //void init_layout() override;
-            auto get_minimal_size() -> Extents override;
-            void layout() override;
+        // Extra capabilities coming with layouting
+        // TODO
 
-            // Extra capabilities coming with layouting
-            // TODO
+    protected:
+        class Vertical_scrollbar_base_t: public Vertical_scrollbar_base<Impl, Config, true> { friend struct Vertical_scrollbar__Layouter; };
 
-        protected:
-            class Vertical_scrollbar_base_t: public Vertical_scrollbar_base<Impl, Config, true> { friend struct Aspect; };
-
-            auto p() { return static_cast<Vertical_scrollbar_base_t*>(this); }
-        };
+        auto p() { return static_cast<Vertical_scrollbar_base_t*>(this); }
     };
 
     // Customizable specialization ==================================
 
     template<class Config, bool With_layout>
-    class Custom_vertical_scrollbar: public Vertical_scrollbar_base<Custom_vertical_scrollbar<Config, With_layout>, Config, With_layout>
+    class Custom_vertical_scrollbar:
+        public Vertical_scrollbar_base<
+            Custom_vertical_scrollbar<Config, With_layout>, Config, With_layout>
     {
     public:
         void on_navigation(Navigation_handler);

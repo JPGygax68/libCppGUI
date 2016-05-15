@@ -28,20 +28,20 @@ namespace cppgui {
             using Configuration = typename ConfigT; // Default_configuration<Renderer, With_layout>;
             using Font_handle = typename Renderer::font_handle;
 
-            template<class Aspect_parent> using Widget_updater = typename 
-                Default__Widget__Updater<Configuration, With_layout>::template Aspect<Aspect_parent>;
+            template<class Parent> using Widget_updater = typename 
+                Default__Widget__Updater<Configuration, With_layout, Parent>;
 
-            template<class Aspect_parent> using Abstract_container_Container_updater = typename 
-                Default_Abstract_container_Container_updater<Configuration, With_layout>::template Aspect<Aspect_parent>;
+            template<class Parent> using Abstract_container_Container_updater = typename 
+                Default_Abstract_container_Container_updater<Configuration, With_layout, Parent>;
 
-            template <class Aspect_parent> using Container_base__Container_updater = typename 
-                Default__Container_base__Container_updater<Configuration, With_layout>::template Aspect<Aspect_parent>;
+            template <class Parent> using Container_base__Container_updater = typename 
+                Default__Container_base__Container_updater<Configuration, With_layout, Parent>;
 
-            template <class Aspect_parent> using Root_widget__Updater = typename 
-                Default__Root_widget__Updater<Configuration, With_layout>::template Aspect<Aspect_parent>;
+            template <class Parent> using Root_widget__Updater = typename 
+                Default__Root_widget__Updater<Configuration, With_layout, Parent>;
 
             template <class Aspect_parent> using Root_widget__Container_updater = typename 
-                Default__Root_widget__Container_updater<Configuration, With_layout>::template Aspect<Aspect_parent>;
+                Default__Root_widget__Container_updater<Configuration, With_layout, Aspect_parent>;
 
             // We override the color mapper
             // TODO: this should not be necessary, the identity mapper should be chosen automatically

@@ -2,16 +2,14 @@
 
 namespace cppgui {
 
-    template<class Config, bool With_layout>
-    template<class Aspect_parent>
-    void Bordered_box<Config, With_layout>::Aspect<Aspect_parent>::set_border(const Border &border)
+    template<class Config, bool With_layout, class Parent>
+    void Bordered_box<Config, With_layout, Parent>::set_border(const Border &border)
     {
         _border = border;
     }
 
-    template<class Config, bool With_layout>
-    template<class Aspect_parent>
-    void Bordered_box<Config, With_layout>::Aspect<Aspect_parent>::draw_border(Canvas_t *canvas, const Point &offset)
+    template<class Config, bool With_layout, class Parent>
+    void Bordered_box<Config, With_layout, Parent>::draw_border(Canvas_t *canvas, const Point &offset)
     {
         auto b = _border.width;
 
@@ -35,30 +33,20 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template<class Config>
-    template<class Aspect_parent>
-    void Box__Layouter<Config, true>::Aspect<Aspect_parent>::set_padding(Width w)
+    template<class Config, class Parent>
+    void Box__Layouter<Config, true, Parent>::set_padding(Width w)
     {
         set_padding({ w, w, w, w });
     }
 
-    /* template<class Config, bool With_layout>
-    template<class Aspect_parent>
-    void Box__Layouter<Config, With_layout>::Aspect<Aspect_parent>::set_padding(const std::initializer_list<Length> &padding)
-    {
-        std::copy(std::begin(padding), std::end(padding), std::begin(_padding));
-    } */
-
-    template<class Config>
-    template<class Aspect_parent>
-    void Box__Layouter<Config, true>::Aspect<Aspect_parent>::set_padding(const std::array<Length, 4> &padding)
+    template<class Config, class Parent>
+    void Box__Layouter<Config, true, Parent>::set_padding(const std::array<Length, 4> &padding)
     {
         _padding = padding; // std::copy(std::begin(padding), std::end(padding), std::begin(_padding));
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    void Box__Layouter<Config, true>::Aspect<Aspect_parent>::add_padding(Rectangle &rect)
+    template<class Config, class Parent>
+    void Box__Layouter<Config, true, Parent>::add_padding(Rectangle &rect)
     {
         rect.pos.x += _padding[3] - 2;
         rect.pos.y += _padding[0] - 2;
@@ -66,9 +54,8 @@ namespace cppgui {
         rect.ext.h -= _padding[0] + _padding[2] - 2 * 2;
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    auto Box__Layouter<Config, true>::Aspect<Aspect_parent>::add_padding(const Rectangle &rect) -> Rectangle
+    template<class Config, class Parent>
+    auto Box__Layouter<Config, true, Parent>::add_padding(const Rectangle &rect) -> Rectangle
     {
         Rectangle res { rect };
 
@@ -77,9 +64,8 @@ namespace cppgui {
         return res;
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    auto Box__Layouter<Config, true>::Aspect<Aspect_parent>::add_padding(const Extents &ext) -> Extents
+    template<class Config, class Parent>
+    auto Box__Layouter<Config, true, Parent>::add_padding(const Extents &ext) -> Extents
     {
         Extents res = ext;
         
@@ -89,9 +75,8 @@ namespace cppgui {
         return res;
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    void Box__Layouter<Config, true>::Aspect<Aspect_parent>::add_padding(Extents &ext)
+    template<class Config, class Parent>
+    void Box__Layouter<Config, true, Parent>::add_padding(Extents &ext)
     {
         ext.w += _padding[3] + _padding[1];
         ext.h += _padding[0] + _padding[2];

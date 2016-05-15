@@ -13,14 +13,13 @@ namespace gpc { namespace fonts {
 
 namespace cppgui {
 
-    template <class Config, bool With_layout> struct Checkbox__Layouter {
-        template <class Parent_aspect> struct Aspect: public Aspect_parent {};
-    };
+    template <class Config, bool With_layout, class Parent> struct Checkbox__Layouter;
 
     struct Font_icon_descr;
 
     template <class Config, bool With_layout>
-    class Checkbox: public Checkbox__Layouter<Config, With_layout>::template Aspect< 
+    class Checkbox: 
+        public Checkbox__Layouter<Config, With_layout, 
             Widget<Config, With_layout> >
     {
     public:
@@ -63,35 +62,32 @@ namespace cppgui {
         bool                    _checked;
     };
 
-    template <class Config>
-    struct Checkbox__Layouter<Config, true> {
+    template <class Config, class Parent>
+    struct Checkbox__Layouter<Config, true, Parent>: public Parent 
+    {
+        void init_layout() override;
+        auto get_minimal_size() -> Extents override;
+        void layout() override;
 
-        template <class Aspect_parent> struct Aspect: public Aspect_parent
-        {
-            void init_layout() override;
-            auto get_minimal_size() -> Extents override;
-            void layout() override;
+        auto padding() { return 2; }
 
-            auto padding() { return 2; }
+        // TODO:
+        // void change_font();
+        // void change_glyph_font();
 
-            // TODO:
-            // void change_font();
-            // void change_glyph_font();
-
-        private:
-            class Checkbox_t: public Checkbox<Config, true> { friend struct Aspect; };
-            auto p() { return static_cast<Checkbox_t*>(this); }
+    private:
+        class Checkbox_t: public Checkbox<Config, true> { friend struct Checkbox__Layouter; };
+        auto p() { return static_cast<Checkbox_t*>(this); }
             
-            void compute_em_bounds();
-            void compute_label_size();
-            void get_tick_metrics();
+        void compute_em_bounds();
+        void compute_label_size();
+        void get_tick_metrics();
 
-            Text_bounding_box       _em_bounds;
-            Text_bounding_box       _tick_bounds;
-            Extents                 _tick_extents;
-            Length                  _box_edge;
-            Text_bounding_box       _label_bounds;
-        };
+        Text_bounding_box       _em_bounds;
+        Text_bounding_box       _tick_bounds;
+        Extents                 _tick_extents;
+        Length                  _box_edge;
+        Text_bounding_box       _label_bounds;
     };
 
 } // ns cppgui

@@ -122,9 +122,8 @@ namespace cppgui {
 
     // Default__Widget__Updater<> aspect ------------------------------
 
-    template<class Config, bool With_layout>
-    template<class Aspect_parent>
-    inline void Default__Widget__Updater<Config, With_layout>::Aspect<Aspect_parent>::invalidate()
+    template<class Config, bool With_layout, class Parent>
+    inline void Default__Widget__Updater<Config, With_layout, Parent>::invalidate()
     {
         //auto c = static_cast<Abstract_container<GUIConfig, With_layout>*>(this->container());
         //c->child_invalidated(static_cast<Widget_t*>(this));
@@ -321,41 +320,36 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template<class Config>
-    template<class Aspect_parent>
-    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle(const Point &nw, const Point &se)
+    template<class Config, class Parent>
+    void Widget__Layouter<Config, true, Parent>::set_rectangle(const Point &nw, const Point &se)
     {
         p()->set_position(nw);
         p()->set_extents(Extents::between_points(nw, se));
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle_nw(const Point &pos, const Extents &ext)
+    template<class Config, class Parent>
+    void Widget__Layouter<Config, true, Parent>::set_rectangle_nw(const Point &pos, const Extents &ext)
     {
         p()->set_position(pos);
         p()->set_extents(ext);
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle_ne(const Point &pos, const Extents &ext)
+    template<class Config, class Parent>
+    void Widget__Layouter<Config, true, Parent>::set_rectangle_ne(const Point &pos, const Extents &ext)
     {
         p()->set_position({ pos.x - static_cast<Position>(ext.w), pos.y });
         p()->set_extents(ext);
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle_sw(const Point &pos, const Extents &ext)
+    template<class Config, class Parent>
+    void Widget__Layouter<Config, true, Parent>::set_rectangle_sw(const Point &pos, const Extents &ext)
     {
         p()->set_position({ pos.x, pos.y - static_cast<Position>(ext.h) });
         p()->set_extents(ext);
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    void Widget__Layouter<Config, true>::Aspect<Aspect_parent>::set_rectangle_se(const Point &pos, const Extents &ext)
+    template<class Config, class Parent>
+    void Widget__Layouter<Config, true, Parent>::set_rectangle_se(const Point &pos, const Extents &ext)
     {
         p()->set_position({ pos.x - static_cast<Position>(ext.w), pos.y - static_cast<Position>(ext.h) });
         p()->set_extents(ext);

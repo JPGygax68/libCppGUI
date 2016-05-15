@@ -7,15 +7,12 @@ namespace cppgui {
 
     // Forward declarations 
 
-    template <class Config, bool With_layout>
-    struct Textbox__Layouter {
-
-        template <class Aspect_parent> struct Aspect: Aspect_parent {
-
-            void font_changed() { static_assert(false, "Concept: Textbox__Layouter::font_changed(): must never be used"); }
-            auto get_minimal_size() -> Extents { static_assert(false, "Concept: Textbox__Layouter::get_minimal_size(): must never be used"); return {}; }
-            void layout() override { static_assert(false, "Concept: Textbox__Layouter::layout(): must never be used"); }
-        };
+    template <class Config, bool With_layout, class Parent>
+    struct Textbox__Layouter: public Parent
+    {
+        void font_changed() { static_assert(false, "Concept: Textbox__Layouter::font_changed(): must never be used"); }
+        auto get_minimal_size() -> Extents { static_assert(false, "Concept: Textbox__Layouter::get_minimal_size(): must never be used"); return {}; }
+        void layout() override { static_assert(false, "Concept: Textbox__Layouter::layout(): must never be used"); }
     };
 
     // Main class 
@@ -24,7 +21,9 @@ namespace cppgui {
 
     template <class Config, bool With_layout>
     class Textbox: 
-        public Textbox__Layouter<Config, With_layout>::template Aspect< Bordered_box<Config, With_layout>::template Aspect< Widget<Config, With_layout> > >
+        public Textbox__Layouter<Config, With_layout, 
+            Bordered_box<Config, With_layout, 
+                Widget<Config, With_layout> > >
     {
     public:
         using Renderer      = typename Config::Renderer;
@@ -107,40 +106,35 @@ namespace cppgui {
 
     // Layouting aspect ---------------------------------------------
 
-    template <class Config>
-    struct Textbox__Layouter<Config, false> {
-
-        template <class Aspect_parent> struct Aspect : Aspect_parent {};
+    template <class Config, class Parent>
+    struct Textbox__Layouter<Config, false, Parent>: public Parent
+    {
     };
 
-    template <class Config>
-    struct Textbox__Layouter<Config, true>
+    template <class Config, class Parent>
+    struct Textbox__Layouter<Config, true, Parent>: 
+        public Box__Layouter<Config, true, Parent>
     {
-        template <class Aspect_parent> 
-        struct Aspect: Box__Layouter<Config, true>::template Aspect< Aspect_parent >
-        {
-            class Textbox_t: public Textbox<Config, true> { friend struct Aspect; };
+        class Textbox_t: public Textbox<Config, true> { friend struct Textbox__Layouter; };
 
-            auto p() { return static_cast<Textbox_t*>(this); }
+        auto p() { return static_cast<Textbox_t*>(this); }
 
-            Aspect();
+        Textbox__Layouter();
 
-            void change_font(const Rasterized_font *);
+        void change_font(const Rasterized_font *);
 
-            void compute_text_extents();
+        void compute_text_extents();
 
-            void init_layout() override;
-            auto get_minimal_size() -> Extents override;
-            void layout() override;
+        void init_layout() override;
+        auto get_minimal_size() -> Extents override;
+        void layout() override;
 
-            // "Stylesheet"
-            static constexpr auto default_padding() -> Padding { return { 3, 3, 3, 3 }; }
-        };
+        // "Stylesheet"
+        static constexpr auto default_padding() -> Padding { return { 3, 3, 3, 3 }; }
     };
 
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_TEXTBOX(Config, With_layout) \
     template cppgui::Textbox          <Config, With_layout>; \
-    template cppgui::Box__Layouter    <Config, With_layout>; \
-    template cppgui::Textbox__Layouter<Config, With_layout>;
+    template cppgui::Box__Layouter    <Config, With_layout>;

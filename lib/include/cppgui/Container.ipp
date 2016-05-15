@@ -14,9 +14,8 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template <class Config>
-    template<class Aspect_parent>
-    inline void Container__Layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
+    template <class Config, class Parent>
+    inline void Container__Layouter<Config, true, Parent>::init_layout()
     {
         for (auto child: p()->children())
         {
@@ -24,9 +23,8 @@ namespace cppgui {
         }
     }
 
-    template <class Config>
-    template<class Aspect_parent>
-    inline auto Container__Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
+    template <class Config, class Parent>
+    inline auto Container__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
     {
         // TODO: use polymorphic delegate class 
 
@@ -93,9 +91,8 @@ namespace cppgui {
         return result;
     }
 
-    template <class Config>
-    template<class Aspect_parent>
-    inline auto Container__Layouter<Config, true>::Aspect<Aspect_parent>::get_preferred_size() -> Extents
+    template <class Config, class Parent>
+    inline auto Container__Layouter<Config, true, Parent>::get_preferred_size() -> Extents
     {
         // TODO: use polymorphic delegate class 
 
@@ -164,9 +161,8 @@ namespace cppgui {
         return result;
     }
 
-    template <class Config>
-    template<class Aspect_parent>
-    inline void Container__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    template <class Config, class Parent>
+    inline void Container__Layouter<Config, true, Parent>::layout()
     {
         //p()->layout_children();
 
@@ -269,17 +265,15 @@ namespace cppgui {
         }
     }
 
-    template <class Config>
-    template<class Aspect_parent>
-    inline void Container__Layouter<Config, true>::Aspect<Aspect_parent>::insert_child(Widget_t *child)
+    template <class Config, class Parent>
+    inline void Container__Layouter<Config, true, Parent>::insert_child(Widget_t *child)
     {
         p()->add_child(child);
         layout();
     }
 
-    template <class Config>
-    template<class Aspect_parent>
-    inline void Container__Layouter<Config, true>::Aspect<Aspect_parent>::drop_child(Widget_t *child)
+    template <class Config, class Parent>
+    inline void Container__Layouter<Config, true, Parent>::drop_child(Widget_t *child)
     {
         p()->remove_child(child);
         layout();
@@ -287,9 +281,8 @@ namespace cppgui {
 
     // Container_updater aspect -------------------------------------
 
-    template<class Config, bool With_layout>
-    template<class Aspect_parent>
-    inline void Default__Container_base__Container_updater<Config, With_layout>::Aspect<Aspect_parent>::child_invalidated(Widget_t *)
+    template<class Config, bool With_layout, class Parent>
+    inline void Default__Container_base__Container_updater<Config, With_layout, Parent>::child_invalidated(Widget_t *)
     {
         p()->container()->child_invalidated(p());
     }

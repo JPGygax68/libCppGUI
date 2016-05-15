@@ -8,7 +8,7 @@ namespace cppgui {
 
     // Forward declarations
 
-    template<class Config, bool With_layout, class Pane> struct Scrollbox__Layouter { template<class Aspect_parent> struct Aspect: Aspect_parent {}; };
+    template<class Config, bool With_layout, class Pane, class Parent> struct Scrollbox__Layouter;
     template<class Config, bool With_layout> class Scrollable_pane;
 
     // Class definition
@@ -17,9 +17,8 @@ namespace cppgui {
 
     template<class Config, bool With_layout, class Pane> // = Scrollable_pane<Config, With_layout>>
     class Scrollbox: 
-        public Scrollbox__Layouter<Config, With_layout, Pane>::template Aspect< 
-            Bordered_box<Config, With_layout>::template Aspect<
-                Container<Config, With_layout> > >
+        public Scrollbox__Layouter<Config, With_layout, Pane,
+            Bordered_box<Config, With_layout, Container<Config, With_layout> > >
     {
     public:
         using Container_t = Container<Config, With_layout>;
@@ -69,27 +68,24 @@ namespace cppgui {
 
     // Layouter aspect
 
-    template<class Config, class Pane>
-    struct Scrollbox__Layouter<Config, true, Pane> {
+    template<class Config, class Pane, class Parent>
+    struct Scrollbox__Layouter<Config, true, Pane, Parent>: public Parent
+    {
+        struct Scrollbox_t: public Scrollbox<Config, true, Pane> { friend struct Scrollbox__Layouter; };
+        auto p() { return static_cast<Scrollbox_t*>(this); }
 
-        template<class Aspect_parent> struct Aspect: Aspect_parent {
+        auto get_minimal_size() -> Extents override;
+        void layout() override;
 
-            struct Scrollbox_t: public Scrollbox<Config, true, Pane> { friend struct Aspect; };
-            auto p() { return static_cast<Scrollbox_t*>(this); }
-
-            auto get_minimal_size() -> Extents override;
-            void layout() override;
-
-        protected:
-            //auto content_rect() -> Rectangle;
-        };
+    protected:
+        //auto content_rect() -> Rectangle;
     };
 
     // Scrollable pane ==============================================
 
     // Forward declarations
 
-    template<class Config, bool With_layout> struct Scrollable_pane__Layouter { template<class Aspect_parent> struct Aspect: Aspect_parent {}; };
+    template<class Config, bool With_layout, class Parent> struct Scrollable_pane__Layouter;
 
     // Base class
 
@@ -115,34 +111,29 @@ namespace cppgui {
 
     template<class Config, bool With_layout>
     class Scrollable_pane: 
-        public Scrollable_pane__Layouter<Config, With_layout>::template Aspect< Scrollable_pane_base<Config, With_layout> >
+        public Scrollable_pane__Layouter<Config, With_layout, Scrollable_pane_base<Config, With_layout> >
     {
     };
 
     // Layouter aspect
 
-    template<class Config>
-    struct Scrollable_pane__Layouter<Config, true> {
+    template<class Config, class Parent>
+    struct Scrollable_pane__Layouter<Config, true, Parent>: public Parent
+    {
+        struct Scrollable_pane_t: public Scrollable_pane<Config, true> { friend struct Scrollable_pane__Layouter; };
+        auto p() { return static_cast<Scrollable_pane_t*>(this); }
 
-        template<class Aspect_parent> struct Aspect: Aspect_parent {
+        /** Because the size of a scrollable pane can by definition exceed that of its container,
+            this additional (CRTP) entry point is provided as an occasion for the pane implementation
+            to adapt (in whatever way) to the size of the content rectangle of the scrollbox.
+            */
+        void compute_and_set_extents(const Extents &content_rect) { static_assert(false, "CRPT"); }
 
-            struct Scrollable_pane_t: public Scrollable_pane<Config, true> { friend struct Aspect; };
-            auto p() { return static_cast<Scrollable_pane_t*>(this); }
-
-            /** Because the size of a scrollable pane can by definition exceed that of its container,
-                this additional (CRTP) entry point is provided as an occasion for the pane implementation
-                to adapt (in whatever way) to the size of the content rectangle of the scrollbox.
-             */
-            void compute_and_set_extents(const Extents &content_rect) { static_assert(false, "CRPT"); }
-
-            //auto get_minimal_size() -> Extents override;
-            //void layout() override;
-        };
+        //auto get_minimal_size() -> Extents override;
+        //void layout() override;
     };
 
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_SCROLLBOX(Config, With_layout, PaneType) \
-    template cppgui::Scrollbox          <Config, With_layout, PaneType>; \
-    template cppgui::Scrollbox__Layouter<Config, With_layout, PaneType>;
-    //template cppgui::Scrollable_pane<Config, With_layout>;
+    template cppgui::Scrollbox          <Config, With_layout, PaneType>;

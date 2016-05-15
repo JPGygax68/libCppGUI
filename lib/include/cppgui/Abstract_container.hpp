@@ -4,13 +4,13 @@
 
 namespace cppgui {
 
-    template <class Config, bool With_layout> struct Abstract_container__Layouter {};
+    template <class Config, bool With_layout, class Parent> struct Abstract_container__Layouter;
 
     /** Container functionality (ability to contain Widgets).
     */
     template <class Config, bool With_layout>
     class Abstract_container: public Config::template Abstract_container_Container_updater<Nil_struct>,
-        public Abstract_container__Layouter<Config, With_layout>
+        public Abstract_container__Layouter<Config, With_layout, Nil_struct>
     {
     public:
         using Widget_t = Widget<Config, With_layout>;
@@ -77,26 +77,24 @@ namespace cppgui {
 
     // IMPORTANT! This is *different* from the "Updater" aspect, which belongs to Widgets!
 
-    template <class Config, bool With_layout>
-    struct Default_Abstract_container_Container_updater {
+    template <class Config, bool With_layout, class Parent>
+    struct Default_Abstract_container_Container_updater: public Parent 
+    {
+        using Widget_t = Widget<Config, With_layout>;
+        class Container_t: public Container<Config, true> { friend struct Default_Abstract_container_Container_updater; };
+        using Root_widget_t = Root_widget<Config, With_layout>;
 
-        template <class Aspect_parent> struct Aspect : public Aspect_parent {
+        auto p() { return static_cast<Container_t*>(this); }
 
-            using Widget_t = Widget<Config, With_layout>;
-            class Container_t: public Container<Config, true> { friend struct Aspect; };
-            using Root_widget_t = Root_widget<Config, With_layout>;
+        virtual void child_invalidated(Widget_t *) = 0;
 
-            auto p() { return static_cast<Container_t*>(this); }
-
-            virtual void child_invalidated(Widget_t *) = 0;
-
-            virtual auto container_root_widget() -> Root_widget_t * = 0;
-        };
+        virtual auto container_root_widget() -> Root_widget_t * = 0;
     };
 
-    template <class Config> struct Abstract_container__Layouter<Config, true> {
-
-        class Container_t: public Container<Config, true> { friend struct Aspect; };
+    template <class Config, class Parent> 
+    struct Abstract_container__Layouter<Config, true, Parent>: public Parent
+    {
+        class Container_t: public Container<Config, true> { friend struct Abstract_container__Layouter; };
 
         auto p() { return static_cast<Container_t*>(this); }
 
@@ -107,5 +105,4 @@ namespace cppgui {
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_ABSTRACT_CONTAINER(Config, With_layout) \
-    template cppgui::Abstract_container          <Config, With_layout>; \
-    template cppgui::Abstract_container__Layouter<Config, With_layout>;
+    template cppgui::Abstract_container          <Config, With_layout>;

@@ -11,16 +11,14 @@ namespace cppgui {
 
     struct Icon_glyph;
 
-    template <class Config, bool With_layout> struct Glyph_button__Layouter {
-        template <class Parent_aspect> struct Aspect: Aspect_parent {};
-    };
+    template <class Config, bool With_layout, class Parent> struct Glyph_button__Layouter;
 
     // Glyph_button declaration 
 
     template<class Config, bool With_layout>
     class Glyph_button: 
-        public Glyph_button__Layouter<Config, With_layout>::template Aspect< 
-            Bordered_box<Config, With_layout>::template Aspect< 
+        public Glyph_button__Layouter<Config, With_layout,
+            Bordered_box<Config, With_layout, 
                 Widget<Config, With_layout> > >
     {
     public:
@@ -63,32 +61,29 @@ namespace cppgui {
 
     // Layouter aspect
 
-    template <class Config>
-    struct Glyph_button__Layouter<Config, true> {
+    template <class Config, class Parent>
+    struct Glyph_button__Layouter<Config, true, Parent>: 
+        public Box__Layouter<Config, true, Parent>
+    {
+        Glyph_button__Layouter() { _padding = this->button_padding(); }
 
-        template <class Aspect_parent>
-        struct Aspect: public Box__Layouter<Config, true>::template Aspect< Aspect_parent >
-        {
-            Aspect() { _padding = this->button_padding(); }
+        void init_layout() override;
+        auto get_minimal_size() -> Extents override;
+        void layout() override;
 
-            void init_layout() override;
-            auto get_minimal_size() -> Extents override;
-            void layout() override;
+        // TODO:
+        // void change_glyph();
 
-            // TODO:
-            // void change_glyph();
+    private:
+        class Glyph_button_t: public Glyph_button<Config, true> { friend struct Glyph_button__Layouter; };
+        auto p() { return static_cast<Glyph_button_t*>(this); }
 
-        private:
-            class Glyph_button_t: public Glyph_button<Config, true> { friend struct Aspect; };
-            auto p() { return static_cast<Glyph_button_t*>(this); }
+        void compute_sizes();
 
-            void compute_sizes();
-
-            Text_bounding_box           _glyph_bounds;
-            Text_bounding_box           _label_bounds;
-            Length                      _glyph_min_edge;
-            Length                      _spacing; // spacing between label and glyph
-        };
+        Text_bounding_box           _glyph_bounds;
+        Text_bounding_box           _label_bounds;
+        Length                      _glyph_min_edge;
+        Length                      _spacing; // spacing between label and glyph
     };
 
 

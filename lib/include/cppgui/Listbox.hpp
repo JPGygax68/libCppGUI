@@ -8,7 +8,7 @@ namespace cppgui {
 
     // Forward declarations
 
-    template<class Config, bool With_layout> struct Listbox__Layouter { template<class Aspect_parent> struct Aspect: Aspect_parent {}; };
+    template<class Config, bool With_layout, class Parent> struct Listbox__Layouter;
 
     template<class Config, bool With_layout> class List_pane;
 
@@ -16,7 +16,7 @@ namespace cppgui {
      */
     template<class Config, bool With_layout>
     class Listbox: 
-        public Listbox__Layouter<Config, With_layout>::template Aspect< 
+        public Listbox__Layouter<Config, With_layout,
             Scrollbox<Config, With_layout, List_pane<Config, With_layout> > >
     {
     public:
@@ -48,29 +48,27 @@ namespace cppgui {
 
     // TODO: is it really needed, or is the Scrollbox layouter sufficient ?
 
-    template<class Config>
-    struct Listbox__Layouter<Config, true> {
+    template<class Config, class Parent>
+    struct Listbox__Layouter<Config, true, Parent>: public Parent 
+    {
+        using Scrollbox_t = Scrollbox<Config, true, List_pane<Config, true>>;
 
-        template<class Aspect_parent> struct Aspect: Aspect_parent {
+        struct Listbox_t: public Listbox<Config, true> { friend struct Listbox__Layouter; };
+        auto p() { return static_cast<Listbox_t*>(this); }
 
-            using Scrollbox_t = Scrollbox<Config, true, List_pane<Config, true>>;
+        void layout() override;
 
-            struct Listbox_t: public Listbox<Config, true> { friend struct Aspect; };
-            auto p() { return static_cast<Listbox_t*>(this); }
-
-            void layout() override;
-
-            auto get_preferred_size() -> Extents override;
-        };
+        auto get_preferred_size() -> Extents override;
     };
 
     // List_pane ====================================================
 
-    template <class Config, bool With_layout> struct List_pane__Layouter { template <class Aspect_parent> struct Aspect; };
-
+    template <class Config, bool With_layout, class Parent> struct List_pane__Layouter;
 
     template<class Config, bool With_layout>
-    class List_pane: public List_pane__Layouter<Config, With_layout>::template Aspect< Scrollable_pane<Config, With_layout> >
+    class List_pane: 
+        public List_pane__Layouter<Config, With_layout, 
+            Scrollable_pane<Config, With_layout> >
     {
     public:
         using Widget_t = Widget<Config, With_layout>;
@@ -109,20 +107,17 @@ namespace cppgui {
 
     // Layouter aspect
 
-    template<class Config>
-    struct List_pane__Layouter<Config, true> {
+    template<class Config, class Parent>
+    struct List_pane__Layouter<Config, true, Parent>: public Parent
+    {
+        struct List_pane_t: public List_pane<Config, true> { friend struct List_pane__Layouter; };
+        auto p() { return static_cast<List_pane_t*>(this); }
 
-        template<class Aspect_parent> struct Aspect: Aspect_parent {
+        auto get_minimal_size() -> Extents override;
 
-            struct List_pane_t: public List_pane<Config, true> { friend struct Aspect; };
-            auto p() { return static_cast<List_pane_t*>(this); }
+        void compute_and_set_extents(const Extents &container_extents);
 
-            auto get_minimal_size() -> Extents override;
-
-            void compute_and_set_extents(const Extents &container_extents);
-
-            void layout() override;
-        };
+        void layout() override;
     };
 
 } // ns cppgui

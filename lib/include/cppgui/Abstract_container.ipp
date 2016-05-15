@@ -212,8 +212,8 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template<class Config>
-    void Abstract_container__Layouter<Config, true>::init_children_layout()
+    template<class Config, class Parent>
+    void Abstract_container__Layouter<Config, true, Parent>::init_children_layout()
     {
         for (auto child : p()->children())
         {
@@ -221,8 +221,8 @@ namespace cppgui {
         }
     }
 
-    template<class Config>
-    inline void Abstract_container__Layouter<Config, true>::layout_children()
+    template<class Config, class Parent>
+    inline void Abstract_container__Layouter<Config, true, Parent>::layout_children()
     {
         // TODO: this algorithm, and the whole method, will probably become obsolete as real
         //  layouting gets implemented

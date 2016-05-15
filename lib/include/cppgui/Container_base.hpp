@@ -63,20 +63,17 @@ namespace cppgui {
 
     // Container_base_updater aspect
 
-    template <class Config, bool With_layout>
-    struct Default__Container_base__Container_updater {
+    template <class Config, bool With_layout, class Parent>
+    struct Default__Container_base__Container_updater: public Parent 
+    {
+        class Container_t: public Container_base<Config, true> { friend struct Default__Container_base__Container_updater; };
+        using Widget_t = Widget<Config, true>;
 
-        template <class Aspect_parent> struct Aspect: public Aspect_parent {
+        auto p() { return static_cast<Container_t*>(this); }
 
-            class Container_t: public Container_base<Config, true> { friend struct Aspect; };
-            using Widget_t = Widget<Config, true>;
+        void child_invalidated(Widget_t *) override;
 
-            auto p() { return static_cast<Container_t*>(this); }
-
-            void child_invalidated(Widget_t *) override;
-
-            auto container_root_widget() { return p()->root_widget(); }
-        };
+        auto container_root_widget() { return p()->root_widget(); }
     };
 
 } // ns cppgui

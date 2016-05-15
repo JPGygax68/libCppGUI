@@ -94,9 +94,8 @@ namespace cppgui {
 
     // Layouter aspect ------------------------------------
 
-    template<class Config, class Pane>
-    template<class Aspect_parent>
-    auto Scrollbox__Layouter<Config, true, Pane>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
+    template<class Config, class Pane, class Parent>
+    auto Scrollbox__Layouter<Config, true, Pane, Parent>::get_minimal_size() -> Extents
     {
         // Somewhat arbitrary: width: twice that of scrollbar, height: scrollbar
 
@@ -105,9 +104,8 @@ namespace cppgui {
         return { 2 * sb_minsz.w, sb_minsz.h };
     }
 
-    template<class Config, class Pane>
-    template<class Aspect_parent>
-    void Scrollbox__Layouter<Config, true, Pane>::Aspect<Aspect_parent>::layout()
+    template<class Config, class Pane, class Parent>
+    void Scrollbox__Layouter<Config, true, Pane, Parent>::layout()
     {
         /** TODO: this whole algorithm must also be accessible outside of the layouting aspect,
                 because it should be triggered whenever the pane notifies a change in size.

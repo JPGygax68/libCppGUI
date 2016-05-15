@@ -43,34 +43,30 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template<class Config>
-    template<class Aspect_parent>
-    Label__Layouter<Config, true>::Aspect<Aspect_parent>::Aspect()
+    template<class Config, class Parent>
+    Label__Layouter<Config, true, Parent>::Label__Layouter()
     {
         set_padding( default_padding() );
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    void Label__Layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
+    template<class Config, class Parent>
+    void Label__Layouter<Config, true, Parent>::init_layout()
     {
         _layout.set_major_alignment(_major_alignment);
         _layout.set_minor_alignment(_minor_alignment);
         _layout.set_text_element(p()->font(), p()->_text.data(), p()->_text.size(), & p()->_text_origin, & p()->_text_rect);
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    auto Label__Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
+    template<class Config, class Parent>
+    auto Label__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
     {
         assert(!p()->text().empty()); // TODO: TENTATIVE RULE: layouting may not occur before conditions are met (font, text must be set) ?
 
         return _layout.compute_minimal_size(_padding);
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    void Label__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    template<class Config, class Parent>
+    void Label__Layouter<Config, true, Parent>::layout()
     {
         _layout.compute_layout( p()->extents(), _padding);
     }

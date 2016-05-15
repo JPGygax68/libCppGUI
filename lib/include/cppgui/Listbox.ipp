@@ -108,18 +108,16 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template<class Config>
-    template<class Aspect_parent>
-    void Listbox__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    template<class Config, class Parent>
+    void Listbox__Layouter<Config, true, Parent>::layout()
     {
         p()->_content_pane.set_extents( p()->_content_pane.get_minimal_size() );
 
         Scrollbox_t::layout();
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    auto Listbox__Layouter<Config, true>::Aspect<Aspect_parent>::get_preferred_size() -> Extents
+    template<class Config, class Parent>
+    auto Listbox__Layouter<Config, true, Parent>::get_preferred_size() -> Extents
     {
         // TODO: borders, padding, separation
 
@@ -279,9 +277,8 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template<class Config>
-    template<class Aspect_parent>
-    auto List_pane__Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
+    template<class Config, class Parent>
+    auto List_pane__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
     {
         Position y = 0;
         Width w_min = 0;
@@ -296,16 +293,14 @@ namespace cppgui {
         return { w_min, (Length) y };
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    void List_pane__Layouter<Config, true>::Aspect<Aspect_parent>::compute_and_set_extents(const Extents &container_extents)
+    template<class Config, class Parent>
+    void List_pane__Layouter<Config, true, Parent>::compute_and_set_extents(const Extents &container_extents)
     {
         p()->set_extents({ container_extents.w, p()->extents().h });
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    void List_pane__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    template<class Config, class Parent>
+    void List_pane__Layouter<Config, true, Parent>::layout()
     {
         auto w = extents().w;
 

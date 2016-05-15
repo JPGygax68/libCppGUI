@@ -75,9 +75,8 @@ namespace cppgui {
 
     // Layouter -----------------------------------------------------
 
-    template<class Config>
-    template<class Aspect_parent>
-    void Button__Layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
+    template<class Config, class Parent>
+    void Button__Layouter<Config, true, Parent>::init_layout()
     {
         // TODO: implement configurable alignment ?
         _layout.set_major_alignment(Alignment::cultural_major_middle);
@@ -85,50 +84,36 @@ namespace cppgui {
         _layout.set_text_element(p()->font(), p()->_label.data(), p()->_label.size(), & p()->_label_origin, & p()->_label_rect);
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    auto Button__Layouter<Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
+    template<class Config, class Parent>
+    auto Button__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
     {
         return add_padding( _layout.compute_minimal_size() );
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    void Button__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    template<class Config, class Parent>
+    void Button__Layouter<Config, true, Parent>::layout()
     {
         _layout.compute_layout( p()->extents() );
     }
 
-    /*
-    template<class Config>
-    template<class Aspect_parent>
-    inline auto cppgui::Button__Layouter<Config, true>::Aspect<Aspect_parent>::minimal_padding() -> int
-    {
-        return 5;
-    }
-    */
-
-    template<class Config>
-    template<class Aspect_parent>
-    inline void Button__Layouter<Config, true>::Aspect<Aspect_parent>::font_changed()
+    template<class Config, class Parent>
+    inline void Button__Layouter<Config, true, Parent>::font_changed()
     {
         compute_bounding_box();
         layout();
         this->invalidate();
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    inline void Button__Layouter<Config, true>::Aspect<Aspect_parent>::text_changed()
+    template<class Config, class Parent>
+    inline void Button__Layouter<Config, true, Parent>::text_changed()
     {
         compute_bounding_box();
         layout();
         this->invalidate();
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    void Button__Layouter<Config, true>::Aspect<Aspect_parent>::compute_bounding_box()
+    template<class Config, class Parent>
+    void Button__Layouter<Config, true, Parent>::compute_bounding_box()
     {
         _bbox = p()->_font.source()->compute_text_extents(0, p()->_label.data(), p()->_label.size());
     }

@@ -243,9 +243,8 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template<class Impl, class Config>
-    template<class Aspect_parent>
-    auto Vertical_scrollbar__Layouter<Impl, Config, true>::Aspect<Aspect_parent>::get_minimal_size() -> Extents
+    template<class Impl, class Config, class Parent>
+    auto Vertical_scrollbar__Layouter<Impl, Config, true, Parent>::get_minimal_size() -> Extents
     {
         // Width: based on up/down buttons, height: 3 times button height
 
@@ -254,9 +253,8 @@ namespace cppgui {
         return { btn_minsz.w, 3 * btn_minsz.h };
     }
 
-    template<class Impl, class Config>
-    template<class Aspect_parent>
-    void Vertical_scrollbar__Layouter<Impl, Config, true>::Aspect<Aspect_parent>::layout()
+    template<class Impl, class Config, class Parent>
+    void Vertical_scrollbar__Layouter<Impl, Config, true, Parent>::layout()
     {
         auto ext = p()->extents();
 

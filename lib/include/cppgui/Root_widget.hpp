@@ -3,7 +3,6 @@
 #include <functional>
 #include <stack>
 
-#include "./aspects.hpp"
 #include "./Widget.hpp"
 #include "./Container.hpp"
 
@@ -11,10 +10,7 @@ namespace cppgui {
 
     extern int dummy;
 
-    template <class Config, bool With_layout> struct Root_widget__Layouter {
-
-        template <class Aspect_parent> struct Aspect: public Aspect_parent {};
-    };
+    template <class Config, bool With_layout, class Parent> struct Root_widget__Layouter;
 
     // Root widget
 
@@ -22,7 +18,7 @@ namespace cppgui {
 
     template <class Config, bool With_layout>
     class Root_widget: 
-        public Root_widget__Layouter<Config, With_layout>::template Aspect< Config::template Root_widget__Updater< Abstract_widget<Config, With_layout> > >,
+        public Root_widget__Layouter<Config, With_layout, typename Config::template Root_widget__Updater< Abstract_widget<Config, With_layout> > >,
         public Config::template Root_widget__Container_updater< Abstract_container<Config, With_layout> >
     {
     public:
@@ -91,78 +87,69 @@ namespace cppgui {
 
     // Default implementation for Widget_updater aspect
 
-    template <class Config, bool With_layout>
-    struct Default__Root_widget__Updater {
+    template <class Config, bool With_layout, class Parent>
+    struct Default__Root_widget__Updater: public Parent 
+    {
+        using Abstract_container_t = Abstract_container<Config, With_layout>;
+        using Invalidated_handler = std::function<void()>;
+        using Root_widget_t = Root_widget<Config, With_layout>;
 
-        template <class Aspect_parent>
-        struct Aspect : public Aspect_parent {
-            using Abstract_container_t = Abstract_container<Config, With_layout>;
-            using Invalidated_handler = std::function<void()>;
-            using Root_widget_t = Root_widget<Config, With_layout>;
+        auto root_widget() -> Root_widget_t * override { return static_cast<Root_widget_t*>(this); }
 
-            auto root_widget() -> Root_widget_t * override { return static_cast<Root_widget_t*>(this); }
+        void invalidate();
 
-            void invalidate();
+        void on_invalidated(Invalidated_handler handler) { _on_invalidated = handler; }
 
-            void on_invalidated(Invalidated_handler handler) { _on_invalidated = handler; }
+    private:
+        auto p() -> Root_widget_t *  { return static_cast<Root_widget_t*>(this); }
 
-        private:
-            auto p() -> Root_widget_t *  { return static_cast<Root_widget_t*>(this); }
-
-            Invalidated_handler _on_invalidated;
-        };
+        Invalidated_handler _on_invalidated;
     };
 
     // Default implementation for Container_updater aspect
 
-    template <class Config, bool With_layout>
-    struct Default__Root_widget__Container_updater {
+    template <class Config, bool With_layout, class Parent>
+    struct Default__Root_widget__Container_updater: public Parent
+    {
+        using Widget_t = Widget<Config, With_layout>;
+        using Container_t = Container<Config, With_layout>;
+        using Root_widget_t = Root_widget<Config, With_layout>;
 
-        template <class Aspect_parent> struct Aspect : public Aspect_parent {
-            
-            using Widget_t = Widget<Config, With_layout>;
-            using Container_t = Container<Config, With_layout>;
-            using Root_widget_t = Root_widget<Config, With_layout>;
+        // Container_updater contract
 
-            // Container_updater contract
+        void child_invalidated(Widget_t *) override { _must_update = true; }
 
-            void child_invalidated(Widget_t *) override { _must_update = true; }
+        auto container_root_widget() -> Root_widget_t * override { return static_cast<Root_widget_t*>(this); }
 
-            auto container_root_widget() -> Root_widget_t * override { return static_cast<Root_widget_t*>(this); }
+        // Specific functionality 
 
-            // Specific functionality 
+        void lock() { _must_update = false; }
 
-            void lock() { _must_update = false; }
+        void unlock() { if (_must_update) p()->invalidate(); }
 
-            void unlock() { if (_must_update) p()->invalidate(); }
+    private:
+        auto p() { return static_cast<Root_widget_t*>(this); }
 
-        private:
-            auto p() { return static_cast<Root_widget_t*>(this); }
-
-            bool                _must_update;
-        };
-
+        bool                _must_update;
     };
 
     // Layouting aspect
 
-    template <class Config> struct Root_widget__Layouter<Config, true> {
+    template <class Config, class Parent> 
+    struct Root_widget__Layouter<Config, true, Parent>: public Parent 
+    {
+        class Root_widget_t: public Root_widget<Config, true> { friend struct Root_widget__Layouter; };
 
-        template <class Aspect_parent> struct Aspect: public Aspect_parent {
+        using Widget_t = Widget<Config, true>;
 
-            class Root_widget_t: public Root_widget<Config, true> { friend struct Aspect; };
+        auto p() { return static_cast<Root_widget_t*>(this); }
 
-            using Widget_t = Widget<Config, true>;
+        virtual void init_layout();
+        virtual auto get_minimal_size() -> Extents { return {0, 0}; }
+        virtual void layout();
 
-            auto p() { return static_cast<Root_widget_t*>(this); }
-
-            virtual void init_layout();
-            virtual auto get_minimal_size() -> Extents { return {0, 0}; }
-            virtual void layout();
-
-            void insert_child(Widget_t *);
-            void drop_child(Widget_t *);
-        };
+        void insert_child(Widget_t *);
+        void drop_child(Widget_t *);
     };
 
 } // ns cppgui

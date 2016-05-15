@@ -19,11 +19,7 @@ namespace cppgui {
 
     // Forward-declarations
 
-    template <class Config, bool With_layout>
-    struct Container__Layouter {
-
-        template <class Aspect_parent> struct Aspect: public Aspect_parent {};
-    };
+    template <class Config, bool With_layout, class Parent> struct Container__Layouter;
 
     // Main class
 
@@ -32,7 +28,9 @@ namespace cppgui {
         a choice of layouting algorithms, but that is bad design and will be removed.
      */
     template <class Config, bool With_layout>
-    class Container: public Container__Layouter<Config, With_layout>::template Aspect< Container_base<Config, With_layout> >
+    class Container: 
+        public Container__Layouter<Config, With_layout,
+            Container_base<Config, With_layout> >
     {
     public:
 
@@ -44,54 +42,46 @@ namespace cppgui {
 
     // Layouter aspect
 
-    template <class Config>
-    struct Container__Layouter<Config, true> {
+    template <class Config, class Parent>
+    struct Container__Layouter<Config, true, Parent>: 
+        public Box__Layouter<Config, true, Parent >
+    {
+        using Widget_t = typename Widget<Config, true>;
+        class Container_t: public Container<Config, true> { friend struct Container__Layouter; };
 
-        template <class Aspect_parent> 
-        struct Aspect: Box__Layouter<Config, true>::template Aspect< Aspect_parent >
-        {
-            using Widget_t = typename Widget<Config, true>;
-            class Container_t: public Container<Config, true> { friend struct Aspect; };
+        // Layout contract
 
-            // Layout contract
+        void init_layout() override;
+        auto get_minimal_size() -> Extents override;
+        auto get_preferred_size() -> Extents override;
+        void layout() override;
 
-            void init_layout() override;
-            auto get_minimal_size() -> Extents override;
-            auto get_preferred_size() -> Extents override;
-            void layout() override;
+        // Specific interface
 
-            // Specific interface
+        void set_layout_type(Layout_type type ) { _layout_type = type; }
 
-            void set_layout_type(Layout_type type ) { _layout_type = type; }
+        void insert_child(Widget_t *); // TODO: find a better name OR support insertion index
+        void drop_child(Widget_t *);
 
-            void insert_child(Widget_t *); // TODO: find a better name OR support insertion index
-            void drop_child(Widget_t *);
+        void set_spacing(Length spacing) { _spacing = spacing; }
 
-            void set_spacing(Length spacing) { _spacing = spacing; }
+    private:
+        auto p() { return static_cast<Container_t*>(this); }
 
-        private:
-            auto p() { return static_cast<Container_t*>(this); }
-
-            Layout_type     _layout_type = Layout_type::none;
-            Length          _spacing = 0;
-        };
+        Layout_type     _layout_type = Layout_type::none;
+        Length          _spacing = 0;
     };
 
     // Nil implementation of the Layouter aspect
 
-    template <class Config>
-    struct Container__Layouter<Config, false> {
-
-        template <class Aspect_parent> struct Aspect : public Aspect_parent {
-
-            // void recalc_sizes() {}
-        };
+    template <class Config, class Parent>
+    struct Container__Layouter<Config, false, Parent> 
+    {
+        // void recalc_sizes() {}
     };
         
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_CONTAINER(Config, With_layout) \
     template cppgui::Bordered_box       <Config, With_layout>; \
-    template cppgui::Container          <Config, With_layout>; \
-    template cppgui::Box__Layouter      <Config, With_layout>; \
-    template cppgui::Container__Layouter<Config, With_layout>;
+    template cppgui::Container          <Config, With_layout>;

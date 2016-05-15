@@ -207,32 +207,28 @@ namespace cppgui {
 
     // Updater aspect -----------------------------------------------
 
-    template<class Config, bool With_layout>
-    template<class Aspect_parent>
-    inline void Default__Root_widget__Updater<Config, With_layout>::Aspect<Aspect_parent>::invalidate()
+    template<class Config, bool With_layout, class Parent>
+    inline void Default__Root_widget__Updater<Config, With_layout, Parent>::invalidate()
     {
         _on_invalidated();
     }
 
     // Layouter aspect ----------------------------------------------
 
-    template<class Config>
-    template<class Aspect_parent>
-    inline void Root_widget__Layouter<Config, true>::Aspect<Aspect_parent>::init_layout()
+    template<class Config, class Parent>
+    void Root_widget__Layouter<Config, true, Parent>::init_layout()
     {
         p()->init_children_layout();
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    inline void Root_widget__Layouter<Config, true>::Aspect<Aspect_parent>::layout()
+    template<class Config, class Parent>
+    inline void Root_widget__Layouter<Config, true, Parent>::layout()
     {
         p()->layout_children(); 
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    inline void Root_widget__Layouter<Config, true>::Aspect<Aspect_parent>::insert_child(Widget_t *child)
+    template<class Config, class Parent>
+    inline void Root_widget__Layouter<Config, true, Parent>::insert_child(Widget_t *child)
     {
         p()->add_child(child);
 
@@ -243,9 +239,8 @@ namespace cppgui {
         p()->invalidate();
     }
 
-    template<class Config>
-    template<class Aspect_parent>
-    inline void Root_widget__Layouter<Config, true>::Aspect<Aspect_parent>::drop_child(Widget_t *child)
+    template<class Config, class Parent>
+    inline void Root_widget__Layouter<Config, true, Parent>::drop_child(Widget_t *child)
     {
         p()->remove_child(child); 
 
