@@ -128,6 +128,9 @@ add_library( ${PROJECT_NAME} STATIC
     #include/cppgui/Text_element.hpp                 include/cppgui/Text_element.ipp
     #include/cppgui/Drag_controller.hpp              include/Drag_controller.ipp
 
+    # Not a real widget, but useful to keep around for development.
+    include/cppgui/Widget_template.hpp              include/cppgui/Widget_template.ipp
+
     include/cppgui/Canvas.hpp                       include/cppgui/Canvas.ipp
     include/cppgui/Widget.hpp                       include/cppgui/Widget.ipp
     include/cppgui/Button.hpp                       include/cppgui/Button.ipp
@@ -146,6 +149,7 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Scrollbox.hpp                    include/cppgui/Scrollbox.ipp
     #include/cppgui/List_pane.hpp                    include/cppgui/List_pane.ipp
     include/cppgui/Listbox.hpp                      include/cppgui/Listbox.ipp
+    include/cppgui/Stringlist.hpp                   include/cppgui/Stringlist.ipp
 
     include/cppgui/Icon_resources.hpp               include/cppgui/Icon_resources.ipp
 
