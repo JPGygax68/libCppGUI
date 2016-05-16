@@ -16,6 +16,7 @@
 */
 
 #include "./Listbox.hpp"
+#include "Listbox.hpp"
 
 namespace cppgui {
 
@@ -244,7 +245,7 @@ namespace cppgui {
 
         while (items -- > 0 && _first_visible_item > 0)
         {
-            dy += children()[_first_visible_item - 1]->extents().h;
+            dy += children()[_first_visible_item - 1]->extents().h + _vert_extra;
 
             _first_visible_item --;
         }
@@ -277,7 +278,7 @@ namespace cppgui {
 
         while (items-- > 0 && !child_fully_before_bottom(last_child(), - (Position_delta) dy))
         {
-            dy += first_visible_child()->extents().h;
+            dy += first_visible_child()->extents().h + _vert_extra;
 
             _first_visible_item ++;
         }
@@ -295,6 +296,12 @@ namespace cppgui {
     // Layouter aspect ----------------------------------------------
 
     template<class Config, class Parent>
+    void List_pane__Layouter<Config, true, Parent>::set_item_padding(const Extents &padding)
+    {
+        _item_padding = padding;
+    }
+
+    template<class Config, class Parent>
     auto List_pane__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
     {
         Position y = 0;
@@ -304,10 +311,11 @@ namespace cppgui {
         {
             auto minsz = child->get_minimal_size();
             if (minsz.w > w_min) w_min = minsz.w;
-            y += (Position_delta) minsz.h;
+            // TODO: separator!
+            y += (Position_delta) (minsz.h + 2 * _item_padding.h);
         }
 
-        return { w_min, (Length) y };
+        return { w_min + 2 * _item_padding.w, (Length) y };
     }
 
     template<class Config, class Parent>
@@ -319,20 +327,24 @@ namespace cppgui {
     template<class Config, class Parent>
     void List_pane__Layouter<Config, true, Parent>::layout()
     {
-        auto w = extents().w;
+        auto w = extents().w - 2 * _item_padding.w;
 
-        Position y = 0;
+        Position x = (Position) _item_padding.w, y = 0;
 
         for (auto child: p()->children())
         {
+            y += (Position_delta) _item_padding.h;
+
             auto minsz = child->get_minimal_size();
 
-            child->set_position({ 0, y       });
+            child->set_position({ x, y       });
             child->set_extents ({ w, minsz.h });
             child->layout();
 
-            y += (Position_delta) minsz.h;
+            y += (Position_delta) (minsz.h + _item_padding.h);
         }
+
+        p()->_vert_extra = 2 * _item_padding.h;
     }
 
 } // ns cppgui

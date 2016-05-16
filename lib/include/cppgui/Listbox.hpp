@@ -70,12 +70,13 @@ namespace cppgui {
     {
         using Scrollbox_t = Scrollbox<Config, true, List_pane<Config, true>>;
 
-        struct Listbox_t: public Listbox<Config, true> { friend struct Listbox__Layouter; };
-        auto p() { return static_cast<Listbox_t*>(static_cast<Listbox<Config, true>*>(this)); }
-
         void layout() override;
 
         auto get_preferred_size() -> Extents override;
+
+    protected:
+        struct Listbox_t: public Listbox<Config, true> { friend struct Listbox__Layouter; };
+        auto p() { return static_cast<Listbox_t*>(static_cast<Listbox<Config, true>*>(this)); }
     };
 
     // List_pane ====================================================
@@ -120,6 +121,8 @@ namespace cppgui {
         auto hidden_items() { return visible_items() < (int) children().size() ? (int) (children().size()) - visible_items() : 0; }
 
         Index _first_visible_item, _last_visible_item;
+
+        Length  _vert_extra; // vertical padding to add to height of each item
     };
 
     // Layouter aspect
@@ -127,14 +130,19 @@ namespace cppgui {
     template<class Config, class Parent>
     struct List_pane__Layouter<Config, true, Parent>: public Parent
     {
-        struct List_pane_t: public List_pane<Config, true> { friend struct List_pane__Layouter; };
-        auto p() { return static_cast<List_pane_t*>(static_cast<List_pane<Config, true>*>(this)); }
+        void set_item_padding(const Extents &);
 
         auto get_minimal_size() -> Extents override;
 
         void compute_and_set_extents(const Extents &container_extents);
 
         void layout() override;
+
+    protected:
+        struct List_pane_t: public List_pane<Config, true> { friend struct List_pane__Layouter; };
+        auto p() { return static_cast<List_pane_t*>(static_cast<List_pane<Config, true>*>(this)); }
+
+        Extents _item_padding {};
     };
 
 } // ns cppgui
