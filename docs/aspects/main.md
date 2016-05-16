@@ -46,4 +46,4 @@ That alternative consists in "sequencing" the inheritance graph - in other words
 
 This principle, though syntactically less than beautiful, removes any runtime cost from accessing members across aspects.
 
-![Aspect chaining](aspect-chaining.svg?raw=true)
+![Aspect chaining](aspect-chaining.png)
