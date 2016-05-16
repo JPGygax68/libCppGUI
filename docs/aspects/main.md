@@ -28,7 +28,7 @@ So far, the project only has one of each category, though more are likely to com
 
 Thus, what we are aiming for would ideally look something like this:
 
-![Ideal aspect orientation](Aspects.svg?raw=true)
+![Ideal aspect orientation](Aspects.png)
 
 (The `Textbox` is of course just one of many widgets, chosen here as an example.) This diagram shows inheritance (or more accurately: specialization) as the traditional arrows, while the ties between a class and its aspects are shown as green straight lines.
 
