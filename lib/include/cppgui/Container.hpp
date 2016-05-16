@@ -66,7 +66,7 @@ namespace cppgui {
         void set_spacing(Length spacing) { _spacing = spacing; }
 
     private:
-        auto p() { return static_cast<Container_t*>(this); }
+        auto p() { return static_cast<Container_t*>(static_cast<Container<Config, true>*>(this)); }
 
         Layout_type     _layout_type = Layout_type::none;
         Length          _spacing = 0;
@@ -83,5 +83,4 @@ namespace cppgui {
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_CONTAINER(Config, With_layout) \
-    template cppgui::Bordered_box       <Config, With_layout>; \
-    template cppgui::Container          <Config, With_layout>;
+    template cppgui::Container<Config, With_layout>;

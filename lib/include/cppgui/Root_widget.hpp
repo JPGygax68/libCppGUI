@@ -94,14 +94,14 @@ namespace cppgui {
         using Invalidated_handler = std::function<void()>;
         using Root_widget_t = Root_widget<Config, With_layout>;
 
-        auto root_widget() -> Root_widget_t * override { return static_cast<Root_widget_t*>(this); }
+        auto root_widget() { return p(); }
 
         void invalidate();
 
         void on_invalidated(Invalidated_handler handler) { _on_invalidated = handler; }
 
     private:
-        auto p() -> Root_widget_t *  { return static_cast<Root_widget_t*>(this); }
+        auto p() -> Root_widget_t * { return static_cast<Root_widget_t*>(static_cast<Root_widget<Config, true>*>(this)); }
 
         Invalidated_handler _on_invalidated;
     };
@@ -128,7 +128,7 @@ namespace cppgui {
         void unlock() { if (_must_update) p()->invalidate(); }
 
     private:
-        auto p() { return static_cast<Root_widget_t*>(this); }
+        auto p() { return static_cast<Root_widget_t*>(static_cast<Root_widget<Config, With_layout>*>(this)); }
 
         bool                _must_update;
     };
@@ -142,7 +142,7 @@ namespace cppgui {
 
         using Widget_t = Widget<Config, true>;
 
-        auto p() { return static_cast<Root_widget_t*>(this); }
+        auto p() { return static_cast<Root_widget_t*>(static_cast<Root_widget<Config, true>*>(this)); }
 
         virtual void init_layout();
         virtual auto get_minimal_size() -> Extents { return {0, 0}; }
@@ -155,6 +155,6 @@ namespace cppgui {
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_ROOT_WIDGET(Config, With_layout) \
-    template cppgui::Root_widget                  <Config, With_layout>; \
-    template cppgui::Default__Root_widget__Updater<Config, With_layout>; \
-    template cppgui::Root_widget__Layouter        <Config, With_layout>;
+    template cppgui::Root_widget<Config, With_layout>; \
+    template cppgui::Root_widget__Layouter<Config, With_layout, \
+        typename Config::template Root_widget__Updater< cppgui::Abstract_widget<Config, With_layout> > >

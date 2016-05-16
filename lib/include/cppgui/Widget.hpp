@@ -263,7 +263,7 @@ namespace cppgui {
         void invalidate();
 
     private:
-        auto p() { return static_cast<Widget_t*>(this); }
+        auto p() { return static_cast<Widget_t*>(static_cast<Widget<Config, true>*>(this)); }
     };
 
     // Layouting aspect
@@ -297,7 +297,7 @@ namespace cppgui {
     protected:
 
         class Widget_t: public Widget<Config, true> { friend struct Widget__Layouter; };
-        auto p() { return static_cast<Widget_t*>(this); }
+        auto p() { return static_cast<Widget_t*>(static_cast<Widget<Config, true>*>(this)); }
 
         // "Stylesheet" TODO: make this into another aspect ?
         static constexpr auto button_padding() -> Padding { return { 5, 5, 5, 5 }; }
@@ -310,5 +310,6 @@ namespace cppgui {
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_WIDGET(Config, With_layout) \
-    template cppgui::Widget           <Config, With_layout>;
+    template cppgui::Widget<Config, With_layout>; \
+    template cppgui::Widget__Layouter<Config, With_layout, cppgui::Abstract_widget<Config, With_layout>>;
 

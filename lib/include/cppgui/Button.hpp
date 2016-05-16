@@ -86,7 +86,7 @@ namespace cppgui {
     protected:
         class Button_t: public Button<Config, true> { friend struct Button__Layouter; };
 
-        auto p() { return static_cast<Button_t*>(this); }
+        auto p() { return static_cast<Button_t*>(static_cast<Button<Config, true>*>(this)); }
         void compute_bounding_box();
 
         Text_bounding_box       _bbox;
@@ -106,6 +106,4 @@ namespace cppgui {
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_BUTTON(Config, With_layout) \
-    template cppgui::Bordered_box    <Config, With_layout>; \
-    template cppgui::Button          <Config, With_layout>; \
-    template cppgui::Button__Layouter<Config, With_layout>;
+    template cppgui::Button<Config, With_layout>;

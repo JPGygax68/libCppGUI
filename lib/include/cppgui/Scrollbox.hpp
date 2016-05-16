@@ -72,7 +72,7 @@ namespace cppgui {
     struct Scrollbox__Layouter<Config, true, Pane, Parent>: public Parent
     {
         struct Scrollbox_t: public Scrollbox<Config, true, Pane> { friend struct Scrollbox__Layouter; };
-        auto p() { return static_cast<Scrollbox_t*>(this); }
+        auto p() { return static_cast<Scrollbox_t*>(static_cast<Scrollbox<Config, true, Pane>*>(this)); }
 
         auto get_minimal_size() -> Extents override;
         void layout() override;
@@ -121,7 +121,7 @@ namespace cppgui {
     struct Scrollable_pane__Layouter<Config, true, Parent>: public Parent
     {
         struct Scrollable_pane_t: public Scrollable_pane<Config, true> { friend struct Scrollable_pane__Layouter; };
-        auto p() { return static_cast<Scrollable_pane_t*>(this); }
+        auto p() { return static_cast<Scrollable_pane_t*>(static_cast<Scrollable_pane<Config, true>*>(this)); }
 
         /** Because the size of a scrollable pane can by definition exceed that of its container,
             this additional (CRTP) entry point is provided as an occasion for the pane implementation

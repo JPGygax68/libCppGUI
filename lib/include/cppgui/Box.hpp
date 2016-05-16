@@ -28,7 +28,7 @@ namespace cppgui {
         Border      _border {1, {0, 0, 0, 1}}; // TODO: support different borders for each cardinal direction ?
 
         class Widget_t: public Widget<Config, With_layout> { friend struct Bordered_box; };
-        auto p() { return static_cast<Widget<Config, With_layout>*>(this); }
+        auto p() { return static_cast<Widget_t*>(static_cast<Widget<Config, With_layout>*>(this)); }
     };
 
     // Bordered_box  Layouter aspect

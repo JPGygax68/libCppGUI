@@ -117,7 +117,7 @@ namespace cppgui {
     {
         class Textbox_t: public Textbox<Config, true> { friend struct Textbox__Layouter; };
 
-        auto p() { return static_cast<Textbox_t*>(this); }
+        auto p() { return static_cast<Textbox_t*>(static_cast<Textbox<Config, true>*>(this)); }
 
         Textbox__Layouter();
 
@@ -136,5 +136,5 @@ namespace cppgui {
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_TEXTBOX(Config, With_layout) \
-    template cppgui::Textbox          <Config, With_layout>; \
-    template cppgui::Box__Layouter    <Config, With_layout>;
+    template cppgui::Textbox<Config, With_layout>; \
+    template cppgui::Textbox__Layouter<Config, With_layout, cppgui::Textbox<Config, With_layout>>;

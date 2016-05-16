@@ -66,10 +66,10 @@ namespace cppgui {
     template <class Config, bool With_layout, class Parent>
     struct Default__Container_base__Container_updater: public Parent 
     {
-        class Container_t: public Container_base<Config, true> { friend struct Default__Container_base__Container_updater; };
+        class Container_base_t: public Container_base<Config, true> { friend struct Default__Container_base__Container_updater; };
         using Widget_t = Widget<Config, true>;
 
-        auto p() { return static_cast<Container_t*>(this); }
+        auto p() { return static_cast<Container_base_t*>(static_cast<Container_base<Config, true>*>(this)); }
 
         void child_invalidated(Widget_t *) override;
 

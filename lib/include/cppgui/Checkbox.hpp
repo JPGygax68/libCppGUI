@@ -77,7 +77,7 @@ namespace cppgui {
 
     private:
         class Checkbox_t: public Checkbox<Config, true> { friend struct Checkbox__Layouter; };
-        auto p() { return static_cast<Checkbox_t*>(this); }
+        auto p() { return static_cast<Checkbox_t*>(static_cast<Checkbox<Config, true>*>(this)); }
             
         void compute_em_bounds();
         void compute_label_size();

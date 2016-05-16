@@ -128,7 +128,7 @@ namespace cppgui {
     protected:
         class Vertical_scrollbar_base_t: public Vertical_scrollbar_base<Impl, Config, true> { friend struct Vertical_scrollbar__Layouter; };
 
-        auto p() { return static_cast<Vertical_scrollbar_base_t*>(this); }
+        auto p() { return static_cast<Vertical_scrollbar_base_t*>(static_cast<Vertical_scrollbar_base<Impl, Config, true>*>(this)); }
     };
 
     // Customizable specialization ==================================

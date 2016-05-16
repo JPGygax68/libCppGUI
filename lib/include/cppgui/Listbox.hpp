@@ -54,7 +54,7 @@ namespace cppgui {
         using Scrollbox_t = Scrollbox<Config, true, List_pane<Config, true>>;
 
         struct Listbox_t: public Listbox<Config, true> { friend struct Listbox__Layouter; };
-        auto p() { return static_cast<Listbox_t*>(this); }
+        auto p() { return static_cast<Listbox_t*>(static_cast<Listbox<Config, true>*>(this)); }
 
         void layout() override;
 
@@ -111,7 +111,7 @@ namespace cppgui {
     struct List_pane__Layouter<Config, true, Parent>: public Parent
     {
         struct List_pane_t: public List_pane<Config, true> { friend struct List_pane__Layouter; };
-        auto p() { return static_cast<List_pane_t*>(this); }
+        auto p() { return static_cast<List_pane_t*>(static_cast<List_pane<Config, true>*>(this)); }
 
         auto get_minimal_size() -> Extents override;
 

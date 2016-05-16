@@ -44,14 +44,14 @@ namespace cppgui {
         auto y1_item = item->rectangle().top(), y2_item = item->rectangle().bottom();
 
         // Item not already fully visible ?
-        if (!(y1_item >= 0 && y2_item <= _content_rect.ext.h))
+        if (!(y1_item >= 0 && y2_item <= _content_rect.ext.bottom()))
         {
             Position_delta dy = 0;
             Index first = 0;
 
             for (auto i = 0U; i < _content_pane.children().size(); i++)
             {
-                if (y2_item + dy <= _content_rect.ext.h) break;
+                if (y2_item + dy <= _content_rect.ext.bottom()) break;
 
                 dy = - _content_pane.children()[++first]->position().y;
             }

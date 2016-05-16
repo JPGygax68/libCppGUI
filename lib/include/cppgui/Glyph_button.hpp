@@ -76,7 +76,7 @@ namespace cppgui {
 
     private:
         class Glyph_button_t: public Glyph_button<Config, true> { friend struct Glyph_button__Layouter; };
-        auto p() { return static_cast<Glyph_button_t*>(this); }
+        auto p() { return static_cast<Glyph_button_t*>(static_cast<Glyph_button<Config, true>*>(this)); }
 
         void compute_sizes();
 
@@ -90,6 +90,4 @@ namespace cppgui {
 } // ns cppui
 
 #define CPPGUI_INSTANTIATE_GLYPH_BUTTON(Config, With_layout) \
-    template cppgui::Bordered_box          <Config, With_layout>; \
-    template cppgui::Glyph_button          <Config, With_layout>; \
-    template cppgui::Glyph_button__Layouter<Config, With_layout>;
+    template cppgui::Glyph_button<Config, With_layout>;

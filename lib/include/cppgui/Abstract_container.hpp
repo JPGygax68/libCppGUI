@@ -81,10 +81,10 @@ namespace cppgui {
     struct Default_Abstract_container_Container_updater: public Parent 
     {
         using Widget_t = Widget<Config, With_layout>;
-        class Container_t: public Container<Config, true> { friend struct Default_Abstract_container_Container_updater; };
+        class Container_t: public Container<Config, With_layout> { friend struct Default_Abstract_container_Container_updater; };
         using Root_widget_t = Root_widget<Config, With_layout>;
 
-        auto p() { return static_cast<Container_t*>(this); }
+        auto p() { return static_cast<Container_t*>(static_cast<Container<Config, With_layout>*>(this)); }
 
         virtual void child_invalidated(Widget_t *) = 0;
 
@@ -96,7 +96,7 @@ namespace cppgui {
     {
         class Container_t: public Container<Config, true> { friend struct Abstract_container__Layouter; };
 
-        auto p() { return static_cast<Container_t*>(this); }
+        auto p() { return static_cast<Container_t*>(static_cast<Container<Config, true>*>(this)); }
 
         void init_children_layout();
         void layout_children();
@@ -105,4 +105,4 @@ namespace cppgui {
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_ABSTRACT_CONTAINER(Config, With_layout) \
-    template cppgui::Abstract_container          <Config, With_layout>;
+    template cppgui::Abstract_container<Config, With_layout>;

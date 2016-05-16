@@ -68,7 +68,7 @@ namespace cppgui {
 
     private:
         class Label_t: public Label<Config, true> { friend struct Label__Layouter; };
-        auto p() { return static_cast<Label_t*>(this); }
+        auto p() { return static_cast<Label_t*>(static_cast<Label<Config, true>*>(this)); }
 
         // "Stylesheet"
         static constexpr auto default_padding() -> Padding { return { 4, 4, 4, 4 }; }
@@ -81,4 +81,5 @@ namespace cppgui {
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_LABEL(Config, With_layout) \
-    template cppgui::Label<Config, With_layout>;
+    template cppgui::Label<Config, With_layout>; \
+    template cppgui::Label__Layouter<Config, With_layout, cppgui::Label<Config, With_layout>>;
