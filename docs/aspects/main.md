@@ -36,7 +36,7 @@ Thus, what we are aiming for would ideally look something like this:
 
 When thinking about compositing functionality in C++, multiple inheritance is naturally the first thing that comes to mind: simply write the various building blocks as classes, and let the widget class inherit from the blocks that it needs. If that principle could be applied directly, this is what it would look like:
 
-![Aspects via inheritance](Aspects_via_multiple_inheritance.svg?raw=true)
+![Aspects via inheritance](Aspects_via_multiple_inheritance.png)
 
 The problem is immediately apparent: an aspect derived from another (in this example, `Textbox__Layouter` derived from `Widget__Layouter`) can introduce the "diamond problem" - i.e., a class inherited more than once. This happens when the interface introduced by the base aspect (`Widget__Layouter`) is a) at least partly polymorphic (implying that overrides do or will exist), and b) must be publicly available. (This is of course the case for the Layouter aspect, which is responsible for placing visual elements in response to changes in size or style.)
 
