@@ -1,5 +1,22 @@
 #pragma once
 
+/*  libCppGUI - A GUI library for C++11/14
+    
+    Copyright 2016 Hans-Peter Gygax
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+
 #include <cppgui/Box.hpp>
 #include <cppgui/Root_widget.hpp>
 #include <cppgui/Label.hpp>
@@ -47,19 +64,3 @@
     CPPGUI_INSTANTIATE_CONTAINER         (Config, With_layout); \
     CPPGUI_INSTANTIATE_VERTICAL_SCROLLBAR(Config, With_layout); \
     CPPGUI_INSTANTIATE_LISTBOX           (Config, With_layout);
-
-/*
-#define CPPGUI_EXTERN_WIDGET_INSTANTIATIONS(Config, With_layout) \
-    extern CPPGUI_INSTANTIATE_WIDGET            (Config, With_layout); \
-    extern CPPGUI_INSTANTIATE_LABEL             (Config, With_layout); \
-    extern CPPGUI_INSTANTIATE_BUTTON            (Config, With_layout); \
-    extern CPPGUI_INSTANTIATE_GLYPH_BUTTON      (Config, With_layout); \
-    extern CPPGUI_INSTANTIATE_ROOT_WIDGET       (Config, With_layout); \
-    extern CPPGUI_INSTANTIATE_TEXTBOX           (Config, With_layout); \
-    extern CPPGUI_INSTANTIATE_CHECKBOX          (Config, With_layout); \
-    extern CPPGUI_INSTANTIATE_ABSTRACT_CONTAINER(Config, With_layout); \
-    extern CPPGUI_INSTANTIATE_CONTAINER_BASE    (Config, With_layout); \
-    extern CPPGUI_INSTANTIATE_CONTAINER         (Config, With_layout); \
-    extern CPPGUI_INSTANTIATE_VERTICAL_SCROLLBAR(Config, With_layout); \
-    extern CPPGUI_INSTANTIATE_LISTBOX           (Config, With_layout);
-*/
