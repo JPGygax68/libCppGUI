@@ -72,8 +72,6 @@ namespace cppgui {
          */
         virtual void compute_view_from_data() {}
 
-        virtual auto root_widget() -> Root_widget_t * = 0;
-
         // Input event injection
 
         /** By convention, mouse positions are passed to a widget as relative to
@@ -197,7 +195,8 @@ namespace cppgui {
     protected:
 
         auto container() const { return _container; }
-        auto root_widget() -> Root_widget_t * override { return _container->container_root_widget(); }
+
+        virtual auto root_widget() -> Root_widget_t * { return _container->container_root_widget(); }
 
         void pass_up_and_notify_focus(); // default take_focus() action
 
