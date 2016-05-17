@@ -130,6 +130,8 @@ namespace cppgui {
     class Scrollable_pane: 
         public Scrollable_pane__Layouter<Config, With_layout, Scrollable_pane_base<Config, With_layout> >
     {
+    protected:
+        static constexpr auto element_background_color() { return Color{ 1, 1, 1, 1 }; }
     };
 
     // Layouter aspect

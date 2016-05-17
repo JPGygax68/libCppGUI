@@ -90,14 +90,19 @@ namespace cppgui {
     {
     public:
         using Widget_t = Widget<Config, With_layout>;
+        using Canvas_t = typename Widget_t::Canvas_t;
         using Listbox_t = Listbox<Config, With_layout>;
         using Scrollable_pane_t = Scrollable_pane<Config, With_layout>;
         using Parent_t = Scrollable_pane_t;
         using Parent_class = Scrollable_pane<Config, With_layout>;
 
+        void set_separator(const Separator &);
+
         void init() override;
 
         void compute_view_from_data() override;
+
+        void render(Canvas_t *, const Point &offset) override;
 
         // Interface with Scrollbox container
 
@@ -105,6 +110,7 @@ namespace cppgui {
 
     protected:
         friend class Listbox_t;
+        using Mapped_separator_t = Mapped_separator<typename Config::Renderer::native_color>;
 
         auto listbox() { return static_cast<Listbox_t*>(container()); }
 
@@ -120,12 +126,14 @@ namespace cppgui {
         auto visible_items() const { return _last_visible_item - _first_visible_item + 1;  }
         auto hidden_items() { return visible_items() < (int) children().size() ? (int) (children().size()) - visible_items() : 0; }
 
-        Index _first_visible_item, _last_visible_item;
+        Mapped_separator_t  _separator {};
 
-        Length  _vert_extra; // vertical padding to add to height of each item
+        Length              _tot_item_pad; // vertical padding to add to height of each item
+
+        Index               _first_visible_item, _last_visible_item;
     };
 
-    // Layouter aspect
+    // List_pane Layouter aspect
 
     template<class Config, class Parent>
     struct List_pane__Layouter<Config, true, Parent>: public Parent

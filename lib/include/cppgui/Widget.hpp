@@ -111,7 +111,7 @@ namespace cppgui {
         /** Convention: the provided position is an offset to be added to the widget's
             own coordinates.
          */
-        virtual void render(Canvas_t *, const Point &offs) = 0;
+        virtual void render(Canvas_t *, const Point &offset) = 0;
 
         virtual bool handle_key_down(const Keycode &) { return false; }
 

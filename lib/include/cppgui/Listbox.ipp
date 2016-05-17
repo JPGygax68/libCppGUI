@@ -151,6 +151,12 @@ namespace cppgui {
     // List_pane ====================================================
 
     template<class Config, bool With_layout>
+    void List_pane<Config, With_layout>::set_separator(const Separator &sep)
+    {
+        _separator = { sep.width, Canvas_t::rgba_to_native(sep.color) };
+    }
+
+    template<class Config, bool With_layout>
     void List_pane<Config, With_layout>::init()
     {
         Parent_class::init();
@@ -164,6 +170,32 @@ namespace cppgui {
         Parent_class::compute_view_from_data();
 
         compute_visible_item_range();
+    }
+
+    template<class Config, bool With_layout>
+    void List_pane<Config, With_layout>::render(Canvas_t *canvas, const Point & offset)
+    {
+        auto pos = offset + position();
+
+        Length w = extents().w;
+        Position y = 0;
+
+        for (auto i = 0U; i < children().size(); i ++)
+        {
+            auto child = children()[i];
+
+            auto h = child->extents().h + _tot_item_pad;
+
+            fill_rect(canvas, {{0, y}, {w, h}}, pos, Canvas_t::rgba_to_native(element_background_color()));
+
+            child->render(canvas, pos);
+
+            y += (Position_delta) h;
+
+            fill_rect(canvas, {{0, y}, {w, _separator.width}}, pos, _separator.color);
+
+            y += _separator.width;
+        }
     }
 
     template<class Config, bool With_layout>
@@ -245,7 +277,7 @@ namespace cppgui {
 
         while (items -- > 0 && _first_visible_item > 0)
         {
-            dy += children()[_first_visible_item - 1]->extents().h + _vert_extra;
+            dy += children()[_first_visible_item - 1]->extents().h + _tot_item_pad + _separator.width;
 
             _first_visible_item --;
         }
@@ -278,7 +310,7 @@ namespace cppgui {
 
         while (items-- > 0 && !child_fully_before_bottom(last_child(), - (Position_delta) dy))
         {
-            dy += first_visible_child()->extents().h + _vert_extra;
+            dy += first_visible_child()->extents().h + _tot_item_pad + _separator.width;
 
             _first_visible_item ++;
         }
@@ -304,18 +336,19 @@ namespace cppgui {
     template<class Config, class Parent>
     auto List_pane__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
     {
-        Position y = 0;
+        Length h_tot = 0;
         Width w_min = 0;
 
         for (auto child: p()->children())
         {
             auto minsz = child->get_minimal_size();
             if (minsz.w > w_min) w_min = minsz.w;
-            // TODO: separator!
-            y += (Position_delta) (minsz.h + 2 * _item_padding.h);
+            h_tot += minsz.h + 2 * _item_padding.h + p()->_separator.width;
         }
 
-        return { w_min + 2 * _item_padding.w, (Length) y };
+        h_tot -= p()->_separator.width;
+
+        return { w_min + 2 * _item_padding.w, h_tot };
     }
 
     template<class Config, class Parent>
@@ -341,10 +374,12 @@ namespace cppgui {
             child->set_extents ({ w, minsz.h });
             child->layout();
 
-            y += (Position_delta) (minsz.h + _item_padding.h);
+            y += (Position_delta) minsz.h;
+            y += (Position_delta) _item_padding.h;
+            y += (Position_delta) p()->_separator.width;
         }
 
-        p()->_vert_extra = 2 * _item_padding.h;
+        p()->_tot_item_pad = 2 * _item_padding.h;
     }
 
 } // ns cppgui

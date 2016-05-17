@@ -69,7 +69,14 @@ namespace cppgui {
         Color       color;
     };
 
+    template<class NativeColorT>
+    struct Mapped_border {
+        Width           width;
+        NativeColorT    color;
+    };
+
     using Separator = Border; // TODO: if Border gets more sophisticated, this will need to become its own structure
+    template<class Renderer> using Mapped_separator = Mapped_border<Renderer>;
 
     enum Navigation_unit {
         full_range                  /* 0: to beginning, 1: to end */, 
