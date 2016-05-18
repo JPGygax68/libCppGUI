@@ -148,16 +148,16 @@ namespace cppgui {
         return { w + 2 * p()->_border.width, h + 2 * p()->_border.width };
     }
 
-    // List_pane ====================================================
+    // List_pane_base ====================================================
 
     template<class Config, bool With_layout>
-    void List_pane<Config, With_layout>::set_separator(const Separator &sep)
+    void List_pane_base<Config, With_layout>::set_separator(const Separator &sep)
     {
         _separator = { sep.width, Canvas_t::rgba_to_native(sep.color) };
     }
 
     template<class Config, bool With_layout>
-    void List_pane<Config, With_layout>::init()
+    void List_pane_base<Config, With_layout>::init()
     {
         Parent_class::init();
 
@@ -165,7 +165,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void List_pane<Config, With_layout>::compute_view_from_data()
+    void List_pane_base<Config, With_layout>::compute_view_from_data()
     {
         Parent_class::compute_view_from_data();
 
@@ -173,22 +173,24 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void List_pane<Config, With_layout>::render(Canvas_t *canvas, const Point & offset)
+    void List_pane_base<Config, With_layout>::render(Canvas_t *canvas, const Point & offset)
     {
         auto pos = offset + position();
 
         Length w = extents().w;
         Position y = 0;
 
-        for (auto i = 0U; i < children().size(); i ++)
+        for (auto i = 0U; ; ) // i < children().size(); i ++)
         {
             auto child = children()[i];
 
-            auto h = child->extents().h + _tot_item_pad;
+            auto h = child->extents().h + _vert_item_padding;
 
             fill_rect(canvas, {{0, y}, {w, h}}, pos, Canvas_t::rgba_to_native(element_background_color()));
 
             child->render(canvas, pos);
+
+            if (++i >= children().size()) break; // we're done here
 
             y += (Position_delta) h;
 
@@ -199,7 +201,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void List_pane<Config, With_layout>::scroll(Navigation_unit unit, Fraction<int> delta)
+    void List_pane_base<Config, With_layout>::scroll(Navigation_unit unit, Fraction<int> delta)
     {
         if (!children().empty())
         {
@@ -232,26 +234,26 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void List_pane<Config, With_layout>::compute_visible_item_range()
+    void List_pane_base<Config, With_layout>::compute_visible_item_range()
     {
         _first_visible_item = scan_children_forward(0, [this](auto child) { return child_fully_after_top(child); });
         _last_visible_item  = scan_children_forward(_first_visible_item, [this](auto child) { return !child_fully_before_bottom(child); }) - 1;
     }
 
     template<class Config, bool With_layout>
-    bool List_pane<Config, With_layout>::child_fully_after_top(Widget_t * child, Position_delta offset)
+    bool List_pane_base<Config, With_layout>::child_fully_after_top(Widget_t * child, Position_delta offset)
     {
         return position().y + offset + child->position().y >= listbox()->content_rectangle().pos.y;
     }
 
     template<class Config, bool With_layout>
-    bool List_pane<Config, With_layout>::child_fully_before_bottom(Widget_t * child, Position_delta offset)
+    bool List_pane_base<Config, With_layout>::child_fully_before_bottom(Widget_t * child, Position_delta offset)
     {
         return position().y + offset + child->rectangle().bottom() <= listbox()->content_rectangle().bottom();
     }
 
     template<class Config, bool With_layout>
-    void List_pane<Config, With_layout>::scroll_by_items(int delta)
+    void List_pane_base<Config, With_layout>::scroll_by_items(int delta)
     {
         if (delta < 0)
         {
@@ -270,14 +272,14 @@ namespace cppgui {
     // TODO: return a boolean to indicate whether scrolling was possible or not ?
 
     template<class Config, bool With_layout>
-    void List_pane<Config, With_layout>::scroll_up(Count items)
+    void List_pane_base<Config, With_layout>::scroll_up(Count items)
         // Note: scrolling UP means shifting the pane DOWN!
     {
         Length dy = 0;
 
         while (items -- > 0 && _first_visible_item > 0)
         {
-            dy += children()[_first_visible_item - 1]->extents().h + _tot_item_pad + _separator.width;
+            dy += children()[_first_visible_item - 1]->extents().h + _vert_item_padding + _separator.width;
 
             _first_visible_item --;
         }
@@ -291,7 +293,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void List_pane<Config, With_layout>::scroll_by_pages(int delta)
+    void List_pane_base<Config, With_layout>::scroll_by_pages(int delta)
     {
         int items = (int) children().size() * delta * (int) listbox()->content_rectangle().ext.h / (int) extents().h;
 
@@ -303,14 +305,14 @@ namespace cppgui {
     // TODO: return a boolean to indicate whether scrolling was possible or not ?
 
     template<class Config, bool With_layout>
-    void List_pane<Config, With_layout>::scroll_down(Count items)
+    void List_pane_base<Config, With_layout>::scroll_down(Count items)
         // Note: scrolling DOWN means shifting the pane UP!
     {
         Length dy = 0;
 
         while (items-- > 0 && !child_fully_before_bottom(last_child(), - (Position_delta) dy))
         {
-            dy += first_visible_child()->extents().h + _tot_item_pad + _separator.width;
+            dy += first_visible_child()->extents().h + _vert_item_padding + _separator.width;
 
             _first_visible_item ++;
         }
@@ -379,7 +381,7 @@ namespace cppgui {
             y += (Position_delta) p()->_separator.width;
         }
 
-        p()->_tot_item_pad = 2 * _item_padding.h;
+        p()->_vert_item_padding = 2 * _item_padding.h;
     }
 
 } // ns cppgui

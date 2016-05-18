@@ -73,7 +73,7 @@ namespace cppgui {
     }
 
     template <class Config, bool With_layout>
-    inline void Abstract_widget<Config, With_layout>::fill(Canvas_t *r, const Point &offs, const Native_color &color)
+    void Abstract_widget<Config, With_layout>::fill(Canvas_t *r, const Point &offs, const Native_color &color)
     {
         fill_rect(r, rectangle(), offs, color);
 

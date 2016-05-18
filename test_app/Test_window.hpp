@@ -51,7 +51,7 @@ private:
     Text_input_dialog_t         _input_dlg;
     Vertical_scrollbar          _vert_scrollbar;   
     Textbox                     _scrollbar_pos;
-    List_pane                   _sb_pane;
+    List_pane_base                   _sb_pane;
     std::vector<Button>         _sb_buttons;
     std::vector<Button>         _lb_buttons;
     Listbox                     _listbox;

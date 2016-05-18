@@ -27,20 +27,20 @@ namespace cppgui {
 
     template<class Config, bool With_layout, class Parent> struct Listbox__Layouter;
 
-    template<class Config, bool With_layout> class List_pane;
+    template<class Config, bool With_layout> class List_pane_base;
 
     /** The Listbox 
      */
     template<class Config, bool With_layout>
     class Listbox: 
         public Listbox__Layouter<Config, With_layout,
-            Scrollbox<Config, With_layout, List_pane<Config, With_layout> > >
+            Scrollbox<Config, With_layout, List_pane_base<Config, With_layout> > >
     {
     public:
         using Widget_t = Widget<Config, With_layout>;
         using Container_t = Container<Config, With_layout>;
         //using Canvas_t = typename Canvas<typename Config::Renderer>;
-        using List_pane_t = List_pane<Config, With_layout>;
+        using List_pane_t = List_pane_base<Config, With_layout>;
         using Layoutable_widget_t = Widget<Config, true>; // THIS IS SPECIAL - only layoutable widgets can be added at runtime
 
         Listbox();
@@ -68,7 +68,7 @@ namespace cppgui {
     template<class Config, class Parent>
     struct Listbox__Layouter<Config, true, Parent>: public Parent 
     {
-        using Scrollbox_t = Scrollbox<Config, true, List_pane<Config, true>>;
+        using Scrollbox_t = Scrollbox<Config, true, List_pane_base<Config, true>>;
 
         void layout() override;
 
@@ -84,7 +84,7 @@ namespace cppgui {
     template <class Config, bool With_layout, class Parent> struct List_pane__Layouter;
 
     template<class Config, bool With_layout>
-    class List_pane: 
+    class List_pane_base: 
         public List_pane__Layouter<Config, With_layout, 
             Scrollable_pane<Config, With_layout> >
     {
@@ -128,7 +128,7 @@ namespace cppgui {
 
         Mapped_separator_t  _separator {};
 
-        Length              _tot_item_pad; // vertical padding to add to height of each item
+        Length              _vert_item_padding; // vertical padding to add to height of each item
 
         Index               _first_visible_item, _last_visible_item;
     };
@@ -147,14 +147,21 @@ namespace cppgui {
         void layout() override;
 
     protected:
-        struct List_pane_t: public List_pane<Config, true> { friend struct List_pane__Layouter; };
-        auto p() { return static_cast<List_pane_t*>(static_cast<List_pane<Config, true>*>(this)); }
+        struct List_pane_t: public List_pane_base<Config, true> { friend struct List_pane__Layouter; };
+        auto p() { return static_cast<List_pane_t*>(static_cast<List_pane_base<Config, true>*>(this)); }
 
         Extents _item_padding {};
+    };
+
+    // Concrete class 
+
+    template<class Config, bool With_layout>
+    class List_pane: public List_pane_base<Config, With_layout>
+    {
     };
 
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_LISTBOX(Config, With_layout) \
-    template cppgui::Listbox  <Config, With_layout>; \
+    template cppgui::Listbox<Config, With_layout>; \
     template cppgui::List_pane<Config, With_layout>;

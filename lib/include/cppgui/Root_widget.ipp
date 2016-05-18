@@ -225,7 +225,7 @@ namespace cppgui {
     // Updater aspect -----------------------------------------------
 
     template<class Config, bool With_layout, class Parent>
-    inline void Default__Root_widget__Updater<Config, With_layout, Parent>::invalidate()
+    void Default__Root_widget__Updater<Config, With_layout, Parent>::invalidate()
     {
         _on_invalidated();
     }
@@ -239,13 +239,13 @@ namespace cppgui {
     }
 
     template<class Config, class Parent>
-    inline void Root_widget__Layouter<Config, true, Parent>::layout()
+    void Root_widget__Layouter<Config, true, Parent>::layout()
     {
         p()->layout_children(); 
     }
 
     template<class Config, class Parent>
-    inline void Root_widget__Layouter<Config, true, Parent>::insert_child(Widget_t *child)
+    void Root_widget__Layouter<Config, true, Parent>::insert_child(Widget_t *child)
     {
         p()->add_child(child);
 
@@ -257,7 +257,7 @@ namespace cppgui {
     }
 
     template<class Config, class Parent>
-    inline void Root_widget__Layouter<Config, true, Parent>::drop_child(Widget_t *child)
+    void Root_widget__Layouter<Config, true, Parent>::drop_child(Widget_t *child)
     {
         p()->remove_child(child); 
 
@@ -265,3 +265,10 @@ namespace cppgui {
     }
 
 } // ns cppgui
+
+
+#define CPPGUI_INSTANTIATE_ROOT_WIDGET(Config, With_layout) \
+    template cppgui::Root_widget<Config, With_layout>; \
+    template typename Config::template Root_widget__Updater< cppgui::Abstract_widget<Config, With_layout> >; \
+    template cppgui::Root_widget__Layouter<Config, With_layout, \
+        typename Config::template Root_widget__Updater< cppgui::Abstract_widget<Config, With_layout> > >;

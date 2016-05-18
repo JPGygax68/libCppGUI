@@ -44,7 +44,7 @@ namespace cppgui {
         using Scrollable_pane_t = Pane; // Scrollable_pane<Config, With_layout>;
         using Keyboard = typename Config::Keyboard;
         using Keycode = typename Keyboard::Keycode;
-        //using List_pane_t = List_pane<Config, With_layout>;
+        //using List_pane_t = List_pane_base<Config, With_layout>;
 
         using Navigation_handler = std::function<void(Navigation_unit)>;
 
