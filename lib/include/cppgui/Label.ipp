@@ -53,7 +53,7 @@ namespace cppgui {
 
         if (has_focus())
         {
-            auto r = _text_rect.grow({3, 2});
+            auto r = _text_rect + Extents{3, 2};
             cnv->draw_stippled_rectangle_outline(pos.x + r.pos.x, pos.y + r.pos.y, r.ext.w, r.ext.h, {0, 0, 0.5f, 1});
         }
     }

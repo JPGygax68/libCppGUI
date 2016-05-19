@@ -23,8 +23,6 @@
 
 namespace cppgui {
 
-    using Padding = std::array<Width, 4>;
-
     enum Alignment {
         cultural_minor_start,       // = left in western culture
         cultural_minor_middle,      

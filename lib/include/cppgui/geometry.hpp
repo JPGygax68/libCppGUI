@@ -17,6 +17,7 @@
     limitations under the License.
 */
 
+#include <array>
 #include <cassert>
 
 namespace cppgui {
@@ -128,6 +129,8 @@ namespace cppgui {
         return { pos.x - static_cast<Position>(ext.w), pos.y - static_cast<Position>(ext.h) }; 
     }
 
+    using Padding = std::array<Width, 4>;
+
     struct Rectangle {
 
         Point pos;
@@ -171,14 +174,28 @@ namespace cppgui {
             }; 
         }
 
-        auto grow(Length l) const -> Rectangle { return grow({ l, l }); }
+        auto operator + (Length l) const -> Rectangle { return *this + Extents{ l, l }; }
 
-        auto grow(const Extents &delta) const -> Rectangle { 
-
+        auto operator + (const Extents &delta) const -> Rectangle 
+        { 
             return { 
                 pos.x - static_cast<Position>(delta.w), pos.y - static_cast<Position>(delta.h), 
                 ext.w + 2 * delta.w, ext.h + 2 * delta.h 
             }; 
+        }
+
+        void grow(Length l) { grow(Extents{ l, l }); }
+
+        void grow(const Extents &delta)
+        { 
+            pos.x -= static_cast<Position>(delta.w), pos.y -= static_cast<Position>(delta.h);
+            ext.w += 2 * delta.w, ext.h += 2 * delta.h;
+        }
+
+        void grow(const Padding &padding)
+        {
+            pos.x -= static_cast<Position>(padding[3]), pos.y -= static_cast<Position>(padding[0]);
+            ext.w += padding[3] + padding[1], ext.h += padding[0] + padding[2];
         }
 
     };

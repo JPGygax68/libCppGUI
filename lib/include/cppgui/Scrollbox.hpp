@@ -131,7 +131,7 @@ namespace cppgui {
         public Scrollable_pane__Layouter<Config, With_layout, Scrollable_pane_base<Config, With_layout> >
     {
     protected:
-        static constexpr auto element_background_color()            { return Color{ 0.7f, 0.7f, 0.7f, 1 }; }
+        static constexpr auto element_background_color()            { return Color{ 0.8f, 0.8f, 0.8f, 1 }; }
         static constexpr auto element_background_color_selected()   { return Color{ 0, 0.7f, 1, 1 }; }
     };
 
