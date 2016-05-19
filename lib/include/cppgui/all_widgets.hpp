@@ -48,7 +48,7 @@
     using Custom_vertical_scrollbar = cppgui::Custom_vertical_scrollbar <Config, With_layout>; \
     using Vertical_scrollbar        = cppgui::Vertical_scrollbar        <Config, With_layout>; \
     using Listbox                   = cppgui::Listbox                   <Config, With_layout>; \
-    using List_pane_base                 = cppgui::List_pane_base                 <Config, With_layout>;
+    using List_pane                 = cppgui::List_pane                 <Config, With_layout>;
     //using Canvas_t = cppgui::Canvas<Renderer>; 
 
 #define CPPGUI_INSTANTIATE_WIDGET_TYPES(Config, With_layout) \

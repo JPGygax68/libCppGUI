@@ -40,6 +40,7 @@ public:
     Test_window();
 
 private:
+    
     Label                       _label;
     Button                      _button;
     Glyph_button                _glyph_btn;
@@ -51,8 +52,8 @@ private:
     Text_input_dialog_t         _input_dlg;
     Vertical_scrollbar          _vert_scrollbar;   
     Textbox                     _scrollbar_pos;
-    List_pane_base                   _sb_pane;
-    std::vector<Button>         _sb_buttons;
+    //List_pane                   _sb_pane;
+    //std::vector<Button>         _sb_buttons;
     std::vector<Button>         _lb_buttons;
     Listbox                     _listbox;
 };

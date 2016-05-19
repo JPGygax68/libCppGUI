@@ -27,33 +27,74 @@ namespace cppgui {
 
     template<class Config, bool With_layout, class Parent> struct Listbox__Layouter;
 
-    template<class Config, bool With_layout> class List_pane_base;
+    template<class Config, bool With_layout> class List_pane;
 
     /** The Listbox 
      */
-    template<class Config, bool With_layout>
-    class Listbox: 
-        public Listbox__Layouter<Config, With_layout,
-            Scrollbox<Config, With_layout, List_pane_base<Config, With_layout> > >
+    template<class Config, bool With_layout, class Pane = List_pane<Config, With_layout>>
+    class Listbox: public 
+        Listbox__Layouter<Config, With_layout,
+            Scrollbox<Config, With_layout, Pane> >
     {
     public:
         using Widget_t = Widget<Config, With_layout>;
         using Container_t = Container<Config, With_layout>;
         //using Canvas_t = typename Canvas<typename Config::Renderer>;
-        using List_pane_t = List_pane_base<Config, With_layout>;
+        using List_pane_t = List_pane<Config, With_layout>;
         using Layoutable_widget_t = Widget<Config, true>; // THIS IS SPECIAL - only layoutable widgets can be added at runtime
 
-        Listbox();
+        Listbox()
+        {
+            _content_pane.set_layout_type(Layout_type::stack); // TODO: will need adapting
 
-        void ensure_item_in_view(int item_index);
+            set_content_pane(&_content_pane);
+        }
 
         // TODO: a variant that does not require the item to be layoutable
-        void add_item(Layoutable_widget_t *);
+        void add_item(Layoutable_widget_t *item)
+        {
+            _content_pane.add_child( item );
+        }
 
-        auto selected_item() -> Index;
-        auto item_index(Widget_t *) -> Index;
+        auto selected_item() -> Index
+        {
+            return _content_pane.child_index( focused_child() );
+        }
+        
+        auto item_index(Widget_t *) -> Index
+        {
+            return _content_pane.child_index( child );
+        }
 
-        void update_scrollbar_position();
+        void ensure_item_in_view(int item_index)
+        {
+            auto item = _content_pane.children()[item_index];
+
+            auto y1_item = item->rectangle().top(), y2_item = item->rectangle().bottom();
+
+            // Item not already fully visible ?
+            if (!(y1_item >= 0 && y2_item <= _content_rect.ext.bottom()))
+            {
+                Position_delta dy = 0;
+                Index first = 0;
+
+                for (auto i = 0U; i < _content_pane.children().size(); i++)
+                {
+                    if (y2_item + dy <= _content_rect.ext.bottom()) break;
+
+                    dy = - _content_pane.children()[++first]->position().y;
+                }
+
+                _content_pane._first_visible_item = first;
+                _content_pane.position().y = _content_rect.pos.y + dy;
+                update_scrollbar_position();
+            }
+        }
+
+        void update_scrollbar_position()
+        {
+            vertical_scrollbar().update_position( - (_content_pane.position().y - content_rectangle().pos.y) );
+        }
 
     protected:
         using Vertical_scrollbar_t = Custom_vertical_scrollbar<Config, With_layout>;
@@ -68,11 +109,27 @@ namespace cppgui {
     template<class Config, class Parent>
     struct Listbox__Layouter<Config, true, Parent>: public Parent 
     {
-        using Scrollbox_t = Scrollbox<Config, true, List_pane_base<Config, true>>;
+        using Scrollbox_t = Scrollbox<Config, true, List_pane<Config, true> >;
 
-        void layout() override;
+        void layout() override
+        {
+            p()->_content_pane.set_extents( p()->_content_pane.get_minimal_size() );
 
-        auto get_preferred_size() -> Extents override;
+            Scrollbox_t::layout();
+        }
+
+        auto get_preferred_size() -> Extents override
+        {
+            // TODO: borders, padding, separation
+
+            auto pane_size  = p()->_content_pane.get_preferred_size();
+            auto vsbar_size = p()->vertical_scrollbar().get_preferred_size();
+
+            auto w = pane_size.w + vsbar_size.w;
+            auto h = std::max( pane_size.h, vsbar_size.h );
+
+            return { w + 2 * p()->_border.width, h + 2 * p()->_border.width };
+        }
 
     protected:
         struct Listbox_t: public Listbox<Config, true> { friend struct Listbox__Layouter; };
@@ -83,9 +140,17 @@ namespace cppgui {
 
     template <class Config, bool With_layout, class Parent> struct List_pane__Layouter;
 
-    template<class Config, bool With_layout>
-    class List_pane_base: 
-        public List_pane__Layouter<Config, With_layout, 
+    namespace _List_pane {
+    
+        /* template<class Config, bool With_layout, bool With_item_selection, class Parent>
+        struct Item_selection_manager: public Parent
+        {
+        }; */
+    }
+
+    template<class Class, class Config, bool With_layout>
+    class List_pane_base: public 
+        List_pane__Layouter<Config, With_layout,
             Scrollable_pane<Config, With_layout> >
     {
     public:
@@ -96,17 +161,63 @@ namespace cppgui {
         using Parent_t = Scrollable_pane_t;
         using Parent_class = Scrollable_pane<Config, With_layout>;
 
-        void set_separator(const Separator &);
+        void set_separator(const Separator &sep)
+        {
+            _separator = { sep.width, Canvas_t::rgba_to_native(sep.color) };
+        }
 
-        void init() override;
+        void init() override
+        {
+            Parent_class::init();
 
-        void compute_view_from_data() override;
+            // Future...
+        }
 
-        void render(Canvas_t *, const Point &offset) override;
+        void compute_view_from_data() override
+        {
+            Parent_class::compute_view_from_data();
+
+            compute_visible_item_range();
+        }
+
+        void render(Canvas_t *canvas, const Point &offset) override 
+        { 
+            static_cast<Class*>(this)->_render(canvas, offset); 
+        }
 
         // Interface with Scrollbox container
 
-        void scroll(Navigation_unit, Fraction<int> delta);
+        void scroll(Navigation_unit unit, Fraction<int> delta)
+        {
+            if (!children().empty())
+            {
+                if (unit == Navigation_unit::element)
+                {
+                    assert(delta.den == 1);
+                    scroll_by_items(delta.num);
+                }
+                else if (unit == Navigation_unit::fraction)
+                {
+                    // We can only scroll if the pane is higher than the listbox's content rectangle
+                    if (extents().h > listbox()->content_rectangle().ext.h)
+                    {
+                        int dist = (int) hidden_items() * delta.num / delta.den;
+                        if (dist != 0)
+                        {
+                            scroll_by_items(dist);
+                        }
+                    }
+                }
+                else if (unit == Navigation_unit::page)
+                {
+                    assert(delta.den == 1);
+                    scroll_by_pages(delta.num);
+                }
+                else {
+                    assert(false); // TODO
+                }
+            }
+        }
 
     protected:
         friend class Listbox_t;
@@ -114,15 +225,117 @@ namespace cppgui {
 
         auto listbox() { return static_cast<Listbox_t*>(container()); }
 
-        void compute_visible_item_range();
-        bool child_fully_after_top    (Widget_t *child, Position_delta offset = 0);
-        bool child_fully_before_bottom(Widget_t *child, Position_delta offset = 0);
-        auto first_visible_child() { return children()[_first_visible_item]; }
-        auto last_visible_child () { return children()[_last_visible_item]; }
-        void scroll_down(Count items = 1);
-        void scroll_up  (Count items = 1);
-        void scroll_by_items(int delta);
-        void scroll_by_pages(int delta);
+        void _render(Canvas_t *canvas, const Point &offset)
+        {
+            auto pos = offset + position();
+
+            Length w = extents().w;
+            Position y = 0;
+
+            for (auto i = 0U; ; ) // i < children().size(); i ++)
+            {
+                auto child = children()[i];
+
+                auto h = child->extents().h + _vert_item_padding;
+
+                fill_rect(canvas, {{0, y}, {w, h}}, pos, Canvas_t::rgba_to_native(element_background_color()));
+
+                child->render(canvas, pos);
+
+                if (++i >= children().size()) break; // we're done here
+
+                y += (Position_delta) h;
+
+                fill_rect(canvas, {{0, y}, {w, _separator.width}}, pos, _separator.color);
+
+                y += _separator.width;
+            }
+        }
+
+        void compute_visible_item_range()
+        {
+            _first_visible_item = scan_children_forward(0, [this](auto child) { return child_fully_after_top(child); });
+            _last_visible_item  = scan_children_forward(_first_visible_item, [this](auto child) { return !child_fully_before_bottom(child); }) - 1;
+        }
+
+        bool child_fully_after_top    (Widget_t *child, Position_delta offset = 0)
+        {
+            return position().y + offset + child->position().y >= listbox()->content_rectangle().pos.y;
+        }
+        bool child_fully_before_bottom(Widget_t *child, Position_delta offset = 0)
+        {
+            return position().y + offset + child->rectangle().bottom() <= listbox()->content_rectangle().bottom();
+        }
+        auto first_visible_child()
+        { 
+            return children()[_first_visible_item]; 
+        }
+        auto last_visible_child ()
+        { 
+            return children()[_last_visible_item]; 
+        }
+
+        void scroll_down(Count items = 1)
+        {
+            Length dy = 0;
+
+            while (items-- > 0 && !child_fully_before_bottom(last_child(), - (Position_delta) dy))
+            {
+                dy += first_visible_child()->extents().h + _vert_item_padding + _separator.width;
+
+                _first_visible_item ++;
+            }
+
+            // TODO: special case of arriving at bottom (close gap) ?
+
+            shift_up( dy );
+
+            _last_visible_item = scan_children_forward(_last_visible_item, [=, this](auto child) { return !child_fully_before_bottom(child); }) - 1;
+            assert(_last_visible_item >= 0);
+
+            //std::cout << "scroll_down() -> _first_visible_item = " << _first_visible_item << ", _last_visible_item = " << _last_visible_item << std::endl;
+        }
+        void scroll_up  (Count items = 1)
+        {
+            Length dy = 0;
+
+            while (items -- > 0 && _first_visible_item > 0)
+            {
+                dy += children()[_first_visible_item - 1]->extents().h + _vert_item_padding + _separator.width;
+
+                _first_visible_item --;
+            }
+
+            shift_down( dy );
+
+            _last_visible_item = scan_children_backward(_last_visible_item, [=, this](auto child) { return child_fully_before_bottom(child); });
+            assert(_last_visible_item >= 0);
+
+            //std::cout << "scroll_down() -> _first_visible_item = " << _first_visible_item << ", _last_visible_item = " << _last_visible_item << std::endl;
+        }
+        void scroll_by_items(int delta)
+        {
+            if (delta < 0)
+            {
+                scroll_up  ( - delta );
+            }
+            else if (delta > 0)
+            {
+                scroll_down( delta );
+            }
+            else
+                assert(false);
+
+            listbox()->update_scrollbar_position();
+        }
+        void scroll_by_pages(int delta)
+        {
+            int items = (int) children().size() * delta * (int) listbox()->content_rectangle().ext.h / (int) extents().h;
+
+            scroll_by_items( items );
+
+            listbox()->update_scrollbar_position(); // TODO: call this from within scroll_page_up() / scroll_page_down() ?
+        }
         auto visible_items() const { return _last_visible_item - _first_visible_item + 1;  }
         auto hidden_items() { return visible_items() < (int) children().size() ? (int) (children().size()) - visible_items() : 0; }
 
@@ -138,27 +351,117 @@ namespace cppgui {
     template<class Config, class Parent>
     struct List_pane__Layouter<Config, true, Parent>: public Parent
     {
-        void set_item_padding(const Extents &);
+        void set_item_padding(const Extents &padding)
+        {
+            _item_padding = padding;
+        }
 
-        auto get_minimal_size() -> Extents override;
+        auto get_minimal_size() -> Extents override
+        {
+            Length h_tot = 0;
+            Width w_min = 0;
 
-        void compute_and_set_extents(const Extents &container_extents);
+            for (auto child: p()->children())
+            {
+                auto minsz = child->get_minimal_size();
+                if (minsz.w > w_min) w_min = minsz.w;
+                h_tot += minsz.h + 2 * _item_padding.h + p()->_separator.width;
+            }
 
-        void layout() override;
+            h_tot -= p()->_separator.width;
+
+            return { w_min + 2 * _item_padding.w, h_tot };
+        }
+
+        void compute_and_set_extents(const Extents &container_extents)
+        {
+            p()->set_extents({ container_extents.w, p()->extents().h });
+        }
+
+        void layout() override
+        {
+            auto w = extents().w - 2 * _item_padding.w;
+
+            Position x = (Position) _item_padding.w, y = 0;
+
+            for (auto child: p()->children())
+            {
+                y += (Position_delta) _item_padding.h;
+
+                auto minsz = child->get_minimal_size();
+
+                child->set_position({ x, y       });
+                child->set_extents ({ w, minsz.h });
+                child->layout();
+
+                y += (Position_delta) minsz.h;
+                y += (Position_delta) _item_padding.h;
+                y += (Position_delta) p()->_separator.width;
+            }
+
+            p()->_vert_item_padding = 2 * _item_padding.h;
+        }
 
     protected:
-        struct List_pane_t: public List_pane_base<Config, true> { friend struct List_pane__Layouter; };
-        auto p() { return static_cast<List_pane_t*>(static_cast<List_pane_base<Config, true>*>(this)); }
+        struct List_pane_t: public List_pane<Config, true> { friend struct List_pane__Layouter; };
+        auto p() { return static_cast<List_pane_t*>(static_cast<List_pane<Config, true>*>(this)); }
 
         Extents _item_padding {};
     };
 
-    // Concrete class 
+    // Concrete class: vanilla List_pane
 
     template<class Config, bool With_layout>
-    class List_pane: public List_pane_base<Config, With_layout>
+    class List_pane: public List_pane_base<List_pane<Config, With_layout>, Config, With_layout>
     {
     };
+
+    // Concrete List pane class: Selectable_items_list_pane
+
+    template<class Config, bool With_layout>
+    class Selectable_items_list_pane:
+        public List_pane_base<Selectable_items_list_pane<Config, With_layout>, Config, With_layout>
+    {
+        using Widget_t = Widget<Config, With_layout>;
+        using Canvas_t = typename Widget_t::Canvas_t;
+
+        void toggle_item(std::size_t index);
+
+        void select_range(std::size_t first, std::size_t last, bool add = false);
+
+        void _render(Canvas_t *, const Point &offset)
+        {
+            auto pos = offset + position();
+
+            Length w = extents().w;
+            Position y = 0;
+
+            for (auto i = 0U; ; ) // i < children().size(); i ++)
+            {
+                auto child = children()[i];
+
+                auto h = child->extents().h + _vert_item_padding;
+
+                fill_rect(canvas, {{0, y}, {w, h}}, pos, Canvas_t::rgba_to_native(element_background_color_selected()));
+
+                child->render(canvas, pos);
+
+                if (++i >= children().size()) break; // we're done here
+
+                y += (Position_delta) h;
+
+                fill_rect(canvas, {{0, y}, {w, _separator.width}}, pos, _separator.color);
+
+                y += _separator.width;
+            }
+        }
+
+    protected:
+        std::vector<bool> _selected;
+    };
+
+    //template<class Config, bool With_layout
+    //using Listbox<
 
 } // ns cppgui
 

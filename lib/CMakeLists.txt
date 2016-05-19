@@ -142,6 +142,7 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/basic_types.hpp
     include/cppgui/geometry.hpp
     include/cppgui/unicode.hpp
+    include/cppgui/aspects.hpp
 
     #include/cppgui/Text_element.hpp                 include/cppgui/Text_element.ipp
     #include/cppgui/Drag_controller.hpp              include/Drag_controller.ipp
@@ -166,7 +167,7 @@ add_library( ${PROJECT_NAME} STATIC
     #include/cppgui/Scrollable_pane.hpp              include/cppgui/Scrollable_pane.ipp
     include/cppgui/Scrollbox.hpp                    include/cppgui/Scrollbox.ipp
     #include/cppgui/List_pane.hpp                    include/cppgui/List_pane.ipp
-    include/cppgui/Listbox.hpp                      include/cppgui/Listbox.ipp
+    include/cppgui/Listbox.hpp                      #include/cppgui/Listbox.ipp
     include/cppgui/Stringlist.hpp                   include/cppgui/Stringlist.ipp
 
     include/cppgui/Icon_resources.hpp               include/cppgui/Icon_resources.ipp
