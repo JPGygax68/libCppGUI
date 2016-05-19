@@ -40,7 +40,8 @@ public:
     Test_window();
 
 private:
-    
+    using My_listbox = cppgui::Listbox<GUI_configuration, true, true>;
+
     Label                       _label;
     Button                      _button;
     Glyph_button                _glyph_btn;
@@ -55,5 +56,5 @@ private:
     //List_pane                   _sb_pane;
     //std::vector<Button>         _sb_buttons;
     std::vector<Button>         _lb_buttons;
-    Listbox                     _listbox;
+    My_listbox                  _listbox;
 };
