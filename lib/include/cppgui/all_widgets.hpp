@@ -31,7 +31,7 @@
 //#include <cppgui/List_pane.hpp>
 #include <cppgui/Scrollbox.hpp>
 #include <cppgui/Listbox.hpp>
-#include <cppgui/Stringlist.hpp>
+//#include <cppgui/Stringlist.hpp>
 #include <cppgui/Canvas.hpp>
 
 #define CPPGUI_DEFINE_WIDGET_TYPES(Config, With_layout) \
