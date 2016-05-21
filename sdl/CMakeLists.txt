@@ -6,8 +6,8 @@ add_library( ${PROJECT_NAME} STATIC
 
     src/dummy.cpp
     
-    include/cppgui/sdl/Application.hpp include/cppgui/sdl/Application.ipp
-    include/cppgui/sdl/Window.hpp include/cppgui/sdl/Window.ipp
+    include/cppgui/sdl/Application.hpp      #include/cppgui/sdl/Application.ipp
+    include/cppgui/sdl/Window.hpp           #include/cppgui/sdl/Window.ipp
 
     include/cppgui/sdl/Default_configuration.hpp # TODO: rename to Default_widget_configuration ?
     include/cppgui/sdl/Keyboard_adapter.hpp

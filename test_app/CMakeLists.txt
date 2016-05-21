@@ -47,9 +47,6 @@ add_executable( ${PROJECT_NAME}
   Test_window.hpp           Test_window.cpp
   Text_input_dialog.hpp     Text_input_dialog.ipp
 
-  #Application.hpp           Application.ipp
-  #Window.hpp                Window.ipp
-
   # ${FONT_HEADERS}
 )
 

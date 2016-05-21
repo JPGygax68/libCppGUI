@@ -5,7 +5,7 @@
 
 #include <cppgui/Default_font.hpp>
 
-#include <cppgui/sdl/Window.ipp>
+//#include <cppgui/sdl/Window.ipp>
 //#include <cppgui/GUI_window.ipp>
 
 #include "./Text_input_dialog.ipp"

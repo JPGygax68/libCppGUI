@@ -6,7 +6,6 @@
 
 #include "./Test_window.hpp"
 
-#include <cppgui/sdl/Application.ipp>
 template class cppgui::sdl::Application<Test_window>;
 
 int main(int /*argc*/, char * /*argv*/[])
