@@ -91,9 +91,3 @@ namespace cppgui {
     };
 
 } // ns cppgui
-
-  /** This macro should be used when explicit instantiation is needed.
-  */
-#define CPPGUI_INSTANTIATE_MY_WIDGET(Config, With_layout) \
-    template cppgui::My_widget<Config, With_layout>; \
-    template cppgui::My_widget__Layouter<Config, With_layout, cppgui::My_widget<Config, With_layout>>;

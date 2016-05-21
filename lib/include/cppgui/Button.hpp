@@ -190,6 +190,3 @@ namespace cppgui {
     };
 
 } // ns cppgui
-
-#define CPPGUI_INSTANTIATE_BUTTON(Config, With_layout) \
-    template cppgui::Button<Config, With_layout>;

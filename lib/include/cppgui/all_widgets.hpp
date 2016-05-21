@@ -28,7 +28,6 @@
 #include <cppgui/Abstract_container.hpp>
 #include <cppgui/Container_base.hpp>
 #include <cppgui/Container.hpp>
-//#include <cppgui/List_pane.hpp>
 #include <cppgui/Scrollbox.hpp>
 #include <cppgui/Listbox.hpp>
 #include <cppgui/Stringlist.hpp>
@@ -71,17 +70,3 @@ namespace cppgui {
     /*using List_pane                 = cppgui::List_pane                 <Config, With_layout>; */ \
     /* using Listbox_selectable        = cppgui::Listbox_selectable        <Config, With_layout> */; 
     //using Canvas_t = cppgui::Canvas<Renderer>; 
-
-#define CPPGUI_INSTANTIATE_WIDGET_TYPES(Config, With_layout) \
-    CPPGUI_INSTANTIATE_WIDGET            (Config, With_layout); \
-    CPPGUI_INSTANTIATE_LABEL             (Config, With_layout); \
-    CPPGUI_INSTANTIATE_BUTTON            (Config, With_layout); \
-    CPPGUI_INSTANTIATE_GLYPH_BUTTON      (Config, With_layout); \
-    CPPGUI_INSTANTIATE_ROOT_WIDGET       (Config, With_layout); \
-    CPPGUI_INSTANTIATE_TEXTBOX           (Config, With_layout); \
-    CPPGUI_INSTANTIATE_CHECKBOX          (Config, With_layout); \
-    CPPGUI_INSTANTIATE_ABSTRACT_CONTAINER(Config, With_layout); \
-    CPPGUI_INSTANTIATE_CONTAINER_BASE    (Config, With_layout); \
-    CPPGUI_INSTANTIATE_CONTAINER         (Config, With_layout); \
-    CPPGUI_INSTANTIATE_VERTICAL_SCROLLBAR(Config, With_layout); \
-    CPPGUI_INSTANTIATE_LISTBOX           (Config, With_layout);

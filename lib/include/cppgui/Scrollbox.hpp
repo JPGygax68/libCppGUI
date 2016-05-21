@@ -290,6 +290,3 @@ namespace cppgui {
     };
 
 } // ns cppgui
-
-#define CPPGUI_INSTANTIATE_SCROLLBOX(Config, With_layout, PaneType) \
-    template cppgui::Scrollbox          <Config, With_layout, PaneType>;

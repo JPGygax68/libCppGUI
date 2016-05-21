@@ -614,7 +614,3 @@ namespace cppgui {
     };
 
 } // ns cppgui
-
-#define CPPGUI_INSTANTIATE_TEXTBOX(Config, With_layout) \
-    template cppgui::Textbox<Config, With_layout>; \
-    template cppgui::Textbox__Layouter<Config, With_layout, cppgui::Textbox<Config, With_layout>>;

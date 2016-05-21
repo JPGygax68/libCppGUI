@@ -494,7 +494,3 @@ namespace cppgui {
         public _listbox<Config>::Base<With_layout, typename _listbox<Config>::Selectable_items_pane<With_layout> > {};
 
 } // ns cppgui
-
-#define CPPGUI_INSTANTIATE_LISTBOX(Config, With_layout) \
-    template cppgui::Listbox<Config, With_layout, false>; \
-    template cppgui::Listbox<Config, With_layout, true >;

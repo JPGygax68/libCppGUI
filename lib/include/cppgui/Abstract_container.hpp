@@ -190,22 +190,26 @@ namespace cppgui {
                 _hovered_child->mouse_motion(pos - _hovered_child->position());
             }
         }
+
         void container_mouse_button(const Point &pos, int button, Key_state state)
         {
             auto child = child_at(pos);
 
             if (child) child->mouse_button(pos - child->position(), button, state);
         }
+        
         void container_mouse_click(const Point &pos, int button, int count)
         {
             auto child = child_at(pos);
 
             if (child) child->mouse_click(pos - child->position(), button, count);
         }
+        
         void container_mouse_wheel(const Point &dist)
         {
             if (_hovered_child) _hovered_child->mouse_wheel(dist);
         }
+        
         void container_mouse_exit()
         {
             // We must propagate the exit to any currently hovered child
@@ -215,6 +219,7 @@ namespace cppgui {
                 _hovered_child = nullptr;
             }
         }
+        
         void container_text_input(const char32_t *text, size_t size)
         {
             if (_focused_child)
@@ -222,6 +227,7 @@ namespace cppgui {
                 _focused_child->text_input(text, size);
             }
         }
+        
         bool container_key_down(const Keycode &key)
         {
             if (_focused_child)
@@ -291,6 +297,3 @@ namespace cppgui {
     };
 
 } // ns cppgui
-
-#define CPPGUI_INSTANTIATE_ABSTRACT_CONTAINER(Config, With_layout) \
-    template cppgui::Abstract_container<Config, With_layout>;

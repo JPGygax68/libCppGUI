@@ -247,6 +247,3 @@ namespace cppgui {
     };
 
 } // ns cppgui
-
-#define CPPGUI_INSTANTIATE_CONTAINER_BASE(Config, With_layout) \
-    template cppgui::Container_base<Config, With_layout>;
