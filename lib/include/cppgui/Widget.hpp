@@ -514,7 +514,7 @@ namespace cppgui {
         }
         void set_rectangle_sw(const Point &pos, const Extents &ext)
         {
-            p()->set_position({ pos.x - static_cast<Position>(ext.w), pos.y - static_cast<Position>(ext.h) });
+            p()->set_position({ pos.x, pos.y - static_cast<Position>(ext.h) });
             p()->set_extents(ext);
         }
 
