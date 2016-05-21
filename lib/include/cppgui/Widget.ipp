@@ -156,13 +156,6 @@ namespace cppgui {
         _bkgnd_clr = color;
     }
 
-    template<class Config, bool With_layout>
-    auto Widget<Config, With_layout>::background_color() const
-    {
-        // TODO: stylesheets!
-        return _bkgnd_clr;
-    }
-
     template<class Config, bool With_layouting>
     void Widget<Config, With_layouting>::on_click(Click_handler handler)
     {

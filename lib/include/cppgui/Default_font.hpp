@@ -19,6 +19,8 @@
 
 #include "./basic_types.hpp"
 
+#include "liberationsans_font.h"
+
 namespace cppgui {
 
     template <Font_size Size = 16>
@@ -26,7 +28,10 @@ namespace cppgui {
 
         static const Font_size size = Size;
 
-        static auto get() -> Serialized_font;
+        static auto get() -> Serialized_font
+        {
+            return liberationsans_regular<size>::get();
+        }
     };
 
 } // ns cppgui

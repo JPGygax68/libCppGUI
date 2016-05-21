@@ -168,7 +168,11 @@ namespace cppgui {
         using Click_handler = typename Abstract_widget::Click_handler;
 
         void set_background_color(const Color &);
-        auto background_color() const;
+        auto background_color() const
+        {
+            // TODO: stylesheets!
+            return _bkgnd_clr;
+        }
 
         void on_click(Click_handler);
 
