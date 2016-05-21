@@ -37,7 +37,10 @@ namespace cppgui {
 
         Abstract_container(): _hovered_child { nullptr } {}
 
-        void set_initial_focus(Widget_t *);
+        void set_initial_focus(Widget_t *)
+        {
+            _focused_child = child;
+        }
 
         auto& children() { return _children; }
 
@@ -46,42 +49,186 @@ namespace cppgui {
          */
         virtual void child_key_down(const Keycode &) = 0;
 
-        virtual bool container_has_focus() = 0;       
-        virtual void container_take_focus(Widget_t *);
+        virtual bool container_has_focus() = 0;     
+
+        virtual void container_take_focus(Widget_t *child)
+        {
+            if (child != _focused_child)
+            {
+                if (_focused_child)
+                {
+                    _focused_child->loosing_focus(); // TODO: support veto-ing loss of focus ?
+                }
+
+                _focused_child = child;
+            }
+        }
+        
         auto focused_child() -> Widget_t * { return _focused_child; }
 
         auto first_child() -> Widget_t * { assert(!_children.empty()); return _children.front(); }
         auto last_child () -> Widget_t * { assert(!_children.empty()); return _children.back (); }
 
-        auto child_index(Widget_t *child) -> Index;
+        auto child_index(Widget_t *child) -> Index
+        {
+            using namespace std;
 
-        template<class Pred> auto scan_children_forward (Index from, Pred) -> Index;
-        template<class Pred> auto scan_children_backward(Index from, Pred) -> Index;
+            return distance(begin(_children), find(begin(_children), end(_children), child) );
+        }
+
+        template<class Pred> auto scan_children_forward (Index from, Pred pred) -> Index
+        {
+            for (auto i = from; i < (Index) _children.size(); i ++)
+            {
+                if (pred(_children[i])) return i;
+            }
+
+            return (Index) _children.size();
+        }
+        template<class Pred> auto scan_children_backward(Index from, Pred pred) -> Index
+        {
+            for (Index i = from; i >= 0; i--)
+            {
+                if (pred(_children[i])) return i;
+            }
+
+            return - 1;
+        }
 
     protected:
 
-        void add_child(Widget_t *);
+        void add_child(Widget_t *child)
+        {
+            _children.push_back(child);
+            child->added_to_container(this);
+        }
         // TODO: should removal methods be moved to optional aspect ?
-        void remove_child(Widget_t *);
-        void remove_all_children();
+        void remove_child(Widget_t *)
+        {
+            if (child == _hovered_child)
+            {
+                _hovered_child->mouse_exit();
+                _hovered_child = nullptr;
+            }
 
-        auto child_at(const Point &) -> Widget_t *;
+            if (child == _focused_child)
+            {
+                _focused_child = nullptr;
+            }
 
-        void init_child_resources();
-        void compute_child_views();
+            child->removed_from_container(this);
 
-        void render_children(Canvas_t *, const Point &offs);
+            auto it = std::find(std::begin(_children), std::end(_children), child);
+            assert(it != std::end(_children));
+            _children.erase(it);
+        }
+        void remove_all_children()
+        {
+            for (auto child: _children)
+            {
+                remove_child(child);
+            }
+        }
+
+        auto child_at(const Point &pos) -> Widget_t *
+        {
+            auto child = std::find_if(std::begin(_children), std::end(_children), [&](auto child) { 
+                return child->visible() && child->rectangle().contains(pos); 
+            });
+
+            return child != std::end(_children) ? *child : nullptr;
+        }
+
+        void init_child_resources()
+        {
+            for (auto child : children())
+            {
+                child->init();
+            }
+        }
+        void compute_child_views()
+        {
+            for (auto& child : children())
+            {
+                child->compute_view_from_data();
+            }
+        }
+
+        void render_children(Canvas_t *canvas, const Point &offs)
+        {
+            for (auto& child : children())
+            {
+                if (child->visible()) 
+                {
+                    child->render(canvas, offs);
+                }
+            }
+        }
 
         /** The container_xxxx() methods are intended as "delegate" event handlers, to be 
             called from "real" containers (i.e. descendants of Container<>).            
         */
-        void container_mouse_motion(const Point &);
-        void container_mouse_button(const Point &, int button, Key_state);
-        void container_mouse_click(const Point &, int button, int count);
-        void container_mouse_wheel(const Point &dist);
-        void container_mouse_exit();
-        void container_text_input(const char32_t *, size_t);
-        bool container_key_down(const Keycode &);
+        void container_mouse_motion(const Point &pos)
+        {
+            auto hovered = child_at(pos);
+
+            if (hovered != _hovered_child)
+            {
+                /** TODO: this does not account for situations where the pointer enters a
+                widget, then moves on to a zone on a higher Z-level (Z levels not being 
+                implemented yet at the time of writing).
+                */
+                if (_hovered_child) _hovered_child->mouse_exit();
+                if (hovered) hovered->mouse_enter();
+                _hovered_child = hovered;
+            }
+
+            if (_hovered_child)
+            {
+                _hovered_child->mouse_motion(pos - _hovered_child->position());
+            }
+        }
+        void container_mouse_button(const Point &pos, int button, Key_state state)
+        {
+            auto child = child_at(pos);
+
+            if (child) child->mouse_button(pos - child->position(), button, state);
+        }
+        void container_mouse_click(const Point &pos, int button, int count)
+        {
+            auto child = child_at(pos);
+
+            if (child) child->mouse_click(pos - child->position(), button, count);
+        }
+        void container_mouse_wheel(const Point &dist)
+        {
+            if (_hovered_child) _hovered_child->mouse_wheel(dist);
+        }
+        void container_mouse_exit()
+        {
+            // We must propagate the exit to any currently hovered child
+            if (_hovered_child)
+            {
+                _hovered_child->mouse_exit();
+                _hovered_child = nullptr;
+            }
+        }
+        void container_text_input(const char32_t *text, size_t size)
+        {
+            if (_focused_child)
+            {
+                _focused_child->text_input(text, size);
+            }
+        }
+        bool container_key_down(const Keycode &key)
+        {
+            if (_focused_child)
+            {
+                return _focused_child->handle_key_down(key);
+            }
+            else
+                return true;
+        }
 
         std::vector<Widget_t*> _children;
         Widget_t *_hovered_child = nullptr;
@@ -115,8 +262,30 @@ namespace cppgui {
 
         auto p() { return static_cast<Container_t*>(static_cast<Container<Config, true>*>(this)); }
 
-        void init_children_layout();
-        void layout_children();
+        void init_children_layout()
+        {
+            for (auto child : p()->children())
+            {
+                child->init_layout();
+            }
+        }
+
+        void layout_children()
+        {
+            // TODO: this algorithm, and the whole method, will probably become obsolete as real
+            //  layouting gets implemented
+
+            for (auto child : p()->children())
+            {
+                // EXPERIMENTAL: obtain minimum size and extend accordingly
+                auto min_ext = child->get_minimal_size(), cur_ext = child->extents();
+                if (child->extents().w == 0 && child->extents().h == 0)
+                {
+                    child->set_extents({ std::max(min_ext.w, cur_ext.w), std::max(min_ext.h, cur_ext.h) });
+                }
+                child->layout();
+            }
+        }
     };
 
 } // ns cppgui

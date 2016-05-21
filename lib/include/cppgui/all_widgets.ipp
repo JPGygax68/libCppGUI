@@ -34,7 +34,7 @@
 #include "./Label.ipp"
 #include "./Textbox.ipp"
 #include "./Checkbox.ipp"
-#include "./Abstract_container.ipp"
+//#include "./Abstract_container.ipp"
 #include "./Container_base.ipp"
 #include "./Container.ipp"
 #include "./Vertical_scrollbar.ipp"
