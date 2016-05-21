@@ -157,7 +157,7 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Label.hpp                        include/cppgui/Label.ipp
     include/cppgui/Textbox.hpp                      include/cppgui/Textbox.ipp
     include/cppgui/Checkbox.hpp                     include/cppgui/Checkbox.ipp
-    include/cppgui/Box.hpp                          include/cppgui/Box.ipp
+    include/cppgui/Box.hpp                          #include/cppgui/Box.ipp
     include/cppgui/Abstract_container.hpp           #include/cppgui/Abstract_container.ipp
     include/cppgui/Container_base.hpp               include/cppgui/Container_base.ipp
     include/cppgui/Container.hpp                    include/cppgui/Container.ipp

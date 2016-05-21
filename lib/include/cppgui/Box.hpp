@@ -36,10 +36,33 @@ namespace cppgui {
     {
         using Canvas_t = typename Canvas<typename Config::Renderer>;
 
-        void set_border(const Border &);
+        void set_border(const Border &border)
+        {
+            _border = border;
+        }
         // TODO: set_border( .. one setting per cardinal direction ...)
 
-        void draw_border(Canvas_t *, const Point &offset);
+        void draw_border(Canvas_t *canvas, const Point &offset)
+        {
+            auto b = _border.width;
+
+            if (b > 0)
+            {
+                const auto &rect = p()->rectangle();
+
+                auto ntvclr = Canvas_t::rgba_to_native( _border.color );
+
+                auto x1 = rect.left(), y1 = rect.top(), x2 = rect.right(), y2 = rect.bottom();
+                auto w = rect.ext.w, h = rect.ext.h;
+
+                auto d = (Position_delta) b;
+
+                fill_rect(canvas, offset + Point{ x1 + d, y1     }, { w - b,     b }, ntvclr); // top
+                fill_rect(canvas, offset + Point{ x2 - d, y1 + d }, {     b, h - b }, ntvclr); // right
+                fill_rect(canvas, offset + Point{ x1    , y2 - d }, { w - b,     b }, ntvclr); // bottom
+                fill_rect(canvas, offset + Point{ x1    , y1     }, {     b, h - b }, ntvclr); // left
+            }
+        }
 
     protected:
         Border      _border {1, {0, 0, 0, 1}}; // TODO: support different borders for each cardinal direction ?
@@ -53,14 +76,42 @@ namespace cppgui {
     template<class Config, class Parent>
     struct Box__Layouter<Config, true, Parent>: public Parent
     {
-        void set_padding(Width);
+        void set_padding(Width w)
+        {
+            set_padding({ w, w, w, w });
+        }
         //void set_padding(const std::initializer_list<Length> &);
-        void set_padding(const std::array<Width, 4> &);
+        void set_padding(const std::array<Width, 4> &padding)
+        {
+            _padding = padding; // std::copy(std::begin(padding), std::end(padding), std::begin(_padding));
+        }
 
-        void add_padding(Rectangle &);
-        auto add_padding(const Rectangle &) -> Rectangle;
-        void add_padding(Extents &);
-        auto add_padding(const Extents   &) -> Extents;
+        void add_padding(Rectangle &rect)
+        {
+            rect.pos.x += _padding[3] - 2;
+            rect.pos.y += _padding[0] - 2;
+            rect.ext.w -= _padding[3] + _padding[1] - 2 * 2;
+            rect.ext.h -= _padding[0] + _padding[2] - 2 * 2;
+        }
+        auto add_padding(const Rectangle &rect) -> Rectangle
+        {
+            Rectangle res { rect };
+
+            add_padding( res );
+
+            return res;
+        }
+        void add_padding(Extents &ext)
+        {
+            ext.w += _padding[3] + _padding[1];
+            ext.h += _padding[0] + _padding[2];
+        }
+        auto add_padding(const Extents &ext) -> Extents
+        {
+            Extents res = ext;
+            add_padding(res);
+            return res;
+        }
 
         Padding     _padding = { 0 };
     };
