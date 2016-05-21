@@ -19,6 +19,8 @@
 
 #include <array>
 
+#include <gpc/fonts/rasterized_font.hpp>
+
 #include "./basic_types.hpp"
 
 namespace cppgui {
@@ -89,15 +91,73 @@ namespace cppgui {
     class Single_element_layout {
     public:
 
-        void set_text_element(const Rasterized_font *font, const char32_t *text, size_t len, Text_origin *, Rectangle *);
-        void change_text_element(const Rasterized_font *font, const char32_t *text, size_t len);
+        void set_text_element(const Rasterized_font *font, const char32_t *text, size_t len, Text_origin *txorig, Rectangle *rect)
+        {
+            assert(!text_origin);
+            assert(!rectangle);
+
+            bounding_box = font->compute_text_extents(0, text, len);
+
+            text_origin = txorig;
+            rectangle = rect;
+        }
+        void change_text_element(const Rasterized_font *font, const char32_t *text, size_t len)
+        {
+            assert(text_origin);
+            assert(rectangle);
+
+            bounding_box = font->compute_text_extents(0, text, len);
+        }
 
         void set_minor_alignment(Alignment al) { minor_alignment = al; }
         void set_major_alignment(Alignment al) { major_alignment = al; }
 
-        auto compute_minimal_size(const Padding & = {}) -> Extents;
+        auto compute_minimal_size(const Padding &padding = {}) -> Extents
+        {
+            return { 
+                padding[3] + bounding_box.width () + padding[1], 
+                padding[0] + bounding_box.height() + padding[2]
+            };
+        }
 
-        void compute_layout(const Extents &, const Padding & = {});
+        void compute_layout(const Extents &extents, const Padding &padding = {})
+        {
+            // TODO: select alignment
+            Length w = extents.w - padding[1] - padding[3];
+            Length h = extents.h - padding[0] - padding[2];
+
+            if (minor_alignment == Alignment::cultural_minor_start)
+            {
+                text_origin->x = (Position) padding[3];
+            }
+            else if (minor_alignment == Alignment::cultural_minor_middle)
+            {
+                text_origin->x = (Position) ((w - bounding_box.width()) / 2);
+            }
+            else if (minor_alignment == Alignment::cultural_minor_end)
+            {
+                text_origin->x = (Position) (w - bounding_box.width() - padding[1]);
+            }
+
+            if (major_alignment == Alignment::cultural_major_start)
+            {
+                text_origin->y = padding[0] + bounding_box.y_max;
+            }
+            else if (major_alignment == Alignment::cultural_major_middle)
+            {
+                text_origin->y = (Position) (padding[0] + (h - bounding_box.height()) / 2 + bounding_box.y_max);
+            }
+            else if (major_alignment == Alignment::cultural_major_end)
+            {
+                text_origin->y = (Position) (extents.h - padding[3]) + bounding_box.y_min;
+            }
+
+            // Rectangle around text
+            *rectangle = {
+                text_origin->x + bounding_box.x_min, text_origin->y - bounding_box.y_max,
+                bounding_box.width(), bounding_box.height()
+            };
+        }
 
     private:
         Text_bounding_box   bounding_box;

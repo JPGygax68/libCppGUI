@@ -151,7 +151,7 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Widget_template.hpp              include/cppgui/Widget_template.ipp
 
     include/cppgui/Canvas.hpp                       #include/cppgui/Canvas.ipp
-    include/cppgui/Widget.hpp                       include/cppgui/Widget.ipp
+    include/cppgui/Widget.hpp                       #include/cppgui/Widget.ipp
     include/cppgui/Button.hpp                       #include/cppgui/Button.ipp
     include/cppgui/Glyph_button.hpp                 #include/cppgui/Glyph_button.ipp
     include/cppgui/Label.hpp                        #include/cppgui/Label.ipp
@@ -163,16 +163,16 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Container.hpp                    #include/cppgui/Container.ipp
     #include/cppgui/Stack.hpp                       include/cppgui/Stack.ipp
     include/cppgui/Root_widget.hpp                  #include/cppgui/Root_widget.ipp
-    include/cppgui/Vertical_scrollbar.hpp           include/cppgui/Vertical_scrollbar.ipp
+    include/cppgui/Vertical_scrollbar.hpp           #include/cppgui/Vertical_scrollbar.ipp
     #include/cppgui/Scrollable_pane.hpp              include/cppgui/Scrollable_pane.ipp
     include/cppgui/Scrollbox.hpp                    #include/cppgui/Scrollbox.ipp
     #include/cppgui/List_pane.hpp                    include/cppgui/List_pane.ipp
     include/cppgui/Listbox.hpp                      #include/cppgui/Listbox.ipp
-    include/cppgui/Stringlist.hpp                   include/cppgui/Stringlist.ipp
+    include/cppgui/Stringlist.hpp                   #include/cppgui/Stringlist.ipp
 
     include/cppgui/Icon_resources.hpp               #include/cppgui/Icon_resources.ipp
 
-    include/cppgui/layouting.hpp                    include/cppgui/layouting.ipp
+    include/cppgui/layouting.hpp                    #include/cppgui/layouting.ipp
 
     include/cppgui/Resource.hpp
     include/cppgui/Resource_mapper.hpp              #include/cppgui/Resource_mapper.ipp
