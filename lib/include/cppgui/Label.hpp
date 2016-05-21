@@ -65,7 +65,7 @@ namespace cppgui {
 
         void render(Canvas_t *canvas, const Point &offset) override
         {
-            fill(canvas, offset, rgba_to_native(background_color())); 
+            fill(canvas, offset, rgba_to_native( background_color() )); 
 
             auto pos = offset + position();
             canvas->render_text(_font.get(), pos.x + _text_origin.x, pos.y + _text_origin.y, _text.data(), _text.size());

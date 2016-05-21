@@ -185,6 +185,8 @@ add_library( ${PROJECT_NAME} STATIC
     ${GENERATED_HEADERS_DIR}/all_icon_fonts.h
 )
 
+cotire( ${PROJECT_NAME} )
+
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/generated/headers) # for the fonts
 
 # libGPCFonts

@@ -78,7 +78,7 @@ namespace cppgui {
         {
             auto pos = offset + position();
 
-            fill(canvas, offset, {1, 1, 0.5f, 1});
+            // fill(canvas, offset, {1, 1, 0.5f, 1});
 
             canvas->render_text(_label_font.get(), pos.x + _label_pos.x, pos.y + _label_pos.y, _label.data(), _label.size());
 

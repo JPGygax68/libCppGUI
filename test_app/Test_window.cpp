@@ -32,6 +32,7 @@ Test_window::Test_window(): Parent("Test window")
     _label.set_background_color({1, 1, 1, 1});
     _label.set_text(U"Hello World!");
     _label.on_click([](const cppgui::Point &pos, int button, int clicks) {
+
         std::cout << "Label was clicked! (pos = " << pos.x << ", " << pos.y 
             << ", button = " << button << ", clicks = " << clicks << ")" << std::endl;
     });
