@@ -24,6 +24,8 @@
 
 #include "./basic_types.hpp"
 
+#include "all_icon_fonts.h"
+
 namespace cppgui {
 
     // TODO: not required after all
@@ -40,29 +42,70 @@ namespace cppgui {
         char32_t                code_point;
     };
 
-    template<Font_size>
+    template<Font_size Size>
     struct Icon_resources {
     
         //--- TODO: this section should be replaced
 
         // Generic glyph font
-        static constexpr auto glyph_font_data() -> std::pair<const uint8_t *, std::size_t>; // TODO: use GSL span instead ?
+        static constexpr auto glyph_font_data() -> std::pair<const uint8_t *, std::size_t>  // TODO: use GSL span instead ?
                                                                                             // TODO: return both data and description in single struct ?
+        {
+            return materialicons_regular<static_cast<Font_size>((double)Size)>::get(); // TODO: bigger size ?
+        }
 
-        static constexpr auto tick_font_data() -> std::pair<const uint8_t *, std::size_t>; // TODO: use GSL span instead ?
-        static constexpr auto tick_descr() -> Font_icon_descr;
+        static constexpr auto tick_font_data() -> std::pair<const uint8_t *, std::size_t>   // TODO: use GSL span instead ?
+        {
+            return materialicons_regular<static_cast<Font_size>((double)Size * 0.8)>::get();
+        }
+
+        static constexpr auto tick_descr() -> Font_icon_descr
+        {
+            return {
+                0xE876,
+                { 0, 0 }, //{ - static_cast<Position>(0.5 + 2 * static_cast<double>(Size) / 24), - static_cast<Position>(0.5 + 3 * static_cast<double>(Size) / 24) },
+                { 0, 0 }  //{ 0,   static_cast<Position>(0.5 + 2 * static_cast<double>(Size) / 24) }
+            };
+        }
 
         //--- END of to-be-replaced section
 
-        static constexpr auto close() -> Icon_glyph;
-        static constexpr auto right_arrow() -> Icon_glyph;
-        static constexpr auto back() -> Icon_glyph;
-        static constexpr auto checkbox_empty() -> Icon_glyph;
-        static constexpr auto checkbox_checked() -> Icon_glyph;
-        static constexpr auto radiobutton_on () -> Icon_glyph;
-        static constexpr auto radiobutton_off() -> Icon_glyph;
-        static constexpr auto up_arrow() -> Icon_glyph;
-        static constexpr auto down_arrow() -> Icon_glyph;
+        static constexpr auto close() -> Icon_glyph
+        {
+            return { materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(), 0xE14C };
+        }
+        static constexpr auto right_arrow() -> Icon_glyph
+        {
+            return { materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(), 0xE154 };
+        }
+        static constexpr auto back() -> Icon_glyph
+        {
+            return { materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(), 0xE15E };
+        }
+        static constexpr auto checkbox_empty() -> Icon_glyph
+        {
+            return { materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(), 0xE835 };
+        }
+        static constexpr auto checkbox_checked() -> Icon_glyph
+        {
+            return { materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(), 0xE834 };
+        }
+        static constexpr auto radiobutton_on () -> Icon_glyph
+        {
+            return { materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(), 0xE837 };
+        }
+        static constexpr auto radiobutton_off() -> Icon_glyph
+        {
+            return { materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(), 0xE836 };
+        }
+        static constexpr auto up_arrow() -> Icon_glyph
+        {
+            return { materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(), 0xE5C7 };
+        }
+        static constexpr auto down_arrow() -> Icon_glyph
+        {
+            return { materialicons_regular<static_cast<Font_size>((double)Size*1.5)>::get(), 0xE5C5 };
+        }
     };
 
 } // ns cppgui
