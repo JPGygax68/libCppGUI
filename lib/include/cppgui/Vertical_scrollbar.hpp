@@ -69,7 +69,7 @@ namespace cppgui {
 
         using Native_color = typename Widget_t::Native_color;
 
-        using Navigation_handler = std::function<void(Navigation_unit, /* Position initial_pos, */ const Fraction<int> &delta)>; //, bool ending)>;
+        using Navigation_handler = std::function<void(Navigation_unit, const Fraction<int> &delta)>;
 
         Vertical_scrollbar_base():
             // TODO: obtain from static value or stylesheet:

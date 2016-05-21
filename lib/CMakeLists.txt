@@ -148,27 +148,24 @@ add_library( ${PROJECT_NAME} STATIC
     #include/cppgui/Drag_controller.hpp              include/Drag_controller.ipp
 
     # Not a real widget, but useful to keep around for development.
-    include/cppgui/Widget_template.hpp              include/cppgui/Widget_template.ipp
+    include/cppgui/Widget_template.hpp              
 
-    include/cppgui/Canvas.hpp                       #include/cppgui/Canvas.ipp
-    include/cppgui/Widget.hpp                       #include/cppgui/Widget.ipp
-    include/cppgui/Button.hpp                       #include/cppgui/Button.ipp
-    include/cppgui/Glyph_button.hpp                 #include/cppgui/Glyph_button.ipp
-    include/cppgui/Label.hpp                        #include/cppgui/Label.ipp
-    include/cppgui/Textbox.hpp                      #include/cppgui/Textbox.ipp
-    include/cppgui/Checkbox.hpp                     #include/cppgui/Checkbox.ipp
-    include/cppgui/Box.hpp                          #include/cppgui/Box.ipp
-    include/cppgui/Abstract_container.hpp           #include/cppgui/Abstract_container.ipp
-    include/cppgui/Container_base.hpp               #include/cppgui/Container_base.ipp
-    include/cppgui/Container.hpp                    #include/cppgui/Container.ipp
-    #include/cppgui/Stack.hpp                       include/cppgui/Stack.ipp
-    include/cppgui/Root_widget.hpp                  #include/cppgui/Root_widget.ipp
-    include/cppgui/Vertical_scrollbar.hpp           #include/cppgui/Vertical_scrollbar.ipp
-    #include/cppgui/Scrollable_pane.hpp              include/cppgui/Scrollable_pane.ipp
-    include/cppgui/Scrollbox.hpp                    #include/cppgui/Scrollbox.ipp
-    #include/cppgui/List_pane.hpp                    include/cppgui/List_pane.ipp
-    include/cppgui/Listbox.hpp                      #include/cppgui/Listbox.ipp
-    include/cppgui/Stringlist.hpp                   #include/cppgui/Stringlist.ipp
+    include/cppgui/Canvas.hpp                       
+    include/cppgui/Widget.hpp                       
+    include/cppgui/Button.hpp                       
+    include/cppgui/Glyph_button.hpp                 
+    include/cppgui/Label.hpp                        
+    include/cppgui/Textbox.hpp                      
+    include/cppgui/Checkbox.hpp                     
+    include/cppgui/Box.hpp                          
+    include/cppgui/Abstract_container.hpp           
+    include/cppgui/Container_base.hpp               
+    include/cppgui/Container.hpp                    
+    include/cppgui/Root_widget.hpp                  
+    include/cppgui/Vertical_scrollbar.hpp           
+    include/cppgui/Scrollbox.hpp                    
+    include/cppgui/Listbox.hpp                      
+    include/cppgui/Stringlist.hpp                   
 
     include/cppgui/Icon_resources.hpp               #include/cppgui/Icon_resources.ipp
 
@@ -182,7 +179,6 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/GUI_window.hpp                   #include/cppgui/GUI_window.ipp
 
     include/cppgui/all_widgets.hpp
-    include/cppgui/all_widgets.ipp
 
     ${FONT_HEADERS}
     ${GENERATED_HEADERS_DIR}/liberationsans_font.h

@@ -5,7 +5,6 @@
 
 #include <cppgui/Default_font.hpp>
 
-#include <cppgui/all_widgets.ipp>
 #include <cppgui/sdl/Window.ipp>
 //#include <cppgui/GUI_window.ipp>
 

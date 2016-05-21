@@ -34,11 +34,29 @@ namespace cppgui {
     {
     public:
 
-        void init() override;
+        void init() override
+        {
+            /** This is where the widget establishes its connection with the backends
+                (available via root_widget()->canvas() etc. ).
+             */
+        }
 
-        void compute_view_from_data() override;
+        void compute_view_from_data() override
+        {
+            /** This is another entry point that gets called recursively upon
+                initialization. Its name says what it is intended for: to 
+                set internal state so as to reflect the bound data.
+            */
+        }
 
-        void render(Canvas_t *, const Point &offset) override;
+        void render(Canvas_t *canvas, const Point &offset) override
+        {
+            /** The render() method is responsible for rendering the widget via
+                the canvas. 
+                By convention, the widget's absolute position is determined by
+                adding the offset parameter to the position() property.
+            */
+        }
     };
 
     // Layouter aspect ----------------------------------------------
@@ -52,11 +70,30 @@ namespace cppgui {
     template<class Config, class Parent>
     struct My_widget__Layouter<Config, true, Parent>: public Parent
     {
-        void init_layout() override;
+        void init_layout() override
+        {
+            /** The init_layout() method is called on the complete widget tree 
+                before either get_minimal_size() or layout(). It is intended as 
+                an occasion to compute measurements (typically of text strings) 
+                that can then be used in both get_minimal_size() and layout().
+            */
+        }
 
-        auto get_minimal_size() -> Extents override;
+        auto get_minimal_size() -> Extents override
+        {
+            /** The get_minimal_size() method is intended to be called recursively
+                by containers, or from a container's layout() method to help it
+                decide how to place and size its children.
+            */
+        }
 
         void layout() override;
     };
 
 } // ns cppgui
+
+  /** This macro should be used when explicit instantiation is needed.
+  */
+#define CPPGUI_INSTANTIATE_MY_WIDGET(Config, With_layout) \
+    template cppgui::My_widget<Config, With_layout>; \
+    template cppgui::My_widget__Layouter<Config, With_layout, cppgui::My_widget<Config, With_layout>>;
