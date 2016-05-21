@@ -4,6 +4,7 @@
 
 #include <cppgui/sdl/Application.hpp>
 
+#define INSTANTIATE_GUI_CLASSES
 #include "./Test_window.hpp"
 
 template class cppgui::sdl::Application<Test_window>;

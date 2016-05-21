@@ -60,7 +60,7 @@ namespace cppgui {
                 return _content_pane.child_index( focused_child() );
             }
         
-            auto item_index(Widget_t *) -> Index
+            auto item_index(Widget_t *child) -> Index
             {
                 return _content_pane.child_index( child );
             }
@@ -98,7 +98,7 @@ namespace cppgui {
         protected:
             using Vertical_scrollbar_t = Custom_vertical_scrollbar<Config, With_layout>;
 
-            Pane_t         _content_pane;
+            Pane            _content_pane;
         };
 
         // Layouter aspect
@@ -145,7 +145,7 @@ namespace cppgui {
         public:
             using Widget_t = Widget<Config, With_layout>;
             using Canvas_t = typename Widget_t::Canvas_t;
-            using Listbox_base_t = Base<With_layout, Pane_base>;
+            using Listbox_base_t = Base<With_layout, Pane_base<Class, With_layout>>;
             using Scrollable_pane_t = Scrollable_pane<Config, With_layout>;
             using Parent_t = Scrollable_pane_t;
             using Parent_class = Scrollable_pane<Config, With_layout>;
@@ -248,14 +248,17 @@ namespace cppgui {
             {
                 return position().y + offset + child->position().y >= listbox()->content_rectangle().pos.y;
             }
+            
             bool child_fully_before_bottom(Widget_t *child, Position_delta offset = 0)
             {
                 return position().y + offset + child->rectangle().bottom() <= listbox()->content_rectangle().bottom();
             }
+            
             auto first_visible_child()
             { 
                 return children()[_first_visible_item]; 
             }
+
             auto last_visible_child ()
             { 
                 return children()[_last_visible_item]; 
@@ -281,6 +284,7 @@ namespace cppgui {
 
                 //std::cout << "scroll_down() -> _first_visible_item = " << _first_visible_item << ", _last_visible_item = " << _last_visible_item << std::endl;
             }
+
             void scroll_up  (Count items = 1)
             {
                 Length dy = 0;
@@ -299,6 +303,7 @@ namespace cppgui {
 
                 //std::cout << "scroll_down() -> _first_visible_item = " << _first_visible_item << ", _last_visible_item = " << _last_visible_item << std::endl;
             }
+            
             void scroll_by_items(int delta)
             {
                 if (delta < 0)
@@ -314,6 +319,7 @@ namespace cppgui {
 
                 listbox()->update_scrollbar_position();
             }
+
             void scroll_by_pages(int delta)
             {
                 int items = (int) children().size() * delta * (int) listbox()->content_rectangle().ext.h / (int) extents().h;
@@ -322,7 +328,9 @@ namespace cppgui {
 
                 listbox()->update_scrollbar_position(); // TODO: call this from within scroll_page_up() / scroll_page_down() ?
             }
+
             auto visible_items() const { return _last_visible_item - _first_visible_item + 1;  }
+            
             auto hidden_items() { return visible_items() < (int) children().size() ? (int) (children().size()) - visible_items() : 0; }
 
             Mapped_separator_t  _separator {};
@@ -399,7 +407,10 @@ namespace cppgui {
         // "Vanilla" pane
 
         template<bool With_layout>
-        class Vanilla_pane: public Pane_base<Vanilla_pane<With_layout>, With_layout> {};
+        class Vanilla_pane: public Pane_base<Vanilla_pane<With_layout>, With_layout>
+        {
+            friend class Base<With_layout, Vanilla_pane>;
+        };
 
         // Pane with selectable items
 
@@ -447,6 +458,7 @@ namespace cppgui {
             void select_range(std::size_t first, std::size_t last, bool add = false);
 
         protected:
+            friend class Base<With_layout, Selectable_items_pane<With_layout>>;
             friend class Pane_base<Selectable_items_pane<With_layout>, With_layout>;
 
             auto item_background_color(std::size_t index)

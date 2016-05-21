@@ -34,6 +34,26 @@
 #include <cppgui/Stringlist.hpp>
 #include <cppgui/Canvas.hpp>
 
+namespace cppgui {
+
+
+    template<class Config, bool With_layout>
+    struct All_widgets
+    {
+        using Widget             = Widget<Config, With_layout>;
+        using Root_widget        = Root_widget<Config, With_layout>;
+        using Label              = Label<Config, With_layout>;
+        using Textbox            = Textbox<Config, With_layout>;
+        using Button             = Button<Config, With_layout>;
+        using Glyph_button       = Glyph_button<Config, With_layout>;
+        using Checkbox           = Checkbox<Config, With_layout>;
+        using Container          = Container<Config, With_layout>;
+        using Vertical_scrollbar = Vertical_scrollbar<Config, With_layout>;
+        using Listbox            = Listbox<Config, With_layout>;
+    };
+
+} // ns cppgui
+
 #define CPPGUI_DEFINE_WIDGET_TYPES(Config, With_layout) \
     using Widget                    = cppgui::Widget                    <Config, With_layout>; \
     using Label                     = cppgui::Label                     <Config, With_layout>; \

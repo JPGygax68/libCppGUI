@@ -293,13 +293,15 @@ namespace cppgui {
         {
             p()->init_children_layout();
         }
+        
         virtual auto get_minimal_size() -> Extents { return {0, 0}; }
+
         virtual void layout()
         {
             p()->layout_children(); 
         }
 
-        void insert_child(Widget_t *)
+        void insert_child(Widget_t *child)
         {
             p()->add_child(child);
 
@@ -309,7 +311,8 @@ namespace cppgui {
 
             p()->invalidate();
         }
-        void drop_child(Widget_t *)
+
+        void drop_child(Widget_t *child)
         {
             p()->remove_child(child); 
 

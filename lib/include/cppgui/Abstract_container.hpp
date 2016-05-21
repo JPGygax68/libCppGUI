@@ -103,7 +103,7 @@ namespace cppgui {
             child->added_to_container(this);
         }
         // TODO: should removal methods be moved to optional aspect ?
-        void remove_child(Widget_t *)
+        void remove_child(Widget_t *child)
         {
             if (child == _hovered_child)
             {
@@ -122,6 +122,7 @@ namespace cppgui {
             assert(it != std::end(_children));
             _children.erase(it);
         }
+        
         void remove_all_children()
         {
             for (auto child: _children)
@@ -146,6 +147,7 @@ namespace cppgui {
                 child->init();
             }
         }
+        
         void compute_child_views()
         {
             for (auto& child : children())

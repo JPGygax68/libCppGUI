@@ -48,7 +48,7 @@ namespace cppgui {
             // set_border( default_border() ); // TODO: make this stylable
         }
 
-        void on_pushed(Pushed_handler)
+        void on_pushed(Pushed_handler handler)
         {
             _on_pushed = handler;
         }
