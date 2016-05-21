@@ -22,24 +22,11 @@ namespace cppgui {
     template<typename Impl, typename Backend, typename SourceType, typename MappedType>
     inline auto Full_resource_mapper<Impl, Backend, SourceType, MappedType>::adapt_resource(Backend * backend, const SourceType &src) -> MappedType
     {
-        auto it = _map.find(src);
-        if (it != std::end(_map))
-        {
-            return it->second;
-        }
-        else {
-            auto insert = _map.emplace(src, static_cast<Impl*>(this)->obtain(backend, src));
-            return insert.first->second;
-        }
     }
 
     template<typename Impl, typename Backend, typename SourceType, typename MappedType>
     inline void Full_resource_mapper<Impl, Backend, SourceType, MappedType>::release_resource(Backend *backend, const SourceType &src)
     {
-        static_cast<Impl*>(this)->release(backend, _map.find(src).second);
-
-        //_laundry.emplace_back(src);
-        // TODO: immediate release
     }
 
 #ifdef NOT_DEFINED

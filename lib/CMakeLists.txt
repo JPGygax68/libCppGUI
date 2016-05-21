@@ -153,8 +153,8 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Canvas.hpp                       #include/cppgui/Canvas.ipp
     include/cppgui/Widget.hpp                       include/cppgui/Widget.ipp
     include/cppgui/Button.hpp                       #include/cppgui/Button.ipp
-    include/cppgui/Glyph_button.hpp                 include/cppgui/Glyph_button.ipp
-    include/cppgui/Label.hpp                        include/cppgui/Label.ipp
+    include/cppgui/Glyph_button.hpp                 #include/cppgui/Glyph_button.ipp
+    include/cppgui/Label.hpp                        #include/cppgui/Label.ipp
     include/cppgui/Textbox.hpp                      include/cppgui/Textbox.ipp
     include/cppgui/Checkbox.hpp                     #include/cppgui/Checkbox.ipp
     include/cppgui/Box.hpp                          #include/cppgui/Box.ipp
@@ -177,9 +177,9 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Resource.hpp
     include/cppgui/Resource_mapper.hpp              include/cppgui/Resource_mapper.ipp
     include/cppgui/Cheap_resource_mapper.hpp        #include/cppgui/Cheap_resource_mapper.ipp
-    include/cppgui/Full_resource_mapper.hpp         include/cppgui/Full_resource_mapper.ipp
+    include/cppgui/Full_resource_mapper.hpp         #include/cppgui/Full_resource_mapper.ipp
 
-    include/cppgui/GUI_window.hpp include/cppgui/GUI_window.ipp
+    include/cppgui/GUI_window.hpp                   #include/cppgui/GUI_window.ipp
 
     include/cppgui/all_widgets.hpp
     include/cppgui/all_widgets.ipp

@@ -35,9 +35,26 @@ namespace cppgui {
     {
     public:
 
-        auto adapt_resource  (Backend *b, const SourceType &src) -> MappedType;
+        auto adapt_resource  (Backend *backend, const SourceType &src) -> MappedType
+        {
+            auto it = _map.find(src);
+            if (it != std::end(_map))
+            {
+                return it->second;
+            }
+            else {
+                auto insert = _map.emplace(src, static_cast<Impl*>(this)->obtain(backend, src));
+                return insert.first->second;
+            }
+        }
 
-        void release_resource(Backend *b, const SourceType &);
+        void release_resource(Backend *b, const SourceType &)
+        {
+            static_cast<Impl*>(this)->release(backend, _map.find(src).second);
+
+            //_laundry.emplace_back(src);
+            // TODO: immediate release
+        }
 
     private:
         std::map<SourceType, MappedType>    _map;

@@ -7,7 +7,7 @@
 
 #include <cppgui/all_widgets.ipp>
 #include <cppgui/sdl/Window.ipp>
-#include <cppgui/GUI_window.ipp>
+//#include <cppgui/GUI_window.ipp>
 
 #include "./Text_input_dialog.ipp"
 

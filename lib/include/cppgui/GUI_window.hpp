@@ -56,28 +56,90 @@ namespace cppgui {
         using Root_widget = cppgui::Root_widget<GUIConfig, true>;
         using Keycode = typename GUIConfig::Keyboard::Keycode;
 
-        GUI_window(const char *title, int w = 800, int h = 600); // TODO: better defaults
+        GUI_window(const char *title, int w = 800, int h = 600):
+            WindowBaseT(title, w, h)
+        {
+            _root_widget.on_invalidated([this]() { invalidate(); });
+        }
 
         auto root_widget() { return &_root_widget; }
 
     protected:
 
-        void init_window();
-        void cleanup_window();
+        void init_window()
+        {
+            WindowBaseT::init_window();
+
+            _canvas = new Canvas_t {}; // TODO: support passing window as parameter
+            _canvas->init();
+
+            _root_widget.set_canvas(_canvas);
+
+            _root_widget.init();
+        }
+        void cleanup_window()
+        {
+            assert(_canvas);
+            _canvas->cleanup();
+            delete _canvas;
+            _canvas = nullptr;
+
+            WindowBaseT::cleanup_window();
+        }
 
         //void init_gui();
         // void cleanup_gui();
 
-        void redraw();
+        void redraw()
+        {
+            // std::cout << "Test_window::redraw()" << std::endl;
 
-        void size_changed(int w, int h);
-        void mouse_motion(int x, int y);
-        void mouse_button(int x, int y, int button, int dir, int count);
-        void mouse_wheel(int x, int y);
-        void text_input(const char32_t *, size_t);
-        void key_down(const Keycode &);
+            _canvas->enter_context();
+            //_root_widget.render(_canvas, { 0, 0 });
+            _root_widget.render();
+            _canvas->leave_context();
 
-        void closing();
+            present();
+        }
+
+        void size_changed(int w, int h)
+        {
+            _root_widget.set_extents({ (unsigned)w, (unsigned)h });
+            _canvas->define_viewport(0, 0, w, h);
+            _root_widget.layout();
+            //init_gui();
+            _root_widget.compute_view_from_data();
+        }
+        void mouse_motion(int x, int y)
+        {
+            _root_widget.mouse_motion({x, y});
+        }
+        void mouse_button(int x, int y, int button, int dir, int count)
+        {
+            _root_widget.mouse_button({ x, y }, button, dir == down ? cppgui::pressed : cppgui::released);
+
+            if (dir == up)
+            {
+                _root_widget.mouse_click({ x, y, }, button, count);
+            }
+        }
+        void mouse_wheel(int x, int y)
+        {
+            _root_widget.mouse_wheel({x, y});
+        }
+        void text_input(const char32_t *text, size_t size)
+        {
+            _root_widget.text_input(text, size);
+        }
+        void key_down(const Keycode &key)
+        {
+            _root_widget.key_down(key);
+        }
+
+        void closing()
+        {
+            p()->cleanup_window();
+        }
 
     private:
         class Impl_t: public Impl { friend class GUI_window; };
