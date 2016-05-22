@@ -75,9 +75,11 @@ namespace cppgui {
         {
             /** The init_layout() method is called on the complete widget tree 
                 before either get_minimal_size() or layout(). It is intended as 
-                an occasion to compute measurements (typically of text strings) 
-                that can then be used in both get_minimal_size() and layout().
+                an occasion to compute measurements (e.g. of text strings) that 
+                can then be used in both get_minimal_size() and layout().
             */
+
+            Parent::init_layout();
         }
 
         auto get_minimal_size() -> Extents override
@@ -92,7 +94,20 @@ namespace cppgui {
 
         void layout() override
         {
+            /** The layout() method is responsible for positioning
+             */
+
+            /** For containers, you will usually want to call the parent layout() method:
+             */
+            Parent::layout();
         }
+
+    protected:
+        class My_widget_t: public My_widget<Config, true> { friend struct Layouter; };
+
+        /** Gives access to the main class, including protected and private sections.
+         */
+        auto p() { return static_cast<My_widget_t*>(this); }
     };
 
 } // ns cppgui

@@ -130,6 +130,7 @@ namespace cppgui {
     }
 
     using Padding = std::array<Width, 4>;
+    using Margins = Padding;
 
     struct Rectangle {
 
@@ -148,22 +149,66 @@ namespace cppgui {
 
         bool contains(const Point &p) const { return ext.contains(p - pos); }
 
-        auto top_left() const { return pos; }
-        auto top_right() const -> Point { return { pos.x + static_cast<Position>(ext.w), pos.y }; }
-        auto bottom_right() const -> Point { return { pos.x + static_cast<Position>(ext.w), pos.y + static_cast<Position>(ext.h) }; }
-        auto bottom_left() const -> Point { return { pos.x, pos.y + static_cast<Position>(ext.h) }; }
-        auto left() const { return pos.x; }
-        auto top() const { return pos.y; }
-        auto right() const { return pos.x + static_cast<Position>(ext.w); }
-        auto bottom() const { return pos.y + static_cast<Position>(ext.h); }
-        auto width() const { return ext.w; }
+        /** Access conveniences.
+         */
+        ///@{
+
+        auto width () const { return ext.w; }
         auto height() const { return ext.h; }
+        auto position() -> Point   & { return pos; }
+        auto extents () -> Extents & { return ext; }
 
-        auto offset(const Point &offs) const -> Rectangle { return { pos.x + offs.x, pos.y + offs.y, ext.w, ext.h }; }
+        ///@}
 
-        auto operator + (const Point &offs) const { return offset(offs); }
-        auto operator - (const Point &offs) const { return offset({ - offs.x, - offs.y }); }
+        /** Computation conveniences.
+         */
+        ///@{
 
+        auto top_left() const 
+        { 
+            return pos; 
+        }
+        auto top_right() const -> Point
+        { 
+            return { pos.x + static_cast<Position>(ext.w), pos.y }; 
+        }
+        auto bottom_right() const -> Point 
+        { 
+            return { pos.x + static_cast<Position>(ext.w), pos.y + static_cast<Position>(ext.h) }; 
+        }
+        auto bottom_left() const -> Point 
+        { 
+            return { pos.x, pos.y + static_cast<Position>(ext.h) }; 
+        }
+        auto left() const 
+        { 
+            return pos.x; 
+        }
+        auto top() const 
+        { 
+            return pos.y; 
+        }
+        auto right() const 
+        { 
+            return pos.x + static_cast<Position>(ext.w); 
+        }
+        auto bottom() const 
+        { 
+            return pos.y + static_cast<Position>(ext.h); 
+        }
+
+        ///@}
+
+        /** Adding a Point to a rectangle will move its position without changing its extents.
+         */
+        ///@{
+
+        auto operator + (const Point &offs) const -> Rectangle { return { pos.x + offs.x, pos.y + offs.y, ext.w, ext.h }; }
+        auto operator - (const Point &offs) const -> Rectangle { return { pos.x - offs.x, pos.y - offs.y, ext.w, ext.h }; }
+
+        ///@}
+
+        /* 
         auto shrink(Length l) const -> Rectangle { return shrink({ l, l }); }
 
         auto shrink(const Extents &delta) const -> Rectangle { 
@@ -173,9 +218,88 @@ namespace cppgui {
                 ext.w - 2 * delta.w, ext.h - 2 * delta.h 
             }; 
         }
+        */
 
-        auto operator + (Length l) const -> Rectangle { return *this + Extents{ l, l }; }
+        /** shrink() methods: make rectangle smaller
+         */
+        ///@{
 
+        void shrink(Length l) 
+        { 
+            shrink( Extents{ l, l } ); 
+        }
+        void shrink(const Extents &delta)
+        { 
+            pos.x += (Position_delta) delta.w, pos.y += (Position_delta) delta.h;
+            ext.w -= 2 * delta.w, ext.h -= 2 * delta.h;
+        }
+        void shrink(const Padding &padding)
+        {
+            pos.x += static_cast<Position>(padding[3]), pos.y += static_cast<Position>(padding[0]);
+            ext.w -= padding[3] + padding[1], ext.h -= padding[0] + padding[2];
+        }
+
+        ///@}
+
+        /** operator - variants: equivalent to shrink(..) methods except that they return 
+            a new rectangle instance, leaving the original unchanged.
+         */
+        ///@{
+
+        auto operator - (Width w) const -> Rectangle
+        {
+            return { 
+                pos.x + (Position_delta) w, pos.y + (Position_delta) w, 
+                ext.w - 2 * w, ext.h - 2 * w
+            }; 
+        }
+        auto operator - (const Extents &delta) const -> Rectangle 
+        { 
+            return { 
+                pos.x + static_cast<Position>(delta.w), pos.y + static_cast<Position>(delta.h), 
+                ext.w - 2 * delta.w, ext.h - 2 * delta.h 
+            }; 
+        }
+        auto operator - (const Padding &padding) const -> Rectangle 
+        { 
+            return { 
+                pos.x + static_cast<Position>(padding[3]), pos.y + static_cast<Position>(padding[0]), 
+                ext.w - padding[3] - padding[1], ext.h - padding[0] - padding[2]
+            }; 
+        }
+
+        ///@}
+
+        /** grow(): make the rectangle bigger
+         */
+        //@{
+
+        void grow(Width w) 
+        { 
+            grow( Extents{ w, w } ); 
+        }
+        void grow(const Extents &delta)
+        { 
+            pos.x -= static_cast<Position>(delta.w), pos.y -= static_cast<Position>(delta.h);
+            ext.w += 2 * delta.w, ext.h += 2 * delta.h;
+        }
+        void grow(const Margins &margins)
+        {
+            pos.x -= static_cast<Position>(margins[3]), pos.y -= static_cast<Position>(margins[0]);
+            ext.w += margins[3] + margins[1], ext.h += margins[0] + margins[2];
+        }
+
+        ///@}
+
+        /** operator + variants: equivalent to grow(..) methods except that they return 
+            a new rectangle instance, leaving the original unchanged.
+         */
+        ///@{
+
+        auto operator + (Length l) const -> Rectangle 
+        { 
+            return *this + Extents{ l, l }; 
+        }
         auto operator + (const Extents &delta) const -> Rectangle 
         { 
             return { 
@@ -183,20 +307,15 @@ namespace cppgui {
                 ext.w + 2 * delta.w, ext.h + 2 * delta.h 
             }; 
         }
-
-        void grow(Length l) { grow(Extents{ l, l }); }
-
-        void grow(const Extents &delta)
+        auto operator + (const Padding &padding) const -> Rectangle 
         { 
-            pos.x -= static_cast<Position>(delta.w), pos.y -= static_cast<Position>(delta.h);
-            ext.w += 2 * delta.w, ext.h += 2 * delta.h;
+            return { 
+                pos.x - static_cast<Position>(padding[3]), pos.y - static_cast<Position>(padding[0]), 
+                ext.w + padding[3] + padding[1], ext.h + padding[0] + padding[1]
+            }; 
         }
 
-        void grow(const Padding &padding)
-        {
-            pos.x -= static_cast<Position>(padding[3]), pos.y -= static_cast<Position>(padding[0]);
-            ext.w += padding[3] + padding[1], ext.h += padding[0] + padding[2];
-        }
+        ///@}
 
     };
 

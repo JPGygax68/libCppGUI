@@ -30,6 +30,11 @@ namespace cppgui {
 
     // Class definition
 
+    /** Synopsis
+
+        ...TODO...
+     */
+
     // TODO: rename to Scrollbox_base ?
 
     template<class Config, bool With_layout, class Pane> // = Scrollable_pane<Config, With_layout>>
@@ -58,9 +63,9 @@ namespace cppgui {
             invalidate();
             }); */
 
-            _vert_sbar.on_navigation([this](Navigation_unit unit, /* Position initial_pos, */ const Fraction<int> &delta) {
+            _vert_sbar.on_navigation([this](Navigation_unit unit, const Fraction<int> &delta) {
 
-                static_cast<Pane*>(_content)->scroll(unit, /* initial_pos, */ delta);
+                static_cast<Pane*>(_content)->scroll(unit, delta);
             });
 
             add_child(&_vert_sbar);
@@ -141,7 +146,7 @@ namespace cppgui {
         auto pane() { return static_cast<Scrollable_pane_t*>(_content); }
 
         //Border                  _border    = { 4, {0, 0.2f, 0.6f, 1} };     // encompasses both content area and scrollbar(s)
-        Separator               _separator = { 1, {0.2f, 0.2f, 0.2f, 1} };
+        Separator               _separator = { 1, {0.2f, 0.2f, 0.2f, 1} }; // TODO: get color from static method or stylesheet
         Vertical_scrollbar_t    _vert_sbar;
         Rectangle               _content_rect;      // set by layouter
         Position                _vert_sep_pos;      // positions of the separators (vertical = x, horizontal = y)
@@ -190,7 +195,7 @@ namespace cppgui {
                 // Compute container extents
                 cont_exts = { exts.w - 2 * p()->_border.width, exts.h - 2 * p()->_border.width };
                 if (have_vert_sbar) cont_exts.w -= p()->_separator.width + vertsb_minsz.w;
-                //if (horz_scrollbar) cont_exts.h -= p()->_separator.width + horzsb_minsz.w;
+                //if (horz_scrollbar) cont_exts.h -= p()->_sbar_separator.width + horzsb_minsz.w;
 
                 // Ask content pane to adjust and check its resulting extents
                 p()->_content->compute_and_set_extents( cont_exts );
@@ -223,7 +228,7 @@ namespace cppgui {
             }
             /* if (have_horz_sbar)
             {
-            p()->_horz_sep_pos = exts.h - p()->_border.width - sb_minsz.h - p()->_separator.width;
+            p()->_horz_sep_pos = exts.h - p()->_border.width - sb_minsz.h - p()->_sbar_separator.width;
             p()->_horz_sbar.set_position({ exts.bottom() - (Position_delta) (vertsb_minsz.h + p()->_border.width), 0 });
             p()->_horz_sbar.set_extents ({ exts.w, horzsb_minsz.h });
             p()->_horz_sbar.layout();
@@ -261,14 +266,6 @@ namespace cppgui {
             and to update the scrollbar(s) accordingly
          */
         void notify_extents_changed();
-
-    private:
-
-        void do_scroll(Navigation_unit unit, Fraction<int> delta)
-        {
-            scroll(unit, delta);
-            scrollbox()->update_scrollbar_position();
-        }
     };
 
     // Main class template

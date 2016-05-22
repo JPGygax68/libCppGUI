@@ -49,7 +49,10 @@ namespace cppgui {
         {
             _font.assign(font);
         }
-        auto font() const { return _font.source(); }
+        auto font() const
+        { 
+            return _font.source(); 
+        }
         void set_text(const std::u32string &text)
         {
             _text = text;

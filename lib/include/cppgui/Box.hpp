@@ -64,6 +64,12 @@ namespace cppgui {
             }
         }
 
+        void draw_vert_separator(Canvas_t *canvas, const Point &offset, const Separator &sep, Position at)
+        {
+            fill_rect(canvas, { at, (Position) _border.width, sep.width, extents().h - 2 * _border.width }, 
+                position() + offset, Canvas_t::rgba_to_native(sep.color) );
+        }
+
     protected:
         Border      _border {1, {0, 0, 0, 1}}; // TODO: support different borders for each cardinal direction ?
 
@@ -86,6 +92,9 @@ namespace cppgui {
             _padding = padding; // std::copy(std::begin(padding), std::end(padding), std::begin(_padding));
         }
 
+        /* The add_padding() variants are conviences to be called from Widget Layouter aspects.
+        */
+        ///@{
         void add_padding(Rectangle &rect)
         {
             rect.pos.x += _padding[3] - 2;
@@ -112,6 +121,7 @@ namespace cppgui {
             add_padding(res);
             return res;
         }
+        ///@}
 
         Padding     _padding = { 0 };
     };

@@ -57,20 +57,21 @@ Test_window::Test_window(): Parent("Test window")
 
     _stringlist.set_font(dflt_font);
     _stringlist.set_position({ 50, 240 });
-    _stringlist.set_extents ({200, 400 });
+    _stringlist.set_extents ({200, 395 });
+    for (auto i = 1U; i <= 25; i ++)
+    {
+        _stringlist.add_item( "gee, item #"s + std::to_string(i) );
+    }
 
     _glyph_btn.set_glyph(cppgui::Icon_resources<Default_font::size>::close());
     _glyph_btn.set_position({280, 160});
     _glyph_btn.set_extents({30, 30});
 
-    _checkbox.set_font(dflt_font);
-    //_checkbox.set_glyph_font(dflt_font);
-    //_checkbox.set_glyph_font_size(22);
-    _checkbox.set_tick_glyph(glyph_font, tick_descr);
-    _checkbox.set_position({350, 50});
-    _checkbox.set_extents({200, 40});
-    _checkbox.set_label(U"Check me!");
-
+    _checkbox.set_font( dflt_font );
+    _checkbox.set_tick_glyph( glyph_font, tick_descr );
+    _checkbox.set_position({ 350, 50 });
+    _checkbox.set_extents ({ 200, 40 });
+    _checkbox.set_label( U"Check me!" );
 
     /*
     _button_list.resize(9);
