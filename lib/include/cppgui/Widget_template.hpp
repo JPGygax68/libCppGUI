@@ -33,6 +33,7 @@ namespace cppgui {
             Widget<Config, With_layout> >               // ... the actual parent class: Widget<>
     {
     public:
+        using Canvas_t = typename Widget::Canvas_t;
 
         void init() override
         {
@@ -85,9 +86,13 @@ namespace cppgui {
                 by containers, or from a container's layout() method to help it
                 decide how to place and size its children.
             */
+
+            return {}; // TODO: replace with real size
         }
 
-        void layout() override;
+        void layout() override
+        {
+        }
     };
 
 } // ns cppgui

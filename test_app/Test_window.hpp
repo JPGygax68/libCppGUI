@@ -32,13 +32,6 @@ using My_GUI_window = cppgui::GUI_window<Test_window, GUI_configuration, My_SDL_
 
 using Text_input_dialog_t = typename Text_input_dialog<GUI_configuration, true>;
 
-#ifdef INSTANTIATE_GUI_CLASSES
-template cppgui::All_widgets<GUI_configuration, true>;
-#else
-extern template cppgui::All_widgets<GUI_configuration, true>;
-extern template cppgui::All_widgets<GUI_configuration, true>::Label;
-#endif
-
 class Test_window: public My_GUI_window {
 public:
     using Parent = My_GUI_window;
@@ -64,4 +57,5 @@ private:
     Widgets::Textbox                _scrollbar_pos;
     std::vector<Widgets::Button>    _lb_buttons;
     My_listbox                      _listbox;
+    Widgets::Stringlist             _stringlist;
 };

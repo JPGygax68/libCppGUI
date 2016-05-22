@@ -225,6 +225,7 @@ namespace cppgui {
     {
     public:
         using Renderer = typename Config::Renderer;
+        using Canvas_t = typename Widget::Canvas_t;
         using Font_handle = typename Renderer::font_handle;
         using Keyboard = typename Config::Keyboard;
         using Keycode = typename Keyboard::Keycode;

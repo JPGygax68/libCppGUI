@@ -325,8 +325,6 @@ namespace cppgui {
                 int items = (int) children().size() * delta * (int) listbox()->content_rectangle().ext.h / (int) extents().h;
 
                 scroll_by_items( items );
-
-                listbox()->update_scrollbar_position(); // TODO: call this from within scroll_page_up() / scroll_page_down() ?
             }
 
             auto visible_items() const { return _last_visible_item - _first_visible_item + 1;  }

@@ -122,7 +122,7 @@ namespace cppgui {
 
             canvas->set_clipping_rect(r.pos.x, r.pos.y, r.ext.w, r.ext.h);
 
-            Container_t::render(canvas, offset);
+            Container_t::render(canvas, offset); // renders the scrollbars and the content pane
 
             canvas->cancel_clipping();
 
@@ -248,16 +248,27 @@ namespace cppgui {
     public:
         //using Navigation_handler = Custom_vertical_scrollbar<Config, With_layout>;
 
-        // To implement in CRTP descendant class:
+    protected:
+        
+        auto scrollbox() { return static_cast<Scrollbox<Config, With_layout, Scrollable_pane_base>*>( container() ); }
 
-        // TODO: the interface should probably be reduced to the single scroll() method; however initial_pos 
-        //      should be handled by the scrollbar
-        void scroll(Navigation_unit unit, /* Position initial_pos, */ Fraction<int> delta) { static_assert(false, "Scrollable_pane::navigate()"); }
+        /** To implement in CRTP descendant class.
+            The implementation is responsible for calling update_scrollbar_position() on the containing scrollbox.
+         */
+        void scroll(Navigation_unit unit, Fraction<int> delta) { static_assert(false, "Scrollable_pane::navigate()"); }
 
         /** TODO: inform container scrollbox that the extents of the pane have changed,
             and to update the scrollbar(s) accordingly
          */
         void notify_extents_changed();
+
+    private:
+
+        void do_scroll(Navigation_unit unit, Fraction<int> delta)
+        {
+            scroll(unit, delta);
+            scrollbox()->update_scrollbar_position();
+        }
     };
 
     // Main class template

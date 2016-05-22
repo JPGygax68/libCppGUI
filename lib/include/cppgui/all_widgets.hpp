@@ -49,6 +49,7 @@ namespace cppgui {
         using Container          = Container<Config, With_layout>;
         using Vertical_scrollbar = Vertical_scrollbar<Config, With_layout>;
         using Listbox            = Listbox<Config, With_layout>;
+        using Stringlist         = Stringlist<Config, With_layout>;
     };
 
 } // ns cppgui
