@@ -19,6 +19,7 @@
 
 #include <array>
 #include <cassert>
+#include <limits>
 
 namespace cppgui {
 
@@ -48,6 +49,9 @@ namespace cppgui {
 
     struct Point {
 
+        // TODO: move this to Position once that has been made into a class ?
+        static const Position infinity = std::numeric_limits<Position>::max();
+        
         Position x, y;
 
         auto operator + (const Point &delta) const { return Point{ x + delta.x, y + delta.y }; }

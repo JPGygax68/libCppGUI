@@ -103,14 +103,18 @@ namespace cppgui {
             coordinates it gets from yet higher up).
          */
         virtual void mouse_motion(const Point &) {}
-        virtual void mouse_button(const Point &, int /*button*/, Key_state) {}
-        virtual void mouse_click(const Point &, int button, int count)
+        virtual void mouse_button(const Point &pos, int /*button*/, Key_state state)
         {
-            if (button == 1 && count == 1)
+            if (state == Key_state::pressed)
             {
-                // TODO
+                _mouse_down_pos = pos;
+            }
+            else if (state == Key_state::released)
+            {
+                _mouse_down_pos.x = Point::infinity;
             }
         }
+        virtual void mouse_click(const Point &, int /*button*/, int /*count*/) {}
         virtual void mouse_wheel(const Vector &) {}
         virtual void text_input(const char32_t *, size_t) {}
         virtual void key_down(const Keycode &) {}
@@ -126,6 +130,11 @@ namespace cppgui {
         virtual void render(Canvas_t *, const Point &offset) = 0;
 
         virtual bool handle_key_down(const Keycode &) { return false; }
+
+        bool is_click_valid(const Point &pos) const
+        {
+            return std::abs(pos.x - _mouse_down_pos.x) < 2 && std::abs(pos.y - _mouse_down_pos.y) < 2;
+        }
 
     protected:
 
@@ -210,7 +219,9 @@ namespace cppgui {
 
     private:
 
-        Rectangle   _rect = {};
+        Rectangle               _rect = {};
+
+        Point                   _mouse_down_pos = { Point::infinity };
     };
 
     template <class Config, bool With_layout, class Parent> struct Widget__Layouter;
@@ -322,9 +333,12 @@ namespace cppgui {
 
         void mouse_click(const Point &pos, int button, int count) override
         {
-            take_focus();
+            if (is_click_valid(pos))
+            {
+                take_focus();
 
-            if (_click_hndlr) _click_hndlr(pos, button, count);
+                if (_click_hndlr) _click_hndlr(pos, button, count);
+            }
         }
 
         void change_visible(bool vis = true)
@@ -418,8 +432,6 @@ namespace cppgui {
 
         Abstract_container_t   *_container = nullptr;
 
-        //Rectangle               _inner_rect;
-
     private:
         friend class Drag_controller;
         friend class Root_widget<Config, With_layout>;
@@ -510,7 +522,7 @@ namespace cppgui {
         }
         void set_rectangle_se(const Point &pos, const Extents &ext)
         {
-            p()->set_position({ pos.x, pos.y - static_cast<Position>(ext.h) });
+            p()->set_position({ pos.x - static_cast<Position>(ext.w), pos.y - static_cast<Position>(ext.h) });
             p()->set_extents(ext);
         }
         void set_rectangle_sw(const Point &pos, const Extents &ext)
@@ -526,10 +538,6 @@ namespace cppgui {
 
         // "Stylesheet" TODO: make this into another aspect ?
         static constexpr auto button_padding() -> Padding { return { 5, 5, 5, 5 }; }
-
-        // void compute_inner_rect();
-
-        //Padding                 _padding = {};  // TODO: provide accessor ?
     };
 
 } // ns cppgui

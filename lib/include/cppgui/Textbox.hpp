@@ -147,9 +147,8 @@ namespace cppgui {
                 move_caret_to_pointer_position(pos);
                 collapse_selection_to_caret();
             }
-            else {
-                Widget_t::mouse_button(pos, button, state);
-            }
+
+            Widget_t::mouse_button(pos, button, state);
         }
         void mouse_click(const Point &/*pos*/, int /*button*/, int count) override
         {
