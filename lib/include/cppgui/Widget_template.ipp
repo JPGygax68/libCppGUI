@@ -76,6 +76,10 @@ namespace cppgui {
             whole widget tree. This is where the Layouter aspect must
             position and size all contained elements.
          */
+
+         /** For containers, you will usually want to call the parent layout() method:
+         */
+        Parent::layout();
     }
 
 } // ns cppgui

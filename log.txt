@@ -1,3 +1,26 @@
+2016-05-23
+==========
+
+Today's work has revealed a couple of fundamental design questions, to which I have provided answers that need to be considered provisional.
+
+The most important question is whether or not, or more probably exactly how and to what extent, user code may change the user interface from within event handlers.
+
+The provisional answer I gave to that is: "yes, you may"; but I've already had to fix the mouse_click() handler of Button<> to make this work, and more correctional work may be needed.
+
+The fundamental problem burns down to this: if event handlers are allowed to modify the user interface, then methods triggering events must allow for the possibility that their object instance ceases to exist while the event handler executes, and it would therefore be illegal to access any methods or fields after the event handler returns. Even worse, if multiple event handlers are going to be supported in the future, the dispatch mechanism would have to provide a way to stop subsequent handlers either from being called or from accessing removed widgets.
+
+The problem could be further compounded by the possibility of implementations to have the UI be rendered in a different thread - something that, so far, is not accounted for in any way, but could be necessary in the case of, say, a game engine that uses a separate rendering thread.
+
+It would probably be best to define a locking method that guarantees that the UI can be modified safely.
+
+- When the platform renders the UI inside the same thread that also responds to input events, no synchronization is necessary.
+
+- Even when no locking is necessary, debug builds should still guard against as many potential bugs as possible (such as user code asking for a UI access lock more than once, or libCppGUI code trying to access widget members after an event handler has had UI access)
+
+- When the UI is rendered in a separate thread, access must be protected by a real mutex.
+  
+- Alternatively, UI-modifying code could be deferred. This would involve using callbacks (usually lambdas). For such a solution to be efficient, compilers would have to be able to optimize lambda expressions that are called immediately - which according to an experiment I just conducted on http://gcc.godbolt.org/, they are not. Perhaps a solution could be devised with the help of a couple of macros.
+
 2016-05-11
 ==========
 

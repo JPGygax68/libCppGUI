@@ -97,7 +97,7 @@ namespace cppgui {
             coordinates it gets from yet higher up).
          */
         virtual void mouse_motion(const Point &) {}
-        virtual void mouse_button(const Point &, int /*button*/, Key_state) {}
+        virtual void mouse_button(const Point &, int /*button*/, Key_state);
         virtual void mouse_click(const Point &, int button, int count);
         virtual void mouse_wheel(const Vector &) {}
         virtual void text_input(const char32_t *, size_t) {}
@@ -317,10 +317,6 @@ namespace cppgui {
 
         // "Stylesheet" TODO: make this into another aspect ?
         static constexpr auto button_padding() -> Padding { return { 5, 5, 5, 5 }; }
-
-        // void compute_inner_rect();
-
-        //Padding                 _padding = {};  // TODO: provide accessor ?
     };
 
 } // ns cppgui

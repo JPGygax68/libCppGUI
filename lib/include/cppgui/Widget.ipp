@@ -40,6 +40,11 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
+    void Abstract_widget<Config, With_layout>::mouse_button(const Point &, int button, Key_state state)
+    {
+    }
+
+    template<class Config, bool With_layout>
     void Abstract_widget<Config, With_layout>::mouse_click(const Point &, int button, int count)
     {
         if (button == 1 && count == 1)

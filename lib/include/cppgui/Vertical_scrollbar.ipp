@@ -229,7 +229,10 @@ namespace cppgui {
     template<class Impl, class Config, bool With_layout>
     void Vertical_scrollbar_base<Impl, Config, With_layout>::recalc_thumb()
     {
-        _thumb_rect.ext.h = std::max(_sliding_range.l * _fraction / _full_range, _thumb_rect.ext.w / 2);
+        _thumb_rect.ext.h = std::max(
+            _full_range == 0 ? 0 : _sliding_range.l * _fraction / _full_range, 
+            _thumb_rect.ext.w / 2
+        );
 
         clip_thumb_pos();
     }

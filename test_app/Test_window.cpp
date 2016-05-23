@@ -2,7 +2,6 @@
 #include <memory>
 
 #include <gpc/fonts/store.hpp>
-
 #include <cppgui/Default_font.hpp>
 
 #include <cppgui/all_widgets.ipp>
@@ -37,6 +36,7 @@ Test_window::Test_window(): Parent("Test window")
     _label.set_background_color({1, 1, 1, 1});
     _label.set_text(U"Hello World!");
     _label.on_click([](const cppgui::Point &pos, int button, int clicks) {
+
         std::cout << "Label was clicked! (pos = " << pos.x << ", " << pos.y 
             << ", button = " << button << ", clicks = " << clicks << ")" << std::endl;
     });
@@ -47,7 +47,7 @@ Test_window::Test_window(): Parent("Test window")
     _textbox.set_position({50, 120});
     //_textbox.set_extents({ 200, 30 });
     _textbox.set_text(U"Abc1234567890");
-    
+
     _button.set_font(dflt_font);
     _button.set_position({  50, 160 });
     _button.set_extents ({ 200,  30 });
@@ -59,26 +59,31 @@ Test_window::Test_window(): Parent("Test window")
     _button2.set_position({50, 195});
     _button2.set_extents({200, 30});
 
+    _stringlist.set_font(dflt_font);
+    _stringlist.set_position({ 50, 240 });
+    _stringlist.set_extents ({200, 395 });
+    for (auto i = 1U; i <= 25; i ++)
+    {
+        _stringlist.add_item( "gee, item #"s + std::to_string(i) );
+    }
+
     _glyph_btn.set_glyph(cppgui::Icon_resources<Default_font::size>::close());
     _glyph_btn.set_position({280, 160});
     _glyph_btn.set_extents({30, 30});
 
-    _checkbox.set_font(dflt_font);
-    //_checkbox.set_glyph_font(dflt_font);
-    //_checkbox.set_glyph_font_size(22);
-    _checkbox.set_tick_glyph(glyph_font, tick_descr);
-    _checkbox.set_position({350, 50});
-    _checkbox.set_extents({200, 40});
-    _checkbox.set_label(U"Check me!");
-
+    _checkbox.set_font( dflt_font );
+    _checkbox.set_tick_glyph( glyph_font, tick_descr );
+    _checkbox.set_position({ 350, 50 });
+    _checkbox.set_extents ({ 200, 40 });
+    _checkbox.set_label( U"Check me!" );
 
     /*
     _button_list.resize(9);
     for (auto i = 0U; i < _button_list.size(); i ++)
     {
-        _button_list[i].set_font(dflt_font);
-        _button_list[i].set_label("This is button #"s + std::to_string(i + 1));
-        _stack.add_child(&_button_list[i]);
+    _button_list[i].set_font(dflt_font);
+    _button_list[i].set_label("This is button #"s + std::to_string(i + 1));
+    _stack.add_child(&_button_list[i]);
     }
     */
 
@@ -118,7 +123,7 @@ Test_window::Test_window(): Parent("Test window")
     }
     _listbox.set_position({ 800,  90 });
     _listbox.set_extents ({ 400, 120 });
-    _listbox.content_pane()->set_item_padding({5, 5});
+    _listbox.content_pane()->set_item_padding({ 5, 5 });
     _listbox.content_pane()->set_separator({1, {0.5f, 0.5f, 0.5f, 1}});
 
     root_widget()->set_background_color({0, 0.6f, 0.2f, 1});
@@ -127,6 +132,7 @@ Test_window::Test_window(): Parent("Test window")
     root_widget()->add_child(&_textbox);
     root_widget()->add_child(&_button);
     root_widget()->add_child(&_button2);
+    root_widget()->add_child(&_stringlist);
     root_widget()->add_child(&_glyph_btn);
     root_widget()->add_child(&_checkbox);
     //root_widget()->add_child(&_menu);
@@ -144,8 +150,8 @@ Test_window::Test_window(): Parent("Test window")
     root_widget()->on_invalidated([this]() { invalidate(); });
 
     root_widget()->init_layout(); // layout() and init() will be called upon by the Window
-    //root_widget()->layout();
-    //root_widget()->init();
+                                  //root_widget()->layout();
+                                  //root_widget()->init();
 
     init_window(); // will initialize the GUI and must therefore come last here
 }

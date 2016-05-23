@@ -48,7 +48,7 @@ namespace cppgui {
     {
         using namespace std;
 
-        return std::distance(begin(_children), find(begin(_children), end(_children), child) );
+        return distance(begin(_children), find(begin(_children), end(_children), child) );
     }
 
     template <class Config, bool With_layout>

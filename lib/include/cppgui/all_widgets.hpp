@@ -31,7 +31,7 @@
 //#include <cppgui/List_pane.hpp>
 #include <cppgui/Scrollbox.hpp>
 #include <cppgui/Listbox.hpp>
-//#include <cppgui/Stringlist.hpp>
+#include <cppgui/Stringlist.hpp>
 #include <cppgui/Canvas.hpp>
 
 #define CPPGUI_DEFINE_WIDGET_TYPES(Config, With_layout) \
@@ -48,8 +48,9 @@
     using Custom_vertical_scrollbar = cppgui::Custom_vertical_scrollbar <Config, With_layout>; \
     using Vertical_scrollbar        = cppgui::Vertical_scrollbar        <Config, With_layout>; \
     using Listbox                   = cppgui::Listbox                   <Config, With_layout>; \
-    using List_pane_base                 = cppgui::List_pane_base                 <Config, With_layout>;
-    //using Canvas_t = cppgui::Canvas<Renderer>; 
+    using List_pane_base            = cppgui::List_pane_base            <Config, With_layout>; \
+    using Stringlist                = cppgui::Stringlist                <Config, With_layout>;
+//using Canvas_t = cppgui::Canvas<Renderer>; 
 
 #define CPPGUI_INSTANTIATE_WIDGET_TYPES(Config, With_layout) \
     CPPGUI_INSTANTIATE_WIDGET            (Config, With_layout); \

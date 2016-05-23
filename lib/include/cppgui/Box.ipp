@@ -48,6 +48,13 @@ namespace cppgui {
         }
     }
 
+    template<class Config, bool With_layout, class Parent>
+    void Bordered_box<Config, With_layout, Parent>::draw_vert_separator(Canvas_t * canvas, const Point & offset, const Separator & sep, Position at)
+    {
+        fill_rect(canvas, { at, (Position) _border.width, sep.width, extents().h - 2 * _border.width }, 
+            position() + offset, Canvas_t::rgba_to_native(sep.color) );
+    }
+
     // Layouter aspect ----------------------------------------------
 
     template<class Config, class Parent>

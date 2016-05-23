@@ -102,12 +102,12 @@ namespace cppgui {
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
     void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::mouse_button(int x, int y, int button, int dir, int count)
     {
-        _root_widget.mouse_button({ x, y }, button, dir == down ? cppgui::pressed : cppgui::released);
-
         if (dir == up)
         {
             _root_widget.mouse_click({ x, y, }, button, count);
         }
+
+        _root_widget.mouse_button({ x, y }, button, dir == down ? cppgui::pressed : cppgui::released);
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>

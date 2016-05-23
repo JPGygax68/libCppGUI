@@ -72,7 +72,7 @@ namespace cppgui {
         if (has_focus())
         {
             // TODO: draw the rectangle along the border instead of around the label ?
-            auto r = _label_rect.grow({3, 3});
+            auto r = _label_rect + Extents{ 3, 3 };
             cnv->draw_stippled_rectangle_outline(pos.x + r.pos.x, pos.y + r.pos.y, r.ext.w, r.ext.h, {0, 0, 0.5f, 1});
         }
     }
@@ -88,6 +88,8 @@ namespace cppgui {
         {
             Parent_t::mouse_click(pos, button, count);
         }
+
+        Widget_t::mouse_click(pos, button, count); // will take focus
     }
 
     // Layouter -----------------------------------------------------

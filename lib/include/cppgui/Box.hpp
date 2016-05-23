@@ -41,6 +41,8 @@ namespace cppgui {
 
         void draw_border(Canvas_t *, const Point &offset);
 
+        void draw_vert_separator(Canvas_t *canvas, const Point &offset, const Separator &sep, Position at);
+
     protected:
         Border      _border {1, {0, 0, 0, 1}}; // TODO: support different borders for each cardinal direction ?
 

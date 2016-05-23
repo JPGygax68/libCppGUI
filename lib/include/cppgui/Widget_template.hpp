@@ -57,6 +57,13 @@ namespace cppgui {
         auto get_minimal_size() -> Extents override;
 
         void layout() override;
+
+    protected:
+        class My_widget_t: public My_widget<Config, true> { friend struct Layouter; };
+
+        /** Gives access to the main class, including protected and private sections.
+        */
+        auto p() { return static_cast<My_widget_t*>(this); }
     };
 
 } // ns cppgui

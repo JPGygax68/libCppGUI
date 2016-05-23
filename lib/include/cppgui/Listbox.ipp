@@ -299,7 +299,7 @@ namespace cppgui {
 
         scroll_by_items( items );
 
-        listbox()->update_scrollbar_position(); // TODO: call this from within scroll_page_up() / scroll_page_down() ?
+        // listbox()->update_scrollbar_position(); // TODO: call this from within scroll_page_up() / scroll_page_down() ?
     }
 
     // TODO: return a boolean to indicate whether scrolling was possible or not ?

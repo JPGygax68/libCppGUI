@@ -55,4 +55,4 @@ private:
     std::vector<Button>         _sb_buttons;
     std::vector<Button>         _lb_buttons;
     Listbox                     _listbox;
-};
+    Stringlist                  _stringlist;};
