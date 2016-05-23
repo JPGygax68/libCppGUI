@@ -93,8 +93,6 @@ namespace cppgui {
         }
         void mouse_click(const Point &pos, int button, int count) override
         {
-            Widget_t::mouse_click(pos, button, count);
-
             container_mouse_click(pos, button, count);
         }
         void mouse_wheel(const Vector &dist) override

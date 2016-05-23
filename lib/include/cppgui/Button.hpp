@@ -107,6 +107,8 @@ namespace cppgui {
             {
                 Parent_t::mouse_click(pos, button, count);
             }
+
+            Widget_t::mouse_click(pos, button, count); // will take focus
         }
 
         Pushed_handler          _on_pushed;

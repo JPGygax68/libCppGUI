@@ -153,10 +153,12 @@ namespace cppgui {
          */
         ///@{
 
-        auto width () const { return ext.w; }
-        auto height() const { return ext.h; }
+        auto width   () const { return ext.w; }
+        auto height  () const { return ext.h; }
         auto position() -> Point   & { return pos; }
         auto extents () -> Extents & { return ext; }
+        auto position() const -> const Point   & { return pos; }
+        auto extents () const -> const Extents & { return ext; }
 
         ///@}
 

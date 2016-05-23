@@ -279,7 +279,7 @@ namespace cppgui {
         /** Important: do not call gained_focus() from a child; call child_obtained_focus() instead,
             to inform the container.
          */
-        virtual void gained_focus()
+        virtual void gained_focus ()
         {
             invalidate();
         }
