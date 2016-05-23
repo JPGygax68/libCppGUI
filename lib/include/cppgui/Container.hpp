@@ -321,20 +321,28 @@ namespace cppgui {
 
         void set_layout_type(Layout_type type ) { _layout_type = type; }
 
-        void insert_child(Widget_t *) // TODO: find a better name OR support insertion index
+        void insert_child(Widget_t *child) // TODO: find a better name OR support insertion index
         {
             p()->add_child(child);
             layout();
         }
-        void drop_child(Widget_t *)
+        void drop_child(Widget_t *child)
         {
+            if (contains_widget( root_widget()->mouse_holder() ))
+            {
+                root_widget()->release_mouse();
+            }
+
             p()->remove_child(child);
+
             layout();
         }
 
         void set_spacing(Length spacing) { _spacing = spacing; }
 
     private:
+        using Root_widget_t = Root_widget<Config, true>;
+
         auto p() { return static_cast<Container_t*>(static_cast<Container<Config, true>*>(this)); }
 
         Layout_type     _layout_type = Layout_type::none;

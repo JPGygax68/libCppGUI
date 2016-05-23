@@ -99,6 +99,8 @@ namespace cppgui {
 
         void mouse_click(const Point &pos, int button, int count) override
         {
+            Widget_t::mouse_click(pos, button, count); // will take focus
+
             if (button == 1 && count == 1)
             {
                 if (_on_pushed) _on_pushed();
@@ -107,8 +109,6 @@ namespace cppgui {
             {
                 Parent_t::mouse_click(pos, button, count);
             }
-
-            Widget_t::mouse_click(pos, button, count); // will take focus
         }
 
         Pushed_handler          _on_pushed;

@@ -266,9 +266,11 @@ namespace cppgui {
     template <class Config, class Parent> 
     struct Abstract_container__Layouter<Config, true, Parent>: public Parent
     {
-        class Container_t: public Container<Config, true> { friend struct Abstract_container__Layouter; };
+        class Abstract_container_t: public Abstract_container<Config, true> { friend struct Abstract_container__Layouter; };
+        using Widget_t = Widget<Config, true>;
+        using Root_widget_t = Root_widget<Config, true>;
 
-        auto p() { return static_cast<Container_t*>(static_cast<Container<Config, true>*>(this)); }
+        auto p() { return static_cast<Abstract_container_t*>(static_cast<Abstract_container<Config, true>*>(this)); }
 
         void init_children_layout()
         {
@@ -293,6 +295,26 @@ namespace cppgui {
                 }
                 child->layout();
             }
+        }
+
+        bool contains_widget(Widget_t *widget)
+            // Recursively check whether this or a descendant widget has captured the mouse.
+        {
+            for (auto child: p()->_children)
+            {
+                if (child == widget)
+                {
+                    return true;
+                }
+
+                auto cont = dynamic_cast<Abstract_container<Config, true>*>(child);
+                if (cont && cont->contains_widget( widget )) 
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     };
 

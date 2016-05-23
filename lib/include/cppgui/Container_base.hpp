@@ -89,7 +89,7 @@ namespace cppgui {
         }
         void mouse_button(const Point &pos, int button, Key_state state) override
         {
-            Widget_t::mouse_button(pos, button, state);
+            //Widget_t::mouse_button(pos, button, state);
             container_mouse_button(pos, button, state);
         }
         void mouse_click(const Point &pos, int button, int count) override

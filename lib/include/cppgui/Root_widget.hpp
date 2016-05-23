@@ -196,10 +196,13 @@ namespace cppgui {
         }
         void release_mouse()
         {
-            assert(_mouse_holder);
-
-            _mouse_holder = nullptr;
+            if (_mouse_holder)
+            {
+                assert(_mouse_holder);
+                _mouse_holder = nullptr;
+            }
         }
+        auto mouse_holder() const { return _mouse_holder; }
 
     protected:
         
@@ -269,7 +272,6 @@ namespace cppgui {
         // Specific functionality 
 
         void lock() { _must_update = false; }
-
         void unlock() { if (_must_update) p()->invalidate(); }
 
     private:
@@ -292,10 +294,8 @@ namespace cppgui {
         virtual void init_layout()
         {
             p()->init_children_layout();
-        }
-        
+        }        
         virtual auto get_minimal_size() -> Extents { return {0, 0}; }
-
         virtual void layout()
         {
             p()->layout_children(); 
@@ -311,9 +311,13 @@ namespace cppgui {
 
             p()->invalidate();
         }
-
         void drop_child(Widget_t *child)
         {
+            if (p()->contains_widget( p()->mouse_holder() ))
+            {
+                p()->release_mouse();
+            }
+
             p()->remove_child(child); 
 
             p()->invalidate();
