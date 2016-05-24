@@ -61,7 +61,7 @@ namespace cppgui {
 
     protected:
 
-        void mouse_click(const Point &pos, int button, int count) override;
+        void mouse_click(const Point &pos, int button, Count count) override;
 
         Pushed_handler          _on_pushed;
         Font_resource           _font;

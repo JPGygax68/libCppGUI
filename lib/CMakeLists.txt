@@ -137,6 +137,8 @@ add_library( ${PROJECT_NAME} STATIC
 
     src/dummy.cpp
 
+    include/cppgui/utils.hpp
+
     include/cppgui/Default_font.hpp                 include/cppgui/Default_font.ipp
 
     include/cppgui/basic_types.hpp

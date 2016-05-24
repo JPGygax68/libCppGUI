@@ -63,7 +63,7 @@ namespace cppgui {
         using Color_resource    = Resource<const Color &, Native_color, Canvas_t, true>;
         using Font_resource     = Resource<const Rasterized_font *, Font_handle, Canvas_t, false>;
 
-        using Click_handler     = std::function<void(const Point &, int button, int clicks)>; // TODO: support return value ?
+        using Click_handler     = std::function<void(const Point &, int button, Count clicks)>; // TODO: support return value ?
         using Pushed_handler    = std::function<void()>; // for buttons TODO: renamed event to "Push" (as in "a push happened") ?
 
         auto& rectangle() { return _rect; }
@@ -96,12 +96,14 @@ namespace cppgui {
             the container, to subtract the child widget's position() from the
             coordinates it gets from yet higher up).
          */
+        #ifdef NOT_DEFINED
         virtual void mouse_motion(const Point &) {}
-        virtual void mouse_button(const Point &, int /*button*/, Key_state);
+        virtual void mouse_button(const Point &, int /*button*/, Key_state, Count clicks);
         virtual void mouse_click(const Point &, int button, int count);
         virtual void mouse_wheel(const Vector &) {}
         virtual void text_input(const char32_t *, size_t) {}
         virtual void key_down(const Keycode &) {}
+        #endif
 
         virtual void mouse_enter() {}       // TODO: provide "entry point" parameter ?
         virtual void mouse_exit() {}        // TODO: provide "exit point" parameter ?
@@ -199,13 +201,16 @@ namespace cppgui {
         bool is_first_child() { return container()->children().front() == this; }
         bool is_last_child () { return container()->children().back () == this; }
 
-        void key_down(const Keycode &);
+        virtual void mouse_motion(const Point &) {}
+        virtual void mouse_button(const Point &, int /*button*/, Key_state, Count clicks);
+        virtual void mouse_click(const Point &, int button, Count count);
+        virtual void mouse_wheel(const Vector &) {}
+        virtual void text_input(const char32_t *, size_t) {}
+        virtual void key_down(const Keycode &);
         //void key_up(const Keycode &);
 
         void mouse_enter() override;
         void mouse_exit() override;
-
-        void mouse_click(const Point &, int button, int count) override;
 
         void change_visible(bool visible = true);
 

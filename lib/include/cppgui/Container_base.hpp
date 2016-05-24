@@ -55,8 +55,8 @@ namespace cppgui {
         void loosing_focus() override;
 
         void mouse_motion(const Point &) override;
-        void mouse_button(const Point &, int button, Key_state) override;
-        void mouse_click(const Point &, int button, int count) override;
+        void mouse_button(const Point &, int button, Key_state, Count clicks) override;
+        //void mouse_click(const Point &, int button, int count) override;
         void mouse_wheel(const Vector &) override;
         void text_input(const char32_t *, size_t) override;
         void key_down(const Keycode &) override;
@@ -96,4 +96,7 @@ namespace cppgui {
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_CONTAINER_BASE(Config, With_layout) \
-    template cppgui::Container_base<Config, With_layout>;
+    template cppgui::Container_base<Config, With_layout>; \
+    template cppgui::Bordered_box<Config, With_layout, cppgui::Container_base<Config, With_layout> >; \
+    template cppgui::Box__Layouter<Config, With_layout, cppgui::Container_base<Config, With_layout> >;
+

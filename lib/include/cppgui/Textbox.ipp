@@ -120,7 +120,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state)
+    void Textbox<Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
     {
         if (state == pressed)
         {
@@ -133,11 +133,11 @@ namespace cppgui {
             collapse_selection_to_caret();
         }
 
-        Widget_t::mouse_button(pos, button, state);
+        Widget_t::mouse_button(pos, button, state, clicks);
     }
 
     template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::mouse_click(const Point &, int /*button*/, int count)
+    void Textbox<Config, With_layout>::mouse_click(const Point &, int /*button*/, Count count)
     {
         if (count == 2) // double-click
         {

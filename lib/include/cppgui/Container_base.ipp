@@ -69,18 +69,20 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state)
+    void Container_base<Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
     {
-        container_mouse_button(pos, button, state);
+        container_mouse_button(pos, button, state, clicks);
     }
+
+    #ifdef NOT_DEFINED
 
     template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::mouse_click(const Point &pos, int button, int count)
+    void Container_base<Config, With_layout>::mouse_click(const Point &pos, int button, Count count)
     {
-        Widget_t::mouse_click(pos, button, count);
-
         container_mouse_click(pos, button, count);
     }
+
+    #endif
 
     template<class Config, bool With_layout>
     void Container_base<Config, With_layout>::mouse_wheel(const Vector &dist)

@@ -41,12 +41,6 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout, class Pane>
-    void Scrollbox<Config, With_layout, Pane>::init()
-    {
-        Container_t::init(); // will also init scrollbar
-    }
-
-    template<class Config, bool With_layout, class Pane>
     void Scrollbox<Config, With_layout, Pane>::compute_view_from_data()
     {
         // Content pane must have its size set at this point

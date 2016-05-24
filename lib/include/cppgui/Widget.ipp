@@ -39,11 +39,7 @@ namespace cppgui {
         _rect.ext = ext;
     }
 
-    template<class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::mouse_button(const Point &, int button, Key_state state)
-    {
-    }
-
+    /*
     template<class Config, bool With_layout>
     void Abstract_widget<Config, With_layout>::mouse_click(const Point &, int button, int count)
     {
@@ -52,6 +48,7 @@ namespace cppgui {
             // TODO
         }
     }
+    */
 
     template<class Config, bool With_layout>
     auto Abstract_widget<Config, With_layout>::rgba_to_native(const Color &color) -> Native_color
@@ -241,7 +238,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    inline void Widget<Config, With_layout>::mouse_enter()
+    void Widget<Config, With_layout>::mouse_enter()
     {
         //std::cout << "Widget::mouse_enter()" << std::endl;
         _hovered = true;
@@ -249,15 +246,36 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    inline void Widget<Config, With_layout>::mouse_exit()
+    void Widget<Config, With_layout>::mouse_exit()
     {
         //std::cout << "Widget::mouse_exit()" << std::endl;
         _hovered = false;
         invalidate();
     }
 
+    template<class Config, bool With_layout>
+    void Widget<Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
+    {
+        if (state == Key_state::pressed)
+        {
+            root_widget()->capture_mouse(this);
+        }
+        else if (state == Key_state::released)
+        {
+            auto holder = root_widget()->mouse_holder();
+
+            // Must be done now because click handler may change UI structure
+            root_widget()->release_mouse();
+
+            if (button == 1 && holder == this)
+            {
+                mouse_click(pos, button, clicks);
+            }
+        }
+    }
+
     template<class Config, bool With_layouting>
-    void Widget<Config, With_layouting>::mouse_click(const Point &pos, int button, int count)
+    void Widget<Config, With_layouting>::mouse_click(const Point &pos, int button, Count count)
     {
         take_focus();
 

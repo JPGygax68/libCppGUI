@@ -68,3 +68,12 @@ namespace cppgui {
     };
 
 } // ns cppgui
+
+/** The following macro may not be of much use, because of the need to pass a templated class
+    as its last parameter - which is only possible, syntactically, via a typedef.
+
+    Therefore, instead of calling this macro, you may prefer to just copy and adapt its content.
+ */
+#define CPPGUI_INSTANTIATE_BORDERED_BOX(Config, With_layout, Class) \
+    template cppgui::Bordered_box<Config, With_layout, Class>; \
+    template cppgui::Box__Layouter<Config, With_layout, Class>;

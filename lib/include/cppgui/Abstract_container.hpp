@@ -76,8 +76,8 @@ namespace cppgui {
             called from "real" containers (i.e. descendants of Container<>).            
         */
         void container_mouse_motion(const Point &);
-        void container_mouse_button(const Point &, int button, Key_state);
-        void container_mouse_click(const Point &, int button, int count);
+        void container_mouse_button(const Point &, int button, Key_state, Count clicks);
+        //void container_mouse_click(const Point &, int button, int count);
         void container_mouse_wheel(const Point &dist);
         void container_mouse_exit();
         void container_text_input(const char32_t *, size_t);
@@ -112,11 +112,14 @@ namespace cppgui {
     struct Abstract_container__Layouter<Config, true, Parent>: public Parent
     {
         class Container_t: public Container<Config, true> { friend struct Abstract_container__Layouter; };
+        using Widget_t = Widget<Config, true>;
 
         auto p() { return static_cast<Container_t*>(static_cast<Container<Config, true>*>(this)); }
 
         void init_children_layout();
         void layout_children();
+
+        bool contains_widget(Widget_t *);
     };
 
 } // ns cppgui

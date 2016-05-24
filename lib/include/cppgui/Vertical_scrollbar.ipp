@@ -99,7 +99,7 @@ namespace cppgui {
     }
 
     template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state)
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
     {
         if (button == 1 && state == Key_state::pressed)
         {
@@ -136,7 +136,7 @@ namespace cppgui {
             }
         }
 
-        Container_t::mouse_button(pos, button, state);
+        Container_t::mouse_button(pos, button, state, clicks);
     }
 
     template<class Impl, class Config, bool With_layout>

@@ -40,6 +40,9 @@ namespace cppgui {
         char32_t                code_point;
     };
 
+    #define CPPGUI_INSTANTIATE_ICON_RESOURCES(Font_size) \
+        template cppgui::Icon_resources<Font_size>;
+
     template<Font_size>
     struct Icon_resources {
     

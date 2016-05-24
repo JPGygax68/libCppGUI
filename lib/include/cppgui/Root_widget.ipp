@@ -121,9 +121,11 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state)
+    void Root_widget<Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
     {
         this->lock();
+
+        #ifdef NOT_DEFINED
 
         if (_mouse_holder)
         {
@@ -134,9 +136,16 @@ namespace cppgui {
             container_mouse_button(pos, button, state); // Abstract_container TODO: better name ?
         }
 
+        #else
+
+        container_mouse_button(pos, button, state, clicks); // Abstract_container TODO: better name ?
+
+        #endif
+
         this->unlock();
     }
 
+    /*
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::mouse_click(const Point &pos, int button, int count)
     {
@@ -144,6 +153,7 @@ namespace cppgui {
         container_mouse_click(pos, button, count);
         this->unlock();
     }
+    */
 
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::mouse_wheel(const Vector &dir)
@@ -201,9 +211,11 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::release_mouse()
     {
-        assert(_mouse_holder);
-
-        _mouse_holder = nullptr;
+        if (_mouse_holder)
+        {
+            assert(_mouse_holder);
+            _mouse_holder = nullptr;
+        }
     }
 
     template<class Config, bool WithLayout>
@@ -259,6 +271,11 @@ namespace cppgui {
     template<class Config, class Parent>
     void Root_widget__Layouter<Config, true, Parent>::drop_child(Widget_t *child)
     {
+        if (p()->contains_widget( p()->mouse_holder() ))
+        {
+            p()->release_mouse();
+        }
+
         p()->remove_child(child); 
 
         p()->invalidate();

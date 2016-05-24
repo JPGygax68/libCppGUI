@@ -73,14 +73,14 @@ namespace cppgui {
         void push_cursor(Cursor_handle);
         void pop_cursor();
 
-        void mouse_motion(const Point &) override;
-        void mouse_button(const Point &, int button, Key_state) override;
-        void mouse_click(const Point &, int button, int count) override;
-        void mouse_wheel(const Vector &) override;
-        void text_input(const char32_t *, size_t) override;
+        // TODO: replace the following event override with standalone methods that inject to container_xxxx()
+        void mouse_motion(const Point &);
+        void mouse_button(const Point &, int button, Key_state, Count clicks);
+        //void mouse_click(const Point &, int button, int count);
+        void mouse_wheel(const Vector &);
+        void text_input(const char32_t *, size_t);
         void key_down(const Keycode &);
-
-        //void key_up(const Keycode &) override;
+        //void key_up(const Keycode &);
 
         void render();
 
@@ -88,6 +88,7 @@ namespace cppgui {
 
         void capture_mouse(Widget_t *);
         void release_mouse();
+        auto mouse_holder() const { return _mouse_holder; }
 
     protected:
         

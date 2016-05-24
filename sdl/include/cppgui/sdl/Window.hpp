@@ -4,6 +4,7 @@
 #include <string>
 #include <memory>
 #include <map>
+#include <functional>
 
 #include "error_handling.hpp"
 

@@ -61,7 +61,7 @@ namespace cppgui {
 
         void render(Canvas_t *, const Point &offset) override;
 
-        void mouse_click(const Point &, int button, int count) override;
+        void mouse_click(const Point &, int button, Count count) override;
 
     protected: // for access by Layouter aspect
         

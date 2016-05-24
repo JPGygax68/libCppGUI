@@ -34,7 +34,7 @@ namespace cppgui {
     }
 
     template<typename Impl, typename Backend, typename SourceType, typename MappedType>
-    inline void Full_resource_mapper<Impl, Backend, SourceType, MappedType>::release_resource(Backend *backend, const SourceType &src)
+    void Full_resource_mapper<Impl, Backend, SourceType, MappedType>::release_resource(Backend *backend, const SourceType &src)
     {
         static_cast<Impl*>(this)->release(backend, _map.find(src).second);
 
@@ -45,7 +45,7 @@ namespace cppgui {
 #ifdef NOT_DEFINED
 
     template<typename Impl, typename Backend, typename SourceType, typename MappedType>
-    inline void Full_resource_mapper<Impl, Backend, SourceType, MappedType, true>::do_laundry(Backend * b)
+    void Full_resource_mapper<Impl, Backend, SourceType, MappedType, true>::do_laundry(Backend * b)
     {
         for (auto &src : _laundry)
         {

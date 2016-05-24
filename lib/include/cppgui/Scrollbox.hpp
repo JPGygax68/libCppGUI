@@ -50,8 +50,6 @@ namespace cppgui {
 
         Scrollbox();
 
-        void init() override;
-
         void compute_view_from_data() override;
 
         void on_navigation(Navigation_handler);

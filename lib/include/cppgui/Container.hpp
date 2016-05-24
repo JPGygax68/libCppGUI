@@ -40,6 +40,10 @@ namespace cppgui {
 
     // Main class
 
+    #define CPPGUI_INSTANTIATE_CONTAINER(Config, With_layout) \
+        template cppgui::Container<Config, With_layout>; \
+        _CPPGUI_INSTANTIATE_CONTAINER_LAYOUTER(Config, With_layout, cppgui::Container_base<Config, With_layout>)
+
     /** This generic container class exists primarily to combine the functionalities of 
         Abstract_container with those of Widget. At the present (2016-05-03), it also offers 
         a choice of layouting algorithms, but that is bad design and will be removed.
@@ -58,6 +62,10 @@ namespace cppgui {
     };
 
     // Layouter aspect
+
+    #define _CPPGUI_INSTANTIATE_CONTAINER_LAYOUTER(Config, With_layout, ...) \
+        template cppgui::Container__Layouter<Config, With_layout, __VA_ARGS__>; \
+        template cppgui::Box__Layouter<Config, With_layout, __VA_ARGS__>;
 
     template <class Config, class Parent>
     struct Container__Layouter<Config, true, Parent>: 
@@ -98,6 +106,3 @@ namespace cppgui {
     };
         
 } // ns cppgui
-
-#define CPPGUI_INSTANTIATE_CONTAINER(Config, With_layout) \
-    template cppgui::Container<Config, With_layout>;

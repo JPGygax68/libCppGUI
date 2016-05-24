@@ -35,7 +35,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    inline void Glyph_button<Config, With_layout>::init()
+    void Glyph_button<Config, With_layout>::init()
     {
         if (_label_font.source()) _label_font.translate( root_widget()->canvas() );
 
@@ -84,14 +84,9 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Glyph_button<Config, With_layout>::mouse_button(const Point &point, int button, Key_state state)
+    void Glyph_button<Config, With_layout>::mouse_click(const Point & /*point*/, int button, Count /*count*/)
     {
-        if (button == 1 && state == Key_state::pressed)
-        {
-            if (_on_pushed) _on_pushed();
-        }
-
-        Widget_t::mouse_button(point, button, state);
+        if (_on_pushed && button == 1) _on_pushed();
     }
 
 
@@ -100,13 +95,13 @@ namespace cppgui {
     // TODO: 1) write a layout class that can handle a label + a glyph  2) use it here
 
     template <class Config, class Parent>
-    inline void Glyph_button__Layouter<Config, true, Parent>::init_layout()
+    void Glyph_button__Layouter<Config, true, Parent>::init_layout()
     {
         compute_sizes();
     }
 
     template <class Config, class Parent>
-    inline void Glyph_button__Layouter<Config, true, Parent>::compute_sizes()
+    void Glyph_button__Layouter<Config, true, Parent>::compute_sizes()
     {
         if (p()->_glyph_cp)
         {
@@ -130,7 +125,7 @@ namespace cppgui {
     }
 
     template <class Config, class Parent>
-    inline auto Glyph_button__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
+    auto Glyph_button__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
     {
         return { 
             _padding[3] + _label_bounds.width () + _spacing + _glyph_min_edge + _padding[1], 
@@ -139,7 +134,7 @@ namespace cppgui {
     }
 
     template <class Config, class Parent>
-    inline void Glyph_button__Layouter<Config, true, Parent>::layout()
+    void Glyph_button__Layouter<Config, true, Parent>::layout()
     {
         auto ext = p()->extents();
 

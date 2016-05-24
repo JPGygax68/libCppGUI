@@ -63,8 +63,8 @@ namespace cppgui {
         void compute_view_from_data() override;
 
         void mouse_motion(const Point &) override;
-        void mouse_button(const Point &, int button, Key_state) override;
-        void mouse_click(const Point &, int button, int count) override;
+        void mouse_button(const Point &, int button, Key_state, Count clicks) override;
+        void mouse_click(const Point &, int button, Count count) override;
         void text_input(const char32_t *text, size_t count) override;
 
         void mouse_enter() override;

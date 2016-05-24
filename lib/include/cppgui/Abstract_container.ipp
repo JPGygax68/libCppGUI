@@ -52,7 +52,7 @@ namespace cppgui {
     }
 
     template <class Config, bool With_layout>
-    inline void Abstract_container<Config, With_layout>::add_child(Widget_t *child)
+    void Abstract_container<Config, With_layout>::add_child(Widget_t *child)
     {
         _children.push_back(child);
         child->added_to_container(this);
@@ -151,20 +151,22 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::container_mouse_button(const Point &pos, int button, Key_state state)
+    void Abstract_container<Config, With_layout>::container_mouse_button(const Point &pos, int button, Key_state state, Count clicks)
     {
         auto child = child_at(pos);
 
-        if (child) child->mouse_button(pos - child->position(), button, state);
+        if (child) child->mouse_button(pos - child->position(), button, state, clicks);
     }
 
+    /*
     template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::container_mouse_click(const Point &pos, int button, int count)
+    void Abstract_container<Config, With_layout>::container_mouse_click(const Point &pos, int button, Count count)
     {
         auto child = child_at(pos);
 
         if (child) child->mouse_click(pos - child->position(), button, count);
     }
+    */
 
     template<class Config, bool With_layout>
     void Abstract_container<Config, With_layout>::container_mouse_wheel(const Point &dist)
@@ -239,7 +241,7 @@ namespace cppgui {
     }
 
     template<class Config, class Parent>
-    inline void Abstract_container__Layouter<Config, true, Parent>::layout_children()
+    void Abstract_container__Layouter<Config, true, Parent>::layout_children()
     {
         // TODO: this algorithm, and the whole method, will probably become obsolete as real
         //  layouting gets implemented
@@ -254,6 +256,27 @@ namespace cppgui {
             }
             child->layout();
         }
+    }
+
+    template<class Config, class Parent>
+    bool Abstract_container__Layouter<Config, true, Parent>::contains_widget(Widget_t *widget)
+        // Recursively check whether this or a descendant widget has captured the mouse.
+    {
+        for (auto child: p()->_children)
+        {
+            if (child == widget)
+            {
+                return true;
+            }
+
+            auto cont = dynamic_cast<Abstract_container<Config, true>*>(child);
+            if (cont && cont->contains_widget( widget )) 
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 } // ns cppgui

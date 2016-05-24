@@ -35,7 +35,7 @@ namespace cppgui {
         TODO: better name for this method ?
     */
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class RendererAdapter>
-    inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::init_window()
+    void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::init_window()
     {
         WindowBaseT::init_window();
 
@@ -48,7 +48,7 @@ namespace cppgui {
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
-    inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::cleanup_window()
+    void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::cleanup_window()
     {
         assert(_canvas);
         _canvas->cleanup();
@@ -60,7 +60,7 @@ namespace cppgui {
 
     /*
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class RendererAdapter>
-    inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::init_gui()
+    void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::init_gui()
     {
         if (!_init_done)
         {
@@ -71,7 +71,7 @@ namespace cppgui {
     */
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
-    inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::redraw()
+    void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::redraw()
     {
         // std::cout << "Test_window::redraw()" << std::endl;
 
@@ -84,7 +84,7 @@ namespace cppgui {
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
-    inline void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::size_changed(int w, int h)
+    void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::size_changed(int w, int h)
     {
         _root_widget.set_extents({ (unsigned)w, (unsigned)h });
         _canvas->define_viewport(0, 0, w, h);
@@ -102,12 +102,12 @@ namespace cppgui {
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
     void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::mouse_button(int x, int y, int button, int dir, int count)
     {
-        if (dir == up)
+        /* if (dir == up)
         {
             _root_widget.mouse_click({ x, y, }, button, count);
-        }
+        } */
 
-        _root_widget.mouse_button({ x, y }, button, dir == down ? cppgui::pressed : cppgui::released);
+        _root_widget.mouse_button({ x, y }, button, dir == down ? cppgui::pressed : cppgui::released, static_cast<Count>(count));
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>

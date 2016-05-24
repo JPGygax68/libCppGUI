@@ -22,7 +22,7 @@
 namespace cppgui {
 
     template<class Config, bool With_layout>
-    inline void Container<Config, With_layout>::compute_view_from_data()
+    void Container<Config, With_layout>::compute_view_from_data()
     {
         compute_child_views();
 
@@ -32,7 +32,7 @@ namespace cppgui {
     // Layouter aspect ----------------------------------------------
 
     template <class Config, class Parent>
-    inline void Container__Layouter<Config, true, Parent>::init_layout()
+    void Container__Layouter<Config, true, Parent>::init_layout()
     {
         for (auto child: p()->children())
         {
@@ -41,7 +41,7 @@ namespace cppgui {
     }
 
     template <class Config, class Parent>
-    inline auto Container__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
+    auto Container__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
     {
         // TODO: use polymorphic delegate class 
 
@@ -109,7 +109,7 @@ namespace cppgui {
     }
 
     template <class Config, class Parent>
-    inline auto Container__Layouter<Config, true, Parent>::get_preferred_size() -> Extents
+    auto Container__Layouter<Config, true, Parent>::get_preferred_size() -> Extents
     {
         // TODO: use polymorphic delegate class 
 
@@ -179,7 +179,7 @@ namespace cppgui {
     }
 
     template <class Config, class Parent>
-    inline void Container__Layouter<Config, true, Parent>::layout()
+    void Container__Layouter<Config, true, Parent>::layout()
     {
         //p()->layout_children();
 
@@ -283,23 +283,29 @@ namespace cppgui {
     }
 
     template <class Config, class Parent>
-    inline void Container__Layouter<Config, true, Parent>::insert_child(Widget_t *child)
+    void Container__Layouter<Config, true, Parent>::insert_child(Widget_t *child)
     {
         p()->add_child(child);
         layout();
     }
 
     template <class Config, class Parent>
-    inline void Container__Layouter<Config, true, Parent>::drop_child(Widget_t *child)
+    void Container__Layouter<Config, true, Parent>::drop_child(Widget_t *child)
     {
+        if (contains_widget( root_widget()->mouse_holder() ))
+        {
+            root_widget()->release_mouse();
+        }
+
         p()->remove_child(child);
+
         layout();
     }
 
     // Container_updater aspect -------------------------------------
 
     template<class Config, bool With_layout, class Parent>
-    inline void Default__Container_base__Container_updater<Config, With_layout, Parent>::child_invalidated(Widget_t *)
+    void Default__Container_base__Container_updater<Config, With_layout, Parent>::child_invalidated(Widget_t *)
     {
         p()->container()->child_invalidated(p());
     }

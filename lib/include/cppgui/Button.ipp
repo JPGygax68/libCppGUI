@@ -35,7 +35,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    inline void cppgui::Button<Config, With_layout>::set_font(const Rasterized_font *font)
+    void cppgui::Button<Config, With_layout>::set_font(const Rasterized_font *font)
     {
         _font.assign(font);
     }
@@ -78,8 +78,10 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Button<Config, With_layout>::mouse_click(const Point &pos, int button, int count)
+    void Button<Config, With_layout>::mouse_click(const Point &pos, int button, Count count)
     {
+        Widget_t::mouse_click(pos, button, count); // will take focus
+
         if (button == 1 && count == 1)
         {
             if (_on_pushed) _on_pushed();
@@ -88,8 +90,6 @@ namespace cppgui {
         {
             Parent_t::mouse_click(pos, button, count);
         }
-
-        Widget_t::mouse_click(pos, button, count); // will take focus
     }
 
     // Layouter -----------------------------------------------------
@@ -116,7 +116,7 @@ namespace cppgui {
     }
 
     template<class Config, class Parent>
-    inline void Button__Layouter<Config, true, Parent>::font_changed()
+    void Button__Layouter<Config, true, Parent>::font_changed()
     {
         compute_bounding_box();
         layout();
@@ -124,7 +124,7 @@ namespace cppgui {
     }
 
     template<class Config, class Parent>
-    inline void Button__Layouter<Config, true, Parent>::text_changed()
+    void Button__Layouter<Config, true, Parent>::text_changed()
     {
         compute_bounding_box();
         layout();

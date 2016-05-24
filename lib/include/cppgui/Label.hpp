@@ -19,6 +19,8 @@
 
 #include <string>
 
+#include "./utils.hpp" // TODO: move to Widget.hpp
+
 #include "./Widget.hpp"
 
 namespace gpc { namespace fonts {
@@ -32,8 +34,13 @@ namespace cppgui {
 
     template <class Config, bool With_layout> class Root_widget;
 
-    /** Label, without layouting.
+    /** Label widget.
      */
+
+    #define CPPGUI_INSTANTIATE_LABEL(Config, With_layout) \
+        template cppgui::Label<Config, With_layout>; \
+        _CPPGUI_INSTANTIATE_LABEL_LAYOUTER(Config, With_layout, cppgui::Widget<Config, With_layout>)
+
     template <class Config, bool With_layout>
     class Label: public Label__Layouter<Config, With_layout, Widget<Config, With_layout> >
     {
@@ -64,6 +71,12 @@ namespace cppgui {
     };
 
     class Single_element_layout;
+
+    // Layouter aspect ----------------------------------------------
+
+    #define _CPPGUI_INSTANTIATE_LABEL_LAYOUTER(Config, With_layout, ...) \
+        template cppgui::Label__Layouter<Config, With_layout, __VA_ARGS__>; \
+        template cppgui::Box__Layouter<Config, With_layout, __VA_ARGS__>;
 
     template <class Config, class Parent>
     struct Label__Layouter<Config, true, Parent>: 
@@ -96,7 +109,3 @@ namespace cppgui {
     };
 
 } // ns cppgui
-
-#define CPPGUI_INSTANTIATE_LABEL(Config, With_layout) \
-    template cppgui::Label<Config, With_layout>; \
-    template cppgui::Label__Layouter<Config, With_layout, cppgui::Label<Config, With_layout>>;

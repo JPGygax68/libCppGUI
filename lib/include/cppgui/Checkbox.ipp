@@ -44,7 +44,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    inline void Checkbox<Config, With_layout>::init()
+    void Checkbox<Config, With_layout>::init()
     {
         _label_font.translate( root_widget()->canvas() );
         _glyph_font.translate( root_widget()->canvas() );
@@ -69,7 +69,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Checkbox<Config, With_layout>::mouse_click(const Point &pos, int button, int count)
+    void Checkbox<Config, With_layout>::mouse_click(const Point &pos, int button, Count count)
     {
         if (_box_rect.contains(pos)) // todo: subtract stroke_width() ?
         {
@@ -85,7 +85,7 @@ namespace cppgui {
     // Layouter aspect ----------------------------------------------
 
     template <class Config, class Parent>
-    inline void Checkbox__Layouter<Config, true, Parent>::init_layout()
+    void Checkbox__Layouter<Config, true, Parent>::init_layout()
     {
         compute_em_bounds();
         compute_label_size();
@@ -93,7 +93,7 @@ namespace cppgui {
     }
 
     template <class Config, class Parent>
-    inline void Checkbox__Layouter<Config, true, Parent>::compute_em_bounds()
+    void Checkbox__Layouter<Config, true, Parent>::compute_em_bounds()
     {
         // TODO: adapt for multi-cultural use
 
@@ -104,7 +104,7 @@ namespace cppgui {
     }
 
     template <class Config, class Parent>
-    inline void Checkbox__Layouter<Config, true, Parent>::compute_label_size()
+    void Checkbox__Layouter<Config, true, Parent>::compute_label_size()
     {
         _label_bounds = p()->font().source()->compute_text_extents(0, p()->_label.data(), p()->_label.size());
     }
@@ -118,7 +118,7 @@ namespace cppgui {
     }
 
     template <class Config, class Parent>
-    inline auto Checkbox__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
+    auto Checkbox__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
     {
         // TODO: spacing between label and tick
         return { 
@@ -128,7 +128,7 @@ namespace cppgui {
     }
 
     template <class Config, class Parent>
-    inline void Checkbox__Layouter<Config, true, Parent>::layout()
+    void Checkbox__Layouter<Config, true, Parent>::layout()
     {
         // TODO: supporting aligning on a baseline ?
 
