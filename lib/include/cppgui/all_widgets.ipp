@@ -41,4 +41,5 @@
 //#include "./List_pane.ipp"
 #include "./Scrollbox.ipp"
 #include "./Listbox.ipp"
+#include "./Stringlist.ipp"
 #include "./Root_widget.ipp"

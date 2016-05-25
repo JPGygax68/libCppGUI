@@ -85,4 +85,5 @@ namespace cppgui {
     CPPGUI_INSTANTIATE_CONTAINER_BASE    (Config, With_layout); \
     CPPGUI_INSTANTIATE_CONTAINER         (Config, With_layout); \
     CPPGUI_INSTANTIATE_VERTICAL_SCROLLBAR(Config, With_layout); \
-    CPPGUI_INSTANTIATE_LISTBOX           (Config, With_layout);
+    CPPGUI_INSTANTIATE_LISTBOX           (Config, With_layout); \
+    CPPGUI_INSTANTIATE_STRINGLIST        (Config, With_layout);

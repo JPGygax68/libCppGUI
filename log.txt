@@ -3,7 +3,7 @@
 
 Some important changes today.
 
-- I've reverted back to using implementation files. The compilation times were becoming unacceptable, and I had misunderstood the way explicit template instantiation works - it has no effect on such methods.
+- I've reverted back to using implementation files. The compilation times were becoming unacceptable, and I had misunderstood the way explicit template instantiation works - it has no effect on inline methods, and all methods implemented inside a class declaration are automatically inline.
 
 - I've moved the user event injection methods from Abstract_widget<> to Widget<>. Since only Widget instances can be put into containers, there is no sense injecting at a higher level (the implementations were empty anyway).
 

@@ -27,6 +27,12 @@ namespace cppgui {
 
     // Main class declaration ---------------------------------------
 
+    /** This macro definition must mirror the template class declaration that immediately follows.
+     */
+    #define CPPGUI_INSTANTIATE_MY_WIDGET(Config, With_layout) \
+        template cppgui::My_widget<Config, With_layout>; \
+        _CPPGUI_INSTANTIATE_MY_WIDGET_LAYOUTER(Config, With_layout, cppgui::Widget<Config, With_layout>)
+
     template<class Config, bool With_layout>
     class My_widget: 
         public My_widget__Layouter<Config, With_layout, // Layouter aspect, parameterized with ...
@@ -42,6 +48,14 @@ namespace cppgui {
     };
 
     // Layouter aspect ----------------------------------------------
+
+    /** As for the main class, this macro definition must mirror the layouter aspect class declaration.
+        It should instantiate not just the Layouter aspect itself, but also any aspects it injects on
+        its own (this example does not inject any, but see Label.hpp for an example).
+     */
+    #define _CPPGUI_INSTANTIATE_MY_WIDGET_LAYOUTER(Config, With_layout, ...) \
+        template cppgui::My_widget__Layouter<Config, With_layout, __VA_ARGS__>; \
+        template cppgui::Box__Layouter<Config, With_layout, __VA_ARGS__>;
 
     /** Dummy template specialization for when With_layout = false.
      */
