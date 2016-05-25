@@ -18,9 +18,7 @@ limitations under the License.
 */
 
 #include <vector>
-#include <string>
 
-#include "./Resource.hpp"
 #include "./Box.hpp"
 #include "./Vertical_scrollbar.hpp"
 
@@ -123,6 +121,6 @@ namespace cppgui {
         _CPPGUI_INSTANTIATE_STRINGLIST_BASE(cppgui::Stringlist<Config, With_layout>, Config, With_layout)
         
     template<class Config, bool With_layout>
-    class Stringlist: public _stringlist<Config>::Base<Stringlist<Config, With_layout>, With_layout> { };
+    class Stringlist: public _stringlist<Config>::template Base<Stringlist<Config, With_layout>, With_layout> { };
 
 } // ns cppgui

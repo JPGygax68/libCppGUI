@@ -23,6 +23,12 @@ namespace cppgui {
             case Navigation_unit::fraction:
                 // TODO
                 break;
+            case full_range: 
+                // TODO
+                break;
+            default: 
+                // TODO
+                break;
             }
 
             //static_cast<Pane*>(_content)->scroll(unit, delta);
@@ -40,7 +46,7 @@ namespace cppgui {
     template<class Class, bool With_layout>
     void _stringlist<Config>::Base<Class, With_layout>::init()
     {
-        _font.translate( root_widget()->canvas() );
+        _font.translate( this->root_widget()->canvas() );
 
         Container_t::init();
     }
@@ -76,7 +82,7 @@ namespace cppgui {
     template<class Class, bool With_layout>
     void _stringlist<Config>::Base<Class, With_layout>::render(Canvas_t * canvas, const Point & offset)
     {
-        Point pos = offset + position();
+        Point pos = offset + this->position();
 
         // fill(canvas, offset, Canvas_t::rgba_to_native({1, 1, 1, 1}) );
 
@@ -97,7 +103,7 @@ namespace cppgui {
 
         // Separator rectangle
         Rectangle r_sep { r_item };
-        r_sep.pos.y += (Position_delta) r_item.ext.h;
+        r_sep.pos.y += static_cast<Position_delta>(r_item.ext.h);
         r_sep.ext.h = _item_separator.width;
 
         // Draw all items
@@ -114,7 +120,7 @@ namespace cppgui {
             // Done ?
             if (++i >= _items.size()) break;
 
-            r_item.pos.y += (Position_delta) r_item.ext.h;
+            r_item.pos.y += static_cast<Position_delta>(r_item.ext.h);
             if (r_item.pos.y >= _content_rect.bottom()) break;
 
             // Draw item separator
@@ -132,7 +138,8 @@ namespace cppgui {
     {
         Length sb_width = _vert_sbar.extents().w + _sbar_separator.width;
 
-        _content_rect = Rectangle{ extents() } - Margins{ _border.width, _border.width + sb_width, _border.width, _border.width };
+        _content_rect = Rectangle{ this->extents() } - 
+            Margins{ this->_border.width, this->_border.width + sb_width, this->_border.width, this->_border.width };
     }
 
     // Layouter aspect ----------------------------------------------
@@ -175,7 +182,10 @@ namespace cppgui {
 
         // Vertical scrollbar
         p()->_vert_sep_pos = exts.w - p()->_border.width - vertsb_minsz.w - p()->_sbar_separator.width;
-        p()->_vert_sbar.set_position({ exts.right() - (Position_delta) (vertsb_minsz.w + p()->_border.width), (Position) p()->_border.width });
+        p()->_vert_sbar.set_position({ 
+            exts.right() - static_cast<Position_delta>(vertsb_minsz.w + p()->_border.width), 
+            static_cast<Position>(p()->_border.width) 
+        });
         p()->_vert_sbar.set_extents ({ vertsb_minsz.w, exts.h - 2 * p()->_border.width });
         p()->_vert_sbar.layout();
 
