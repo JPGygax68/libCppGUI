@@ -4,22 +4,20 @@
 #include <gpc/fonts/store.hpp>
 #include <cppgui/Default_font.hpp>
 
-#include <cppgui/all_widgets.ipp>
-#include <cppgui/sdl/Window.ipp>
-#include <cppgui/GUI_window.ipp>
-
-#include "./Text_input_dialog.ipp"
-
 #include "./Test_window.hpp"
 
 // Class implementation  --------------------------------------------
 
-template My_SDL_window; // apparently an explicit instantiation is needed here
+#include <cppgui/sdl/Window.ipp>
+#include <cppgui/GUI_window.ipp>
+
+CPPGUI_SDL_INSTANTIATE_WINDOW(Test_window)
+CPPGUI_INSTANTIATE_GUI_WINDOW(Test_window, GUI_configuration, cppgui::sdl::Window<Test_window>, cppgui::sdl::OpenGL_adapter)
 
 static cppgui::Rasterized_font *dflt_font;
 static cppgui::Rasterized_font *glyph_font;     // TODO: move this to a reusable module in cppgui itself
 
-Test_window::Test_window(): Parent("Test window")
+Test_window::Test_window(): Parent_t("Test window")
 {
     using Default_font = GUI_configuration::Default_font;
     using namespace std::string_literals;

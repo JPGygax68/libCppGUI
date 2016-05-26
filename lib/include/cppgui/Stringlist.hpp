@@ -37,8 +37,8 @@ namespace cppgui {
 
         // Main class declaration ---------------------------------------
 
-        #define _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Class, Config, With_layout) \
-            template cppgui::_stringlist<Config>::Base<Class, With_layout>; \
+        #define _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Config, With_layout, ...) \
+            template cppgui::_stringlist<Config>::Base<__VA_ARGS__, With_layout>; \
             template cppgui::_stringlist<Config>::Layouter<With_layout, \
                 cppgui::Bordered_box<Config, With_layout, \
                     cppgui::Container<Config, With_layout>>>;
@@ -118,7 +118,7 @@ namespace cppgui {
 
     #define _CPPGUI_INSTANTIATE_STRINGLIST(Config, With_layout) \
         template cppgui::Stringlist<Config, With_layout>; \
-        _CPPGUI_INSTANTIATE_STRINGLIST_BASE(cppgui::Stringlist<Config, With_layout>, Config, With_layout)
+        _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Config, With_layout, cppgui::Stringlist<Config, With_layout>)
         
     template<class Config, bool With_layout>
     class Stringlist: public _stringlist<Config>::template Base<Stringlist<Config, With_layout>, With_layout> { };

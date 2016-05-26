@@ -194,5 +194,5 @@ namespace cppgui {
 
 #define CPPGUI_INSTANTIATE_VERTICAL_SCROLLBAR(Config, With_layout) \
     template cppgui::Vertical_scrollbar       <Config, With_layout>; \
-    /* template cppgui::Vertical_scrollbar_base  <cppgui::Vertical_scrollbar<Config, With_layout>, Config, With_layout>; */ \
+    template cppgui::Vertical_scrollbar_base  <cppgui::Vertical_scrollbar<Config, With_layout>, Config, With_layout>; \
     template cppgui::Custom_vertical_scrollbar<Config, With_layout>;

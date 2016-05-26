@@ -21,6 +21,9 @@
 
 namespace cppgui {
 
+    #define CPPGUI_INSTANTIATE_DEFAULT_FONT(Size) \
+        template cppgui::Default_font<Size>;
+
     template <Font_size Size>
     auto Default_font<Size>::get() -> Serialized_font
     {

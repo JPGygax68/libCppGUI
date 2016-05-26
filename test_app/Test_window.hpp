@@ -25,16 +25,16 @@ struct GUI_configuration: cppgui::sdl::Default_configuration<GUI_configuration, 
     using Default_font = typename cppgui::Default_font<16>;
 };
 
-class Test_window;
-using My_SDL_window = cppgui::sdl::Window<Test_window>;
-class Test_window;
-using My_GUI_window = cppgui::GUI_window<Test_window, GUI_configuration, My_SDL_window, cppgui::sdl::OpenGL_adapter>;
+//class Test_window;
+//using My_SDL_window = cppgui::sdl::Window<Test_window>;
+//using My_GUI_window = cppgui::GUI_window<Test_window, GUI_configuration, My_SDL_window, cppgui::sdl::OpenGL_adapter>;
 
 using Text_input_dialog_t = typename Text_input_dialog<GUI_configuration, true>;
 
-class Test_window: public My_GUI_window {
+class Test_window: public cppgui::GUI_window<Test_window, GUI_configuration, cppgui::sdl::Window<Test_window>, cppgui::sdl::OpenGL_adapter>
+{
 public:
-    using Parent = My_GUI_window;
+    using Parent_t = typename cppgui::GUI_window<Test_window, GUI_configuration, cppgui::sdl::Window<Test_window>, cppgui::sdl::OpenGL_adapter>;
     CPPGUI_DEFINE_WIDGET_TYPES(GUI_configuration, true);
 
     Test_window();

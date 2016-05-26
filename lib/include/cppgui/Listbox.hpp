@@ -164,4 +164,6 @@ namespace cppgui {
 
 #define CPPGUI_INSTANTIATE_LISTBOX(Config, With_layout) \
     template cppgui::Listbox<Config, With_layout>; \
-    template cppgui::List_pane<Config, With_layout>;
+    template cppgui::List_pane<Config, With_layout>; \
+    template cppgui::List_pane_base<Config, With_layout>; \
+    template cppgui::List_pane__Layouter<Config, With_layout, cppgui::Scrollable_pane<Config, With_layout> >;

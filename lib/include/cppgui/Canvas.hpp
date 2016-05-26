@@ -41,6 +41,9 @@ namespace cppgui {
         };
     }
 
+    #define CPPGUI_INSTANTIATE_CANVAS(Config) \
+        template cppgui::Canvas<Config::Renderer>;
+
     template <class Renderer>
     class Canvas: public Renderer /*, public _canvas::Font_mapper<Renderer> */
     {

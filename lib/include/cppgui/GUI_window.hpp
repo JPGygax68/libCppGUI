@@ -42,6 +42,10 @@ namespace cppgui {
                 My_window::My_window(...) { ... }
                 ...
      */
+
+    #define CPPGUI_INSTANTIATE_GUI_WINDOW(Impl, Config, Base, RendererAdapter) \
+        template cppgui::GUI_window<Impl, Config, Base, RendererAdapter>;
+
     template <
         class Impl,                                 // CRTP
         class GUIConfig,                            // GUI library configuration
