@@ -171,7 +171,7 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Listbox.hpp                      include/cppgui/Listbox.ipp
     include/cppgui/Stringlist.hpp                   include/cppgui/Stringlist.ipp
 
-    include/cppgui/Icon_resources.hpp               include/cppgui/Icon_resources.ipp
+    include/cppgui/Icon_resources.hpp               # all constexpr -> inline -> no .ipp file
 
     include/cppgui/layouting.hpp                    include/cppgui/layouting.ipp
 

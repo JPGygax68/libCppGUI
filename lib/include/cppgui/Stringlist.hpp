@@ -33,19 +33,19 @@ namespace cppgui {
 
         // Forward declarations
 
-        template<bool With_layout, class Parent> struct Layouter;
+        template<class Class, bool With_layout, class Parent> struct Layouter;
 
         // Main class declaration ---------------------------------------
 
         #define _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Config, With_layout, ...) \
             template cppgui::_stringlist<Config>::Base<__VA_ARGS__, With_layout>; \
-            template cppgui::_stringlist<Config>::Layouter<With_layout, \
+            template cppgui::_stringlist<Config>::Layouter<__VA_ARGS__, With_layout, \
                 cppgui::Bordered_box<Config, With_layout, \
                     cppgui::Container<Config, With_layout>>>;
 
         template<class Class, bool With_layout>
         class Base: public 
-            Layouter<With_layout, 
+            Layouter<Class, With_layout, 
                 Bordered_box<Config, With_layout,
                     Container<Config, With_layout> > >
         {
@@ -59,11 +59,9 @@ namespace cppgui {
             void set_font(const Rasterized_font *font);
 
             void init() override;
-
             void compute_view_from_data() override;
 
             void add_item(const std::string &text);
-
             void add_item(const std::u32string &text);
 
             void render(Canvas_t *canvas, const Point &offset) override;
@@ -93,12 +91,12 @@ namespace cppgui {
 
         /** Dummy template specialization for when With_layout = false.
         */
-        template<class Parent> struct Layouter<false, Parent>: public Parent {};
+        template<class Class, class Parent> struct Layouter<Class, false, Parent>: public Parent {};
 
         /** "Real" layouter specialization that will be selected when With_layout = true.
         */
-        template<class Parent>
-        struct Layouter<true, Parent>: public Parent
+        template<class Class, class Parent>
+        struct Layouter<Class, true, Parent>: public Parent
         {
             void init_layout() override;
 
@@ -107,7 +105,7 @@ namespace cppgui {
             void layout() override;
 
         protected:
-            class Stringlist_t: public Base<Config, true> { friend struct Layouter; };
+            class Stringlist_t: public Base<Class, true> { friend struct Layouter; };
 
             auto p() { return static_cast<Stringlist_t *>(this); }
 

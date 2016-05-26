@@ -135,7 +135,7 @@ namespace cppgui {
         void draw_borders(Canvas_t *, const Rectangle &rect, const Point &offs, 
             Width width, const Color & top, const Color & right, const Color & bottom, const Color & left);
         // PROVISIONAL
-        void draw_stippled_inner_rect(Canvas_t *, const Rectangle &, const Point &offs);
+        //void draw_stippled_inner_rect(Canvas_t *, const Rectangle &, const Point &offs);
 
         // Experimental & temporary: implement more sophisticated (and flexible!) styling
         // - May not / should not stay static; make const if possible
@@ -327,6 +327,7 @@ namespace cppgui {
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_WIDGET(Config, With_layout) \
+    template cppgui::Abstract_widget<Config, With_layout>; \
     template cppgui::Widget<Config, With_layout>; \
     template cppgui::Widget__Layouter<Config, With_layout, cppgui::Abstract_widget<Config, With_layout>>;
 
