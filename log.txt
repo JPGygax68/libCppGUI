@@ -1,3 +1,17 @@
+2016-05-26
+==========
+
+A few TODOs emerged from today's cleanup work (aimed at creating a reusable skeleton project - without success so far).
+
+- The Icon_resources module (templated struct) gives access to binary (pre-rasterized font) data. Looking at the compiler warnings today, it turned out that the fact that the accessor methods are constexpr makes them automatically inline (of course - in hindsight). 
+  The data returned by the accessors is obtained via a header file, called "all_icon_fonts.h", which is generated at build time. Unfortunately, `all_icon_fonts.hpp` doesn't just declare that data, it actually inserts it into the source via `#include` directives.
+  This is wasteful in terms of build times. What needs to be done here is split that file into a declaration and a source part, which latter should of course take the form of a `.ipp` file since font and glyph sizes cannot be known before building the library consumer.
+  
+- Regarding the same module, it turns out that grouping all "icon resources" into a single "provider" templated struct may be suboptimal. The reason for that is that different "icon" glyphs are consumed at different pixel sizes, which will lead to wasted const data since the current `CMakefile.txt` code rasterizes all of the requested glyphs for each requested pixel size.
+  It would certainly help to upgrade the CMake code that rasterizes and converts to hex the icon glyphs. But when doing so, the opportunity should also be used to upgrade the `gpcbin2c` utility: instead of just generating comma-separated hex codes and leave it to the programmer to use those to generate constant data, the utility should be able to produce self-contained header and source files on its own, giving the user a choice between standard C arrays and C++ `std::array`s for more flexibility.
+  Also, the functionality of `gpcbin2c` should be made available as a C++ class, so that `gpcfontrasterizer` can be upgraded to generate source code on its own, which would greatly simplify the CMake setup.
+
+
 2016-05-24
 ==========
 

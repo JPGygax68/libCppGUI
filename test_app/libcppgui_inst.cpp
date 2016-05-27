@@ -12,6 +12,6 @@ template class cppgui::sdl::Application<Test_window>;
 
 CPPGUI_INSTANTIATE_WIDGET_TYPES(GUI_configuration, true)
 CPPGUI_INSTANTIATE_DEFAULT_FONT(16)
-CPPGUI_INSTANTIATE_ICON_RESOURCES(16)   // TODO: split icon resources that are needed "big" and those that are needed at font size ?
-CPPGUI_INSTANTIATE_ICON_RESOURCES(24)
+//CPPGUI_INSTANTIATE_ICON_RESOURCES(16)   // TODO: split icon resources that are needed "big" and those that are needed at font size ?
+//CPPGUI_INSTANTIATE_ICON_RESOURCES(24)
 

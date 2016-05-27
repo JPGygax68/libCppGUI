@@ -32,9 +32,9 @@ namespace cppgui {
             invalidate();
         }); */
         
-        _vert_sbar.on_navigation([this](Navigation_unit unit, /* Position initial_pos, */ const Fraction<int> &delta) {
+        _vert_sbar.on_navigation([this](Navigation_unit unit, const Fraction<int> &delta) {
 
-            static_cast<Pane*>(_content)->scroll(unit, /* initial_pos, */ delta);
+            static_cast<Pane*>(_content)->scroll(unit, delta);
         });
 
         add_child(&_vert_sbar);
