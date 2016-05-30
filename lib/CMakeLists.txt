@@ -57,17 +57,21 @@ foreach(size IN ITEMS 16 24)
 
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/generated/headers/${font_file}-${size}.h
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/generated/sources/${font_file}-${size}.c
         DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont
         COMMAND gpcbin2c ARGS
             -i "${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont"
-            -o "${CMAKE_CURRENT_BINARY_DIR}/generated/headers/${font_file}-${size}.h"
+            -c ${font_name_as_id}_${size}
+            -h "${CMAKE_CURRENT_BINARY_DIR}/generated/headers/${font_file}-${size}.h"
+            -s "${CMAKE_CURRENT_BINARY_DIR}/generated/sources/${font_file}-${size}.c"
     )
 
-    list(APPEND FONT_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/generated/headers/${font_file}-${size}.h)
-
-    file(APPEND ${GENERATED_HEADERS_DIR}/liberationsans_font.h "static const uint8_t ${font_name_as_id}_${size}[] = {\n")
+    file(APPEND ${GENERATED_HEADERS_DIR}/liberationsans_font.h "extern \"C\" {\n")
     file(APPEND ${GENERATED_HEADERS_DIR}/liberationsans_font.h "#include \"${font_file}-${size}.h\"\n")
-    file(APPEND ${GENERATED_HEADERS_DIR}/liberationsans_font.h "};\n")
+    file(APPEND ${GENERATED_HEADERS_DIR}/liberationsans_font.h "}\n")
+
+    list(APPEND FONT_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/generated/headers/${font_file}-${size}.h)
+    list(APPEND FONT_SOURCES ${CMAKE_CURRENT_BINARY_DIR}/generated/sources/${font_file}-${size}.c)
 
     file(APPEND ${GENERATED_HEADERS_DIR}/liberationsans_font.h "
 template<> struct ${font_name_as_id}<${size}> {
@@ -185,7 +189,7 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/all_widgets.hpp
     include/cppgui/all_widgets.ipp
 
-    ${FONT_HEADERS}
+    ${FONT_HEADERS} ${FONT_SOURCES}
     ${GENERATED_HEADERS_DIR}/liberationsans_font.h
     ${GENERATED_HEADERS_DIR}/all_icon_fonts.h
 )

@@ -194,18 +194,22 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::capture_mouse(Widget_t *holder)
     {
-        assert(!_mouse_holder);
+        // assert(!_mouse_holder);
 
-        _mouse_holder = holder;
-
-        // The mouse holder expects mouse positions as relative to its own origin,
-        // so we get its absolute position here and store it as the "capture offset"
-        Point offset = holder->position();
-        for (auto cont = holder->container(); cont != this; cont = static_cast<Container_t*>(cont)->container())
+        if (!_mouse_holder)
         {
-            offset += static_cast<Container_t*>(cont)->position();
+            _mouse_holder = holder;
+
+            // The mouse holder expects mouse positions as relative to its own origin,
+            // so we get its absolute position here and store it as the "capture offset"
+            Point offset = holder->position();
+            for (auto cont = holder->container(); cont != this; cont = static_cast<Container_t*>(cont)->container())
+            {
+                offset += static_cast<Container_t*>(cont)->position();
+            }
+
+            _capture_offset = offset;
         }
-        _capture_offset = offset;
     }
 
     template<class Config, bool With_layout>
