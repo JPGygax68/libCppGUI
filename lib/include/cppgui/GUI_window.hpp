@@ -64,6 +64,11 @@ namespace cppgui {
 
         auto root_widget() { return &_root_widget; }
 
+    protected: // Customization hooks
+
+        void draw_background(Canvas_t *) {}
+            // This will be called by render() before the root widget (= the UI) is painted.
+
     protected:
 
         void init_window();

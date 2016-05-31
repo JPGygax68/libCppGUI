@@ -79,17 +79,21 @@ namespace cppgui {
 
         protected:
 
-            void init_window(); // use CRTP-override
-            void cleanup_window(); // ditto
+            void init_window();     // use CRTP-override (note: you MUST call this method from the override!)
+            void cleanup_window();  // ditto
 
-            void handle_window_event(SDL_WindowEvent &ev);
+            void handle_window_event     (SDL_WindowEvent      &ev);
             void handle_mousemotion_event(SDL_MouseMotionEvent &ev);
             void handle_mousebutton_event(SDL_MouseButtonEvent &ev);
-            void handle_mousewheel_event(SDL_MouseWheelEvent &ev);
-            void handle_textinput_event(SDL_TextInputEvent &ev);
-            void handle_keydown_event(SDL_KeyboardEvent &ev);
+            void handle_mousewheel_event (SDL_MouseWheelEvent  &ev);
+            void handle_textinput_event  (SDL_TextInputEvent   &ev);
+            void handle_keydown_event    (SDL_KeyboardEvent    &ev);
             void handle_redraw();
-            virtual void handle_custom_event(SDL_UserEvent &) {}
+            // /*virtual*/ void handle_custom_event(SDL_UserEvent &) {}
+
+            // Concept: to implement in derived class:
+
+            //void redraw();
 
         private:
             class Window_t: public Impl { friend class Window; };

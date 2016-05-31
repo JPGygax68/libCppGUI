@@ -76,7 +76,7 @@ namespace cppgui {
         // std::cout << "Test_window::redraw()" << std::endl;
 
         _canvas->enter_context();
-        //_root_widget.render(_canvas, { 0, 0 });
+        p()->draw_background(_canvas);
         _root_widget.render();
         _canvas->leave_context();
         
