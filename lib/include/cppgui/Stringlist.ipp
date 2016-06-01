@@ -17,13 +17,13 @@ namespace cppgui {
             case Navigation_unit::element:
                 assert(delta.den == 1);
                 move_by_elements(delta.num);
-                // TODO
                 break;
             case Navigation_unit::page:
-                // TODO
+                assert(delta.den == 1);
+                move_by_pages(delta.num);
                 break;
             case Navigation_unit::fraction:
-                // TODO
+                move_by_fraction(delta);
                 break;
             case full_range: 
                 // TODO
@@ -59,9 +59,7 @@ namespace cppgui {
     {
         compute_content_rectangle();
 
-        auto visible_items = (_content_rect.height() + _item_separator.width) / (item_height() + _item_separator.width);
-
-        _vert_sbar.define_values(_items.size(), visible_items);
+        _vert_sbar.define_values(_items.size(), fully_visible_item_count());
 
         Container_t::compute_view_from_data();
     }
@@ -184,6 +182,77 @@ namespace cppgui {
                 --_first_vis_item;
                 _vert_sbar.update_position(_first_vis_item);
                 this->invalidate();
+            }
+        }
+        else 
+            assert(false);
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _stringlist<Config>::Base<Class, With_layout>::move_by_pages(int delta)
+    {
+        if (delta > 0)
+        {
+            Index cap = _items.size() - fully_visible_item_count();
+            auto first = std::min(cap, _first_vis_item + static_cast<Index>(fully_visible_item_count()) * delta);
+            if (first != _first_vis_item)
+            {
+                // TODO: define and use scroll() function
+                _first_vis_item = first;
+                _vert_sbar.update_position(_first_vis_item);
+                this->invalidate();
+            }
+        }
+        else if (delta < 0)
+        {
+            if (_first_vis_item > 0)
+            {
+                Index first = std::max(0, _first_vis_item + delta * static_cast<Index>(fully_visible_item_count()));
+                if (first != _first_vis_item)
+                {
+                    _first_vis_item = first;
+                    _vert_sbar.update_position(_first_vis_item);
+                    this->invalidate();
+                }
+            }
+        }
+        else 
+            assert(false);
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _stringlist<Config>::Base<Class, With_layout>::move_by_fraction(const Fraction<int>& delta)
+    {
+        assert(delta.den > 0);
+        std::cout << delta.num << "/" << delta.den << std::endl;
+
+        if (delta.num > 0)
+        {
+            Index cap = _items.size() - fully_visible_item_count();
+            Index range = _items.size() - fully_visible_item_count();
+            auto first = std::min(cap, _first_vis_item + delta.num * range / delta.den);
+            if (first != _first_vis_item)
+            {
+                // TODO: define and use scroll() function
+                _first_vis_item = first;
+                _vert_sbar.update_position(_first_vis_item);
+                this->invalidate();
+            }
+        }
+        else if (delta.num < 0)
+        {
+            if (_first_vis_item > 0)
+            {
+                Index range = _items.size() - fully_visible_item_count();
+                Index first = std::max(0, _first_vis_item + delta.num * range / delta.den);
+                if (first != _first_vis_item)
+                {
+                    _first_vis_item = first;
+                    _vert_sbar.update_position(_first_vis_item);
+                    this->invalidate();
+                }
             }
         }
         else 

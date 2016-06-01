@@ -74,6 +74,8 @@ namespace cppgui {
             auto item_height() const;
             auto fully_visible_item_count() const -> Count;
             void move_by_elements(int delta);   
+            void move_by_pages(int delta);
+            void move_by_fraction(const Fraction<int>& delta);
 
             Vertical_scrollbar_t        _vert_sbar;
             Separator                   _sbar_separator = { 1, {0.2f, 0.2f, 0.2f, 1} }; // TODO: get color from static method or stylesheet
