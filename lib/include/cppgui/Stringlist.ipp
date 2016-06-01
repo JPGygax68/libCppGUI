@@ -15,6 +15,8 @@ namespace cppgui {
             switch (unit)
             {
             case Navigation_unit::element:
+                assert(delta.den == 1);
+                move_by_elements(delta.num);
                 // TODO
                 break;
             case Navigation_unit::page:
@@ -107,7 +109,7 @@ namespace cppgui {
         r_sep.ext.h = _item_separator.width;
 
         // Draw all items
-        for (auto i = 0U; ; )
+        for (auto i = _first_vis_item; ; )
         {
             // Draw item background
             fill_rect(canvas, r_item, pos, Canvas_t::rgba_to_native({ 1, 1, 1, 1 }));
@@ -146,7 +148,46 @@ namespace cppgui {
     template<class Class, bool With_layout>
     auto _stringlist<Config>::Base<Class, With_layout>::item_height() const
     {
-        return (Length) (_item_padding[0] + _ascent - _descent + _item_padding[2]);
+        return static_cast<Length>(_item_padding[0] + _ascent - _descent + _item_padding[2]);
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    inline auto _stringlist<Config>::Base<Class, With_layout>::fully_visible_item_count() const -> Count
+    {
+        auto h_rect = _content_rect.height(), h_item = item_height() + _item_separator.width;
+        Count n = h_rect / h_item, r = h_rect % h_item;
+        if (r <= _item_separator.width) n += 1;
+        return n;
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _stringlist<Config>::Base<Class, With_layout>::move_by_elements(int delta)
+    {
+        if (delta > 0)
+        {
+            Index cap = _items.size() - fully_visible_item_count();
+            auto first = std::min(cap, _first_vis_item + delta);
+            if (first != _first_vis_item)
+            {
+                // TODO: define and use scroll() function
+                _first_vis_item = first;
+                _vert_sbar.update_position(_first_vis_item);
+                this->invalidate();
+            }
+        }
+        else if (delta < 0)
+        {
+            if (_first_vis_item > 0)
+            {
+                --_first_vis_item;
+                _vert_sbar.update_position(_first_vis_item);
+                this->invalidate();
+            }
+        }
+        else 
+            assert(false);
     }
 
     // Layouter aspect ----------------------------------------------
