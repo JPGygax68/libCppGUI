@@ -167,7 +167,7 @@ namespace cppgui {
         using Keycode = typename Keyboard::Keycode;
         using Abstract_container_t = Abstract_container<Config, With_layout>;
         using Root_widget_t = Root_widget<Config, With_layout>;
-        using Click_handler = typename Abstract_widget::Click_handler;
+        using Click_handler = typename Abstract_widget<Config, With_layout>::Click_handler;
 
         void set_background_color(const Color &);
         auto background_color() const;

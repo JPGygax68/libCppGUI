@@ -3,6 +3,7 @@
 
 #include <gpc/fonts/store.hpp>
 #include <cppgui/Default_font.hpp>
+#include <cppgui/unicode.hpp>
 
 #include "./Test_window.hpp"
 
@@ -69,6 +70,10 @@ Test_window::Test_window(): Parent_t("Test window")
     {
         _stringlist.add_item( "gee, item #"s + std::to_string(i) );
     }
+    _stringlist.on_item_activated([](cppgui::Index index, const std::u32string &item)
+    {
+        std::cout << "Item #" << index << " activated: " << cppgui::utf32_to_utf8(item) << std::endl;
+    });
 
     _glyph_btn.set_glyph(cppgui::Icon_resources<Default_font::size>::close());
     _glyph_btn.set_position({280, 160});

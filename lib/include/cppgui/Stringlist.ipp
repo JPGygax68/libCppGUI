@@ -37,6 +37,14 @@ namespace cppgui {
         });
     }
 
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _stringlist<Config>::Base<Class, With_layout>::on_item_activated(Item_activated_handler handler)
+    {
+        assert(!_on_item_activated);
+        _on_item_activated = handler;
+    }
+
     template<class Config>
     template<class Class, bool With_layout>
     void _stringlist<Config>::Base<Class, With_layout>::set_font(const Rasterized_font * font)
@@ -110,7 +118,10 @@ namespace cppgui {
         for (auto i = _first_vis_item; ; )
         {
             // Draw item background
-            auto bgclr = i == _selected_item ? Canvas_t::rgba_to_native({0.75f, 0.75f, 0.75f, 1}) : Canvas_t::rgba_to_native({ 1, 1, 1, 1 });
+            Native_color bgclr;
+            if      (i == _selected_item) bgclr = Canvas_t::rgba_to_native({ 0.9f, 0.9f, 0.9f, 1 });
+            else if (i == _hovered_item ) bgclr = Canvas_t::rgba_to_native({ 0.8f, 0.8f, 0.8f, 1 });
+            else                          bgclr = Canvas_t::rgba_to_native({ 0.7f, 0.7f, 0.7f, 1 });
             fill_rect(canvas, r_item, pos, bgclr);
 
             // Render item text
@@ -119,7 +130,7 @@ namespace cppgui {
             canvas->render_text( _font.get(), pos.x + p_text.x, pos.y + p_text.y, _items[i].data(), _items[i].size(), w_text);
 
             // Done ?
-            if (++i >= _items.size()) break;
+            if (static_cast<decltype(_items.size())>(++i) >= _items.size()) break;
 
             r_item.pos.y += static_cast<Position_delta>(r_item.ext.h);
             if (r_item.pos.y >= _content_rect.bottom()) break;
@@ -135,9 +146,45 @@ namespace cppgui {
 
     template <class Config>
     template <class Class, bool With_layout>
+    void _stringlist<Config>::Base<Class, With_layout>::mouse_motion(const Point& pos)
+    {
+        auto item = item_at_pos(pos);
+        if (item != _hovered_item)
+        {
+            _hovered_item = item;
+            this->invalidate();
+        }
+
+        Parent_t::mouse_motion(pos);
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _stringlist<Config>::Base<Class, With_layout>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
+    {
+        if (button == 1 && state == Key_state::released && clicks == 2)
+        {
+            auto index = item_at_pos(pos);
+            if (index >= 0) raise_item_activated(index, _items[index]);
+        }
+        else
+            Parent_t::mouse_button(pos, button, state, clicks);
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
     void _stringlist<Config>::Base<Class, With_layout>::mouse_wheel(const Vector& delta)
     {
         _vert_sbar.mouse_wheel(delta);
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _stringlist<Config>::Base<Class, With_layout>::mouse_exit()
+    {
+        _hovered_item = -1;
+
+        Parent_t::mouse_exit();
     }
 
     template <class Config>
@@ -206,6 +253,7 @@ namespace cppgui {
             {
                 // TODO: define and use scroll() function
                 _first_vis_item = first;
+                _hovered_item = -1; // TODO: update using current mouse position ?
                 update_scrollbar_position();
                 this->invalidate();
             }
@@ -215,6 +263,7 @@ namespace cppgui {
             if (_first_vis_item > 0)
             {
                 --_first_vis_item;
+                _hovered_item = -1; // TODO: update using current mouse position ?
                 update_scrollbar_position();
                 this->invalidate();
             }
@@ -235,6 +284,7 @@ namespace cppgui {
             {
                 // TODO: define and use scroll() function
                 _first_vis_item = first;
+                _hovered_item = -1; // TODO: update using current mouse position ?
                 update_scrollbar_position();
                 this->invalidate();
             }
@@ -247,6 +297,7 @@ namespace cppgui {
                 if (first != _first_vis_item)
                 {
                     _first_vis_item = first;
+                    _hovered_item = -1; // TODO: update using current mouse position ?
                     update_scrollbar_position();
                     this->invalidate();
                 }
@@ -272,6 +323,7 @@ namespace cppgui {
             {
                 // TODO: define and use scroll() function
                 _first_vis_item = first;
+                _hovered_item = -1; // TODO: update using current mouse position ?
                 update_scrollbar_position();
                 this->invalidate();
             }
@@ -286,6 +338,7 @@ namespace cppgui {
                 {
                     // TODO: define and use scroll() function
                     _first_vis_item = first;
+                    _hovered_item = -1; // TODO: update using current mouse position ?
                     update_scrollbar_position();
                     this->invalidate();
                 }
@@ -309,10 +362,11 @@ namespace cppgui {
         if (_selected_item < static_cast<Index>(_items.size() -1))
         {
             _selected_item ++;
-            if (_selected_item >= _first_vis_item + fully_visible_item_count()) 
+            if (_selected_item >= static_cast<Index>(fully_visible_item_count()) + _first_vis_item) 
             {
                 // TODO: optimizable scrolling
                 _first_vis_item ++;
+                _hovered_item = -1; // TODO: update using current mouse position ?
                 update_scrollbar_position();
             }
             this->invalidate();
@@ -330,6 +384,7 @@ namespace cppgui {
             {
                 // TODO: optimizable scrolling
                 _first_vis_item --;
+                _hovered_item = -1; // TODO: update using current mouse position ?
                 update_scrollbar_position();
             }
             this->invalidate();
@@ -344,11 +399,12 @@ namespace cppgui {
         if (item >= static_cast<Index>(_items.size())) item = static_cast<Index>(_items.size() -1);
         if (item > _selected_item)
         {
-            if (item >= _first_vis_item + fully_visible_item_count())
+            if (item >= _first_vis_item + static_cast<Index>(fully_visible_item_count()))
             {
                 Index first = item - (fully_visible_item_count() - 1);
                 // TODO: optimizable scrolling
                 _first_vis_item = first;
+                _hovered_item = -1; // TODO: update using current mouse position ?
             }
             _selected_item = item;
             this->invalidate();
@@ -365,15 +421,34 @@ namespace cppgui {
             if (item < 0) item = 0;
             if (item != _selected_item)
             {
-                if (item < _first_vis_item)
+                if (item >= _first_vis_item)
                 {
                     // TODO: optimizable scrolling
                     _first_vis_item = item;
+                    _hovered_item = -1; // TODO: update using current mouse position ?
                 }
                 _selected_item = item;
                 this->invalidate();
             }
         }
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _stringlist<Config>::Base<Class, With_layout>::raise_item_activated(Index index, const std::u32string& item)
+    {
+        if (_on_item_activated) _on_item_activated(index, item);
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    auto _stringlist<Config>::Base<Class, With_layout>::item_at_pos(const Point& pos) -> Index
+    {
+        if (!_content_rect.contains(pos)) return -1;
+
+        auto res = std::div(pos.y - _content_rect.top(), (item_height() + _item_separator.width));
+        
+        return res.rem >= static_cast<decltype(res.rem)>(item_height()) ? -1 : _first_vis_item + res.quot;
     }
 
     // Layouter aspect ----------------------------------------------
