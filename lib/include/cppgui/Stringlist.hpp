@@ -50,9 +50,12 @@ namespace cppgui {
                     Container<Config, With_layout> > >
         {
         public:
-            using Widget_t = typename Widget<Config, With_layout>;
+            using Widget_t = Widget<Config, With_layout>;
+            using Parent_t = Container<Config, With_layout>;
             using Canvas_t = typename Widget_t::Canvas_t;
             using Container_t = Container<Config, With_layout>;
+            using Keyboard = typename Config::Keyboard;
+            using Keycode = typename Keyboard::Keycode;
 
             Base();
 
@@ -66,6 +69,9 @@ namespace cppgui {
 
             void render(Canvas_t *canvas, const Point &offset) override;
 
+            void mouse_wheel(const Vector &) override;
+            void key_down(const Keycode &) override;
+
         protected:
             using Vertical_scrollbar_t = Custom_vertical_scrollbar<Config, With_layout>;
             using Font_resource = typename Widget_t::Font_resource;
@@ -76,6 +82,11 @@ namespace cppgui {
             void move_by_elements(int delta);   
             void move_by_pages(int delta);
             void move_by_fraction(const Fraction<int>& delta);
+            void update_scrollbar_position();
+            void select_next();
+            void select_previous();
+            void page_down();
+            void page_up();
 
             Vertical_scrollbar_t        _vert_sbar;
             Separator                   _sbar_separator = { 1, {0.2f, 0.2f, 0.2f, 1} }; // TODO: get color from static method or stylesheet
@@ -91,6 +102,7 @@ namespace cppgui {
             Rectangle                   _content_rect;
 
             Index                       _first_vis_item = 0;
+            Index                       _selected_item = -1;
         };
 
         // Layouter aspect ------------------------------------------

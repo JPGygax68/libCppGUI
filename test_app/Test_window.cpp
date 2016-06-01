@@ -145,7 +145,7 @@ Test_window::Test_window(): Parent_t("Test window")
     ////root_widget()->add_child(&_scrollbox);
     root_widget()->add_child(&_listbox);
 
-    //_menu.take_focus();
+    _stringlist.take_focus();
     //root_widget()->set_focus_to(&_menu); // ); // &_textbox);
     //_scrollbox.take_focus();
     //_listbox.take_focus();

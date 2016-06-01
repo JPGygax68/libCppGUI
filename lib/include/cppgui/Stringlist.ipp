@@ -110,7 +110,8 @@ namespace cppgui {
         for (auto i = _first_vis_item; ; )
         {
             // Draw item background
-            fill_rect(canvas, r_item, pos, Canvas_t::rgba_to_native({ 1, 1, 1, 1 }));
+            auto bgclr = i == _selected_item ? Canvas_t::rgba_to_native({0.75f, 0.75f, 0.75f, 1}) : Canvas_t::rgba_to_native({ 1, 1, 1, 1 });
+            fill_rect(canvas, r_item, pos, bgclr);
 
             // Render item text
             Point p_text = r_item.pos + Extents{ _item_padding[3], _item_padding[0] + _ascent };
@@ -130,6 +131,40 @@ namespace cppgui {
             r_item.pos.y += _item_separator.width;
             if (r_item.pos.y >= _content_rect.bottom()) break;
         }
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _stringlist<Config>::Base<Class, With_layout>::mouse_wheel(const Vector& delta)
+    {
+        _vert_sbar.mouse_wheel(delta);
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _stringlist<Config>::Base<Class, With_layout>::key_down(const Keycode& key)
+    {
+        #ifdef NOT_DEFINED
+
+        // TODO: this is provisional, replace with implementation that moves selection
+
+        if      (Keyboard::is_down     (key)) move_by_elements( 1);
+        else if (Keyboard::is_up       (key)) move_by_elements(-1);
+        else if (Keyboard::is_page_down(key)) move_by_pages   ( 1);
+        else if (Keyboard::is_page_up  (key)) move_by_pages   (-1);
+        else
+            Parent_t::key_down(key);
+
+        #else
+
+        if      (Keyboard::is_down     (key)) select_next    ();
+        else if (Keyboard::is_up       (key)) select_previous();
+        else if (Keyboard::is_page_down(key)) page_down      ();
+        else if (Keyboard::is_page_up  (key)) page_up        ();
+        else
+            Parent_t::key_down(key);
+
+        #endif
     }
 
     template<class Config>
@@ -171,7 +206,7 @@ namespace cppgui {
             {
                 // TODO: define and use scroll() function
                 _first_vis_item = first;
-                _vert_sbar.update_position(_first_vis_item);
+                update_scrollbar_position();
                 this->invalidate();
             }
         }
@@ -180,7 +215,7 @@ namespace cppgui {
             if (_first_vis_item > 0)
             {
                 --_first_vis_item;
-                _vert_sbar.update_position(_first_vis_item);
+                update_scrollbar_position();
                 this->invalidate();
             }
         }
@@ -200,7 +235,7 @@ namespace cppgui {
             {
                 // TODO: define and use scroll() function
                 _first_vis_item = first;
-                _vert_sbar.update_position(_first_vis_item);
+                update_scrollbar_position();
                 this->invalidate();
             }
         }
@@ -212,7 +247,7 @@ namespace cppgui {
                 if (first != _first_vis_item)
                 {
                     _first_vis_item = first;
-                    _vert_sbar.update_position(_first_vis_item);
+                    update_scrollbar_position();
                     this->invalidate();
                 }
             }
@@ -237,7 +272,7 @@ namespace cppgui {
             {
                 // TODO: define and use scroll() function
                 _first_vis_item = first;
-                _vert_sbar.update_position(_first_vis_item);
+                update_scrollbar_position();
                 this->invalidate();
             }
         }
@@ -249,14 +284,96 @@ namespace cppgui {
                 Index first = std::max(0, _first_vis_item + delta.num * range / delta.den);
                 if (first != _first_vis_item)
                 {
+                    // TODO: define and use scroll() function
                     _first_vis_item = first;
-                    _vert_sbar.update_position(_first_vis_item);
+                    update_scrollbar_position();
                     this->invalidate();
                 }
             }
         }
         else 
             assert(false);
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _stringlist<Config>::Base<Class, With_layout>::update_scrollbar_position()
+    {
+        _vert_sbar.update_position(_first_vis_item);
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _stringlist<Config>::Base<Class, With_layout>::select_next()
+    {
+        if (_selected_item < static_cast<Index>(_items.size() -1))
+        {
+            _selected_item ++;
+            if (_selected_item >= _first_vis_item + fully_visible_item_count()) 
+            {
+                // TODO: optimizable scrolling
+                _first_vis_item ++;
+                update_scrollbar_position();
+            }
+            this->invalidate();
+        }
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _stringlist<Config>::Base<Class, With_layout>::select_previous()
+    {
+        if (_selected_item > 0)
+        {
+            _selected_item --;
+            if (_selected_item < _first_vis_item)
+            {
+                // TODO: optimizable scrolling
+                _first_vis_item --;
+                update_scrollbar_position();
+            }
+            this->invalidate();
+        }
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _stringlist<Config>::Base<Class, With_layout>::page_down()
+    {
+        Index item = _selected_item < 0 ? fully_visible_item_count() - 1 : _selected_item + fully_visible_item_count() - 1;
+        if (item >= static_cast<Index>(_items.size())) item = static_cast<Index>(_items.size() -1);
+        if (item > _selected_item)
+        {
+            if (item >= _first_vis_item + fully_visible_item_count())
+            {
+                Index first = item - (fully_visible_item_count() - 1);
+                // TODO: optimizable scrolling
+                _first_vis_item = first;
+            }
+            _selected_item = item;
+            this->invalidate();
+        }
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _stringlist<Config>::Base<Class, With_layout>::page_up()
+    {
+        if (_selected_item >= 0)
+        {
+            Index item = _selected_item - (fully_visible_item_count() - 1);
+            if (item < 0) item = 0;
+            if (item != _selected_item)
+            {
+                if (item < _first_vis_item)
+                {
+                    // TODO: optimizable scrolling
+                    _first_vis_item = item;
+                }
+                _selected_item = item;
+                this->invalidate();
+            }
+        }
     }
 
     // Layouter aspect ----------------------------------------------
