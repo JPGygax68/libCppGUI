@@ -1,3 +1,20 @@
+/*  libCppGUI - A GUI library for C++11/14
+
+    Copyright 2016 Hans-Peter Gygax
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+
 #include "./unicode.hpp"
 
 #include "./Stringlist.hpp"
@@ -35,6 +52,14 @@ namespace cppgui {
 
             //static_cast<Pane*>(_content)->scroll(unit, delta);
         });
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _stringlist<Config>::Base<Class, With_layout>::on_item_selected(Item_selected_handler handler)
+    {
+        assert(!_on_item_selected);
+        _on_item_selected = handler;
     }
 
     template <class Config>
@@ -189,7 +214,7 @@ namespace cppgui {
                         _first_vis_item ++;
                     }
                 }
-                _selected_item = index;
+                select_item(index);
                 this->invalidate();
             }
         }
@@ -377,7 +402,7 @@ namespace cppgui {
     {
         if (_selected_item < static_cast<Index>(_items.size() -1))
         {
-            _selected_item ++;
+            select_item( _selected_item + 1 );
             if (_selected_item >= static_cast<Index>(fully_visible_item_count()) + _first_vis_item) 
             {
                 // TODO: optimizable scrolling
@@ -395,7 +420,7 @@ namespace cppgui {
     {
         if (_selected_item > 0)
         {
-            _selected_item --;
+            select_item( _selected_item - 1 );
             if (_selected_item < _first_vis_item)
             {
                 // TODO: optimizable scrolling
@@ -422,7 +447,7 @@ namespace cppgui {
                 _first_vis_item = first;
                 _hovered_item = -1; // TODO: update using current mouse position ?
             }
-            _selected_item = item;
+            select_item( item );
             this->invalidate();
         }
     }
@@ -443,7 +468,7 @@ namespace cppgui {
                     _first_vis_item = item;
                     _hovered_item = -1; // TODO: update using current mouse position ?
                 }
-                _selected_item = item;
+                select_item( item );
                 this->invalidate();
             }
         }
@@ -475,6 +500,14 @@ namespace cppgui {
         if (index >= static_cast<int>(_items.size())) return -1;
     
         return index;
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _stringlist<Config>::Base<Class, With_layout>::select_item(Index index)
+    {
+        _selected_item = index;
+        if (_on_item_selected) _on_item_selected(index, _items[index]);
     }
 
     // Layouter aspect ----------------------------------------------
