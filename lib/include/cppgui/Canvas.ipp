@@ -51,7 +51,7 @@ namespace cppgui {
     template<class Renderer>
     void Canvas<Renderer>::draw_stippled_rectangle_outline(int x, int y, int w, int h, const Rgba_norm &color)
     {
-        auto nativ_clr = rgba_to_native(color);
+        auto nativ_clr = Renderer::rgba_to_native(color);
 
         draw_greyscale_image_right_righthand(x        , y        , w    , 1, _stipple_img, color, 0, 0);
         draw_greyscale_image_down_righthand (x + w    , y + 1    , h - 1, 1, _stipple_img, color, 0, 0);

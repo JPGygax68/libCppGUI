@@ -129,11 +129,20 @@ namespace cppgui {
             Width w_text = r_item.width() - _item_padding[3] - _item_padding[1];
             canvas->render_text( _font.get(), pos.x + p_text.x, pos.y + p_text.y, _items[i].data(), _items[i].size(), w_text);
 
-            // Done ?
-            if (static_cast<decltype(_items.size())>(++i) >= _items.size()) break;
-
             r_item.pos.y += static_cast<Position_delta>(r_item.ext.h);
             if (r_item.pos.y >= _content_rect.bottom()) break;
+
+            // Done ?
+            if (++i >= static_cast<Index>(_items.size()))
+            {
+                if (r_item.pos.y < _content_rect.bottom())
+                {
+                    auto r_bgnd = r_item;
+                    r_bgnd.set_bottom( _content_rect.bottom() );
+                    fill_rect(canvas, r_bgnd, pos, Canvas_t::rgba_to_native({ 1, 1, 1, 1 }));
+                }
+                break;
+            }
 
             // Draw item separator
             r_sep.pos.y = r_item.pos.y;
@@ -213,27 +222,12 @@ namespace cppgui {
     template <class Class, bool With_layout>
     void _stringlist<Config>::Base<Class, With_layout>::key_down(const Keycode& key)
     {
-        #ifdef NOT_DEFINED
-
-        // TODO: this is provisional, replace with implementation that moves selection
-
-        if      (Keyboard::is_down     (key)) move_by_elements( 1);
-        else if (Keyboard::is_up       (key)) move_by_elements(-1);
-        else if (Keyboard::is_page_down(key)) move_by_pages   ( 1);
-        else if (Keyboard::is_page_up  (key)) move_by_pages   (-1);
-        else
-            Parent_t::key_down(key);
-
-        #else
-
         if      (Keyboard::is_down     (key)) select_next    ();
         else if (Keyboard::is_up       (key)) select_previous();
         else if (Keyboard::is_page_down(key)) page_down      ();
         else if (Keyboard::is_page_up  (key)) page_up        ();
         else
             Parent_t::key_down(key);
-
-        #endif
     }
 
     template<class Config>
@@ -468,9 +462,19 @@ namespace cppgui {
     {
         if (!_content_rect.contains(pos)) return -1;
 
+        // Check position
         auto res = std::div(pos.y - _content_rect.top(), (item_height() + _item_separator.width));
-        
-        return res.rem >= static_cast<decltype(res.rem)>(item_height()) ? -1 : _first_vis_item + res.quot;
+
+        // On separator ?
+        if (res.rem >= static_cast<decltype(res.rem)>(item_height())) return -1;
+
+        // Compute index
+        auto index = _first_vis_item + res.quot;
+
+        // Past last item ?
+        if (index >= static_cast<int>(_items.size())) return -1;
+    
+        return index;
     }
 
     // Layouter aspect ----------------------------------------------
