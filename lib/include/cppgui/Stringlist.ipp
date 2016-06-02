@@ -103,7 +103,7 @@ namespace cppgui {
         Container_t::render(canvas, offset);
 
         // Render the items
-       //canvas->push_clipping_rect( _content_rect + pos );
+        canvas->push_clipping_rect( _content_rect + pos );
 
         // Item rectangle
         Rectangle r_item { _content_rect };
@@ -144,7 +144,7 @@ namespace cppgui {
         }
 
         // Done rendering items
-        //canvas->pop_clipping_rect();
+        canvas->pop_clipping_rect();
     }
 
     template <class Config>
@@ -189,8 +189,8 @@ namespace cppgui {
             auto index = item_at_pos(pos);
             if (index >= 0) raise_item_activated(index, _items[index]);
         }
-        else
-            Parent_t::mouse_button(pos, button, state, clicks);
+
+        Parent_t::mouse_button(pos, button, state, clicks);
     }
 
     template <class Config>

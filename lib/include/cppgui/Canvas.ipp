@@ -62,7 +62,7 @@ namespace cppgui {
     template <class Renderer>
     void Canvas<Renderer>::push_clipping_rect(const Rectangle &rect)
     {
-        this->set_clipping_rect( rect.left(), rect.top(), rect.right(), rect.bottom() );
+        this->set_clipping_rect( rect.pos.x, rect.pos.y, rect.ext.w, rect.ext.h );
 
         _clipping_stack.push( rect );
     }
@@ -72,7 +72,7 @@ namespace cppgui {
     {
         auto &rect = _clipping_stack.top();
 
-        this->set_clipping_rect( rect.left(), rect.top(), rect.right(), rect.bottom() );
+        this->set_clipping_rect( rect.pos.x, rect.pos.y, rect.ext.w, rect.ext.h );
 
         _clipping_stack.pop();
     }
