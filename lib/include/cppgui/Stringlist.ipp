@@ -88,7 +88,7 @@ namespace cppgui {
 
     template<class Config>
     template<class Class, bool With_layout>
-    void _stringlist<Config>::Base<Class, With_layout>::render(Canvas_t * canvas, const Point & offset)
+    void _stringlist<Config>::Base<Class, With_layout>::render(Canvas_t *canvas, const Point & offset)
     {
         Point pos = offset + this->position();
 
@@ -103,7 +103,7 @@ namespace cppgui {
         Container_t::render(canvas, offset);
 
         // Render the items
-        // TODO: clip
+       //canvas->push_clipping_rect( _content_rect + pos );
 
         // Item rectangle
         Rectangle r_item { _content_rect };
@@ -142,6 +142,9 @@ namespace cppgui {
             r_item.pos.y += _item_separator.width;
             if (r_item.pos.y >= _content_rect.bottom()) break;
         }
+
+        // Done rendering items
+        //canvas->pop_clipping_rect();
     }
 
     template <class Config>

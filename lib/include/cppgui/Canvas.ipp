@@ -59,6 +59,24 @@ namespace cppgui {
         draw_greyscale_image_up_righthand   (x        , y + h - 1, h - 1, 1, _stipple_img, color, 0, 0);
     }
 
+    template <class Renderer>
+    void Canvas<Renderer>::push_clipping_rect(const Rectangle &rect)
+    {
+        this->set_clipping_rect( rect.left(), rect.top(), rect.right(), rect.bottom() );
+
+        _clipping_stack.push( rect );
+    }
+
+    template <class Renderer>
+    void Canvas<Renderer>::pop_clipping_rect()
+    {
+        auto &rect = _clipping_stack.top();
+
+        this->set_clipping_rect( rect.left(), rect.top(), rect.right(), rect.bottom() );
+
+        _clipping_stack.pop();
+    }
+
     /* template<class Renderer>
     auto Canvas<Renderer>::stipple_image() -> const Image_definition &
     {
