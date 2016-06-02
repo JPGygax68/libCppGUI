@@ -162,7 +162,26 @@ namespace cppgui {
     template <class Class, bool With_layout>
     void _stringlist<Config>::Base<Class, With_layout>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
     {
-        if (button == 1 && state == Key_state::released && clicks == 2)
+        if (button == 1 && state == Key_state::pressed && clicks == 1)
+        {
+            auto index = item_at_pos(pos);
+            if (index != _selected_item)
+            {
+                if (index >= 0)
+                {
+                    // Is item partially hidden ?
+                    // TODO: with pixel-wise scrolling, we would need a generalized bring_item_into_view() method
+                    if (index >= _first_vis_item + static_cast<Index>(fully_visible_item_count()))
+                    {
+                        // TODO: optimizable scrolling
+                        _first_vis_item ++;
+                    }
+                }
+                _selected_item = index;
+                this->invalidate();
+            }
+        }
+        else if (button == 1 && state == Key_state::released && clicks == 2)
         {
             auto index = item_at_pos(pos);
             if (index >= 0) raise_item_activated(index, _items[index]);

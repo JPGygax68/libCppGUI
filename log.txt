@@ -1,3 +1,9 @@
+2016-06-02
+==========
+
+- Should items be selected upon mouse button down or mouse button up ?
+  -> clearly: down!
+
 2016-06-01
 ==========
 
