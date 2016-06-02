@@ -70,11 +70,17 @@ namespace cppgui {
     template <class Renderer>
     void Canvas<Renderer>::pop_clipping_rect()
     {
-        auto &rect = _clipping_stack.top();
-
-        this->set_clipping_rect( rect.pos.x, rect.pos.y, rect.ext.w, rect.ext.h );
-
         _clipping_stack.pop();
+
+        if (!_clipping_stack.empty())
+        {
+            auto &rect = _clipping_stack.top();
+            this->set_clipping_rect( rect.pos.x, rect.pos.y, rect.ext.w, rect.ext.h );
+        }
+        else
+        {
+            this->cancel_clipping();
+        }
     }
 
     /* template<class Renderer>
