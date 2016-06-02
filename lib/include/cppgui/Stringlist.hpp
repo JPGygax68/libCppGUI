@@ -86,6 +86,16 @@ namespace cppgui {
             using Font_resource = typename Widget_t::Font_resource;
             using Native_color = typename Canvas_t::Native_color;
 
+            // Actions
+
+            void select_next();
+            void select_previous();
+            void page_down();
+            void page_up();
+            void activate_selected_item();
+
+            // Internal methods
+
             void compute_content_rectangle();
             auto item_height() const;
             auto fully_visible_item_count() const -> Count;
@@ -93,10 +103,6 @@ namespace cppgui {
             void move_by_pages(int delta);
             void move_by_fraction(const Fraction<int>& delta);
             void update_scrollbar_position();
-            void select_next();
-            void select_previous();
-            void page_down();
-            void page_up();
             void raise_item_activated(Index index, const std::u32string & item);
             auto item_at_pos(const Point &pos) -> Index;
             void select_item(Index);

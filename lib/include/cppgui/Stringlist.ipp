@@ -247,10 +247,11 @@ namespace cppgui {
     template <class Class, bool With_layout>
     void _stringlist<Config>::Base<Class, With_layout>::key_down(const Keycode& key)
     {
-        if      (Keyboard::is_down     (key)) select_next    ();
-        else if (Keyboard::is_up       (key)) select_previous();
-        else if (Keyboard::is_page_down(key)) page_down      ();
-        else if (Keyboard::is_page_up  (key)) page_up        ();
+        if      (Keyboard::is_down     (key)) select_next           ();
+        else if (Keyboard::is_up       (key)) select_previous       ();
+        else if (Keyboard::is_page_down(key)) page_down             ();
+        else if (Keyboard::is_page_up  (key)) page_up               ();
+        else if (Keyboard::is_return   (key)) activate_selected_item();
         else
             Parent_t::key_down(key);
     }
@@ -471,6 +472,16 @@ namespace cppgui {
                 select_item( item );
                 this->invalidate();
             }
+        }
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _stringlist<Config>::Base<Class, With_layout>::activate_selected_item()
+    {
+        if (_selected_item >= 0)
+        {
+            raise_item_activated( _selected_item, _items[_selected_item]);
         }
     }
 

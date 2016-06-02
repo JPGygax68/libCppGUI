@@ -70,12 +70,10 @@ Test_window::Test_window(): Parent_t("Test window")
     {
         _stringlist.add_item( "gee, item #"s + std::to_string(i) );
     }
-    _stringlist.on_item_selected([](cppgui::Index index, const std::u32string &item)
-    {
+    _stringlist.on_item_selected([](cppgui::Index index, const std::u32string &item) {
         std::cout << "Item #" << index << " selected: " << cppgui::utf32_to_utf8(item) << std::endl;
     });
-    _stringlist.on_item_activated([](cppgui::Index index, const std::u32string &item)
-    {
+    _stringlist.on_item_activated([](cppgui::Index index, const std::u32string &item) {
         std::cout << "Item #" << index << " activated: " << cppgui::utf32_to_utf8(item) << std::endl;
     });
 
