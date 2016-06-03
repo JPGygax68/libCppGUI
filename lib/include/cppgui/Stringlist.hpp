@@ -108,9 +108,9 @@ namespace cppgui {
             void select_item(Index);
 
             Vertical_scrollbar_t        _vert_sbar;
-            Separator                   _sbar_separator = { 1, {0.2f, 0.2f, 0.2f, 1} }; // TODO: get color from static method or stylesheet
-            Padding                     _item_padding = { 2, 3, 2, 3 };
-            Separator                   _item_separator = { 1, {0.2f, 0.2f, 0.2f, 1} }; // TODO: get from method / stylesheet
+            Separator                   _sbar_separator = interior_separator();
+            Padding                     _item_padding = { 2, 3, 2, 3 };                 // TODO: get from static method or stylesheet
+            Separator                   _item_separator = grid_separator();
 
             Item_selected_handler       _on_item_selected;
             Item_activated_handler      _on_item_activated;

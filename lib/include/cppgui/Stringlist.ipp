@@ -149,7 +149,7 @@ namespace cppgui {
                 {
                     auto r_bgnd = r_item;
                     r_bgnd.set_bottom( _content_rect.bottom() );
-                    fill_rect(canvas, r_bgnd, pos, Canvas_t::rgba_to_native({ 1, 1, 1, 1 }));
+                    fill_rect(canvas, r_bgnd, pos, Canvas_t::rgba_to_native(this->widget_background_color()));
                 }
                 break;
             }
@@ -464,7 +464,7 @@ namespace cppgui {
             if (item < 0) item = 0;
             if (item != _selected_item)
             {
-                if (item >= _first_vis_item)
+                if (item < _first_vis_item)
                 {
                     // TODO: optimizable scrolling
                     _first_vis_item = item;

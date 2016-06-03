@@ -66,7 +66,7 @@ namespace cppgui {
 
     protected: // Customization hooks
 
-        void draw_background(Canvas_t *) {}
+        void draw_background() {}
             // This will be called by render() before the root widget (= the UI) is painted.
 
     protected: // CRTP-overridable methods
