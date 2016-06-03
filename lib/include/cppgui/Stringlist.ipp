@@ -140,8 +140,20 @@ namespace cppgui {
         r_sep.ext.h = _item_separator.width;
 
         // Draw all items
-        for (auto i = _first_vis_item; ; )
+        for (auto i = _first_vis_item; ; ++ i)
         {
+            // Done ?
+            if (i >= static_cast<Index>(_items.size()))
+            {
+                if (r_item.pos.y < _content_rect.bottom())
+                {
+                    auto r_bgnd = r_item;
+                    r_bgnd.set_bottom( _content_rect.bottom() );
+                    fill_rect(canvas, r_bgnd, pos, Canvas_t::rgba_to_native({ 1, 1, 1, 1 }));
+                }
+                break;
+            }
+
             // Draw item background
             Native_color bgclr;
             if      (i == _selected_item) bgclr = Canvas_t::rgba_to_native({ 0.9f, 0.9f, 0.9f, 1 });
@@ -156,18 +168,6 @@ namespace cppgui {
 
             r_item.pos.y += static_cast<Position_delta>(r_item.ext.h);
             if (r_item.pos.y >= _content_rect.bottom()) break;
-
-            // Done ?
-            if (++i >= static_cast<Index>(_items.size()))
-            {
-                if (r_item.pos.y < _content_rect.bottom())
-                {
-                    auto r_bgnd = r_item;
-                    r_bgnd.set_bottom( _content_rect.bottom() );
-                    fill_rect(canvas, r_bgnd, pos, Canvas_t::rgba_to_native({ 1, 1, 1, 1 }));
-                }
-                break;
-            }
 
             // Draw item separator
             r_sep.pos.y = r_item.pos.y;
@@ -289,7 +289,7 @@ namespace cppgui {
     {
         if (delta > 0)
         {
-            Index cap = _items.size() - fully_visible_item_count();
+            Index cap = std::max(0, static_cast<Index>(_items.size()) - static_cast<Index>(fully_visible_item_count()));
             auto first = std::min(cap, _first_vis_item + delta);
             if (first != _first_vis_item)
             {
@@ -353,7 +353,8 @@ namespace cppgui {
     template <class Class, bool With_layout>
     void _stringlist<Config>::Base<Class, With_layout>::move_by_fraction(const Fraction<int>& delta)
     {
-        assert(delta.den > 0);
+        if (delta.den == 0) return;
+
         std::cout << delta.num << "/" << delta.den << std::endl;
 
         if (delta.num > 0)
