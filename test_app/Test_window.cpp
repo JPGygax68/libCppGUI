@@ -3,6 +3,7 @@
 
 #include <gpc/fonts/store.hpp>
 #include <cppgui/Default_font.hpp>
+#include <cppgui/unicode.hpp>
 
 #include "./Test_window.hpp"
 
@@ -69,6 +70,12 @@ Test_window::Test_window(): Parent_t("Test window")
     {
         _stringlist.add_item( "gee, item #"s + std::to_string(i) );
     }
+    _stringlist.on_item_selected([](cppgui::Index index, const std::u32string &item) {
+        std::cout << "Item #" << index << " selected: " << cppgui::utf32_to_utf8(item) << std::endl;
+    });
+    _stringlist.on_item_activated([](cppgui::Index index, const std::u32string &item) {
+        std::cout << "Item #" << index << " activated: " << cppgui::utf32_to_utf8(item) << std::endl;
+    });
 
     _glyph_btn.set_glyph(cppgui::Icon_resources<Default_font::size>::close());
     _glyph_btn.set_position({280, 160});
@@ -145,7 +152,7 @@ Test_window::Test_window(): Parent_t("Test window")
     ////root_widget()->add_child(&_scrollbox);
     root_widget()->add_child(&_listbox);
 
-    //_menu.take_focus();
+    _stringlist.take_focus();
     //root_widget()->set_focus_to(&_menu); // ); // &_textbox);
     //_scrollbox.take_focus();
     //_listbox.take_focus();

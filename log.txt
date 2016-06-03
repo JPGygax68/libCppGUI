@@ -1,3 +1,19 @@
+2016-06-02
+==========
+
+- Should items be selected upon mouse button down or mouse button up ?
+  -> clearly: down!
+
+2016-06-01
+==========
+
+- When scrolling the Stringlist (or a Scrollbox) and the mouse pointer was resting on an item, highlighting it, that item stays "hovered" even though it no longer is. I "fixed" this for the Stringlist by manually resetting the hovered item index to -1, but this is clumsy, and the Scrollbox derivates still have the problem.
+  To really address the problem, any "scrolling" operation (the corresponding methods are still not defined yet, still using standard invalidation as placeholders) should also trigger a re-evaluation of the mouse position.
+    -> however, in the case of the Stringlist (NOT the Scrollbox family), it would be sufficient to just apply the item delta to the index of the hovered item.
+    
+- The UI seems sluggish. I don't know why that should be the case; the time may be ripe now for some profiling. Maybe Resharper can help with that ?
+
+
 2016-05-26
 ==========
 

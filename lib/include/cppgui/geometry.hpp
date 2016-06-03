@@ -83,7 +83,7 @@ namespace cppgui {
                 && static_cast<Length>(pos.x) < w && static_cast<Length>(pos.y) < h; 
         }
 
-        bool can_contain(const Extents &rect)
+        bool can_contain(const Extents &rect) const
         {
             return rect.w < w && rect.h < h;
         }
@@ -197,6 +197,11 @@ namespace cppgui {
             return pos.y + static_cast<Position>(ext.h); 
         }
 
+        // Manipulation
+
+        void set_right (int x) { assert(x >= pos.x); ext.w = static_cast<Length>(x - pos.x); }
+        void set_bottom(int y) { assert(y >= pos.y); ext.h = static_cast<Length>(y - pos.y); }
+
         ///@}
 
         /** Adding a Point to a rectangle will move its position without changing its extents.
@@ -230,7 +235,7 @@ namespace cppgui {
         }
         void shrink(const Extents &delta)
         { 
-            pos.x += (Position_delta) delta.w, pos.y += (Position_delta) delta.h;
+            pos.x += static_cast<Position_delta>(delta.w), pos.y += static_cast<Position_delta>(delta.h);
             ext.w -= 2 * delta.w, ext.h -= 2 * delta.h;
         }
         void shrink(const Padding &padding)
@@ -249,7 +254,7 @@ namespace cppgui {
         auto operator - (Width w) const -> Rectangle
         {
             return { 
-                pos.x + (Position_delta) w, pos.y + (Position_delta) w, 
+                pos.x + static_cast<Position_delta>(w), pos.y + static_cast<Position_delta>(w), 
                 ext.w - 2 * w, ext.h - 2 * w
             }; 
         }

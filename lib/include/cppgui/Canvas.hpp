@@ -17,6 +17,8 @@
     limitations under the License.
 */
 
+#include <stack>
+
 #include "./basic_types.hpp"
 
 #include "./Full_resource_mapper.hpp" // TODO: replace with auto-selecting Resource_mapper.hpp as soon as ready
@@ -70,15 +72,17 @@ namespace cppgui {
         };
 
         // Must be called when renderer is ready (for resource allocation at least [TODO: formal state definitions])
-        void init();
+        void init   ();
         void cleanup();
 
         static constexpr auto adapt_resource(const Rgba_norm &color) { return color; }
-
         auto adapt_resource(const Rasterized_font *font) -> Font_handle { return _font_mapper.adapt_resource(this, font); }
 
         // TODO: move to Renderer ?
         void draw_stippled_rectangle_outline(int x, int y, int w, int h, const Rgba_norm &color);
+
+        void push_clipping_rect(const Rectangle &);
+        void pop_clipping_rect ();
 
     private:
         static auto stipple_image() -> const Mono_image_definition &;
@@ -86,6 +90,8 @@ namespace cppgui {
         Font_mapper                 _font_mapper;
 
         Image_handle                _stipple_img;
+
+        std::stack<Rectangle>       _clipping_stack;
     };
 
 } // ns cppgui

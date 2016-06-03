@@ -142,7 +142,7 @@ namespace cppgui {
     template<class Impl, class Config, bool With_layout>
     void Vertical_scrollbar_base<Impl, Config, With_layout>::mouse_motion(const Point &pos)
     {
-        std::cout << "mouse_motion: " << pos.x << ", " << pos.y << std::endl;
+        // std::cout << "mouse_motion: " << pos.x << ", " << pos.y << std::endl;
 
         bool on_thumb = _thumb_rect.contains(pos);
         if (on_thumb != _thumb_hovered)
@@ -153,7 +153,7 @@ namespace cppgui {
 
         if (Config::Mouse::is_button_down(1) && _dragging_thumb)
         {
-            std::cerr << "delta = " << (pos.y - _drag_anchor_pos) << std::endl;
+            //std::cerr << "delta = " << (pos.y - _drag_anchor_pos) << std::endl;
             notify_drag_navigation(pos.y - _drag_anchor_pos); // TODO: rename method ?
         }
         else

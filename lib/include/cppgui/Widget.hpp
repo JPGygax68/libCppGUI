@@ -91,20 +91,6 @@ namespace cppgui {
 
         // Input event injection
 
-        /** By convention, mouse positions are passed to a widget as relative to
-            their own origin (meaning that it falls to the caller, i.e. usually
-            the container, to subtract the child widget's position() from the
-            coordinates it gets from yet higher up).
-         */
-        #ifdef NOT_DEFINED
-        virtual void mouse_motion(const Point &) {}
-        virtual void mouse_button(const Point &, int /*button*/, Key_state, Count clicks);
-        virtual void mouse_click(const Point &, int button, int count);
-        virtual void mouse_wheel(const Vector &) {}
-        virtual void text_input(const char32_t *, size_t) {}
-        virtual void key_down(const Keycode &) {}
-        #endif
-
         virtual void mouse_enter() {}       // TODO: provide "entry point" parameter ?
         virtual void mouse_exit() {}        // TODO: provide "exit point" parameter ?
 
@@ -167,7 +153,7 @@ namespace cppgui {
         using Keycode = typename Keyboard::Keycode;
         using Abstract_container_t = Abstract_container<Config, With_layout>;
         using Root_widget_t = Root_widget<Config, With_layout>;
-        using Click_handler = typename Abstract_widget::Click_handler;
+        using Click_handler = typename Abstract_widget<Config, With_layout>::Click_handler;
 
         void set_background_color(const Color &);
         auto background_color() const;
@@ -201,6 +187,13 @@ namespace cppgui {
         bool is_first_child() { return container()->children().front() == this; }
         bool is_last_child () { return container()->children().back () == this; }
 
+        // Input event injection
+
+        /** By convention, mouse positions are passed to a widget as relative to
+            their own origin (meaning that it falls to the caller, i.e. usually
+            the container, to subtract the child widget's position() from the
+            coordinates it gets from yet higher up).
+         */
         virtual void mouse_motion(const Point &) {}
         virtual void mouse_button(const Point &, int /*button*/, Key_state, Count clicks);
         virtual void mouse_click(const Point &, int button, Count count);
@@ -209,8 +202,10 @@ namespace cppgui {
         virtual void key_down(const Keycode &);
         //void key_up(const Keycode &);
 
-        void mouse_enter() override;
-        void mouse_exit() override;
+        virtual void mouse_enter();
+        virtual void mouse_exit ();
+
+        // Run-time manipulations
 
         void change_visible(bool visible = true);
 

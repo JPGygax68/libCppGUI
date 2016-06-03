@@ -236,7 +236,7 @@ namespace cppgui {
     {
         //std::cout << "Widget::mouse_enter()" << std::endl;
         _hovered = true;
-        invalidate();
+        this->invalidate();
     }
 
     template<class Config, bool With_layout>
@@ -244,7 +244,7 @@ namespace cppgui {
     {
         //std::cout << "Widget::mouse_exit()" << std::endl;
         _hovered = false;
-        invalidate();
+        this->invalidate();
     }
 
     template<class Config, bool With_layout>

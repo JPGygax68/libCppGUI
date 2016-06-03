@@ -36,5 +36,19 @@ namespace cppgui {
         return converted;
     }
 
+    inline auto utf32_to_utf8(const std::u32string &text) -> std::string 
+    {
+        #if _MSC_VER == 1900
+        std::wstring_convert<std::codecvt_utf8<int32_t>, int32_t> conv;
+        auto data = reinterpret_cast<const int32_t*>( text.data() );
+        std::string converted = conv.to_bytes( data, data + text.size() );
+        #else
+        std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> conv;
+        auto converted = conv.to_bytes(text);
+        #endif
+
+        return converted;
+    }
+
 } // ns cppgui
 
