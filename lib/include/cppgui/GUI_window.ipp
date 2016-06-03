@@ -74,9 +74,9 @@ namespace cppgui {
     void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::redraw()
     {
         // std::cout << "Test_window::redraw()" << std::endl;
+        p()->draw_background();
 
         _canvas->enter_context();
-        p()->draw_background(_canvas);
         _root_widget.render();
         _canvas->leave_context();
         
@@ -86,7 +86,7 @@ namespace cppgui {
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
     void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::size_changed(int w, int h)
     {
-        _root_widget.set_extents({ (unsigned)w, (unsigned)h });
+        _root_widget.set_extents({ static_cast<unsigned>(w), static_cast<unsigned>(h) });
         _canvas->define_viewport(0, 0, w, h);
         _root_widget.layout();
         //init_gui();
