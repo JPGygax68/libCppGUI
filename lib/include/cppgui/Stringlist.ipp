@@ -156,9 +156,9 @@ namespace cppgui {
 
             // Draw item background
             Native_color bgclr;
-            if      (i == _selected_item) bgclr = Canvas_t::rgba_to_native({ 0.9f, 0.9f, 0.9f, 1 });
-            else if (i == _hovered_item ) bgclr = Canvas_t::rgba_to_native({ 0.8f, 0.8f, 0.8f, 1 });
-            else                          bgclr = Canvas_t::rgba_to_native({ 0.7f, 0.7f, 0.7f, 1 });
+            if      (i == _selected_item) bgclr = Canvas_t::rgba_to_native(this->selected_item_background_color());
+            else if (i == _hovered_item ) bgclr = Canvas_t::rgba_to_native(this->hovered_item_background_color ());
+            else                          bgclr = Canvas_t::rgba_to_native(this->item_background_color         ());
             fill_rect(canvas, r_item, pos, bgclr);
 
             // Render item text

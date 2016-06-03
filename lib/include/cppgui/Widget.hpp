@@ -225,10 +225,13 @@ namespace cppgui {
 
         // Static styles
         // TODO: move to "stylesheet"
-        static constexpr auto default_dialog_background_color() -> Color { return {0.6f, 0.6f, 0.6f, 1}; }
-        static constexpr auto widget_background_color() -> Color { return { 1, 1, 1, 1 }; }
-        static constexpr auto interior_separator() -> Separator { return { 1, {0.2f, 0.2f, 0.2f, 1} }; }
-        static constexpr auto grid_separator() -> Separator { return { 1, {0.4f, 0.4f, 0.4f, 1} }; }
+        static constexpr auto default_dialog_background_color() -> Color     { return {0.6f, 0.6f, 0.6f, 1}; }
+        static constexpr auto widget_background_color        () -> Color     { return { 1, 1, 1, 1 }; }
+        static constexpr auto interior_separator             () -> Separator { return { 1, { 0.2f, 0.2f, 0.2f, 1 } }; }
+        static constexpr auto grid_separator                 () -> Separator { return { 1, { 0.4f, 0.4f, 0.4f, 1 } }; }
+        static constexpr auto item_background_color          () -> Color     { return { 0.7f, 0.7f, 0.7f, 1 }; }
+        static constexpr auto selected_item_background_color () -> Color     { return { 0.9f, 0.9f, 0.9f, 1 }; }
+        static constexpr auto hovered_item_background_color  () -> Color     { return { 0.8f, 0.8f, 0.8f, 1 }; }
 
         // Styling
         // TODO: move to new class Abstract_button<> ?
