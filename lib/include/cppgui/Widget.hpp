@@ -75,10 +75,6 @@ namespace cppgui {
         void set_position(const Point &);
         void set_extents(const Extents &);
 
-        // TODO: color and other style definitions belong into stylesheets
-        //static auto button_face_color        () { return Color{ 0.8f, 0.8f, 0.8f, 1 }; }
-        //static auto button_face_hovered_color() { return Color{ 0.9f, 0.9f, 0.9f, 1 }; }
-
         /** The init() entry point is where a widget "connects" to its backends (the most important of
             which being the canvas).
          */

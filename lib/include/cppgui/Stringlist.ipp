@@ -448,6 +448,7 @@ namespace cppgui {
                 // TODO: optimizable scrolling
                 _first_vis_item = first;
                 _hovered_item = -1; // TODO: update using current mouse position ?
+                update_scrollbar_position();
             }
             select_item( item );
             this->invalidate();
@@ -469,6 +470,7 @@ namespace cppgui {
                     // TODO: optimizable scrolling
                     _first_vis_item = item;
                     _hovered_item = -1; // TODO: update using current mouse position ?
+                    update_scrollbar_position();
                 }
                 select_item( item );
                 this->invalidate();
