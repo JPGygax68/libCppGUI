@@ -23,12 +23,6 @@ namespace cppgui {
 
     // Main class declaration ---------------------------------------
 
-    /** This macro definition must mirror the template class declaration that immediately follows.
-     */
-    #define CPPGUI_INSTANTIATE_MY_WIDGET(Config, With_layout) \
-        template cppgui::My_widget<Config, With_layout>; \
-        _CPPGUI_INSTANTIATE_MY_WIDGET(Config, With_layout);
-
     template<class Config>
     struct _my_widget
     {
@@ -60,8 +54,10 @@ namespace cppgui {
         // Layouter aspect ----------------------------------------------
 
         /** This macro definition must mirror the layouter aspect class declaration.
-            It should instantiate not just the Layouter aspect itself, but also any aspects it injects on
-            its own (this example does not inject any, but see Label.hpp for an example).
+            It should instantiate not just all specializations of the Layouter aspect
+            itself (meaning both the empty one for With_layout = false and the real one
+            wgere With_layout = true), but also any aspects it injects on  its own 
+            (this example does not inject any, but see Label.hpp for an example).
          */
         #define _CPPGUI_INSTANTIATE_MY_WIDGET_LAYOUTER(Config, With_layout, ...) \
             template cppgui::_my_widget<Config>::Layouter<With_layout, __VA_ARGS__>; \
@@ -94,7 +90,17 @@ namespace cppgui {
 
     }; // templated ns _my_widget
 
-    // Specializations ----------------------------------------------
+    // Export section -----------------------------------------------
+
+    /** RECIPE:
+
+        This is where you export your widget class template into the cppgui namespace,
+        under a meaningful name.
+
+        An instantion macro must be provided for every templated widget type.
+        Do not forget to add a call to this macro to the CPPGUI_INSTANTIATE_ALL_WIDGETS()
+        macro in `all_widgets.hpp`.
+     */
 
     #define CPPGUI_INSTANTIATE_MY_WIDGET(Config, With_layout) \
         template cppgui::My_widget<Config, With_layout>; \
