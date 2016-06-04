@@ -24,15 +24,15 @@ namespace cppgui {
     // Main class declaration ---------------------------------------
 
     template<class Config>
-    struct _my_widget
+    struct _vertical_slider
     {
         template<class Class, bool With_layout, class Parent> struct Layouter;
 
         // Main class declaration -----------------------------------
 
-        #define _CPPGUI_INSTANTIATE_MY_WIDGET_BASE(Config, With_layout, ...) \
-            template cppgui::_my_widget<Config>::Base<__VA_ARGS__, With_layout>; \
-            template cppgui::_my_widget<Config>::Layouter<__VA_ARGS__, With_layout, \
+        #define _CPPGUI_INSTANTIATE_VERTICAL_SLIDER_BASE(Config, With_layout, ...) \
+            template cppgui::_vertical_slider<Config>::Base<__VA_ARGS__, With_layout>; \
+            template cppgui::_vertical_slider<Config>::Layouter<__VA_ARGS__, With_layout, \
                 cppgui::Widget<Config, With_layout> >;
 
         /** The class is called "Base" because it is intended to be customized via template parameters.
@@ -43,6 +43,9 @@ namespace cppgui {
                 Widget<Config, With_layout> >       // ... the actual parent class: Widget<>
         {
         public:
+            using Widget_t = Widget<Config, With_layout>;
+            using Parent_t = Widget_t;
+            using Canvas_t = typename Widget_t::Canvas_t;
 
             void init() override;
 
@@ -59,8 +62,8 @@ namespace cppgui {
             wgere With_layout = true), but also any aspects it injects on  its own 
             (this example does not inject any, but see Label.hpp for an example).
          */
-        #define _CPPGUI_INSTANTIATE_MY_WIDGET_LAYOUTER(Config, With_layout, ...) \
-            template cppgui::_my_widget<Config>::Layouter<With_layout, __VA_ARGS__>; \
+        #define _CPPGUI_INSTANTIATE_VERTICAL_SLIDER_LAYOUTER(Config, With_layout, ...) \
+            template cppgui::_vertical_slider<Config>::Layouter<With_layout, __VA_ARGS__>; \
             template cppgui::Box__Layouter<Config, With_layout, __VA_ARGS__>;
 
         /** Dummy template specialization for when With_layout = false.
@@ -70,9 +73,7 @@ namespace cppgui {
         /** "Real" layouter specialization that will be selected when With_layout = true.
          */
         template<class Class, class Parent>
-        struct Layouter<Class, true, Parent>: public 
-            Box__Layouter<Config, With_layout,
-                Parent >
+        struct Layouter<Class, true, Parent>: public Parent
         {
             void init_layout() override;
 
@@ -81,34 +82,23 @@ namespace cppgui {
             void layout() override;
 
         protected:
-            class My_widget_t: public Base<Class, true> { friend struct Layouter; };
+            class Vertical_slider_t: public Base<Class, true> { friend struct Layouter; };
 
             /** Gives access to the main class, including protected and private sections.
             */
-            auto p() { return static_cast<My_widget_t*>(this); }
+            auto p() { return static_cast<Vertical_slider_t*>(this); }
         };
 
-    }; // templated ns _my_widget
+    }; // templated ns _vertical_slider
 
     // Export section -----------------------------------------------
 
-    /** This is where you export your widget class template into the cppgui namespace,
-        under a meaningful name.
-
-        An instantion macro must be provided for every templated widget type, taking the
-        standard template parameters ONLY (all other template parameters must be filled
-        in by your type definition).
-
-        Do not forget to add a call to this macro to the CPPGUI_INSTANTIATE_ALL_WIDGETS()
-        macro in `all_widgets.hpp`.
-     */
-
-    #define CPPGUI_INSTANTIATE_MY_WIDGET(Config, With_layout) \
-        template cppgui::My_widget<Config, With_layout>; \
-        template cppgui::_my_widget<Config>; \
-        _CPPGUI_INSTANTIATE_MY_WIDGET_BASE(Config, With_layout, cppgui::My_widget<Config, With_layout>);
+    #define CPPGUI_INSTANTIATE_VERTICAL_SLIDER(Config, With_layout) \
+        template cppgui::Vertical_slider<Config, With_layout>; \
+        template cppgui::_vertical_slider<Config>; \
+        _CPPGUI_INSTANTIATE_VERTICAL_SLIDER_BASE(Config, With_layout, cppgui::Vertical_slider<Config, With_layout>);
 
     template<class Config, bool With_layout>
-    class My_widget: public _my_widget<Config>::template Base<My_widget<Config, With_layout>, With_layout> { };
+    class Vertical_slider: public _vertical_slider<Config>::template Base<Vertical_slider<Config, With_layout>, With_layout> { };
 
 } // ns cppgui

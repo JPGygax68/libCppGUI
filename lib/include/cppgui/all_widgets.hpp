@@ -32,6 +32,7 @@
 #include <cppgui/Scrollbox.hpp>
 #include <cppgui/Listbox.hpp>
 #include <cppgui/Stringlist.hpp>
+#include <cppgui/Vertical_slider.hpp>
 #include <cppgui/Icon_resources.hpp>
 #include <cppgui/Canvas.hpp>
 
@@ -88,7 +89,8 @@ namespace cppgui {
     CPPGUI_INSTANTIATE_CONTAINER         (Config, With_layout); \
     CPPGUI_INSTANTIATE_VERTICAL_SCROLLBAR(Config, With_layout); \
     CPPGUI_INSTANTIATE_LISTBOX           (Config, With_layout); \
-    CPPGUI_INSTANTIATE_STRINGLIST        (Config, With_layout);
+    CPPGUI_INSTANTIATE_STRINGLIST        (Config, With_layout); \
+    CPPGUI_INSTANTIATE_VERTICAL_SLIDER   (Config, With_layout);
 
 #define CPPGUI_INSTANTIATE_FONT_RESOURCES(Size) \
     CPPGUI_INSTANTIATE_ICON_RESOURCES(Size)
