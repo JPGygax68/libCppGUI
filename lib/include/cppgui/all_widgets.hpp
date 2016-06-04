@@ -53,6 +53,7 @@ namespace cppgui {
         using Vertical_scrollbar = Vertical_scrollbar<Config, With_layout>;
         using Listbox            = Listbox<Config, With_layout>;
         using Stringlist         = Stringlist<Config, With_layout>;
+        using Vertical_slider    = Vertical_slider<Config, With_layout>;
     };
 
 } // ns cppgui
@@ -72,7 +73,8 @@ namespace cppgui {
     using Vertical_scrollbar        = cppgui::Vertical_scrollbar        <Config, With_layout>; \
     using Listbox                   = cppgui::Listbox                   <Config, With_layout>; \
     using List_pane_base            = cppgui::List_pane_base            <Config, With_layout>; \
-    using Stringlist                = cppgui::Stringlist                <Config, With_layout>;
+    using Stringlist                = cppgui::Stringlist                <Config, With_layout>; \
+    using Vertical_slider           = cppgui::Vertical_slider           <Config, With_layout>;
 //using Canvas_t = cppgui::Canvas<Renderer>; 
 
 #define CPPGUI_INSTANTIATE_WIDGET_TYPES(Config, With_layout) \

@@ -56,4 +56,5 @@ private:
     std::vector<Button>         _lb_buttons;
     Listbox                     _listbox;
     Stringlist                  _stringlist;
+    Vertical_slider             _vslider;
 };

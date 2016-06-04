@@ -521,7 +521,7 @@ namespace cppgui {
     void _stringlist<Config>::Base<Class, With_layout>::select_item(Index index)
     {
         _selected_item = index;
-        if (_on_item_selected) _on_item_selected(index, _items[index]);
+        if (_on_item_selected && index >= 0) _on_item_selected(index, _items[index]);
     }
 
     // Layouter aspect ----------------------------------------------
