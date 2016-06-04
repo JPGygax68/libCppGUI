@@ -24,10 +24,6 @@
 
 namespace cppgui {
 
-    #define CPPGUI_INSTANTIATE_STRINGLIST(Config, With_layout) \
-        template cppgui::_stringlist<Config>; \
-        _CPPGUI_INSTANTIATE_STRINGLIST(Config, With_layout)
-
     template<class Config>
     struct _stringlist {
 
@@ -155,10 +151,13 @@ namespace cppgui {
 
     }; // pseudo-ns _stringlist
 
-    #define _CPPGUI_INSTANTIATE_STRINGLIST(Config, With_layout) \
+    // Specializations ----------------------------------------------
+
+    #define CPPGUI_INSTANTIATE_STRINGLIST(Config, With_layout) \
         template cppgui::Stringlist<Config, With_layout>; \
-        _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Config, With_layout, cppgui::Stringlist<Config, With_layout>)
-        
+        template cppgui::_stringlist<Config>; \
+        _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Config, With_layout, cppgui::Stringlist<Config, With_layout>);
+
     template<class Config, bool With_layout>
     class Stringlist: public _stringlist<Config>::template Base<Stringlist<Config, With_layout>, With_layout> { };
 

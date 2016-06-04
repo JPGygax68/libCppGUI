@@ -21,63 +21,87 @@
 
 namespace cppgui {
 
-    // Forward declarations
-
-    template<class Config, bool With_layout, class Parent> struct My_widget__Layouter;
-
     // Main class declaration ---------------------------------------
 
     /** This macro definition must mirror the template class declaration that immediately follows.
      */
     #define CPPGUI_INSTANTIATE_MY_WIDGET(Config, With_layout) \
         template cppgui::My_widget<Config, With_layout>; \
-        _CPPGUI_INSTANTIATE_MY_WIDGET_LAYOUTER(Config, With_layout, cppgui::Widget<Config, With_layout>)
+        _CPPGUI_INSTANTIATE_MY_WIDGET(Config, With_layout);
+
+    template<class Config>
+    struct _my_widget
+    {
+        template<bool With_layout, class Parent> struct Layouter;
+
+        // Main class declaration -----------------------------------
+
+        #define _CPPGUI_INSTANTIATE_MY_WIDGET_BASE(Config, With_layout, ...) \
+            template cppgui::_my_widget<Config>::Base<__VA_ARGS__, With_layout>; \
+            template cppgui::_my_widget<Config>::Layouter<__VA_ARGS__, With_layout, \
+                cppgui::Widget<Config, With_layout> >;
+
+        /** The class is called "Base" because it is intended to be customized via template parameters.
+         */
+        template<bool With_layout>
+        class Base: 
+            public Layouter<With_layout,            // Layouter aspect, parameterized with ...
+                Widget<Config, With_layout> >       // ... the actual parent class: Widget<>
+        {
+        public:
+
+            void init() override;
+
+            void compute_view_from_data() override;
+
+            void render(Canvas_t *, const Point &offset) override;
+        };
+
+        // Layouter aspect ----------------------------------------------
+
+        /** This macro definition must mirror the layouter aspect class declaration.
+            It should instantiate not just the Layouter aspect itself, but also any aspects it injects on
+            its own (this example does not inject any, but see Label.hpp for an example).
+         */
+        #define _CPPGUI_INSTANTIATE_MY_WIDGET_LAYOUTER(Config, With_layout, ...) \
+            template cppgui::_my_widget<Config>::Layouter<With_layout, __VA_ARGS__>; \
+            template cppgui::Box__Layouter<Config, With_layout, __VA_ARGS__>;
+
+        /** Dummy template specialization for when With_layout = false.
+         */
+        template<class Parent> struct Layouter<false, Parent>: public Parent {};
+
+        /** "Real" layouter specialization that will be selected when With_layout = true.
+         */
+        template<class Parent>
+        struct Layouter<true, Parent>: public 
+            Box__Layouter<Config, With_layout,
+                Parent >
+        {
+            void init_layout() override;
+
+            auto get_minimal_size() -> Extents override;
+
+            void layout() override;
+
+        protected:
+            class My_widget_t: public Base<true> { friend struct Layouter; };
+
+            /** Gives access to the main class, including protected and private sections.
+            */
+            auto p() { return static_cast<My_widget_t*>(this); }
+        };
+
+    }; // templated ns _my_widget
+
+    // Specializations ----------------------------------------------
+
+    #define CPPGUI_INSTANTIATE_MY_WIDGET(Config, With_layout) \
+        template cppgui::My_widget<Config, With_layout>; \
+        template cppgui::_my_widget<Config>; \
+        _CPPGUI_INSTANTIATE_MY_WIDGET_BASE(Config, With_layout, cppgui::My_widget<Config, With_layout>);
 
     template<class Config, bool With_layout>
-    class My_widget: 
-        public My_widget__Layouter<Config, With_layout, // Layouter aspect, parameterized with ...
-            Widget<Config, With_layout> >               // ... the actual parent class: Widget<>
-    {
-    public:
-
-        void init() override;
-
-        void compute_view_from_data() override;
-
-        void render(Canvas_t *, const Point &offset) override;
-    };
-
-    // Layouter aspect ----------------------------------------------
-
-    /** As for the main class, this macro definition must mirror the layouter aspect class declaration.
-        It should instantiate not just the Layouter aspect itself, but also any aspects it injects on
-        its own (this example does not inject any, but see Label.hpp for an example).
-     */
-    #define _CPPGUI_INSTANTIATE_MY_WIDGET_LAYOUTER(Config, With_layout, ...) \
-        template cppgui::My_widget__Layouter<Config, With_layout, __VA_ARGS__>; \
-        template cppgui::Box__Layouter<Config, With_layout, __VA_ARGS__>;
-
-    /** Dummy template specialization for when With_layout = false.
-     */
-    template<class Config, class Parent> struct My_widget__Layouter<Config, false, Parent>: public Parent {};
-
-    /** "Real" layouter specialization that will be selected when With_layout = true.
-     */
-    template<class Config, class Parent>
-    struct My_widget__Layouter<Config, true, Parent>: public Parent
-    {
-        void init_layout() override;
-
-        auto get_minimal_size() -> Extents override;
-
-        void layout() override;
-
-    protected:
-        class My_widget_t: public My_widget<Config, true> { friend struct Layouter; };
-
-        /** Gives access to the main class, including protected and private sections.
-        */
-        auto p() { return static_cast<My_widget_t*>(this); }
-    };
+    class My_widget: public _my_widget<Config>::template Base<My_widget<Config, With_layout>, With_layout> { };
 
 } // ns cppgui

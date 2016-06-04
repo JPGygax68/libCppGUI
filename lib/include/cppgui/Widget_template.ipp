@@ -21,16 +21,18 @@ namespace cppgui {
 
     // Main class -------------------------------------------------------------
 
-    template<class Config, bool With_layout>
-    inline void My_widget<Config, With_layout>::init()
+    template<class Config>
+    template<bool With_layout>
+    void _my_widget<Config>::Base<With_layout>::init()
     {
         /** This is where the widget establishes its connection with the backends
             (available via root_widget()->canvas() etc. ).
          */
     }
 
-    template<class Config, bool With_layout>
-    void My_widget<Config, With_layout>::compute_view_from_data()
+    template<class Config>
+    template<bool With_layout>
+    void _my_widget<Config>::Base<Config, With_layout>::compute_view_from_data()
     {
         /** This is another entry point that gets called recursively upon
             initialization. Its name says what it is intended for: to 
@@ -38,8 +40,9 @@ namespace cppgui {
          */
     }
 
-    template<class Config, bool With_layout>
-    void My_widget<Config, With_layout>::render(Canvas_t *, const Point & offset)
+    template<class Config>
+    template<bool With_layout>
+    void _my_widget<Config>::Base<With_layout>::render(Canvas_t *, const Point & offset)
     {
         /** The render() method is responsible for rendering the widget via
             the canvas. 
@@ -50,8 +53,9 @@ namespace cppgui {
 
     // Layouter aspect --------------------------------------------------------
 
-    template<class Config, class Parent>
-    inline void My_widget__Layouter<Config, true, Parent>::init_layout()
+    template<class Config>
+    template<class Parent>
+    void _my_widget<Config>::Layouter<Config, true, Parent>::init_layout()
     {
         /** The init_layout() method is called on the complete widget tree 
             before either get_minimal_size() or layout(). It is intended as 
@@ -60,8 +64,9 @@ namespace cppgui {
          */
     }
 
-    template<class Config, class Parent>
-    auto My_widget__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
+    template<class Config>
+    template<class Parent>
+    auto _my_widget<Config>::Layouter<Config, true, Parent>::get_minimal_size() -> Extents
     {
         /** The get_minimal_size() method is intended to be called recursively
             by containers, or from a container's layout() method to help it
@@ -69,8 +74,9 @@ namespace cppgui {
          */
     }
 
-    template<class Config, class Parent>
-    void My_widget__Layouter<Config, true, Parent>::layout()
+    template<class Config>
+    template<class Parent>
+    void _my_widget<Config>::Layouter<Config, true, Parent>::layout()
     {
         /** The layout() method is usually called once, recursively, on the 
             whole widget tree. This is where the Layouter aspect must
