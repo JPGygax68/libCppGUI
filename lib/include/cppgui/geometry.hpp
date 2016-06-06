@@ -203,8 +203,10 @@ namespace cppgui {
 
         // Manipulation
 
-        void set_right (int x) { assert(x >= pos.x); ext.w = static_cast<Length>(x - pos.x); }
-        void set_bottom(int y) { assert(y >= pos.y); ext.h = static_cast<Length>(y - pos.y); }
+        void set_left  (Position x) { assert(x < pos.x + ext.w); pos.x = x; }
+        void set_right (Position x) { assert(x >= pos.x); ext.w = x - pos.x; }
+        void set_top   (Position y) { assert(y < pos.y + ext.h); pos.y = y; }
+        void set_bottom(Position y) { assert(y >= pos.y); ext.h = y - pos.y; }
 
         ///@}
 

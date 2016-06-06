@@ -48,8 +48,11 @@ namespace cppgui {
             using Widget_t = Widget<Config, With_layout>;
             using Parent_t = Widget_t;
             using Canvas_t = typename Widget_t::Canvas_t;
+            using Keyboard = typename Config::Keyboard;
+            using Keycode = typename Keyboard::Keycode;
 
             void define_range(const Range<Value> &);
+            void define_range(const Range<Value> &, const Value &incr_major, const Value &incr_minor);
             void set_value(const Value &);
 
             void init() override;
@@ -60,20 +63,39 @@ namespace cppgui {
 
             void mouse_button(const Point &, int button, Key_state, Count clicks) override;
             void mouse_motion(const Point &) override;
+            void mouse_wheel(const Vector &) override;
+
+            void key_down(const Keycode &key) override;
+
             void mouse_exit () override;
 
         protected:
 
             static constexpr auto slide_width() -> Width   { return 10; }
-            static constexpr auto thumb_size () -> Extents { return { 30, 30 }; }
+            static constexpr auto thumb_size () -> Extents { return { 30, 16 }; }
+
+            // Actions
+
+            void move_down_major();
+            void move_up_major  ();
+            void move_down_minor();
+            void move_up_minor  ();
+
+            // Internal methods
 
             void start_thumb_drag(const Point &);
             void end_thumb_drag  ();
             void drag_thumb      (const Point &);
 
+            void change_value(const Value &);
             void update_thumb_pos();
 
+            auto top_of_slide   () const -> Rectangle;
+            auto bottom_of_slide() const -> Rectangle;
+
             Range<Value>            _range;
+            Value                   _incr_major, _incr_minor;
+
             Rectangle               _slide_rect;
             Rectangle               _thumb_rect;
 

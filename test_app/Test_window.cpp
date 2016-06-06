@@ -144,7 +144,7 @@ Test_window::Test_window(): Parent_t("Test window")
     _listbox.set_position({ 800,  90 });
     _listbox.set_extents ({ 400, 120 });
     _listbox.content_pane()->set_item_padding({ 5, 5 });
-    _listbox.content_pane()->set_separator({1, {0.5f, 0.5f, 0.5f, 1}});
+    _listbox.content_pane()->set_separator({ 1, { 0.5f, 0.5f, 0.5f, 1 }});
     root_widget()->add_child(&_listbox);
 
     // Vertical_slider
@@ -154,7 +154,7 @@ Test_window::Test_window(): Parent_t("Test window")
     _vslider.set_value( 50 );
     root_widget()->add_child(&_vslider);
 
-    root_widget()->set_background_color({0, 0.6f, 0.2f, 1});
+    root_widget()->set_background_color({ 0, 0.6f, 0.2f, 1 });
 
     //root_widget()->add_child(&_menu);
     ////root_widget()->add_child(&_scrollbox);
