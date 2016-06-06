@@ -56,6 +56,9 @@ namespace cppgui {
     {
         T from, to;
 
+        auto& operator = (const Range &src) { from = src.from, to = src.to; return *this; }
+        auto& operator = (Range &&src) { from = std::move(src.from), to = std::move(src.to); return *this; }
+
         void define(const T &from_, const T &to_) { from = from_, to = to_; }
 
         constexpr auto length() const { return to - from; }

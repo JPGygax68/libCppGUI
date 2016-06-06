@@ -278,7 +278,7 @@ namespace cppgui {
     inline auto _stringlist<Config>::Base<Class, With_layout>::fully_visible_item_count() const -> Count
     {
         auto h_rect = _content_rect.height(), h_item = item_height() + _item_separator.width;
-        Count n = h_rect / h_item, r = h_rect % h_item;
+        auto n = h_rect / h_item, r = h_rect % h_item;
         if (r <= _item_separator.width) n += 1;
         return n;
     }

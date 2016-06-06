@@ -23,16 +23,16 @@ namespace cppgui {
 
     // Main class declaration ---------------------------------------
 
-    template<class Config>
+    template<class Config, typename ValueType>
     struct _vertical_slider
     {
         template<class Class, bool With_layout, class Parent> struct Layouter;
 
         // Main class declaration -----------------------------------
 
-        #define _CPPGUI_INSTANTIATE_VERTICAL_SLIDER_BASE(Config, With_layout, ...) \
-            template cppgui::_vertical_slider<Config>::Base<__VA_ARGS__, With_layout>; \
-            template cppgui::_vertical_slider<Config>::Layouter<__VA_ARGS__, With_layout, \
+        #define _CPPGUI_INSTANTIATE_VERTICAL_SLIDER_BASE(Config, With_layout, ValueType, ...) \
+            template cppgui::_vertical_slider<Config, ValueType>::Base<__VA_ARGS__, With_layout>; \
+            template cppgui::_vertical_slider<Config, ValueType>::Layouter<__VA_ARGS__, With_layout, \
                 cppgui::Widget<Config, With_layout> >;
 
         /** The class is called "Base" because it is intended to be customized via template parameters.
@@ -43,11 +43,13 @@ namespace cppgui {
                 Widget<Config, With_layout> >       // ... the actual parent class: Widget<>
         {
         public:
+            using Value    = typename ValueType;
+
             using Widget_t = Widget<Config, With_layout>;
             using Parent_t = Widget_t;
             using Canvas_t = typename Widget_t::Canvas_t;
 
-            void define_range(const Range<Fraction<int>> &);
+            void define_range(const Range<Value> &);
 
             void init() override;
 
@@ -68,7 +70,7 @@ namespace cppgui {
             void end_thumb_drag  ();
             void drag_thumb      (const Point &);
 
-            Range<Fraction<int>>    _range;
+            Range<Value>            _range;
             Rectangle               _slide_rect;
             Rectangle               _thumb_rect;
 
@@ -116,12 +118,15 @@ namespace cppgui {
 
     // Export section -----------------------------------------------
 
-    #define CPPGUI_INSTANTIATE_VERTICAL_SLIDER(Config, With_layout) \
-        template cppgui::Vertical_slider<Config, With_layout>; \
-        template cppgui::_vertical_slider<Config>; \
-        _CPPGUI_INSTANTIATE_VERTICAL_SLIDER_BASE(Config, With_layout, cppgui::Vertical_slider<Config, With_layout>);
+    #define CPPGUI_INSTANTIATE_VERTICAL_SLIDER(Config, With_layout, ValueType) \
+        template cppgui::Vertical_slider<Config, With_layout, ValueType>; \
+        template cppgui::_vertical_slider<Config, ValueType>; \
+        _CPPGUI_INSTANTIATE_VERTICAL_SLIDER_BASE(Config, With_layout, ValueType, cppgui::Vertical_slider<Config, With_layout, ValueType>);
 
-    template<class Config, bool With_layout>
-    class Vertical_slider: public _vertical_slider<Config>::template Base<Vertical_slider<Config, With_layout>, With_layout> { };
+    #define CPPGUI_INSTANTIATE_DEFAULT_VERTICAL_SLIDER(Config, With_layout) \
+        CPPGUI_INSTANTIATE_VERTICAL_SLIDER(Config, With_layout, float);
+
+    template<class Config, bool With_layout, typename ValueType = float>
+    class Vertical_slider: public _vertical_slider<Config, ValueType>::template Base<Vertical_slider<Config, With_layout>, With_layout> { };
 
 } // ns cppgui

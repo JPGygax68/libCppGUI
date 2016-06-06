@@ -21,25 +21,25 @@ namespace cppgui {
 
     // Main class -------------------------------------------------------------
 
-    template<class Config>
+    template<class Config, typename ValueType>
     template<class Class, bool With_layout>
-    void _vertical_slider<Config>::Base<Class, With_layout>::define_range(const Range<Fraction<int>> &range)
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::define_range(const Range<Value> &range)
     {
         _range = range;
     }
 
-    template<class Config>
+    template<class Config, typename ValueType>
     template<class Class, bool With_layout>
-    void _vertical_slider<Config>::Base<Class, With_layout>::init()
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::init()
     {
         /** This is where the widget establishes its connection with the backends
             (available via root_widget()->canvas() etc. ).
          */
     }
 
-    template<class Config>
+    template<class Config, typename ValueType>
     template<class Class, bool With_layout>
-    void _vertical_slider<Config>::Base<Class, With_layout>::compute_view_from_data()
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::compute_view_from_data()
     {
         /** This is another entry point that gets called recursively upon
             initialization. Its name says what it is intended for: to 
@@ -47,9 +47,9 @@ namespace cppgui {
          */
     }
 
-    template<class Config>
+    template<class Config, typename ValueType>
     template<class Class, bool With_layout>
-    void _vertical_slider<Config>::Base<Class, With_layout>::render(Canvas_t *canvas, const Point &offset)
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::render(Canvas_t *canvas, const Point &offset)
     {
         // TODO: PLACEHOLDER
         this->fill_rect(canvas, this->rectangle(), offset, Canvas_t::rgba_to_native({0.8f, 0, 0.7f, 1}));
@@ -63,9 +63,9 @@ namespace cppgui {
         this->fill_rect(canvas, _thumb_rect, offset + this->position(), thclr);
     }
 
-    template <class Config>
+    template <class Config, typename ValueType>
     template <class Class, bool With_layout>
-    void _vertical_slider<Config>::Base<Class, With_layout>::mouse_button(const Point& pos, int button, Key_state state, Count clicks)
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::mouse_button(const Point& pos, int button, Key_state state, Count clicks)
     {
         if (button == 1 && state == pressed && _thumb_rect.contains(pos) && !_dragging_thumb)
         {
@@ -79,9 +79,9 @@ namespace cppgui {
         Parent_t::mouse_button(pos, button, state, clicks);
     }
 
-    template <class Config>
+    template <class Config, typename ValueType>
     template <class Class, bool With_layout>
-    void _vertical_slider<Config>::Base<Class, With_layout>::mouse_motion(const Point& pos)
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::mouse_motion(const Point& pos)
     {
         if (this->hovered())
         {
@@ -105,9 +105,9 @@ namespace cppgui {
         Parent_t::mouse_motion(pos);
     }
 
-    template <class Config>
+    template <class Config, typename ValueType>
     template <class Class, bool With_layout>
-    void _vertical_slider<Config>::Base<Class, With_layout>::mouse_exit()
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::mouse_exit()
     {
         if (_thumb_hovered)
         {
@@ -118,26 +118,26 @@ namespace cppgui {
         Parent_t::mouse_exit();
     }
 
-    template <class Config>
+    template <class Config, typename ValueType>
     template <class Class, bool With_layout>
-    void _vertical_slider<Config>::Base<Class, With_layout>::start_thumb_drag(const Point &pos)
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::start_thumb_drag(const Point &pos)
     {
         assert(!_dragging_thumb);
         _dragging_thumb = true;
         _thumb_drag_start_pos = pos.y;
     }
 
-    template <class Config>
+    template <class Config, typename ValueType>
     template <class Class, bool With_layout>
-    void _vertical_slider<Config>::Base<Class, With_layout>::end_thumb_drag()
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::end_thumb_drag()
     {
         assert(_dragging_thumb);
         _dragging_thumb = false;
     }
 
-    template <class Config>
+    template <class Config, typename ValueType>
     template <class Class, bool With_layout>
-    void _vertical_slider<Config>::Base<Class, With_layout>::drag_thumb(const Point &pos)
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::drag_thumb(const Point &pos)
     {
         auto dy = pos.y - _thumb_drag_start_pos;
 
@@ -147,9 +147,9 @@ namespace cppgui {
 
     // Layouter aspect --------------------------------------------------------
 
-    template<class Config>
+    template<class Config, typename ValueType>
     template<class Class, class Parent>
-    void _vertical_slider<Config>::Layouter<Class, true, Parent>::init_layout()
+    void _vertical_slider<Config, ValueType>::Layouter<Class, true, Parent>::init_layout()
     {
         /** The init_layout() method is called on the complete widget tree 
             before either get_minimal_size() or layout(). It is intended as 
@@ -158,9 +158,9 @@ namespace cppgui {
          */
     }
 
-    template<class Config>
+    template<class Config, typename ValueType>
     template<class Class, class Parent>
-    auto _vertical_slider<Config>::Layouter<Class, true, Parent>::get_minimal_size() -> Extents
+    auto _vertical_slider<Config, ValueType>::Layouter<Class, true, Parent>::get_minimal_size() -> Extents
     {
         /** The get_minimal_size() method is intended to be called recursively
             by containers, or from a container's layout() method to help it
@@ -170,9 +170,9 @@ namespace cppgui {
         return {};
     }
 
-    template<class Config>
+    template<class Config, typename ValueType>
     template<class Class, class Parent>
-    void _vertical_slider<Config>::Layouter<Class, true, Parent>::layout()
+    void _vertical_slider<Config, ValueType>::Layouter<Class, true, Parent>::layout()
     {
         /** The layout() method is usually called once, recursively, on the 
             whole widget tree. This is where the Layouter aspect must
