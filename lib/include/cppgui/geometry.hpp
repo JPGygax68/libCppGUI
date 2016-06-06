@@ -29,6 +29,8 @@ namespace cppgui {
     using Length = int;
     using Width = Length;
 
+    #ifdef NOT_DEFINED
+
     /** 1-dimensional equivalent of Rectangle
     */
     struct Range {
@@ -41,6 +43,8 @@ namespace cppgui {
         auto start() const { return p; }
         auto end  () const { return p + static_cast<Position>(l); }
     };
+
+    #endif
 
     // 2D ----------------------------
 

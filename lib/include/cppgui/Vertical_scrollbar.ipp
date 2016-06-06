@@ -68,7 +68,7 @@ namespace cppgui {
     template<class Impl, class Config, bool With_layout>
     void Vertical_scrollbar_base<Impl, Config, With_layout>::compute_view_from_data()
     {
-        _thumb_rect.pos = { 2, _sliding_range.p };
+        _thumb_rect.pos = { 2, _sliding_range.from };
         // TODO: position from style
 
         recalc_thumb();
@@ -103,7 +103,7 @@ namespace cppgui {
     {
         if (button == 1 && state == Key_state::pressed)
         {
-            if (pos.y > _sliding_range.start() && pos.y < _sliding_range.end())
+            if (pos.y > _sliding_range.from && pos.y < _sliding_range.to)
             {
                 auto y_rel = pos.y - _thumb_rect.pos.y;
 
@@ -181,11 +181,11 @@ namespace cppgui {
     template<class Impl, class Config, bool With_layout>
     auto Vertical_scrollbar_base<Impl, Config, With_layout>::current_position() -> Fraction<int>
     {
-        if (_sliding_range.l > _thumb_rect.ext.h)
+        if (_sliding_range.length() > _thumb_rect.ext.h)
         {
             return {
-                (_full_range - _fraction) * (_thumb_rect.pos.y - _sliding_range.start()),
-                _sliding_range.l - _thumb_rect.ext.h
+                (_full_range - _fraction) * (_thumb_rect.pos.y - _sliding_range.from),
+                _sliding_range.length() - _thumb_rect.ext.h
             };
         }
         else
@@ -201,7 +201,7 @@ namespace cppgui {
         {
             if (pos < 0) pos = 0; else if (pos > _full_range - _fraction) pos = _full_range - _fraction;
 
-            auto new_pos = _sliding_range.p + (pos * (_sliding_range.l - _thumb_rect.ext.h) / (_full_range - _fraction));
+            auto new_pos = _sliding_range.from + (pos * (_sliding_range.length() - _thumb_rect.ext.h) / (_full_range - _fraction));
 
             if (_dragging_thumb)
             {
@@ -211,26 +211,26 @@ namespace cppgui {
             _thumb_rect.pos.y = new_pos;
         }
 
-        invalidate();
+        this->invalidate();
     }
 
     template<class Impl, class Config, bool With_layout>
     void Vertical_scrollbar_base<Impl, Config, With_layout>::move_thumb_to(Position new_pos)
     {
-        new_pos = std::max(new_pos, _sliding_range.start());
-        new_pos = std::min(new_pos, _sliding_range.end() - static_cast<Position>(_thumb_rect.ext.h));
+        new_pos = std::max(new_pos, _sliding_range.from);
+        new_pos = std::min(new_pos, _sliding_range.to - _thumb_rect.ext.h);
 
         _thumb_rect.pos = {2, new_pos};
         
         //notify_position_change();
-        invalidate();
+        this->invalidate();
     }
 
     template<class Impl, class Config, bool With_layout>
     void Vertical_scrollbar_base<Impl, Config, With_layout>::recalc_thumb()
     {
         _thumb_rect.ext.h = std::max(
-            _full_range == 0 ? 0 : _sliding_range.l * _fraction / _full_range, 
+            _full_range == 0 ? 0 : _sliding_range.length() * _fraction / _full_range, 
             _thumb_rect.ext.w / 2
         );
 
@@ -240,13 +240,13 @@ namespace cppgui {
     template<class Impl, class Config, bool With_layout>
     void Vertical_scrollbar_base<Impl, Config, With_layout>::clip_thumb_pos()
     {
-        if (_thumb_rect.bottom() > _sliding_range.end())
+        if (_thumb_rect.bottom() > _sliding_range.to)
         {
-            _thumb_rect.pos.y = _sliding_range.end() - static_cast<Position>(_thumb_rect.ext.h);
+            _thumb_rect.pos.y = _sliding_range.to - static_cast<Position>(_thumb_rect.ext.h);
         }
-        else if (_thumb_rect.pos.y < _sliding_range.start())
+        else if (_thumb_rect.pos.y < _sliding_range.from)
         {
-            _thumb_rect.pos.y = _sliding_range.start();
+            _thumb_rect.pos.y = _sliding_range.from;
         }
     }
 
@@ -257,7 +257,7 @@ namespace cppgui {
         {
             //std::cerr << "delta = " << delta << std::endl;
             //static_cast<Impl*>(this)->move_by_fraction(_drag_start_pos, { delta, static_cast<int>(_sliding_range.l - _thumb_rect.ext.h) });
-            static_cast<Impl*>(this)->move_by_fraction({ delta, static_cast<int>(_sliding_range.l - _thumb_rect.ext.h) });
+            static_cast<Impl*>(this)->move_by_fraction({ delta, _sliding_range.length() - _thumb_rect.ext.h });
         }
     }
 

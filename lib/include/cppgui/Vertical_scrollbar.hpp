@@ -119,7 +119,7 @@ namespace cppgui {
         Position                _full_range = 0;    // the range represented by the full length of the "slide" (= strip on which the thumb moves)
         Position                _fraction = 0;      // the range represented by the length of the thumb
 
-        Range                   _sliding_range;
+        Range<Position>         _sliding_range;
         Rectangle               _thumb_rect;
 
         bool                    _thumb_hovered = false;

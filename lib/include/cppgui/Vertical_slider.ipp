@@ -23,6 +23,13 @@ namespace cppgui {
 
     template<class Config>
     template<class Class, bool With_layout>
+    void _vertical_slider<Config>::Base<Class, With_layout>::define_range(const Range<Fraction<int>> &range)
+    {
+        _range = range;
+    }
+
+    template<class Config>
+    template<class Class, bool With_layout>
     void _vertical_slider<Config>::Base<Class, With_layout>::init()
     {
         /** This is where the widget establishes its connection with the backends
@@ -58,6 +65,22 @@ namespace cppgui {
 
     template <class Config>
     template <class Class, bool With_layout>
+    void _vertical_slider<Config>::Base<Class, With_layout>::mouse_button(const Point& pos, int button, Key_state state, Count clicks)
+    {
+        if (button == 1 && state == pressed && _thumb_rect.contains(pos) && !_dragging_thumb)
+        {
+            start_thumb_drag(pos);
+        }
+        else if (button == 1 && state == released && _dragging_thumb)
+        {
+            end_thumb_drag();
+        }
+
+        Parent_t::mouse_button(pos, button, state, clicks);
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
     void _vertical_slider<Config>::Base<Class, With_layout>::mouse_motion(const Point& pos)
     {
         if (this->hovered())
@@ -74,6 +97,11 @@ namespace cppgui {
             }
         }
 
+        if (_dragging_thumb)
+        {
+            drag_thumb(pos);
+        }
+
         Parent_t::mouse_motion(pos);
     }
 
@@ -88,6 +116,33 @@ namespace cppgui {
         }
 
         Parent_t::mouse_exit();
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _vertical_slider<Config>::Base<Class, With_layout>::start_thumb_drag(const Point &pos)
+    {
+        assert(!_dragging_thumb);
+        _dragging_thumb = true;
+        _thumb_drag_start_pos = pos.y;
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _vertical_slider<Config>::Base<Class, With_layout>::end_thumb_drag()
+    {
+        assert(_dragging_thumb);
+        _dragging_thumb = false;
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _vertical_slider<Config>::Base<Class, With_layout>::drag_thumb(const Point &pos)
+    {
+        auto dy = pos.y - _thumb_drag_start_pos;
+
+        std::cerr << "dy = " << dy << std::endl;
+
     }
 
     // Layouter aspect --------------------------------------------------------

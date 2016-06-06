@@ -51,6 +51,16 @@ namespace cppgui {
         constexpr operator T () const { return num / den; }
     };
 
+    template<typename T>
+    struct Range
+    {
+        T from, to;
+
+        void define(const T &from_, const T &to_) { from = from_, to = to_; }
+
+        constexpr auto length() const { return to - from; }
+    };
+
     /*
     enum Alignment {
         none = 0,

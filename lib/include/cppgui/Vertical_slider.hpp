@@ -47,12 +47,15 @@ namespace cppgui {
             using Parent_t = Widget_t;
             using Canvas_t = typename Widget_t::Canvas_t;
 
+            void define_range(const Range<Fraction<int>> &);
+
             void init() override;
 
             void compute_view_from_data() override;
 
             void render(Canvas_t *, const Point &offset) override;
 
+            void mouse_button(const Point &, int button, Key_state, Count clicks) override;
             void mouse_motion(const Point &) override;
             void mouse_exit () override;
 
@@ -61,10 +64,17 @@ namespace cppgui {
             static constexpr auto slide_width() -> Width   { return 10; }
             static constexpr auto thumb_size () -> Extents { return { 30, 30 }; }
 
-            Rectangle           _slide_rect;
-            Rectangle           _thumb_rect;
+            void start_thumb_drag(const Point &);
+            void end_thumb_drag  ();
+            void drag_thumb      (const Point &);
 
-            bool                _thumb_hovered = false;
+            Range<Fraction<int>>    _range;
+            Rectangle               _slide_rect;
+            Rectangle               _thumb_rect;
+
+            bool                    _thumb_hovered = false;
+            bool                    _dragging_thumb = false;
+            Position                _thumb_drag_start_pos;
         };
 
         // Layouter aspect ----------------------------------------------
