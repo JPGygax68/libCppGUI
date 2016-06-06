@@ -46,22 +46,26 @@ Test_window::Test_window(): Parent_t("Test window")
     });
     _label.set_position({  50, 50 });
     _label.set_extents ({ 200, 50 });
+    root_widget()->add_child(&_label);
 
     _textbox.set_font(dflt_font);
     _textbox.set_position({50, 120});
     //_textbox.set_extents({ 200, 30 });
     _textbox.set_text(U"Abc1234567890");
+    root_widget()->add_child(&_textbox);
 
     _button.set_font(dflt_font);
     _button.set_position({  50, 160 });
     _button.set_extents ({ 200,  30 });
     _button.set_label(U"Click Me!");
+    root_widget()->add_child(&_button);
 
     _button2.set_font(dflt_font);
     _button2.set_label(U"Decorated btn");
     _button2.set_glyph(cppgui::Icon_resources<Default_font::size>::close());
     _button2.set_position({50, 195});
     _button2.set_extents({200, 30});
+    root_widget()->add_child(&_button2);
 
     _stringlist.set_font(dflt_font);
     _stringlist.set_position({ 50, 240 });
@@ -76,16 +80,19 @@ Test_window::Test_window(): Parent_t("Test window")
     _stringlist.on_item_activated([](cppgui::Index index, const std::u32string &item) {
         std::cout << "Item #" << index << " activated: " << cppgui::utf32_to_utf8(item) << std::endl;
     });
+    root_widget()->add_child(&_stringlist);
 
     _glyph_btn.set_glyph(cppgui::Icon_resources<Default_font::size>::close());
     _glyph_btn.set_position({280, 160});
     _glyph_btn.set_extents({30, 30});
+    root_widget()->add_child(&_glyph_btn);
 
     _checkbox.set_font( dflt_font );
     _checkbox.set_tick_glyph( glyph_font, tick_descr );
     _checkbox.set_position({ 350, 50 });
     _checkbox.set_extents ({ 200, 40 });
     _checkbox.set_label( U"Check me!" );
+    root_widget()->add_child(&_checkbox);
 
     /*
     _button_list.resize(9);
@@ -113,15 +120,18 @@ Test_window::Test_window(): Parent_t("Test window")
     _input_dlg.set_prompt(U"Please enter the captain's age:");
     _input_dlg.set_position({ 350, 250 });
     _input_dlg.set_extents ({ 350, 180 });
+    root_widget()->add_child(&_input_dlg);
 
     _vert_scrollbar.set_position({ 750,  50 });
     _vert_scrollbar.set_extents ({  30, 200 });
     _vert_scrollbar.define_values( 150, 40 );
     _vert_scrollbar.on_position_change([&](cppgui::Position pos) { _scrollbar_pos.change_text( std::to_string(pos) ); });
+    root_widget()->add_child(&_vert_scrollbar);
 
     _scrollbar_pos.set_font(dflt_font);
     _scrollbar_pos.set_position({ 800, 50 });
     //_scrollbar_pos.set_extents ({ 100, 30 });
+    root_widget()->add_child(&_scrollbar_pos);
 
     // Listbox
     _lb_buttons.resize(25);
@@ -135,22 +145,17 @@ Test_window::Test_window(): Parent_t("Test window")
     _listbox.set_extents ({ 400, 120 });
     _listbox.content_pane()->set_item_padding({ 5, 5 });
     _listbox.content_pane()->set_separator({1, {0.5f, 0.5f, 0.5f, 1}});
+    root_widget()->add_child(&_listbox);
+
+    // Vertical_slider
+    _vslider.set_position({ 750, 280 });
+    _vslider.set_extents ({  50, 400 });
+    root_widget()->add_child(&_vslider);
 
     root_widget()->set_background_color({0, 0.6f, 0.2f, 1});
 
-    root_widget()->add_child(&_label);
-    root_widget()->add_child(&_textbox);
-    root_widget()->add_child(&_button);
-    root_widget()->add_child(&_button2);
-    root_widget()->add_child(&_stringlist);
-    root_widget()->add_child(&_glyph_btn);
-    root_widget()->add_child(&_checkbox);
     //root_widget()->add_child(&_menu);
-    root_widget()->add_child(&_input_dlg);
-    root_widget()->add_child(&_vert_scrollbar);
-    root_widget()->add_child(&_scrollbar_pos);
     ////root_widget()->add_child(&_scrollbox);
-    root_widget()->add_child(&_listbox);
 
     _stringlist.take_focus();
     //root_widget()->set_focus_to(&_menu); // ); // &_textbox);

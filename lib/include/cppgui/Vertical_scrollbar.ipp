@@ -179,12 +179,12 @@ namespace cppgui {
     }
 
     template<class Impl, class Config, bool With_layout>
-    auto Vertical_scrollbar_base<Impl, Config, With_layout>::current_position() -> Fraction<> // Position
+    auto Vertical_scrollbar_base<Impl, Config, With_layout>::current_position() -> Fraction<int>
     {
         if (_sliding_range.l > _thumb_rect.ext.h)
         {
             return {
-                (_full_range - _fraction) * static_cast<Length>(_thumb_rect.pos.y - _sliding_range.start()),
+                (_full_range - _fraction) * (_thumb_rect.pos.y - _sliding_range.start()),
                 _sliding_range.l - _thumb_rect.ext.h
             };
         }

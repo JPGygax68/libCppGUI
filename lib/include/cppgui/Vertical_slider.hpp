@@ -52,6 +52,12 @@ namespace cppgui {
             void compute_view_from_data() override;
 
             void render(Canvas_t *, const Point &offset) override;
+
+        protected:
+
+            static constexpr auto slide_width() -> Width { return 10; }
+
+            Rectangle           _slide_rect;
         };
 
         // Layouter aspect ----------------------------------------------

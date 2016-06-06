@@ -42,13 +42,13 @@ namespace cppgui {
 
     template<class Config>
     template<class Class, bool With_layout>
-    void _vertical_slider<Config>::Base<Class, With_layout>::render(Canvas_t *, const Point &offset)
+    void _vertical_slider<Config>::Base<Class, With_layout>::render(Canvas_t *canvas, const Point &offset)
     {
-        /** The render() method is responsible for rendering the widget via
-            the canvas. 
-            By convention, the widget's absolute position is determined by
-            adding the offset parameter to the position() property.
-         */
+        // TODO: PLACEHOLDER
+        this->fill_rect(canvas, this->rectangle(), offset, Canvas_t::rgba_to_native({0.8f, 0, 0.7f, 1}));
+
+        this->fill_rect(canvas, _slide_rect, offset + this->position(), Canvas_t::rgba_to_native({0, 0, 0, 1}));
+
     }
 
     // Layouter aspect --------------------------------------------------------
@@ -84,6 +84,13 @@ namespace cppgui {
             whole widget tree. This is where the Layouter aspect must
             position and size all contained elements.
          */
+
+        auto& exts = p()->extents();
+
+        p()->_slide_rect = {
+            { (exts.w - p()->slide_width()) / 2, 0 },
+            { p()->slide_width(), p()->extents().h }
+        };
     }
 
 } // ns cppgui

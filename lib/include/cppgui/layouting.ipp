@@ -46,8 +46,8 @@ namespace cppgui {
     auto Single_element_layout::compute_minimal_size(const Padding &padding) -> Extents
     {
         return { 
-            padding[3] + bounding_box.width () + padding[1], 
-            padding[0] + bounding_box.height() + padding[2]
+            padding[3] + static_cast<Length>(bounding_box.width ()) + padding[1], 
+            padding[0] + static_cast<Length>(bounding_box.height()) + padding[2]
         };
     }
 
@@ -96,7 +96,7 @@ namespace cppgui {
         // Rectangle around text
         *rectangle = {
             text_origin->x + bounding_box.x_min, text_origin->y - bounding_box.y_max,
-            bounding_box.width(), bounding_box.height()
+            static_cast<Length>(bounding_box.width()), static_cast<Length>(bounding_box.height())
         };
     }
 

@@ -26,7 +26,7 @@ namespace cppgui {
 
     using Position = int;
     using Position_delta = Position;
-    using Length = unsigned int;
+    using Length = int;
     using Width = Length;
 
     /** 1-dimensional equivalent of Rectangle

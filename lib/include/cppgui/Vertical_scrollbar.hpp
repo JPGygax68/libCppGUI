@@ -99,7 +99,7 @@ namespace cppgui {
         auto full_range() const { return _full_range; }
         auto fraction() const { return _fraction; }
 
-        auto current_position() -> Fraction<>;
+        auto current_position() -> Fraction<int>;
         void update_position(Position); // TODO: assert() against calling this while not at end of navigation ?
 
     protected:

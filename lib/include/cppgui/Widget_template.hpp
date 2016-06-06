@@ -83,7 +83,7 @@ namespace cppgui {
         protected:
             class My_widget_t: public Base<Class, true> { friend struct Layouter; };
 
-            /** Gives access to the main class, including protected and private sections.
+            /** Gives access to protected members of the main class
             */
             auto p() { return static_cast<My_widget_t*>(this); }
         };

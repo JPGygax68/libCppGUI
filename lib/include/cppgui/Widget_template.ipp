@@ -42,13 +42,16 @@ namespace cppgui {
 
     template<class Config>
     template<class Class, bool With_layout>
-    void _my_widget<Config>::Base<Class, With_layout>::render(Canvas_t *, const Point & offset)
+    void _my_widget<Config>::Base<Class, With_layout>::render(Canvas_t *canvas, const Point & offset)
     {
         /** The render() method is responsible for rendering the widget via
             the canvas. 
             By convention, the widget's absolute position is determined by
             adding the offset parameter to the position() property.
          */
+
+        // TODO: PLACEHOLDER
+        this->fill_rect(canvas, this->rectangle(), offset, Canvas_t::rgba_to_native({0.8f, 0, 0.7f, 1}));
     }
 
     // Layouter aspect --------------------------------------------------------
