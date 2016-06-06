@@ -53,11 +53,18 @@ namespace cppgui {
 
             void render(Canvas_t *, const Point &offset) override;
 
+            void mouse_motion(const Point &) override;
+            void mouse_exit () override;
+
         protected:
 
-            static constexpr auto slide_width() -> Width { return 10; }
+            static constexpr auto slide_width() -> Width   { return 10; }
+            static constexpr auto thumb_size () -> Extents { return { 30, 30 }; }
 
             Rectangle           _slide_rect;
+            Rectangle           _thumb_rect;
+
+            bool                _thumb_hovered = false;
         };
 
         // Layouter aspect ----------------------------------------------

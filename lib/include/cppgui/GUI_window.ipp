@@ -80,7 +80,7 @@ namespace cppgui {
         _root_widget.render();
         _canvas->leave_context();
         
-        present();
+        this->present();
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>

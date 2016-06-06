@@ -47,8 +47,47 @@ namespace cppgui {
         // TODO: PLACEHOLDER
         this->fill_rect(canvas, this->rectangle(), offset, Canvas_t::rgba_to_native({0.8f, 0, 0.7f, 1}));
 
-        this->fill_rect(canvas, _slide_rect, offset + this->position(), Canvas_t::rgba_to_native({0, 0, 0, 1}));
+        // "Slide" (vertical strip)
+        // TODO: color from constexpr method / stylesheet
+        this->fill_rect(canvas, _slide_rect, offset + this->position(), Canvas_t::rgba_to_native({ 0, 0, 0, 1 }));
 
+        // Thumb
+        auto thclr = _thumb_hovered ? Canvas_t::rgba_to_native({ 1, 1, 1, 0.8f }) : Canvas_t::rgba_to_native({ 0.5f, 0.5f, 0.5f, 0.8f });
+        this->fill_rect(canvas, _thumb_rect, offset + this->position(), thclr);
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _vertical_slider<Config>::Base<Class, With_layout>::mouse_motion(const Point& pos)
+    {
+        if (this->hovered())
+        {
+            if (!_thumb_hovered && _thumb_rect.contains(pos))
+            {
+                _thumb_hovered = true;
+                this->invalidate();
+            }
+            else if (_thumb_hovered && !_thumb_rect.contains(pos))
+            {
+                _thumb_hovered = false;
+                this->invalidate();
+            }
+        }
+
+        Parent_t::mouse_motion(pos);
+    }
+
+    template <class Config>
+    template <class Class, bool With_layout>
+    void _vertical_slider<Config>::Base<Class, With_layout>::mouse_exit()
+    {
+        if (_thumb_hovered)
+        {
+            _thumb_hovered = false;
+            this->invalidate();
+        }
+
+        Parent_t::mouse_exit();
     }
 
     // Layouter aspect --------------------------------------------------------
@@ -86,11 +125,14 @@ namespace cppgui {
          */
 
         auto& exts = p()->extents();
+        auto thsize = p()->thumb_size();
 
         p()->_slide_rect = {
-            { (exts.w - p()->slide_width()) / 2, 0 },
-            { p()->slide_width(), p()->extents().h }
+            { (exts.w - p()->slide_width()) / 2, thsize.h / 2 },
+            { p()->slide_width(), p()->extents().h - thsize.h }
         };
+
+        p()->_thumb_rect = { (exts.w - thsize.w) / 2, 0, thsize.w, thsize.h };
     }
 
 } // ns cppgui

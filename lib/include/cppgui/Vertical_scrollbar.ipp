@@ -201,7 +201,7 @@ namespace cppgui {
         {
             if (pos < 0) pos = 0; else if (pos > _full_range - _fraction) pos = _full_range - _fraction;
 
-            auto new_pos = _sliding_range.p + (Position) (pos * (_sliding_range.l - _thumb_rect.ext.h) / (_full_range - _fraction));
+            auto new_pos = _sliding_range.p + (pos * (_sliding_range.l - _thumb_rect.ext.h) / (_full_range - _fraction));
 
             if (_dragging_thumb)
             {

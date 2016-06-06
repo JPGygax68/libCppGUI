@@ -1,3 +1,9 @@
+2016-06-06
+==========
+
+- TODO: check: when container triggers mouse_enter() on child, is mouse_motion() still being relayed to said child ?
+
+
 2016-06-02
 ==========
 
