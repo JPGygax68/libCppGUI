@@ -151,6 +151,7 @@ Test_window::Test_window(): Parent_t("Test window")
     _vslider.set_position({ 750, 280 });
     _vslider.set_extents ({  50, 400 });
     _vslider.define_range({  50, 120 });
+    _vslider.set_value( 50 );
     root_widget()->add_child(&_vslider);
 
     root_widget()->set_background_color({0, 0.6f, 0.2f, 1});

@@ -121,7 +121,7 @@ namespace cppgui {
                 {
                     /*_cur_drag_pos = */ _drag_anchor_pos = pos.y;
                     _dragging_thumb = true;
-                    root_widget()->capture_mouse(this);
+                    this->root_widget()->capture_mouse(this); // called here because Widget::mouse_button() will not be called
                 }
 
                 return; // done with this event
@@ -132,7 +132,10 @@ namespace cppgui {
             if (_dragging_thumb)
             {
                 _dragging_thumb = false;
-                root_widget()->release_mouse();
+                // We bypass Container_t::mouse_button() here and call Widget_t::mouse_button() instead,
+                // because Container_t does not (at the moment - TODO) pass thru to Widget<>
+                Widget_t::mouse_button(pos, button, state, clicks); //this->root_widget()->release_mouse();
+                return;
             }
         }
 

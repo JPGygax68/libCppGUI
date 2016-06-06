@@ -292,9 +292,9 @@ namespace cppgui {
     template <class Config, class Parent>
     void Container__Layouter<Config, true, Parent>::drop_child(Widget_t *child)
     {
-        if (contains_widget( root_widget()->mouse_holder() ))
+        if (this->contains_widget( this->root_widget()->mouse_holder() ))
         {
-            root_widget()->release_mouse();
+            this->root_widget()->release_mouse();
         }
 
         p()->remove_child(child);

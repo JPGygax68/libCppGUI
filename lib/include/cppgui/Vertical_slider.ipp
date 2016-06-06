@@ -28,6 +28,14 @@ namespace cppgui {
         _range = range;
     }
 
+    template <class Config, typename ValueType>
+    template <class Class, bool With_layout>
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::set_value(const Value &val)
+    {
+        assert(val >= _range.from && val <= _range.to);
+        _value = val;
+    }
+
     template<class Config, typename ValueType>
     template<class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::init()
@@ -35,6 +43,10 @@ namespace cppgui {
         /** This is where the widget establishes its connection with the backends
             (available via root_widget()->canvas() etc. ).
          */
+
+        update_thumb_pos();
+
+        Widget_t::init();
     }
 
     template<class Config, typename ValueType>
@@ -60,14 +72,14 @@ namespace cppgui {
 
         // Thumb
         auto thclr = _thumb_hovered ? Canvas_t::rgba_to_native({ 1, 1, 1, 0.8f }) : Canvas_t::rgba_to_native({ 0.5f, 0.5f, 0.5f, 0.8f });
-        this->fill_rect(canvas, _thumb_rect, offset + this->position(), thclr);
+        this->fill_rect(canvas, _thumb_rect, offset + this->position() + Point{ 0, _thumb_pos }, thclr);
     }
 
     template <class Config, typename ValueType>
     template <class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::mouse_button(const Point& pos, int button, Key_state state, Count clicks)
     {
-        if (button == 1 && state == pressed && _thumb_rect.contains(pos) && !_dragging_thumb)
+        if (button == 1 && state == pressed && (_thumb_rect + Point{ 0, _thumb_pos }).contains(pos) && !_dragging_thumb)
         {
             start_thumb_drag(pos);
         }
@@ -85,12 +97,12 @@ namespace cppgui {
     {
         if (this->hovered())
         {
-            if (!_thumb_hovered && _thumb_rect.contains(pos))
+            if (!_thumb_hovered && (_thumb_rect + Point{ 0, _thumb_pos }).contains(pos))
             {
                 _thumb_hovered = true;
                 this->invalidate();
             }
-            else if (_thumb_hovered && !_thumb_rect.contains(pos))
+            else if (_thumb_hovered && !(_thumb_rect + Point{ 0, _thumb_pos }).contains(pos))
             {
                 _thumb_hovered = false;
                 this->invalidate();
@@ -125,6 +137,7 @@ namespace cppgui {
         assert(!_dragging_thumb);
         _dragging_thumb = true;
         _thumb_drag_start_pos = pos.y;
+        _thumb_drag_start_value = _value;
     }
 
     template <class Config, typename ValueType>
@@ -141,8 +154,24 @@ namespace cppgui {
     {
         auto dy = pos.y - _thumb_drag_start_pos;
 
-        std::cerr << "dy = " << dy << std::endl;
+        Value new_val = _thumb_drag_start_value + dy * _range.length() / _slide_rect.height();
 
+        if      (new_val < _range.from) new_val = _range.from;
+        else if (new_val > _range.to  ) new_val = _range.to;
+
+        _value = new_val;
+
+        update_thumb_pos();
+    }
+
+    template <class Config, typename ValueType>
+    template <class Class, bool With_layout>
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::update_thumb_pos()
+    {
+        _thumb_pos = (_value - _range.from) * _slide_rect.height() / _range.length();
+        std::cerr << "value: " << _value << std::endl;
+
+        this->invalidate();
     }
 
     // Layouter aspect --------------------------------------------------------

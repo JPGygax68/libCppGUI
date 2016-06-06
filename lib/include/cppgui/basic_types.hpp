@@ -56,6 +56,10 @@ namespace cppgui {
     {
         T from, to;
 
+        Range() = default;
+        Range(const T &from_, const T &to_): from{from_}, to{to_} { assert(from_ <= to_); }
+        Range(T &&from_, T &&to_): from{std::move(from_)}, to{std::move(to_)} { assert(from_ <= to_); }
+
         auto& operator = (const Range &src) { from = src.from, to = src.to; return *this; }
         auto& operator = (Range &&src) { from = std::move(src.from), to = std::move(src.to); return *this; }
 

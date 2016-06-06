@@ -50,6 +50,7 @@ namespace cppgui {
             using Canvas_t = typename Widget_t::Canvas_t;
 
             void define_range(const Range<Value> &);
+            void set_value(const Value &);
 
             void init() override;
 
@@ -70,13 +71,19 @@ namespace cppgui {
             void end_thumb_drag  ();
             void drag_thumb      (const Point &);
 
+            void update_thumb_pos();
+
             Range<Value>            _range;
             Rectangle               _slide_rect;
             Rectangle               _thumb_rect;
 
+            Value                   _value;
+            Position                _thumb_pos;
+
             bool                    _thumb_hovered = false;
             bool                    _dragging_thumb = false;
             Position                _thumb_drag_start_pos;
+            Value                   _thumb_drag_start_value;
         };
 
         // Layouter aspect ----------------------------------------------

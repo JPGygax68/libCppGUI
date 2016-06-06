@@ -125,20 +125,20 @@ namespace cppgui {
     {
         this->lock();
 
-        #ifdef NOT_DEFINED
+        #ifndef NOT_DEFINED
 
         if (_mouse_holder)
         {
-            _mouse_holder->mouse_button(pos, button, state);
+            _mouse_holder->mouse_button(pos - _capture_offset, button, state, clicks);
         }
         else
         {
-            container_mouse_button(pos, button, state); // Abstract_container TODO: better name ?
+            this->container_mouse_button(pos, button, state, clicks); // Abstract_container TODO: better name ?
         }
 
         #else
 
-        container_mouse_button(pos, button, state, clicks); // Abstract_container TODO: better name ?
+        this->container_mouse_button(pos, button, state, clicks); // Abstract_container TODO: better name ?
 
         #endif
 
