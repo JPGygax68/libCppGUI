@@ -49,27 +49,14 @@ Test_window::Test_window(): Parent_t("Test window")
     root_widget()->add_child(&_label);
 
     _textbox.set_font(dflt_font);
-    _textbox.set_position({50, 120});
+    //_textbox.set_position({50, 120});
     //_textbox.set_extents({ 200, 30 });
     _textbox.set_text(U"Abc1234567890");
-    root_widget()->add_child(&_textbox);
-
-    _button.set_font(dflt_font);
-    _button.set_position({  50, 160 });
-    _button.set_extents ({ 200,  30 });
-    _button.set_label(U"Click Me!");
-    root_widget()->add_child(&_button);
-
-    _button2.set_font(dflt_font);
-    _button2.set_label(U"Decorated btn");
-    _button2.set_glyph(cppgui::Icon_resources<Default_font::size>::close());
-    _button2.set_position({50, 195});
-    _button2.set_extents({200, 30});
-    root_widget()->add_child(&_button2);
+    //root_widget()->add_child(&_textbox);
 
     _stringlist.set_font(dflt_font);
-    _stringlist.set_position({ 50, 240 });
-    _stringlist.set_extents ({200, 395 });
+    //_stringlist.set_position({ 50, 240 });
+    //_stringlist.set_extents ({200, 395 });
     for (auto i = 1U; i <= 25; i ++)
     {
         _stringlist.add_item( "gee, item #"s + std::to_string(i) );
@@ -80,7 +67,27 @@ Test_window::Test_window(): Parent_t("Test window")
     _stringlist.on_item_activated([](cppgui::Index index, const std::u32string &item) {
         std::cout << "Item #" << index << " activated: " << cppgui::utf32_to_utf8(item) << std::endl;
     });
-    root_widget()->add_child(&_stringlist);
+    //root_widget()->add_child(&_stringlist);
+
+    _container1.set_position({  50, 120 });
+    _container1.set_extents ({ 200, 400 });
+    _container1.add_child(&_textbox);
+    _container1.add_child(&_stringlist);
+    _container1.set_layout_type(cppgui::Layout_type::header_content);
+    root_widget()->add_child(&_container1);
+
+    _button.set_font(dflt_font);
+    _button.set_position({ 350, 160 });
+    _button.set_extents ({ 200,  30 });
+    _button.set_label(U"Click Me!");
+    root_widget()->add_child(&_button);
+
+    _button2.set_font(dflt_font);
+    _button2.set_label(U"Decorated btn");
+    _button2.set_glyph(cppgui::Icon_resources<Default_font::size>::close());
+    _button2.set_position({ 350, 195 });
+    _button2.set_extents ({ 200,  30 });
+    root_widget()->add_child(&_button2);
 
     _glyph_btn.set_glyph(cppgui::Icon_resources<Default_font::size>::close());
     _glyph_btn.set_position({280, 160});

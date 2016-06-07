@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "./Box.hpp"
+#include "./Container_base.hpp"
 #include "./Vertical_scrollbar.hpp"
 
 namespace cppgui {
@@ -37,19 +38,19 @@ namespace cppgui {
             template cppgui::_stringlist<Config>::Base<__VA_ARGS__, With_layout>; \
             template cppgui::_stringlist<Config>::Layouter<__VA_ARGS__, With_layout, \
                 cppgui::Bordered_box<Config, With_layout, \
-                    cppgui::Container<Config, With_layout>>>;
+                    cppgui::Container_base<Config, With_layout>>>;
 
         template<class Class, bool With_layout>
         class Base: public 
             Layouter<Class, With_layout, 
                 Bordered_box<Config, With_layout,
-                    Container<Config, With_layout> > >
+                    Container_base<Config, With_layout> > >
         {
         public:
             using Widget_t = Widget<Config, With_layout>;
-            using Parent_t = Container<Config, With_layout>;
+            using Parent_t = Container_base<Config, With_layout>;
             using Canvas_t = typename Widget_t::Canvas_t;
-            using Container_t = Container<Config, With_layout>;
+            using Container_base_t = Container_base<Config, With_layout>;
             using Keyboard = typename Config::Keyboard;
             using Keycode = typename Keyboard::Keycode;
 

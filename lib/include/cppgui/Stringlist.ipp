@@ -83,7 +83,7 @@ namespace cppgui {
     {
         _font.translate( this->root_widget()->canvas() );
 
-        Container_t::init();
+        Container_base_t::init();
     }
 
     template<class Config>
@@ -94,7 +94,7 @@ namespace cppgui {
 
         _vert_sbar.define_values(_items.size(), fully_visible_item_count());
 
-        Container_t::compute_view_from_data();
+        Container_base_t::compute_view_from_data();
     }
 
     template<class Config>
@@ -125,7 +125,7 @@ namespace cppgui {
         draw_vert_separator(canvas, offset, _sbar_separator, _vert_sep_pos);
 
         // Render the scrollbar (delegate to the container)
-        Container_t::render(canvas, offset);
+        Container_base_t::render(canvas, offset);
 
         // Render the items
         canvas->push_clipping_rect( _content_rect + pos );
@@ -136,7 +136,7 @@ namespace cppgui {
 
         // Separator rectangle
         Rectangle r_sep { r_item };
-        r_sep.pos.y += static_cast<Position_delta>(r_item.ext.h);
+        r_sep.pos.y += r_item.ext.h;
         r_sep.ext.h = _item_separator.width;
 
         // Draw all items
@@ -558,13 +558,13 @@ namespace cppgui {
         // Vertical scrollbar
         p()->_vert_sep_pos = exts.w - p()->_border.width - vertsb_minsz.w - p()->_sbar_separator.width;
         p()->_vert_sbar.set_position({ 
-            exts.right() - static_cast<Position_delta>(vertsb_minsz.w + p()->_border.width), 
-            static_cast<Position>(p()->_border.width) 
+            exts.right() - (vertsb_minsz.w + p()->_border.width), 
+            p()->_border.width 
         });
         p()->_vert_sbar.set_extents ({ vertsb_minsz.w, exts.h - 2 * p()->_border.width });
         p()->_vert_sbar.layout();
 
-        Parent::layout();
+        //Parent::layout();
     }
 
     template<class Config>

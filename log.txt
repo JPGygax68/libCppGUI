@@ -1,3 +1,9 @@
+2016-06-07
+==========
+
+- Stringlist (and other containers with specific layouting) should very probably inherit from Container_base<> instead of Container<>.
+
+
 2016-06-06
 ==========
 
