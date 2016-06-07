@@ -22,7 +22,39 @@
 
 namespace cppgui {
 
-    // Forward declarations
+    // Forward declaration
+
+    template <class Config, bool With_layout> class Container_base;
+
+    // Internal (templated) pseudo-namespace 
+
+    template<class Config>
+    struct _container_base
+    {
+        template <bool With_layout, class Parent> struct Layouter;
+
+        // Layouter ---------------------------------------
+
+        // Dummy implementation
+
+        template<class Parent>
+        struct Layouter<false, Parent>: public Parent
+        {
+            
+        };
+
+        // Real implementation
+
+        template<class Parent>
+        struct Layouter<true, Parent>: public Parent
+        {
+            void init_layout() override;
+
+        private:
+            class Container_base_t: public Container_base<Config, true> { friend struct Layouter; };
+            auto p() { return static_cast<Container_base_t*>(this); }
+        };
+    };
 
     // Main class
 
@@ -31,8 +63,10 @@ namespace cppgui {
      */
     template <class Config, bool With_layout>
     class Container_base: 
-        public Widget<Config, With_layout>, 
-        public Config::template Container_base__Container_updater< Abstract_container<Config, With_layout> >
+        public _container_base<Config>::template Layouter<With_layout,
+            Widget<Config, With_layout> >,
+        public Config::template Container_base__Container_updater< 
+                Abstract_container<Config, With_layout> >
     {
     public:
         using Renderer = typename Config::Renderer;

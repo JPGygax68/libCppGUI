@@ -21,6 +21,20 @@
 
 namespace cppgui {
 
+    // Internal templated namespace ---------------------------------
+
+    template <class Config>
+    template <class Parent>
+    void _container_base<Config>::Layouter<true, Parent>::init_layout()
+    {
+        for (auto child: p()->children())
+        {
+            child->init_layout();
+        }
+    }
+
+    // Main class ---------------------------------------------------
+
     template<class Config, bool With_layout>
     void Container_base<Config, With_layout>::init()
     {
@@ -37,15 +51,15 @@ namespace cppgui {
 
         // Propagate
         //container()->container_take_focus(this);
-        pass_up_and_notify_focus();
+        this->pass_up_and_notify_focus();
     }
 
     template<class Config, bool With_layout>
     void Container_base<Config, With_layout>::gained_focus()
     {
-        if (_focused_child)
+        if (this->_focused_child)
         {
-            _focused_child->gained_focus();
+            this->_focused_child->gained_focus();
         }
 
         Widget_t::gained_focus();
@@ -56,9 +70,9 @@ namespace cppgui {
     {
         Widget_t::loosing_focus();
 
-        if (_focused_child)
+        if (this->_focused_child)
         {
-            _focused_child->loosing_focus();
+            this->_focused_child->loosing_focus();
         }
     }
 

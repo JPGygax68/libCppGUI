@@ -32,15 +32,6 @@ namespace cppgui {
     // Layouter aspect ----------------------------------------------
 
     template <class Config, class Parent>
-    void Container__Layouter<Config, true, Parent>::init_layout()
-    {
-        for (auto child: p()->children())
-        {
-            child->init_layout();
-        }
-    }
-
-    template <class Config, class Parent>
     auto Container__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
     {
         // TODO: use polymorphic delegate class 

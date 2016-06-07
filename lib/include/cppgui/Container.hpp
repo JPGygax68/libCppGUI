@@ -76,7 +76,6 @@ namespace cppgui {
 
         // Layout contract
 
-        void init_layout() override;
         auto get_minimal_size() -> Extents override;
         auto get_preferred_size() -> Extents override;
         void layout() override;
