@@ -59,6 +59,9 @@ namespace cppgui {
 
             void compute_view_from_data() override;
 
+            void change_range(const Range<Value> &);
+            void change_range(const Range<Value> &, const Value &incr_major, const Value &incr_minor);
+
             void render(Canvas_t *, const Point &offset) override;
 
             void mouse_button(const Point &, int button, Key_state, Count clicks) override;

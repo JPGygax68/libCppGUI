@@ -70,6 +70,23 @@ namespace cppgui {
          */
     }
 
+    template <class Config, typename ValueType>
+    template <class Class, bool With_layout>
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::change_range(const Range<Value> &range)
+    {
+        define_range(range);
+        update_thumb_pos();
+    }
+
+    template <class Config, typename ValueType>
+    template <class Class, bool With_layout>
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::change_range(const Range<Value> &range, 
+        const Value & incr_major, const Value & incr_minor)
+    {
+        define_range(range, incr_major, incr_minor);
+        update_thumb_pos();
+    }
+
     template<class Config, typename ValueType>
     template<class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::render(Canvas_t *canvas, const Point &offset)
