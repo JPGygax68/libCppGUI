@@ -20,6 +20,7 @@
 #include "./Widget.hpp"
 #include "./Box.hpp"
 #include "./Container_base.hpp"
+#include "./layout_managers.hpp"
 
 namespace cppgui {
 
@@ -70,6 +71,7 @@ namespace cppgui {
         public Box__Layouter<Config, true, Parent >
     {
         using Widget_t = typename Widget<Config, true>;
+        using Container_base_t = Container_base<Config, true>;
         class Container_t: public Container<Config, true> { friend struct Container__Layouter; };
 
         // Layout contract
@@ -80,18 +82,17 @@ namespace cppgui {
 
         // Specific interface
 
-        void set_layout_type(Layout_type type ) { _layout_type = type; }
+        //void set_layout_type(Layout_type type ) { _layout_type = type; }
+        template<class ManagerType> void set_layout_manager() { _manager.reset( new ManagerType{} ); };
+        auto layout_manager() { return _manager.get(); }
 
         void insert_child(Widget_t *); // TODO: find a better name OR support insertion index
         void drop_child(Widget_t *);
 
-        void set_spacing(Length spacing) { _spacing = spacing; }
-
     private:
         auto p() { return static_cast<Container_t*>(static_cast<Container<Config, true>*>(this)); }
 
-        Layout_type     _layout_type = Layout_type::none;
-        Length          _spacing = 0;
+        std::unique_ptr<typename layouting<Config>::Manager> _manager;
     };
 
     // Nil implementation of the Layouter aspect

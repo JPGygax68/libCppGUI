@@ -23,7 +23,8 @@ namespace cppgui {
     template<class Config, bool With_layout>
     Listbox<Config, With_layout>::Listbox()
     {
-        _content_pane.set_layout_type(Layout_type::stack); // TODO: will need adapting
+        //_content_pane.set_layout_type(Layout_type::stack); // TODO: will need adapting
+        _content_pane.set_layout_manager<typename layouting<Config>::Stack>();
 
         set_content_pane(&_content_pane);
     }

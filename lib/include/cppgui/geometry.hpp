@@ -2,19 +2,19 @@
 
 /*  libCppGUI - A GUI library for C++11/14
 
-Copyright 2016 Hans-Peter Gygax
+    Copyright 2016 Hans-Peter Gygax
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 */
 
 #include <array>
@@ -28,23 +28,6 @@ namespace cppgui {
     using Position_delta = Position;
     using Length = int;
     using Width = Length;
-
-    #ifdef NOT_DEFINED
-
-    /** 1-dimensional equivalent of Rectangle
-    */
-    struct Range {
-        Position p;
-        Length   l;
-        void define(Position p1, Position p2) { 
-            assert(p2 > p1);
-            p = p1, l = static_cast<Length>(p2 - p1);
-        }
-        auto start() const { return p; }
-        auto end  () const { return p + static_cast<Position>(l); }
-    };
-
-    #endif
 
     // 2D ----------------------------
 
@@ -65,6 +48,9 @@ namespace cppgui {
     using Extents_delta = Point; // TODO: define specialized class
 
     using Text_origin = Point;
+
+    using Padding = std::array<Width, 4>;
+    using Margins = Padding;
 
     struct Extents {
 
@@ -114,6 +100,12 @@ namespace cppgui {
             };
         }
 
+        auto operator += (const Padding &padding)
+        {
+            w += padding[3] + padding[1], h += padding[0] + padding[1];
+            return *this;
+        }
+
         auto right () { return static_cast<Position>(w); }
         auto bottom() { return static_cast<Position>(h); }
 
@@ -132,9 +124,6 @@ namespace cppgui {
 
         return { pos.x - static_cast<Position>(ext.w), pos.y - static_cast<Position>(ext.h) }; 
     }
-
-    using Padding = std::array<Width, 4>;
-    using Margins = Padding;
 
     struct Rectangle {
 

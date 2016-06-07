@@ -164,6 +164,7 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Checkbox.hpp                     include/cppgui/Checkbox.ipp
     include/cppgui/Box.hpp                          include/cppgui/Box.ipp
     include/cppgui/Abstract_container.hpp           include/cppgui/Abstract_container.ipp
+    include/cppgui/layout_managers.hpp              include/cppgui/layout_managers.ipp
     include/cppgui/Container_base.hpp               include/cppgui/Container_base.ipp
     include/cppgui/Container.hpp                    include/cppgui/Container.ipp
     #include/cppgui/Stack.hpp                        include/cppgui/Stack.ipp
@@ -185,7 +186,7 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Cheap_resource_mapper.hpp        include/cppgui/Cheap_resource_mapper.ipp
     include/cppgui/Full_resource_mapper.hpp         include/cppgui/Full_resource_mapper.ipp
 
-    include/cppgui/GUI_window.hpp include/cppgui/GUI_window.ipp
+    include/cppgui/GUI_window.hpp                   include/cppgui/GUI_window.ipp
 
     include/cppgui/all_widgets.hpp
     include/cppgui/all_widgets.ipp

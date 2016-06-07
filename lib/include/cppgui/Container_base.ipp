@@ -33,6 +33,16 @@ namespace cppgui {
         }
     }
 
+    template <class Config>
+    template <class Parent>
+    void _container_base<Config>::Layouter<true, Parent>::layout()
+    {
+        for (auto child: p()->children())
+        {
+            child->layout();
+        }
+    }
+
     // Main class ---------------------------------------------------
 
     template<class Config, bool With_layout>

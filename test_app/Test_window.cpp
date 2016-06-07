@@ -73,7 +73,8 @@ Test_window::Test_window(): Parent_t("Test window")
     _container1.set_extents ({ 200, 400 });
     _container1.add_child(&_textbox);
     _container1.add_child(&_stringlist);
-    _container1.set_layout_type(cppgui::Layout_type::header_content);
+    //_container1.set_layout_type(cppgui::Layout_type::header_content);
+    _container1.set_layout_manager<layouting::Header_content>();
     root_widget()->add_child(&_container1);
 
     _button.set_font(dflt_font);
@@ -90,8 +91,8 @@ Test_window::Test_window(): Parent_t("Test window")
     root_widget()->add_child(&_button2);
 
     _glyph_btn.set_glyph(cppgui::Icon_resources<Default_font::size>::close());
-    _glyph_btn.set_position({280, 160});
-    _glyph_btn.set_extents({30, 30});
+    _glyph_btn.set_position({ 570, 160 });
+    _glyph_btn.set_extents ({  30,  30 });
     root_widget()->add_child(&_glyph_btn);
 
     _checkbox.set_font( dflt_font );
@@ -115,7 +116,7 @@ Test_window::Test_window(): Parent_t("Test window")
     _menu_header.set_text(U"Look at this:");
     _menu_header.set_background_color({ 1, 1, 1, 1 });
     //_menu_header.set_padding({ 3, 3, 3, 3 });
-    _menu.set_layout_type(cppgui::Layout_type::header_content);
+    _menu.set_layout_manager<layouting::Header_content>();
     _menu.add_child(&_menu_header);
     //_menu.add_child(&_stack);
     _menu.set_position({  50, 250 });

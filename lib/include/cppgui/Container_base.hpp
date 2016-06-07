@@ -50,6 +50,8 @@ namespace cppgui {
         {
             void init_layout() override;
 
+            void layout() override;
+
         private:
             class Container_base_t: public Container_base<Config, true> { friend struct Layouter; };
             auto p() { return static_cast<Container_base_t*>(this); }

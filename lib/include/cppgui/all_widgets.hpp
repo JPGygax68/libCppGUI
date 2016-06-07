@@ -74,7 +74,9 @@ namespace cppgui {
     using Listbox                   = cppgui::Listbox                   <Config, With_layout>; \
     using List_pane_base            = cppgui::List_pane_base            <Config, With_layout>; \
     using Stringlist                = cppgui::Stringlist                <Config, With_layout>; \
-    using Vertical_slider           = cppgui::Vertical_slider           <Config, With_layout>;
+    using Vertical_slider           = cppgui::Vertical_slider           <Config, With_layout>; \
+    using layouting                 = cppgui::layouting                 <Config>; 
+
 //using Canvas_t = cppgui::Canvas<Renderer>; 
 
 #define CPPGUI_INSTANTIATE_WIDGET_TYPES(Config, With_layout) \
@@ -92,7 +94,9 @@ namespace cppgui {
     CPPGUI_INSTANTIATE_VERTICAL_SCROLLBAR       (Config, With_layout); \
     CPPGUI_INSTANTIATE_LISTBOX                  (Config, With_layout); \
     CPPGUI_INSTANTIATE_STRINGLIST               (Config, With_layout); \
-    CPPGUI_INSTANTIATE_DEFAULT_VERTICAL_SLIDER  (Config, With_layout);
+    CPPGUI_INSTANTIATE_DEFAULT_VERTICAL_SLIDER  (Config, With_layout); \
+    CPPGUI_INSTANTIATE_LAYOUTING                (Config);
+
 
 #define CPPGUI_INSTANTIATE_FONT_RESOURCES(Size) \
     CPPGUI_INSTANTIATE_ICON_RESOURCES(Size)
