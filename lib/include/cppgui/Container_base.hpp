@@ -48,7 +48,7 @@ namespace cppgui {
         using Abstract_container_t::remove_child;
         using Abstract_container_t::remove_all_children;
 
-        bool container_has_focus() override { return has_focus(); }
+        bool container_has_focus() override { return this->has_focus(); }
 
         void container_take_focus(Widget_t *) override;
         void gained_focus() override;

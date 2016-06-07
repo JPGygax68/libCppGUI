@@ -24,9 +24,9 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Container<Config, With_layout>::compute_view_from_data()
     {
-        compute_child_views();
+        this->compute_child_views();
 
-        Widget_t::compute_view_from_data();
+        this->Widget_t::compute_view_from_data();
     }
 
     // Layouter aspect ----------------------------------------------
