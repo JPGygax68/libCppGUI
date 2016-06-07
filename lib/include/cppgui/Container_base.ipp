@@ -43,6 +43,14 @@ namespace cppgui {
         this->Widget_t::init();
     }
 
+    template <class Config, bool With_layout>
+    void Container_base<Config, With_layout>::compute_view_from_data()
+    {
+        this->compute_child_views();
+
+        this->Widget_t::compute_view_from_data();
+    }
+
     template<class Config, bool With_layout>
     void Container_base<Config, With_layout>::container_take_focus(Widget_t *child)
     {

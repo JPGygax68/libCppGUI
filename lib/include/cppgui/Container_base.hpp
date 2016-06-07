@@ -78,6 +78,8 @@ namespace cppgui {
 
         void init() override;
 
+        void compute_view_from_data() override;
+
         using Abstract_container_t::add_child;
         using Abstract_container_t::remove_child;
         using Abstract_container_t::remove_all_children;
