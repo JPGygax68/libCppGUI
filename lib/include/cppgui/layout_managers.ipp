@@ -76,6 +76,8 @@ namespace cppgui
             if (min_sz .w > result.w) result.w = min_sz .w;
         }
 
+        result.h += (cntnr.children().size() - 1) * this->_spacing;
+
         result += cntnr._padding;
 
         return result;
@@ -97,8 +99,8 @@ namespace cppgui
 
         header->set_position({ this->_padding[3], y });
         header->set_extents ({ ext.w - this->_padding[3] - this->_padding[2], h });
-        y += h;
-        h_rem -= h;
+        y += h + this->_spacing;
+        h_rem -= h + this->_spacing;
 
         content->set_position({ this->_padding[3], y });
         content->set_extents ({ ext.w - this->_padding[3] - this->_padding[1], h_rem });

@@ -51,16 +51,20 @@ namespace cppgui {
             using Keyboard = typename Config::Keyboard;
             using Keycode = typename Keyboard::Keycode;
 
+            using Value_changed_handler = std::function<void(const Value &)>;
+
             void define_range(const Range<Value> &);
-            void define_range(const Range<Value> &, const Value &incr_major, const Value &incr_minor);
+            void define_range(const Range<Value> &, const Value &step_major, const Value &step_minor);
             void set_value(const Value &);
+
+            void on_value_changed(Value_changed_handler);
 
             void init() override;
 
             void compute_view_from_data() override;
 
             void change_range(const Range<Value> &);
-            void change_range(const Range<Value> &, const Value &incr_major, const Value &incr_minor);
+            void change_range(const Range<Value> &, const Value &step_major, const Value &step_minor);
 
             void render(Canvas_t *, const Point &offset) override;
 
@@ -95,6 +99,8 @@ namespace cppgui {
 
             auto top_of_slide   () const -> Rectangle;
             auto bottom_of_slide() const -> Rectangle;
+
+            Value_changed_handler   _on_value_changed;
 
             Range<Value>            _range;
             Value                   _incr_major, _incr_minor;

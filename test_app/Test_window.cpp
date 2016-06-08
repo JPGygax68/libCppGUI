@@ -159,15 +159,18 @@ Test_window::Test_window(): Parent_t("Test window")
 
     _container2.set_position({ 750, 280 });
     _container2.set_extents ({ 300, 400 });
-    _vslider1.define_range({  50, 120 });
-    _vslider1.set_value( 50 );
-    _container2.add_child(&_vslider1);
-    _vslider2.define_range({  -50, 50 });
-    _vslider2.set_value( 20 );
-    _container2.add_child(&_vslider2);
-    _vslider3.define_range({  0.001f, 0.010f });
-    _vslider3.set_value( 0.001f );
-    _container2.add_child(&_vslider3);
+    _slider1.textbox().set_font(dflt_font);
+    _slider1.slider().define_range({  50, 120 });
+    _slider1.slider().set_value( 50 );
+    _container2.add_child(&_slider1);
+    _slider2.textbox().set_font(dflt_font);
+    _slider2.slider().define_range({  -50, 50 });
+    _slider2.slider().set_value( 20 );
+    _container2.add_child(&_slider2);
+    _slider3.textbox().set_font(dflt_font);
+    _slider3.slider().define_range({  0.001f, 0.010f });
+    _slider3.slider().set_value( 0.001f );
+    _container2.add_child(&_slider3);
     _container2.set_layout_manager<layouting::Left_to_right>();
     _container2.layout_manager()->set_spacing(5);
     root_widget()->add_child(&_container2);
@@ -189,4 +192,18 @@ Test_window::Test_window(): Parent_t("Test window")
                                   //root_widget()->init();
 
     init_window(); // will initialize the GUI and must therefore come last here
+}
+
+Test_window::Slider_with_display::Slider_with_display()
+{
+    _slider.on_value_changed([this](const Value &value)
+    {
+        _textbox.change_text( std::to_string(value) );
+    });
+
+    add_child( &_textbox );
+    add_child( &_slider );
+
+    this->set_layout_manager<layouting::Header_content>();
+    layout_manager()->set_spacing(3);
 }

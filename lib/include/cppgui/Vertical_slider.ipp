@@ -47,6 +47,15 @@ namespace cppgui {
         _value = val;
     }
 
+    template <class Config, typename ValueType>
+    template <class Class, bool With_layout>
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::on_value_changed(Value_changed_handler handler)
+    {
+        assert(!_on_value_changed);
+
+        _on_value_changed = handler;
+    }
+
     template<class Config, typename ValueType>
     template<class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::init()
@@ -250,9 +259,9 @@ namespace cppgui {
         else if (value > _range.to  ) _value = _range.to;
         else                          _value = value;
 
-        update_thumb_pos();
+        if (_on_value_changed) _on_value_changed(_value);
 
-        // TODO: notify value change
+        update_thumb_pos();
     }
 
     template <class Config, typename ValueType>

@@ -36,6 +36,22 @@ public:
     Test_window();
 
 private:
+    
+    class Slider_with_display: public Container
+    {
+    public:
+        using Value = Vertical_slider::Value;
+
+        Slider_with_display();
+
+        auto& textbox() { return _textbox; }
+        auto& slider () { return _slider; }
+
+    private:
+        Textbox             _textbox;
+        Vertical_slider     _slider;
+    };
+
     Label                       _label;
     Button                      _button;
     Glyph_button                _glyph_btn;
@@ -52,7 +68,8 @@ private:
     std::vector<Button>         _lb_buttons;
     Listbox                     _listbox;
     Stringlist                  _stringlist;
-    Vertical_slider             _vslider1, _vslider2, _vslider3;
+    Slider_with_display         _slider1, _slider2, _slider3;
+    //Vertical_slider             _vslider1, _vslider2, _vslider3;
 
     Container                   _container1, _container2;
 };

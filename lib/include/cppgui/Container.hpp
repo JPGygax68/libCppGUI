@@ -26,7 +26,9 @@ namespace cppgui {
 
     // Container base class: descended from Widget
 
-    enum class Layout_type { none, 
+    enum class Layout_type 
+    { 
+        none, 
         header_content, 
         content_footer, 
         head_content,           // horizontal: fixed-width head, followed by stretching content TODO: better name! 
@@ -45,9 +47,12 @@ namespace cppgui {
         template cppgui::Container<Config, With_layout>; \
         _CPPGUI_INSTANTIATE_CONTAINER_LAYOUTER(Config, With_layout, cppgui::Container_base<Config, With_layout>)
 
-    /** This generic container class exists primarily to combine the functionalities of 
-        Abstract_container with those of Widget. At the present (2016-05-03), it also offers 
-        a choice of layouting algorithms, but that is bad design and will be removed.
+    /** This class adds layouting capabilities to Container_base<>.
+        These capabilities are of course seated in the Layouter aspect, and are derived
+        from the Layouter aspect of Box<>, which defines borders and padding.
+        TODO: add parameters to Container<> so that it will support forms of layouting that 
+            do not use borders and padding ? -> those parameters would have to be propagated
+            to the layout managers, too
      */
     template <class Config, bool With_layout>
     class Container: 
@@ -55,9 +60,6 @@ namespace cppgui {
             Container_base<Config, With_layout> >
     {
     public:
-
-    protected:
-        //auto paper_margin() -> unsigned int { return 2; } // TODO: remove (or move to Stack<>)
     };
 
     // Layouter aspect
@@ -82,7 +84,11 @@ namespace cppgui {
         // Specific interface
 
         //void set_layout_type(Layout_type type ) { _layout_type = type; }
-        template<class ManagerType> void set_layout_manager() { _manager.reset( new ManagerType{} ); };
+        template<class ManagerType> void set_layout_manager()
+        {
+            _manager.reset( new ManagerType{} ); 
+            _manager->set_padding(this->_padding); // TODO: should padding really be a member of Container ?
+        };
         auto layout_manager() { return _manager.get(); }
 
         void insert_child(Widget_t *); // TODO: find a better name OR support insertion index
