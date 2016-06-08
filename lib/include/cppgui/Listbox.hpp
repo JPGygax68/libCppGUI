@@ -72,7 +72,7 @@ namespace cppgui {
 
         void layout() override;
 
-        auto get_preferred_size() -> Extents override;
+        //auto get_preferred_size() -> Extents override;
 
     protected:
         struct Listbox_t: public Listbox<Config, true> { friend struct Listbox__Layouter; };

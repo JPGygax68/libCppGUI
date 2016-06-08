@@ -35,7 +35,7 @@ namespace cppgui
             virtual ~Manager() = default;
 
             virtual auto get_minimal_size(Container_t &) -> Extents = 0;
-            virtual auto get_preferred_size(Container_t &) -> Extents = 0;
+            //virtual auto get_preferred_size(Container_t &) -> Extents = 0;
             virtual void layout(Container_t &) = 0;
 
             void set_spacing(Length spacing); // TODO: move to a more specialized descendant ?
@@ -47,28 +47,40 @@ namespace cppgui
         struct Header_content: public Manager
         {
             auto get_minimal_size(Container_t &) -> Extents override;
-            auto get_preferred_size(Container_t &) -> Extents override;
+            //auto get_preferred_size(Container_t &) -> Extents override;
             void layout(Container_t &) override;
         };
 
         struct Content_footer: public Manager
         {
             auto get_minimal_size(Container_t &) -> Extents override;
-            auto get_preferred_size(Container_t &) -> Extents override;
+            //auto get_preferred_size(Container_t &) -> Extents override;
             void layout(Container_t &) override;
         };
 
         struct Content_tail: public Manager
         {
             auto get_minimal_size(Container_t &) -> Extents override;
-            auto get_preferred_size(Container_t &) -> Extents override;
+            //auto get_preferred_size(Container_t &) -> Extents override;
             void layout(Container_t &) override;
         };
 
         struct Stack: public Manager
         {
             auto get_minimal_size(Container_t &) -> Extents override;
-            auto get_preferred_size(Container_t &) -> Extents override;
+            //auto get_preferred_size(Container_t &) -> Extents override;
+            void layout(Container_t &) override;
+        };
+
+        /** Left_to_right will do exactly what the name says: it will put the elements one after 
+            the other, from left to right.
+            Note that it does NOT, at this time, attempt to make use of available extra space,
+            meaning extra space to the right will remain empty unused.
+         */
+        struct Left_to_right: public Manager
+        {
+            auto get_minimal_size(Container_t &) -> Extents override;
+            //auto get_preferred_size(Container_t &) -> Extents override;
             void layout(Container_t &) override;
         };
 

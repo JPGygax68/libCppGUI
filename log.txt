@@ -1,3 +1,9 @@
+2016-06-08
+==========
+
+- Stringlist needs to visually reflect the fact that it has focus.
+
+
 2016-06-07
 ==========
 

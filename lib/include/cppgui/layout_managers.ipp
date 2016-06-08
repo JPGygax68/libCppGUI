@@ -45,7 +45,8 @@ namespace cppgui
 
         return result;
     }
-
+    
+    /*
     template <class Config>
     auto layouting<Config>::Header_content::get_preferred_size(Container_t &cntnr) -> Extents
     {
@@ -66,6 +67,7 @@ namespace cppgui
 
         return result;
     }
+    */
 
     template <class Config>
     void layouting<Config>::Header_content::layout(Container_t &cntnr)
@@ -115,6 +117,7 @@ namespace cppgui
         return result;
     }
 
+    /*
     template <class Config>
     auto layouting<Config>::Content_footer::get_preferred_size(Container_t &cntnr) -> Extents
     {
@@ -135,6 +138,7 @@ namespace cppgui
 
         return result;
     }
+    */
 
     template <class Config>
     void layouting<Config>::Content_footer::layout(Container_t &cntnr)
@@ -182,6 +186,7 @@ namespace cppgui
         return result;
     }
 
+    /*
     template <class Config>
     auto layouting<Config>::Content_tail::get_preferred_size(Container_t &cntnr) -> Extents
     {
@@ -204,6 +209,7 @@ namespace cppgui
 
         return result;
     }
+    */
 
     template <class Config>
     void layouting<Config>::Content_tail::layout(Container_t &cntnr)
@@ -253,6 +259,7 @@ namespace cppgui
         return result;
     }
 
+    /*
     template <class Config>
     auto layouting<Config>::Stack::get_preferred_size(Container_t &cntnr) -> Extents
     {
@@ -275,6 +282,7 @@ namespace cppgui
 
         return result;
     }
+    */
 
     template <class Config>
     void layouting<Config>::Stack::layout(Container_t &cntnr)

@@ -135,6 +135,7 @@ namespace cppgui {
         Scrollbox_t::layout();
     }
 
+    /*
     template<class Config, class Parent>
     auto Listbox__Layouter<Config, true, Parent>::get_preferred_size() -> Extents
     {
@@ -148,6 +149,7 @@ namespace cppgui {
 
         return { w + 2 * p()->_border.width, h + 2 * p()->_border.width };
     }
+    */
 
     // List_pane_base ====================================================
 
