@@ -26,20 +26,16 @@ namespace cppgui {
     template <class Config, class Parent>
     auto Container__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
     {
+        assert( _manager );
+
         return _manager->get_minimal_size( *p() );
     }
-
-    /*
-    template <class Config, class Parent>
-    auto Container__Layouter<Config, true, Parent>::get_preferred_size() -> Extents
-    {
-        return _manager->get_preferred_size( *p() );
-    }
-    */
 
     template <class Config, class Parent>
     void Container__Layouter<Config, true, Parent>::layout()
     {
+        assert( _manager );
+
         _manager->layout( *p() );
 
         Container_base_t::layout();

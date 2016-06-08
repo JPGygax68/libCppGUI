@@ -155,12 +155,22 @@ Test_window::Test_window(): Parent_t("Test window")
     _listbox.content_pane()->set_separator({ 1, { 0.5f, 0.5f, 0.5f, 1 }});
     root_widget()->add_child(&_listbox);
 
-    // Vertical_slider
-    _vslider.set_position({ 750, 280 });
-    _vslider.set_extents ({  50, 400 });
-    _vslider.define_range({  50, 120 });
-    _vslider.set_value( 50 );
-    root_widget()->add_child(&_vslider);
+    // Container with Vertical_slider's
+
+    _container2.set_position({ 750, 280 });
+    _container2.set_extents ({ 300, 400 });
+    _vslider1.define_range({  50, 120 });
+    _vslider1.set_value( 50 );
+    _container2.add_child(&_vslider1);
+    _vslider2.define_range({  -50, 50 });
+    _vslider2.set_value( 20 );
+    _container2.add_child(&_vslider2);
+    _vslider3.define_range({  0.001f, 0.010f });
+    _vslider3.set_value( 0.001f );
+    _container2.add_child(&_vslider3);
+    _container2.set_layout_manager<layouting::Left_to_right>();
+    _container2.layout_manager()->set_spacing(5);
+    root_widget()->add_child(&_container2);
 
     root_widget()->set_background_color({ 0, 0.6f, 0.2f, 1 });
 

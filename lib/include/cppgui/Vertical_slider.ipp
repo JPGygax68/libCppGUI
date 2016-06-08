@@ -51,12 +51,6 @@ namespace cppgui {
     template<class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::init()
     {
-        /** This is where the widget establishes its connection with the backends
-            (available via root_widget()->canvas() etc. ).
-         */
-
-        update_thumb_pos();
-
         Widget_t::init();
     }
 
@@ -64,10 +58,7 @@ namespace cppgui {
     template<class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::compute_view_from_data()
     {
-        /** This is another entry point that gets called recursively upon
-            initialization. Its name says what it is intended for: to 
-            set internal state so as to reflect the bound data.
-         */
+        update_thumb_pos();
     }
 
     template <class Config, typename ValueType>
@@ -321,12 +312,10 @@ namespace cppgui {
     template<class Class, class Parent>
     auto _vertical_slider<Config, ValueType>::Layouter<Class, true, Parent>::get_minimal_size() -> Extents
     {
-        /** The get_minimal_size() method is intended to be called recursively
-            by containers, or from a container's layout() method to help it
-            decide how to place and size its children.
-         */
-
-        return {};
+        return {
+            std::max( p()->thumb_size().w, p()->slide_width() ),
+            5 * p()->thumb_size().h // TODO: less arbitrary definition ?
+        };
     }
 
     template<class Config, typename ValueType>

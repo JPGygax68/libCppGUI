@@ -2,6 +2,11 @@
 ==========
 
 - Stringlist needs to visually reflect the fact that it has focus.
+- Stringlist does not take focus when clicked on items (scrollbar does take focus though)
+
+- I really need a better alternative to assert()
+
+- TODO: move the layout managers into a subdirectory, with a file pair for each
 
 
 2016-06-07

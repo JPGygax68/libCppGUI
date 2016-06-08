@@ -74,10 +74,9 @@ namespace cppgui {
         using Container_base_t = Container_base<Config, true>;
         class Container_t: public Container<Config, true> { friend struct Container__Layouter; };
 
-        // Layout contract
+        // Layouter contract
 
         auto get_minimal_size() -> Extents override;
-        //auto get_preferred_size() -> Extents override;
         void layout() override;
 
         // Specific interface

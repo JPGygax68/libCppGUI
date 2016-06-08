@@ -30,45 +30,52 @@ namespace cppgui
         using Widget_t = Widget<Config, true>;
         using Container_t = Container<Config, true>;
 
-        struct Manager
+        class Manager
         {
+        public:
+
             virtual ~Manager() = default;
 
             virtual auto get_minimal_size(Container_t &) -> Extents = 0;
-            //virtual auto get_preferred_size(Container_t &) -> Extents = 0;
             virtual void layout(Container_t &) = 0;
 
+            void set_padding(const Padding &);
+            void set_padding(Padding &&);
             void set_spacing(Length spacing); // TODO: move to a more specialized descendant ?
+
+        protected:
+
+            auto minimal_size_horizontal(Container_t &) -> Extents;
 
             Padding         _padding;
             Length          _spacing = 0; 
         };
 
-        struct Header_content: public Manager
+        class Header_content: public Manager
         {
+        public:
             auto get_minimal_size(Container_t &) -> Extents override;
-            //auto get_preferred_size(Container_t &) -> Extents override;
             void layout(Container_t &) override;
         };
 
-        struct Content_footer: public Manager
+        class Content_footer: public Manager
         {
+        public:
             auto get_minimal_size(Container_t &) -> Extents override;
-            //auto get_preferred_size(Container_t &) -> Extents override;
             void layout(Container_t &) override;
         };
 
-        struct Content_tail: public Manager
+        class Content_tail: public Manager
         {
+        public:
             auto get_minimal_size(Container_t &) -> Extents override;
-            //auto get_preferred_size(Container_t &) -> Extents override;
             void layout(Container_t &) override;
         };
 
-        struct Stack: public Manager
+        class Stack: public Manager
         {
+        public:
             auto get_minimal_size(Container_t &) -> Extents override;
-            //auto get_preferred_size(Container_t &) -> Extents override;
             void layout(Container_t &) override;
         };
 
@@ -77,10 +84,10 @@ namespace cppgui
             Note that it does NOT, at this time, attempt to make use of available extra space,
             meaning extra space to the right will remain empty unused.
          */
-        struct Left_to_right: public Manager
+        class Left_to_right: public Manager
         {
+        public:
             auto get_minimal_size(Container_t &) -> Extents override;
-            //auto get_preferred_size(Container_t &) -> Extents override;
             void layout(Container_t &) override;
         };
 

@@ -20,9 +20,44 @@
 namespace cppgui
 {
     template <class Config>
+    void layouting<Config>::Manager::set_padding(const Padding &padding)
+    {
+        _padding = padding;
+    }
+
+    template <class Config>
+    void layouting<Config>::Manager::set_padding(Padding &&padding)
+    {
+        _padding = std::move(padding);
+    }
+
+    template <class Config>
     void layouting<Config>::Manager::set_spacing(Length spacing)
     {
         _spacing = spacing;
+    }
+
+    template <class Config>
+    auto layouting<Config>::Manager::minimal_size_horizontal(Container_t &cntnr) -> Extents
+    {
+        Extents result; // result.w = 0, result.h = 0;
+
+        for(auto child: cntnr.children())
+        {
+            auto min_sz = child->get_minimal_size();
+
+            // Accumulate minimal width
+            result.w += min_sz.w;
+
+            // Use greatest minimal height
+            if (min_sz.h > result.h) result.h = min_sz.h;
+        }
+
+        result.w += (cntnr.children().size() - 1) * this->_spacing;
+
+        result += cntnr._padding;
+
+        return result;
     }
 
     template <class Config>
@@ -46,29 +81,6 @@ namespace cppgui
         return result;
     }
     
-    /*
-    template <class Config>
-    auto layouting<Config>::Header_content::get_preferred_size(Container_t &cntnr) -> Extents
-    {
-        Extents result;
-
-        for(auto child: cntnr.children())
-        {
-            auto pref_sz = child->get_preferred_size(); 
-
-            // Accumulate minimal, preferred height
-            result.h += pref_sz.h;
-
-            // Use greatest minimal width
-            if (pref_sz.w > result.w) result.w = pref_sz.w;
-        }
-
-        result += cntnr._padding;
-
-        return result;
-    }
-    */
-
     template <class Config>
     void layouting<Config>::Header_content::layout(Container_t &cntnr)
     {
@@ -117,29 +129,6 @@ namespace cppgui
         return result;
     }
 
-    /*
-    template <class Config>
-    auto layouting<Config>::Content_footer::get_preferred_size(Container_t &cntnr) -> Extents
-    {
-        Extents result;
-
-        for(auto child: cntnr.children())
-        {
-            auto pref_sz = child->get_preferred_size(); 
-
-            // Accumulate minimal, preferred height
-            result.h += pref_sz.h;
-
-            // Use greatest minimal width
-            if (pref_sz.w > result.w) result.w = pref_sz.w;
-        }
-
-        result += cntnr._padding;
-
-        return result;
-    }
-    */
-
     template <class Config>
     void layouting<Config>::Content_footer::layout(Container_t &cntnr)
     {
@@ -166,50 +155,8 @@ namespace cppgui
     template <class Config>
     auto layouting<Config>::Content_tail::get_minimal_size(Container_t &cntnr) -> Extents
     {
-        Extents result; // result.w = 0, result.h = 0;
-
-        for(auto child: cntnr.children())
-        {
-            auto min_sz = child->get_minimal_size();
-
-            // Accumulate minimal width
-            result.w += min_sz.w;
-
-            // Use greatest minimal height
-            if (min_sz.h > result.h) result.h = min_sz.h;
-        }
-
-        result.w += (cntnr.children().size() - 1) * this->_spacing;
-
-        result += cntnr._padding;
-
-        return result;
+        return minimal_size_horizontal(cntnr);
     }
-
-    /*
-    template <class Config>
-    auto layouting<Config>::Content_tail::get_preferred_size(Container_t &cntnr) -> Extents
-    {
-        Extents result; // result.w = 0, result.h = 0;
-
-        for(auto child: cntnr.children())
-        {
-            auto min_sz = child->get_preferred_size();
-
-            // Accumulate minimal width
-            result.w += min_sz.w;
-
-            // Use greatest preferred height
-            if (min_sz.h > result.h) result.h = min_sz.h;
-        }
-
-        result.w += (cntnr.children().size() - 1) * this->_spacing;
-
-        result += cntnr._padding;
-
-        return result;
-    }
-    */
 
     template <class Config>
     void layouting<Config>::Content_tail::layout(Container_t &cntnr)
@@ -259,31 +206,6 @@ namespace cppgui
         return result;
     }
 
-    /*
-    template <class Config>
-    auto layouting<Config>::Stack::get_preferred_size(Container_t &cntnr) -> Extents
-    {
-        Extents result; // result.w = 0, result.h = 0;
-
-        for(auto child: cntnr.children())
-        {
-            auto min_sz = child->get_preferred_size();
-
-            // Use greatest preferred width
-            if (min_sz.w > result.w) result.w = min_sz.w;
-
-            // Add heights
-            result.h += min_sz.h;
-        }
-
-        result.h += (cntnr.children().size() - 1) * this->_spacing;
-
-        result += cntnr._padding;
-
-        return result;
-    }
-    */
-
     template <class Config>
     void layouting<Config>::Stack::layout(Container_t &cntnr)
     {
@@ -300,6 +222,29 @@ namespace cppgui
             //child->layout();
 
             y += child->extents().h + this->_spacing;
+        }
+    }
+
+    template <class Config>
+    auto layouting<Config>::Left_to_right::get_minimal_size(Container_t &cntnr) -> Extents
+    {
+        return minimal_size_horizontal(cntnr);
+    }
+
+    template <class Config>
+    void layouting<Config>::Left_to_right::layout(Container_t &cntnr)
+    {
+        auto ext = cntnr.extents();
+
+        Position x = this->_padding[3];
+
+        for (auto child: cntnr.children())
+        {
+            auto minsz = child->get_minimal_size();
+            child->set_position({ x, this->_padding[0] });
+            child->set_extents ({ minsz.w, ext.h - this->_padding[0] - this->_padding[2] });
+            
+            x += child->extents().w + this->_spacing;
         }
     }
 
