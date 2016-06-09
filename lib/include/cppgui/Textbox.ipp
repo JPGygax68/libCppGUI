@@ -24,6 +24,14 @@
 
 namespace cppgui {
 
+    template <class Config, bool With_layout>
+    void Textbox<Config, With_layout>::on_done(Done_handler handler)
+    {
+        assert(!_on_done);
+
+        _on_done = handler;
+    }
+
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::set_font(const Rasterized_font *font)
     {
@@ -189,14 +197,15 @@ namespace cppgui {
     void Textbox<Config, With_layout>::gained_focus()
     {
         // TODO: more...
-        invalidate();
+        this->invalidate();
     }
 
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::loosing_focus()
     {
-        // TODO: more
-        invalidate();
+        notify_done();
+
+        this->invalidate();
     }
 
     template<class Config, bool With_layout>
@@ -240,6 +249,7 @@ namespace cppgui {
         else if (Keyboard::is_end      (key)) { move_cursor_to_end  (Config::Keyboard::is_shift_down()); return true; }
         else if (Keyboard::is_backspace(key)) { delete_before_caret ();                                ; return true; }
         else if (Keyboard::is_delete   (key)) { delete_after_caret  ();                                ; return true; }
+        else if (Keyboard::is_return   (key)) { done         ();                                  return true; }                
         else return false;
     }
 
@@ -433,6 +443,12 @@ namespace cppgui {
         invalidate();
     }
 
+    template <class Config, bool With_layout>
+    void Textbox<Config, With_layout>::done()
+    {
+        notify_done();
+    }
+
     template<class Config, bool With_layout>
     void Textbox<Config, With_layout>::move_caret_to_pointer_position(const Point &pos)
     {
@@ -476,7 +492,7 @@ namespace cppgui {
             _scroll_offs += glyph->cbox.adv_x;
         }
 
-        while ((_scroll_offs + _caret_pixel_pos) > (int) _inner_rect.ext.w)
+        while ((_scroll_offs + _caret_pixel_pos) > _inner_rect.ext.w)
         {
             assert(_first_vis_char_idx < (_text.size() - 1));
             auto glyph = font().source()->lookup_glyph(0, _text[_first_vis_char_idx]);
@@ -485,10 +501,16 @@ namespace cppgui {
         }
     }
 
+    template <class Config, bool With_layout>
+    void Textbox<Config, With_layout>::notify_done()
+    {
+        if (_on_done) _on_done( text() );
+    }
+
     template<class Config, bool With_layout>
     auto Textbox<Config, With_layout>::selected_text_background_color() -> Color
     {
-        if (has_focus())
+        if (this->has_focus())
         {
             return { 0.4f, 0.7f, 1, 1 };
         }

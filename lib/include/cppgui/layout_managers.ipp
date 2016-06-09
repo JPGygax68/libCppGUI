@@ -19,6 +19,8 @@
 
 namespace cppgui
 {
+    // TODO: all layout managers must take visible() property into account
+
     template <class Config>
     void layouting<Config>::Manager::set_padding(const Padding &padding)
     {
@@ -43,7 +45,7 @@ namespace cppgui
         Extents result; // result.w = 0, result.h = 0;
 
         auto n = 0;
-        for (auto i = 0; ; i++)
+        for (auto i = 0U; ; i++)
         {
             if (i >= cntnr.children().size()) break;
 

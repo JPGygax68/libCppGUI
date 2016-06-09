@@ -43,12 +43,16 @@ namespace cppgui {
                 Widget<Config, With_layout> > >
     {
     public:
+        using Widget_t      = Widget<Config, With_layout>;
+        using Textbox_t     = Textbox<Config, With_layout>;
         using Renderer      = typename Config::Renderer;
         using Keycode       = typename Config::Keyboard::Keycode;
-        using Widget_t      = typename Widget<Config, With_layout>;
-        using Textbox_t     = typename Textbox<Config, With_layout>;
         using Canvas_t      = typename Widget_t::Canvas_t;
         using Font_resource = typename Widget_t::Font_resource;
+        using Done_handler  = std::function<void(const std::u32string&)>;
+
+        // TODO: on_blur() ? on_text_changed() ?
+        void on_done(Done_handler);
 
         // TODO: implement "set" and "change" variants
         void set_font(const Rasterized_font *);
@@ -88,10 +92,9 @@ namespace cppgui {
         void delete_before_caret();
         void delete_after_caret();
         void select_all();
+        void done();
 
         // Internal methods
-        // TODO: most or all of this actually belongs to a yet-to-be-created "Textfield" class
-        //      that can then 
         void internal_select_all();
         void recalc_selection_strip();
         void collapse_selection_to_caret();
@@ -100,11 +103,14 @@ namespace cppgui {
         void move_caret_to_pointer_position(const Point &pos);
         auto find_character_at_pointer_position(const Point &pos) -> std::pair<size_t, int>;
         void bring_caret_into_view();
+        void notify_done();
 
         // Styling
         // TODO: make into aspect ?
         auto selected_text_background_color() -> Color;
         auto caret_color() -> Color;
+
+        Done_handler            _on_done;
 
         Font_resource           _font;
 

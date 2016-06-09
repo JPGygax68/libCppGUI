@@ -17,6 +17,8 @@
     limitations under the License.
 */
 
+#include <memory>
+
 #include "./Widget.hpp"
 #include "./Box.hpp"
 #include "./Container_base.hpp"
