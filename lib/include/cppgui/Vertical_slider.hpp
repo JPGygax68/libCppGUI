@@ -66,6 +66,7 @@ namespace cppgui {
 
             void change_range(const Range<Value> &);
             void change_range(const Range<Value> &, const Value &step_major, const Value &step_minor);
+            void change_value(const Value &);
 
             void render(Canvas_t *, const Point &offset) override;
 
@@ -95,7 +96,6 @@ namespace cppgui {
             void end_thumb_drag  ();
             void drag_thumb      (const Point &);
 
-            void change_value(const Value &);
             void notify_value_change();
             void update_thumb_pos();
 
