@@ -42,18 +42,26 @@ namespace cppgui
     {
         Extents result; // result.w = 0, result.h = 0;
 
-        for(auto child: cntnr.children())
+        auto n = 0;
+        for (auto i = 0; ; i++)
         {
-            auto min_sz = child->get_minimal_size();
+            if (i >= cntnr.children().size()) break;
 
-            // Accumulate minimal width
-            result.w += min_sz.w;
+            auto child = cntnr.children()[i];
 
-            // Use greatest minimal height
-            if (min_sz.h > result.h) result.h = min_sz.h;
+            if (child->visible())
+            {
+                if (n++ > 0) result.w += this->_spacing;
+
+                auto min_sz = child->get_minimal_size();
+
+                // Accumulate minimal width
+                result.w += min_sz.w;
+
+                // Use greatest minimal height
+                if (min_sz.h > result.h) result.h = min_sz.h;
+            }
         }
-
-        result.w += (cntnr.children().size() - 1) * this->_spacing;
 
         result += cntnr._padding;
 
@@ -240,13 +248,19 @@ namespace cppgui
 
         Position x = this->_padding[3];
 
+        auto n = 0;
         for (auto child: cntnr.children())
         {
-            auto minsz = child->get_minimal_size();
-            child->set_position({ x, this->_padding[0] });
-            child->set_extents ({ minsz.w, ext.h - this->_padding[0] - this->_padding[2] });
+            if (child->visible())
+            {
+                if (n++ > 0) x += this->_spacing;
+
+                auto minsz = child->get_minimal_size();
+                child->set_position({ x, this->_padding[0] });
+                child->set_extents ({ minsz.w, ext.h - this->_padding[0] - this->_padding[2] });
             
-            x += child->extents().w + this->_spacing;
+                x += child->extents().w;
+            }
         }
     }
 
