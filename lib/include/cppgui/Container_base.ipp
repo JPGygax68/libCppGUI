@@ -160,28 +160,28 @@ namespace cppgui {
     template<class Config, bool With_layout>
     bool Container_base<Config, With_layout>::cycle_focus_forward()
     {
-        assert(has_focus());
+        assert(this->has_focus());
 
-        if (children().empty())
+        if (this->children().empty())
         {
             return false; // cannot cycle, report back to sender
         }
         else
         {
-            std::vector<Widget_t*>::iterator it;
+            typename std::vector<Widget_t*>::iterator it;
 
-            if (focused_child())
+            if (this->focused_child())
             {
-                it = std::find(std::begin(children()), std::end(children()), focused_child());  
+                it = std::find(std::begin(this->children()), std::end(this->children()), this->focused_child());  
                 it ++;
             }
             else {
-                it = std::begin(children());
+                it = std::begin(this->children());
             }
 
-            while (it != std::end(children()) && !(*it)->focussable()) it ++;
+            while (it != std::end(this->children()) && !(*it)->focussable()) it ++;
 
-            if (it != std::end(children()))
+            if (it != std::end(this->children()))
             {
                 (*it)->gained_focus();
                 container_take_focus(*it);

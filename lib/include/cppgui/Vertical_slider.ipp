@@ -106,15 +106,23 @@ namespace cppgui {
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::render(Canvas_t *canvas, const Point &offset)
     {
         // TODO: PLACEHOLDER
-        this->fill_rect(canvas, this->rectangle(), offset, Canvas_t::rgba_to_native({0.8f, 0, 0.7f, 1}));
+        //this->fill_rect(canvas, this->rectangle(), offset, Canvas_t::rgba_to_native({0.8f, 0, 0.7f, 1}));
+
+        auto pos = offset + this->position();
+
+        if (this->has_focus())
+        {
+            auto ext = this->extents();
+            canvas->draw_stippled_rectangle_outline(pos.x, pos.y, ext.w, ext.h, {0, 0, 0.5f, 1});
+        }
 
         // "Slide" (vertical strip)
         // TODO: color from constexpr method / stylesheet
-        this->fill_rect(canvas, _slide_rect, offset + this->position(), Canvas_t::rgba_to_native({ 0, 0, 0, 1 }));
+        this->fill_rect(canvas, _slide_rect, pos, Canvas_t::rgba_to_native({ 0.3f, 0.3f, 0.3f, 1 }));
 
         // Thumb
-        auto thclr = _thumb_hovered ? Canvas_t::rgba_to_native({ 1, 1, 1, 0.8f }) : Canvas_t::rgba_to_native({ 0.5f, 0.5f, 0.5f, 0.8f });
-        this->fill_rect(canvas, _thumb_rect, offset + this->position() + Point{ 0, _thumb_pos }, thclr);
+        auto thclr = _thumb_hovered ? Canvas_t::rgba_to_native({ 1, 1, 1, 1 }) : Canvas_t::rgba_to_native({ 0.7f, 0.7f, 0.7f, 1 });
+        this->fill_rect(canvas, _thumb_rect, pos + Point{ 0, _thumb_pos }, thclr);
     }
 
     template <class Config, typename ValueType>
@@ -289,8 +297,8 @@ namespace cppgui {
     template <class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::update_thumb_pos()
     {
-        _thumb_pos = static_cast<Position>( (_value - _range.from) * _slide_rect.height() / _range.length() );
-        std::cerr << "value: " << _value << std::endl;
+        _thumb_pos = (_value - _range.from) * _slide_rect.height() / _range.length();
+        //std::cerr << "value: " << _value << std::endl;
 
         this->invalidate();
     }

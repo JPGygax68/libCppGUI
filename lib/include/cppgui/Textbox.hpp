@@ -51,12 +51,16 @@ namespace cppgui {
         using Font_resource = typename Widget_t::Font_resource;
         using Done_handler  = std::function<void(const std::u32string&)>;
 
+        Textbox();
+
         // TODO: on_blur() ? on_text_changed() ?
         void on_done(Done_handler);
 
         // TODO: implement "set" and "change" variants
         void set_font(const Rasterized_font *);
         auto font() const { return _font; }
+        void set_size(Count chars);
+        auto size() const { return _size; }
         void set_text(const std::u32string &);
         void set_text(const std::string &);
         void change_text(const std::u32string &);
@@ -112,6 +116,7 @@ namespace cppgui {
 
         Done_handler            _on_done;
 
+        int                     _size;
         Font_resource           _font;
 
         int                     _ascent, _descent; // TODO: support vertical writing

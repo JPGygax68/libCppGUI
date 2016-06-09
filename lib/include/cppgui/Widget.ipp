@@ -101,11 +101,19 @@ namespace cppgui {
         Width width, const Color & top, const Color & right, const Color & bottom, const Color & left)
     {
         // TODO: this painting procedure does a "wrap" in clockwise fashion, without regard for corners
-        fill_rect(r, offs + rect.pos + Point{(int) width, 0}, {rect.ext.w - width, width}, top);
-        fill_rect(r, offs + rect.pos + Point{(int) (rect.ext.w - width), 0}, {width, rect.ext.h}, right);
-        fill_rect(r, offs + rect.pos + Point{0, (int) (rect.ext.h - width)}, {rect.ext.w - width, width}, bottom);
+        fill_rect(r, offs + rect.pos + Point{width, 0}, {rect.ext.w - width, width}, top);
+        fill_rect(r, offs + rect.pos + Point{rect.ext.w - width, 0}, {width, rect.ext.h}, right);
+        fill_rect(r, offs + rect.pos + Point{0, rect.ext.h - width}, {rect.ext.w - width, width}, bottom);
         fill_rect(r, offs + rect.pos, {width, rect.ext.h}, left);
     }
+
+    /*
+    template <class Config, bool With_layout>
+    void Abstract_widget<Config, With_layout>::draw_stippled_inner_rect(Canvas_t *canvas, const Rectangle &rect, const Point & offs)
+    {
+        auto r { rect.pos, Extents{ rect.ext.w - 1, rect.ext.h - 1} };
+    }
+    */
 
     template<class Config, bool With_layout>
     auto Abstract_widget<Config, With_layout>::convert_position_to_inner(const Point &pos) -> Point
@@ -145,6 +153,12 @@ namespace cppgui {
     }
 
     // Widget<> implementation --------------------------------------
+
+    template <class Config, bool With_layout>
+    Widget<Config, With_layout>::Widget():
+        _focussable{ true }
+    {
+    }
 
     template<class Config, bool With_layout>
     void Widget<Config, With_layout>::set_background_color(const Color &color)

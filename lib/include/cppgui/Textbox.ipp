@@ -23,6 +23,12 @@
 #include "./Textbox.hpp"
 
 namespace cppgui {
+    
+    template <class Config, bool With_layout>
+    Textbox<Config, With_layout>::Textbox():
+        _size( 10 ) // TODO: use static method for default
+    {
+    }
 
     template <class Config, bool With_layout>
     void Textbox<Config, With_layout>::on_done(Done_handler handler)
@@ -43,6 +49,12 @@ namespace cppgui {
         }
         */
         _font.assign(font);
+    }
+
+    template <class Config, bool With_layout>
+    void Textbox<Config, With_layout>::set_size(Count chars)
+    {
+        _size = chars;
     }
 
     template<class Config, bool With_layout>
@@ -635,11 +647,10 @@ namespace cppgui {
     template<class Config, class Parent>
     inline auto Textbox__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
     {
-        // TODO: replace "10" with const
         // TODO: adjust for border, too
         return { 
-            _padding[3] + (Length) (10 * p()->_mean_char_width  ) + _padding[1], 
-            _padding[0] + (Length) (p()->_ascent - p()->_descent) + _padding[2] 
+            this->_padding[3] + (p()->size() * p()->_mean_char_width) + this->_padding[1], 
+            this->_padding[0] + (p()->_ascent - p()->_descent       ) + this->_padding[2] 
         };
     }
 
@@ -649,8 +660,8 @@ namespace cppgui {
         auto ext = p()->extents();
 
         p()->_inner_rect = {
-            (Position) _padding[3], (Position) _padding[0],
-            ext.w - _padding[3] - _padding[1], ext.h - _padding[0] - _padding[1]
+            this->_padding[3], this->_padding[0],
+            ext.w - this->_padding[3] - this->_padding[1], ext.h - this->_padding[0] - this->_padding[1]
         };
 
         p()->_txpos = { p()->_inner_rect.pos.x, p()->_inner_rect.pos.y + p()->_ascent };

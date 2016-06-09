@@ -151,6 +151,8 @@ namespace cppgui {
         using Root_widget_t = Root_widget<Config, With_layout>;
         using Click_handler = typename Abstract_widget<Config, With_layout>::Click_handler;
 
+        Widget();
+
         void set_background_color(const Color &);
         auto background_color() const;
 

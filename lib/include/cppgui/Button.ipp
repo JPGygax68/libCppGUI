@@ -55,25 +55,25 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Button<Config, With_layout>::init()
     {
-        _font.translate( root_widget()->canvas() );
+        _font.translate( this->root_widget()->canvas() );
     }
 
     template<class Config, bool With_layout>
-    void Button<Config, With_layout>::render(Canvas_t *cnv, const Point &offs)
+    void Button<Config, With_layout>::render(Canvas_t *canvas, const Point &offs)
     {
-        fill(cnv, offs, rgba_to_native( button_face_color() ));
+        fill(canvas, offs, Canvas_t::rgba_to_native( this->button_face_color() ));
 
-        draw_border(cnv, offs);
+        draw_border(canvas, offs);
 
-        auto pos = offs + position();
+        auto pos = offs + this->position();
 
-        cnv->render_text(_font.get(), pos.x + _label_origin.x, pos.y + _label_origin.y, _label.data(), _label.size());
+        canvas->render_text(_font.get(), pos.x + _label_origin.x, pos.y + _label_origin.y, _label.data(), _label.size());
 
-        if (has_focus())
+        if (this->has_focus())
         {
             // TODO: draw the rectangle along the border instead of around the label ?
             auto r = _label_rect + Extents{ 3, 3 };
-            cnv->draw_stippled_rectangle_outline(pos.x + r.pos.x, pos.y + r.pos.y, r.ext.w, r.ext.h, {0, 0, 0.5f, 1});
+            canvas->draw_stippled_rectangle_outline(pos.x + r.pos.x, pos.y + r.pos.y, r.ext.w, r.ext.h, {0, 0, 0.5f, 1});
         }
     }
 
