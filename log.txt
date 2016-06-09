@@ -1,6 +1,12 @@
 2016-06-08
 ==========
 
+- Is it legal, or should it be made legal, to update a widget (e.g. call Textbox<>::change_text() ) before that widget has been "initialized" (method init(), better term and method name still pending) ?
+
+ 
+2016-06-08
+==========
+
 - Stringlist needs to visually reflect the fact that it has focus.
 - Stringlist does not take focus when clicked on items (scrollbar does take focus though)
 

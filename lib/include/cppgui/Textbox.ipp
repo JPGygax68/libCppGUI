@@ -63,7 +63,7 @@ namespace cppgui {
             _caret_char_idx = _sel_start_char_idx;
             _caret_pixel_pos = _sel_start_pixel_pos;
             bring_caret_into_view();
-            invalidate();
+            this->invalidate();
         }
     }
 

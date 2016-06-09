@@ -207,3 +207,10 @@ Test_window::Slider_with_display::Slider_with_display()
     this->set_layout_manager<layouting::Header_content>();
     layout_manager()->set_spacing(3);
 }
+
+void Test_window::Slider_with_display::compute_view_from_data()
+{
+    Parent_t::compute_view_from_data();
+
+    _textbox.set_text( std::to_string( _slider.value() ) );
+}

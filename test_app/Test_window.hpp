@@ -41,8 +41,11 @@ private:
     {
     public:
         using Value = Vertical_slider::Value;
+        using Parent_t = Container;
 
         Slider_with_display();
+
+        void compute_view_from_data() override;
 
         auto& textbox() { return _textbox; }
         auto& slider () { return _slider; }

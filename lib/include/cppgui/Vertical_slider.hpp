@@ -56,6 +56,7 @@ namespace cppgui {
             void define_range(const Range<Value> &);
             void define_range(const Range<Value> &, const Value &step_major, const Value &step_minor);
             void set_value(const Value &);
+            auto value() -> Value;
 
             void on_value_changed(Value_changed_handler);
 
@@ -95,6 +96,7 @@ namespace cppgui {
             void drag_thumb      (const Point &);
 
             void change_value(const Value &);
+            void notify_value_change();
             void update_thumb_pos();
 
             auto top_of_slide   () const -> Rectangle;

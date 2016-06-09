@@ -44,7 +44,15 @@ namespace cppgui {
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::set_value(const Value &val)
     {
         assert(val >= _range.from && val <= _range.to);
+        
         _value = val;
+    }
+
+    template <class Config, typename ValueType>
+    template <class Class, bool With_layout>
+    auto _vertical_slider<Config, ValueType>::Base<Class, With_layout>::value() -> Value
+    {
+        return _value;
     }
 
     template <class Config, typename ValueType>
@@ -61,6 +69,12 @@ namespace cppgui {
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::init()
     {
         Widget_t::init();
+
+        /** TODO: the following is potentially problematic, as the event handler might 
+                access another widget that is not initialized yet. The question is whether
+                or not that is legal (or should be made so).
+         */
+        // notify_value_change();
     }
 
     template<class Config, typename ValueType>
@@ -259,9 +273,16 @@ namespace cppgui {
         else if (value > _range.to  ) _value = _range.to;
         else                          _value = value;
 
-        if (_on_value_changed) _on_value_changed(_value);
+        notify_value_change();
 
         update_thumb_pos();
+    }
+
+    template <class Config, typename ValueType>
+    template <class Class, bool With_layout>
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::notify_value_change()
+    {
+        if (_on_value_changed) _on_value_changed(_value);
     }
 
     template <class Config, typename ValueType>
