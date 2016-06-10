@@ -178,9 +178,7 @@ namespace cppgui {
          */
         virtual void gained_focus();
         virtual void loosing_focus();
-
-        // TODO: rename to has_keyboard_focus() ?
-        bool has_focus() { return container()->container_has_focus() && container()->focused_child() == this; }
+        virtual bool has_focus() { return container()->container_has_focus() && container()->focused_child() == this; }
 
         bool is_first_child() { return container()->children().front() == this; }
         bool is_last_child () { return container()->children().back () == this; }

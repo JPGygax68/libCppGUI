@@ -35,27 +35,27 @@ namespace cppgui {
 
     template <class Config, bool With_layout>
     class Root_widget: 
-        public Root_widget__Layouter<Config, With_layout, typename Config::template Root_widget__Updater< Abstract_widget<Config, With_layout> > >,
-        public Config::template Root_widget__Container_updater< Abstract_container<Config, With_layout> >
-        //public Root_widget__Layouter<Config, With_layout, 
-        //    typename Config::template Root_widget__Updater< 
-        //        Container_base<Config, With_layout> > >
+        public Root_widget__Layouter<Config, With_layout, 
+            typename Config::template Root_widget__Container_updater<
+                typename Config::template Root_widget__Updater< 
+                    Container_base<Config, With_layout> > > >
     {
     public:
         //using Renderer = typename GUIConfig::Renderer;
         using Keycode  = typename Config::Keyboard::Keycode;
         using Widget_t = typename Widget<Config, With_layout>;
-        using Abstract_widget_t = typename Abstract_widget<Config, With_layout>;
-        using Canvas_t = typename Abstract_widget_t::Canvas_t;
-        using Abstract_container_t = Abstract_container<Config, With_layout>;
+        //using Abstract_widget_t = typename Abstract_widget<Config, With_layout>;
+        using Canvas_t = typename Widget_t::Canvas_t;
+        //using Abstract_container_t = Abstract_container<Config, With_layout>;
+        using Container_base_t = Container_base<Config, With_layout>;
         //using Font_mapper = typename Config::Font_mapper;
         using Font_handle = typename Canvas_t::Font_handle;
         using Cursor_handle = typename Config::Mouse::Cursor_handle;
 
         // Root_widget(Canvas_t *);
 
-        using Abstract_container_t::add_child;
-        using Abstract_container_t::remove_child;
+        using Container_base_t::add_child;
+        using Container_base_t::remove_child;
 
         void set_background_color(const Color &color) { _bkgnd_clr = color; }
 
@@ -68,6 +68,7 @@ namespace cppgui {
         void compute_view_from_data() override;
 
         // TODO: request mechanism ?
+        bool has_focus() override { return true; } // TODO: return window activation state ?
         bool container_has_focus() override { return true; } // TODO: only return true if owning window is active ?
 
         //void set_focus_to(Widget_t *);
@@ -163,7 +164,7 @@ namespace cppgui {
 
         using Widget_t = Widget<Config, true>;
 
-        auto p() { return static_cast<Root_widget_t*>(static_cast<Root_widget<Config, true>*>(this)); }
+        auto p() { return static_cast<Root_widget_t*>(this); }
 
         virtual void init_layout();
         virtual auto get_minimal_size() -> Extents { return {0, 0}; }
@@ -174,3 +175,11 @@ namespace cppgui {
     };
 
 } // ns cppgui
+
+#define CPPGUI_INSTANTIATE_ROOT_WIDGET(Config, With_layout) \
+    template cppgui::Root_widget<Config, With_layout>; \
+    template cppgui::Root_widget__Layouter<Config, With_layout, \
+        Config::template Root_widget__Container_updater< \
+            Config::template Root_widget__Updater< \
+                cppgui::Container_base<Config, With_layout> > > >;
+

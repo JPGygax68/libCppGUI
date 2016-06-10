@@ -177,12 +177,18 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::key_down(const Keycode &key)
     {
+        this->lock();
+
+        /*
         if (focused_child())
         {
-            this->lock();
             focused_child()->key_down(key);
-            this->unlock();
         }
+        */
+        Container_base_t::key_down( key );
+
+        // TODO: ensure this is called in case of an exception
+        this->unlock();
     }
 
     template<class Config, bool With_layout>
@@ -288,8 +294,12 @@ namespace cppgui {
 } // ns cppgui
 
 
-#define CPPGUI_INSTANTIATE_ROOT_WIDGET(Config, With_layout) \
-    template cppgui::Root_widget<Config, With_layout>; \
-    template typename Config::template Root_widget__Updater< cppgui::Abstract_widget<Config, With_layout> >; \
+/*
+template cppgui::Root_widget<Config, With_layout>; \
+    template cppgui::Config::template Root_widget__Updater< \
+            cppgui::Container_base<Config, With_layout> > >; \
     template cppgui::Root_widget__Layouter<Config, With_layout, \
-        typename Config::template Root_widget__Updater< cppgui::Abstract_widget<Config, With_layout> > >;
+        typename Config::template Root_widget__Updater< \
+            cppgui::Container_base<Config, With_layout> > >;
+
+*/
