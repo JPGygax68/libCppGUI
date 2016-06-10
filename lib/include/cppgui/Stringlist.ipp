@@ -119,10 +119,12 @@ namespace cppgui {
 
         // fill(canvas, offset, Canvas_t::rgba_to_native({1, 1, 1, 1}) );
 
-        draw_border(canvas, offset);
+        draw_border(canvas, this->rectangle(), offset);
 
         // Render the separator between the scrollbar and the content rectangle
-        draw_vert_separator(canvas, offset, _sbar_separator, _vert_sep_pos);
+        canvas->fill_rect(offset.x, offset.y + _vert_sep_pos, this->extents().w, _sbar_separator.width, 
+            Canvas_t::rgba_to_native(_sbar_separator.color));
+        //draw_vert_separator(canvas, offset, _sbar_separator, _vert_sep_pos);
 
         // Render the scrollbar (delegate to the container)
         Container_base_t::render(canvas, offset);
@@ -539,12 +541,7 @@ namespace cppgui {
     template<class Class, class Parent>
     auto _stringlist<Config>::Layouter<Class, true, Parent>::get_minimal_size() -> Extents
     {
-        /** The get_minimal_size() method is intended to be called recursively
-        by containers, or from a container's layout() method to help it
-        decide how to place and size its children.
-        */
-
-        return {};
+        return { 100, 100 }; // TODO
     }
 
     template<class Config>

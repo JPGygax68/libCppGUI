@@ -89,7 +89,7 @@ namespace cppgui {
     template<class Config, bool With_layout, class Pane>
     void Scrollbox<Config, With_layout, Pane>::render(Canvas_t *canvas, const Point &offset)
     {
-        Rectangle r { rectangle() + offset };
+        Rectangle r { this->rectangle() + offset };
 
         canvas->set_clipping_rect(r.pos.x, r.pos.y, r.ext.w, r.ext.h);
 
@@ -97,9 +97,9 @@ namespace cppgui {
 
         canvas->cancel_clipping();
 
-        draw_border(canvas, offset); //, _border.width, _border.color);
+        draw_border(canvas, this->rectangle(), offset); //, _border.width, _border.color);
 
-        fill_rect(canvas, { _vert_sep_pos, (Position) _border.width, _separator.width, extents().h - 2 * _border.width }, 
+        fill_rect(canvas, { _vert_sep_pos, this->_border.width, _separator.width, this->extents().h - 2 * this->_border.width }, 
             r.pos, canvas->rgba_to_native(_separator.color) );
     }
 

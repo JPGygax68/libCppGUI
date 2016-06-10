@@ -3,7 +3,7 @@
 //#include <cppgui/Resource_mapper.hpp>
 //#include <cppgui/Default_font_mapper.hpp>
 #include <cppgui/Widget.hpp>
-#include <cppgui/Container.hpp>
+#include <cppgui/Container_base.hpp>
 #include <cppgui/Root_widget.hpp>
 #include <cppgui/Default_font.hpp>
 

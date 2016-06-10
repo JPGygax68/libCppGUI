@@ -21,7 +21,7 @@
 #include <stack>
 
 #include "./Widget.hpp"
-#include "./Container.hpp"
+#include "./Container_base.hpp"
 
 namespace cppgui {
 
@@ -37,6 +37,9 @@ namespace cppgui {
     class Root_widget: 
         public Root_widget__Layouter<Config, With_layout, typename Config::template Root_widget__Updater< Abstract_widget<Config, With_layout> > >,
         public Config::template Root_widget__Container_updater< Abstract_container<Config, With_layout> >
+        //public Root_widget__Layouter<Config, With_layout, 
+        //    typename Config::template Root_widget__Updater< 
+        //        Container_base<Config, With_layout> > >
     {
     public:
         //using Renderer = typename GUIConfig::Renderer;
@@ -130,7 +133,7 @@ namespace cppgui {
     struct Default__Root_widget__Container_updater: public Parent
     {
         using Widget_t = Widget<Config, With_layout>;
-        using Container_t = Container<Config, With_layout>;
+        using Container_base_t = Container_base<Config, With_layout>;
         using Root_widget_t = Root_widget<Config, With_layout>;
 
         // Container_updater contract

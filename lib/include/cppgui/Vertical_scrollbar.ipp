@@ -58,7 +58,7 @@ namespace cppgui {
     template<class Impl, class Config, bool With_layout>
     void Vertical_scrollbar_base<Impl, Config, With_layout>::init()
     {
-        Container_t::init();
+        Container_base_t::init();
 
         _slide_bgcol        .translate( root_widget()->canvas() );
         _thumb_color        .translate( root_widget()->canvas() );
@@ -85,7 +85,7 @@ namespace cppgui {
         fill_rect(canvas, _thumb_rect, offset + position(), _thumb_hovered ? _thumb_hovered_color.get() : _thumb_color.get() );
 
         // Children: up and down buttons
-        Container_t::render(canvas, offset);
+        Container_base_t::render(canvas, offset);
     }
 
     // TODO: test!!
@@ -95,7 +95,7 @@ namespace cppgui {
     {
         define_values(full, shown);
         recalc_thumb();
-        invalidate();
+        this->invalidate();
     }
 
     template<class Impl, class Config, bool With_layout>
@@ -139,7 +139,7 @@ namespace cppgui {
             }
         }
 
-        Container_t::mouse_button(pos, button, state, clicks);
+        Container_base_t::mouse_button(pos, button, state, clicks);
     }
 
     template<class Impl, class Config, bool With_layout>
@@ -160,7 +160,7 @@ namespace cppgui {
             notify_drag_navigation(pos.y - _drag_anchor_pos); // TODO: rename method ?
         }
         else
-            Container_t::mouse_motion(pos);
+            Container_base_t::mouse_motion(pos);
     }
 
     template<class Impl, class Config, bool With_layout>
@@ -178,7 +178,7 @@ namespace cppgui {
             _thumb_hovered = false;
         }
 
-        Container_t::mouse_exit();
+        Container_base_t::mouse_exit();
     }
 
     template<class Impl, class Config, bool With_layout>

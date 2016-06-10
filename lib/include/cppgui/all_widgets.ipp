@@ -25,8 +25,8 @@
 #include "./Canvas.ipp"
 #include "./layouting.ipp" // TODO: obsolete ?
 #include "./layout_managers.ipp"
-#include "./Widget.ipp"
 #include "./Box.ipp"
+#include "./Widget.ipp"
 #include "./Button.ipp"
 #include "./Glyph_button.ipp"
 #include "./Label.ipp"
@@ -34,7 +34,7 @@
 #include "./Checkbox.ipp"
 #include "./Abstract_container.ipp"
 #include "./Container_base.ipp"
-#include "./Container.ipp"
+//#include "./Container.ipp"
 #include "./Vertical_scrollbar.ipp"
 //#include "./List_pane.ipp"
 #include "./Scrollbox.ipp"

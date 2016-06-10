@@ -203,9 +203,9 @@ namespace cppgui {
             // The mouse holder expects mouse positions as relative to its own origin,
             // so we get its absolute position here and store it as the "capture offset"
             Point offset = holder->position();
-            for (auto cont = holder->container(); cont != this; cont = static_cast<Container_t*>(cont)->container())
+            for (auto cont = static_cast<Container_base_t*>(holder)->container(); cont != this; cont = static_cast<Container_base_t*>(cont)->container())
             {
-                offset += static_cast<Container_t*>(cont)->position();
+                offset += static_cast<Container_base_t*>(cont)->position();
             }
 
             _capture_offset = offset;
@@ -257,7 +257,7 @@ namespace cppgui {
     template<class Config, class Parent>
     void Root_widget__Layouter<Config, true, Parent>::layout()
     {
-        p()->layout_children(); 
+        p()->layout_children( p()->extents() ); 
     }
 
     template<class Config, class Parent>

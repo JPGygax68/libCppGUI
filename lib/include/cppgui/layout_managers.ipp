@@ -40,7 +40,7 @@ namespace cppgui
     }
 
     template <class Config>
-    auto layouting<Config>::Manager::minimal_size_horizontal(Container_t &cntnr) -> Extents
+    auto layouting<Config>::Manager::minimal_size_horizontal(Abstract_container_t &cntnr) -> Extents
     {
         Extents result; // result.w = 0, result.h = 0;
 
@@ -71,7 +71,7 @@ namespace cppgui
     }
 
     template <class Config>
-    auto layouting<Config>::Header_content::get_minimal_size(Container_t &cntnr) -> Extents
+    auto layouting<Config>::Header_content::get_minimal_size(Abstract_container_t &cntnr) -> Extents
     {
         Extents result;
 
@@ -94,10 +94,8 @@ namespace cppgui
     }
     
     template <class Config>
-    void layouting<Config>::Header_content::layout(Container_t &cntnr)
+    void layouting<Config>::Header_content::layout(Abstract_container_t &cntnr, const Extents &ext)
     {
-        auto ext = cntnr.extents();
-
         Widget_t *header  = cntnr.children()[0];
         Widget_t *content = cntnr.children()[1];
 
@@ -108,7 +106,7 @@ namespace cppgui
         h = header->get_minimal_size().h;
 
         header->set_position({ this->_padding[3], y });
-        header->set_extents ({ ext.w - this->_padding[3] - this->_padding[2], h });
+        header->set_extents ({ ext.w - this->_padding[3] - this->_padding[1], h });
         y += h + this->_spacing;
         h_rem -= h + this->_spacing;
 
@@ -119,7 +117,7 @@ namespace cppgui
     }
 
     template <class Config>
-    auto layouting<Config>::Content_footer::get_minimal_size(Container_t &cntnr) -> Extents
+    auto layouting<Config>::Content_footer::get_minimal_size(Abstract_container_t &cntnr) -> Extents
     {
         // TODO: this is identical to Header_content::get_minimal_size(): move to helper method in parent class
 
@@ -142,10 +140,8 @@ namespace cppgui
     }
 
     template <class Config>
-    void layouting<Config>::Content_footer::layout(Container_t &cntnr)
+    void layouting<Config>::Content_footer::layout(Abstract_container_t &cntnr, const Extents &ext)
     {
-        auto ext = cntnr.extents();
-
         Widget_t *content = cntnr.children()[0];
         Widget_t *footer  = cntnr.children()[1];
 
@@ -165,16 +161,14 @@ namespace cppgui
     }
 
     template <class Config>
-    auto layouting<Config>::Content_tail::get_minimal_size(Container_t &cntnr) -> Extents
+    auto layouting<Config>::Content_tail::get_minimal_size(Abstract_container_t &cntnr) -> Extents
     {
         return minimal_size_horizontal(cntnr);
     }
 
     template <class Config>
-    void layouting<Config>::Content_tail::layout(Container_t &cntnr)
+    void layouting<Config>::Content_tail::layout(Abstract_container_t &cntnr, const Extents &ext)
     {
-        auto ext = cntnr.extents();
-
         Widget_t *content = cntnr.children()[0];
         Widget_t *tail    = cntnr.children()[1];
 
@@ -196,7 +190,7 @@ namespace cppgui
     }
 
     template <class Config>
-    auto layouting<Config>::Stack::get_minimal_size(Container_t &cntnr) -> Extents
+    auto layouting<Config>::Stack::get_minimal_size(Abstract_container_t &cntnr) -> Extents
     {
         Extents result; // result.w = 0, result.h = 0;
 
@@ -219,10 +213,8 @@ namespace cppgui
     }
 
     template <class Config>
-    void layouting<Config>::Stack::layout(Container_t &cntnr)
+    void layouting<Config>::Stack::layout(Abstract_container_t &cntnr, const Extents &ext)
     {
-        auto ext = cntnr.extents();
-
         Position y = 0; //_padding[0];
         Position x = 0; //_padding[3];
 
@@ -238,16 +230,14 @@ namespace cppgui
     }
 
     template <class Config>
-    auto layouting<Config>::Left_to_right::get_minimal_size(Container_t &cntnr) -> Extents
+    auto layouting<Config>::Left_to_right::get_minimal_size(Abstract_container_t &cntnr) -> Extents
     {
         return minimal_size_horizontal(cntnr);
     }
 
     template <class Config>
-    void layouting<Config>::Left_to_right::layout(Container_t &cntnr)
+    void layouting<Config>::Left_to_right::layout(Abstract_container_t &cntnr, const Extents &ext)
     {
-        auto ext = cntnr.extents();
-
         Position x = this->_padding[3];
 
         auto n = 0;
@@ -264,6 +254,42 @@ namespace cppgui
                 x += child->extents().w;
             }
         }
+    }
+
+    template <class Config>
+    auto layouting<Config>::Left_center_right::get_minimal_size(Abstract_container_t &cntnr) -> Extents
+    {
+        assert(cntnr.children().size() == 3);
+
+        return minimal_size_horizontal(cntnr);
+    }
+
+    template <class Config>
+    void layouting<Config>::Left_center_right::layout(Abstract_container_t &cntnr, const Extents &ext)
+    {
+        assert(cntnr.children().size() == 3);
+
+        auto h_inner = ext.h - this->_padding[0] - this->_padding[2];
+
+        // Left
+        auto child = cntnr.children()[0];
+        auto minsz = child->get_minimal_size();
+        child->set_position({ this->_padding[3], this->_padding[0] });
+        child->set_extents({ minsz.w, h_inner });
+        auto x1 = this->_padding[3] + minsz.w;
+
+        // Right
+        child = cntnr.children()[2];
+        minsz = child->get_minimal_size();
+        child->set_position({ ext.w - this->_padding[1] - child->get_minimal_size().w });
+        child->set_extents ({ minsz.w, h_inner });
+        auto x2 = ext.w - minsz.w - this->_padding[1];
+
+        // Center
+        x1 += this->_spacing, x2 -= this->_spacing;
+        child = cntnr.children()[1];
+        child->set_position({ x1, this->_padding[1] });
+        child->set_extents ({ x2 - x1, h_inner });
     }
 
 } // ns cppgui

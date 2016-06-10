@@ -17,7 +17,10 @@
     limitations under the License.
 */
 
+#include <memory>
+
 #include "./Widget.hpp"
+#include "./layout_managers.hpp"
 
 namespace cppgui {
 
@@ -90,7 +93,7 @@ namespace cppgui {
 
     template <class Config, bool With_layout> class Container;
 
-    // Container_updater aspect
+    // Container_updater aspect -------------------------------------
 
     // IMPORTANT! This is *different* from the "Updater" aspect, which belongs to Widgets!
 
@@ -108,21 +111,44 @@ namespace cppgui {
         virtual auto container_root_widget() -> Root_widget_t * = 0;
     };
 
-    template <class Config, class Parent> 
-    struct Abstract_container__Layouter<Config, true, Parent>: public Parent
-    {
-        class Container_t: public Container<Config, true> { friend struct Abstract_container__Layouter; };
-        using Widget_t = Widget<Config, true>;
+    // Layouter aspect ----------------------------------------------
 
-        auto p() { return static_cast<Container_t*>(static_cast<Container<Config, true>*>(this)); }
+    // Dummy implementation
+
+    template <class Config, class Parent> 
+    struct Abstract_container__Layouter<Config, false, Parent>: public Parent { };
+
+    // Real implementation
+
+    template <class Config, class Parent> 
+    struct Abstract_container__Layouter<Config, true, Parent>: public Box__Layouter<Config, true, Parent>
+    {
+        using Widget_t = typename Widget<Config, true>;
+        class Abstract_container_t: public Abstract_container<Config, true> { friend struct Abstract_container__Layouter; };
+
+        template<class ManagerType> void set_layout_manager()
+        {
+            _manager.reset( new ManagerType{} ); 
+            _manager->set_padding(this->_padding); // TODO: should padding really be a member of Container ?
+        };
+        auto layout_manager() { return _manager.get(); }
 
         void init_children_layout();
-        void layout_children();
+        auto compute_minimal_size() -> Extents;
+        void layout_children(const Extents &);
 
+    protected:
         bool contains_widget(Widget_t *);
+
+    private:
+        auto p() { return static_cast<Abstract_container_t*>(static_cast<Abstract_container<Config, true>*>(this)); }
+
+        std::unique_ptr<typename layouting<Config>::Manager> _manager;
     };
 
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_ABSTRACT_CONTAINER(Config, With_layout) \
-    template cppgui::Abstract_container<Config, With_layout>;
+    template cppgui::Abstract_container<Config, With_layout>; \
+    template cppgui::Abstract_container__Layouter<Config, With_layout, cppgui::Abstract_container<Config, With_layout> >; \
+    CPPGUI_INSTANTIATE_BORDERED_BOX(Config, With_layout, cppgui::Nil_struct);

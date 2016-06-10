@@ -26,34 +26,41 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout, class Parent>
-    void Bordered_box<Config, With_layout, Parent>::draw_border(Canvas_t *canvas, const Point &offset)
+    void Bordered_box<Config, With_layout, Parent>::draw_border(Canvas_t *canvas, const Rectangle &rect, const Point & offset)
     {
         auto b = _border.width;
 
         if (b > 0)
         {
-            const auto &rect = p()->rectangle();
-
             auto ntvclr = Canvas_t::rgba_to_native( _border.color );
 
             auto x1 = rect.left(), y1 = rect.top(), x2 = rect.right(), y2 = rect.bottom();
             auto w = rect.ext.w, h = rect.ext.h;
 
-            auto d = (Position_delta) b;
+            auto d = b;
 
+            canvas->fill_rect(offset.x + x1 + d, offset.y + y1    ,  w - b,     b, ntvclr);
+            canvas->fill_rect(offset.x + x2 - d, offset.y + y1 + d,      b, h - b, ntvclr);
+            canvas->fill_rect(offset.x + x1    , offset.y + y2 - d,  w - b,     b, ntvclr);
+            canvas->fill_rect(offset.x + x1    , offset.y + y1    ,      b, h - b, ntvclr);
+
+            /*
             fill_rect(canvas, offset + Point{ x1 + d, y1     }, { w - b,     b }, ntvclr); // top
             fill_rect(canvas, offset + Point{ x2 - d, y1 + d }, {     b, h - b }, ntvclr); // right
             fill_rect(canvas, offset + Point{ x1    , y2 - d }, { w - b,     b }, ntvclr); // bottom
             fill_rect(canvas, offset + Point{ x1    , y1     }, {     b, h - b }, ntvclr); // left
+            */
         }
     }
 
+    /*
     template<class Config, bool With_layout, class Parent>
     void Bordered_box<Config, With_layout, Parent>::draw_vert_separator(Canvas_t * canvas, const Point & offset, const Separator & sep, Position at)
     {
-        fill_rect(canvas, { at, (Position) _border.width, sep.width, extents().h - 2 * _border.width }, 
-            position() + offset, Canvas_t::rgba_to_native(sep.color) );
+        fill_rect(canvas, { at, _border.width, sep.width, this->extents().h - 2 * _border.width }, 
+            this->position() + offset, Canvas_t::rgba_to_native(sep.color) );
     }
+    */
 
     // Layouter aspect ----------------------------------------------
 

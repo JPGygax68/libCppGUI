@@ -231,6 +231,27 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
+    template <class Config, class Parent>
+    auto Abstract_container__Layouter<Config, true, Parent>::compute_minimal_size() -> Extents
+    {
+        assert( _manager );
+
+        return _manager->get_minimal_size( *p());
+    }
+
+    template <class Config, class Parent>
+    void Abstract_container__Layouter<Config, true, Parent>::layout_children(const Extents &ext)
+    {
+        assert( _manager );
+
+        _manager->layout( *p(), ext);
+
+        for (auto child : p()->children())
+        {
+            child->layout();
+        }
+    }
+
     template<class Config, class Parent>
     void Abstract_container__Layouter<Config, true, Parent>::init_children_layout()
     {
@@ -241,26 +262,8 @@ namespace cppgui {
     }
 
     template<class Config, class Parent>
-    void Abstract_container__Layouter<Config, true, Parent>::layout_children()
-    {
-        // TODO: this algorithm, and the whole method, will probably become obsolete as real
-        //  layouting gets implemented
-
-        for (auto child : p()->children())
-        {
-            // EXPERIMENTAL: obtain minimum size and extend accordingly
-            auto min_ext = child->get_minimal_size(), cur_ext = child->extents();
-            if (child->extents().w == 0 && child->extents().h == 0)
-            {
-                child->set_extents({ std::max(min_ext.w, cur_ext.w), std::max(min_ext.h, cur_ext.h) });
-            }
-            child->layout();
-        }
-    }
-
-    template<class Config, class Parent>
     bool Abstract_container__Layouter<Config, true, Parent>::contains_widget(Widget_t *widget)
-        // Recursively check whether this or a descendant widget has captured the mouse.
+        // Recursively check whether this or a descendant widget contains the specified widget.
     {
         for (auto child: p()->_children)
         {
@@ -269,7 +272,7 @@ namespace cppgui {
                 return true;
             }
 
-            auto cont = dynamic_cast<Abstract_container<Config, true>*>(child);
+            auto cont = dynamic_cast<decltype(this)>(child);
             if (cont && cont->contains_widget( widget )) 
             {
                 return true;

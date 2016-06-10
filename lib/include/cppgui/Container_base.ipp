@@ -21,28 +21,6 @@
 
 namespace cppgui {
 
-    // Internal templated namespace ---------------------------------
-
-    template <class Config>
-    template <class Parent>
-    void _container_base<Config>::Layouter<true, Parent>::init_layout()
-    {
-        for (auto child: p()->children())
-        {
-            child->init_layout();
-        }
-    }
-
-    template <class Config>
-    template <class Parent>
-    void _container_base<Config>::Layouter<true, Parent>::layout()
-    {
-        for (auto child: p()->children())
-        {
-            child->layout();
-        }
-    }
-
     // Main class ---------------------------------------------------
 
     template<class Config, bool With_layout>
@@ -242,16 +220,70 @@ namespace cppgui {
     {
         if (!handle_key_down(key))
         {
-            container()->child_key_down(key);
+            this->container()->child_key_down(key);
         }
     }
 
     template <class Config, bool With_layout>
     void Container_base<Config, With_layout>::render(Canvas_t *cv, const Point &offs)
     {
-        fill(cv, offs, background_color());
+        fill(cv, offs, this->background_color());
 
-        render_children(cv, offs + position());
+        render_children(cv, offs + this->position());
+    }
+
+    // Container_updater aspect -----------------------------------------------
+
+    template<class Config, bool With_layout, class Parent>
+    void Default__Container_base__Container_updater<Config, With_layout, Parent>::child_invalidated(Widget_t *)
+    {
+        p()->container()->child_invalidated(p());
+    }
+
+    // Layouter aspect --------------------------------------------------------
+
+    template <class Config>
+    template <class Parent>
+    void _container_base<Config>::Layouter<true, Parent>::init_layout()
+    {
+        p()->init_children_layout();
+    }
+
+    template <class Config>
+    template <class Parent>
+    auto _container_base<Config>::Layouter<true, Parent>::get_minimal_size() -> Extents
+    {
+        return p()->compute_minimal_size();
+    }
+
+    template <class Config>
+    template <class Parent>
+    void _container_base<Config>::Layouter<true, Parent>::layout()
+    {
+        p()->layout_children( p()->extents() );
+    }
+
+    template <class Config>
+    template <class Parent>
+    void _container_base<Config>::Layouter<true, Parent>::insert_child(Widget_t *child)
+    {
+        p()->add_child(child);
+
+        layout();
+    }
+
+    template <class Config>
+    template <class Parent>
+    void _container_base<Config>::Layouter<true, Parent>::drop_child(Widget_t *child)
+    {
+        if (this->contains_widget( this->root_widget()->mouse_holder() ))
+        {
+            this->root_widget()->release_mouse();
+        }
+
+        p()->remove_child(child);
+
+        layout();
     }
 
 } // ns cppgui

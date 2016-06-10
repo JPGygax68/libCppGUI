@@ -39,8 +39,7 @@ namespace cppgui {
 
         template<class Parent>
         struct Layouter<false, Parent>: public Parent
-        {
-            
+        {            
         };
 
         // Real implementation
@@ -48,13 +47,23 @@ namespace cppgui {
         template<class Parent>
         struct Layouter<true, Parent>: public Parent
         {
-            void init_layout() override;
+            using Widget_t = typename Widget<Config, true>;
 
+            // Contract
+
+            void init_layout() override;
+            auto get_minimal_size() -> Extents override;
             void layout() override;
+
+            // New methods
+
+            void insert_child(Widget_t *); // TODO: find a better name OR support insertion index
+            void drop_child  (Widget_t *);
 
         private:
             class Container_base_t: public Container_base<Config, true> { friend struct Layouter; };
             auto p() { return static_cast<Container_base_t*>(this); }
+
         };
     };
 
@@ -135,6 +144,6 @@ namespace cppgui {
 
 #define CPPGUI_INSTANTIATE_CONTAINER_BASE(Config, With_layout) \
     template cppgui::Container_base<Config, With_layout>; \
-    template cppgui::Bordered_box<Config, With_layout, cppgui::Container_base<Config, With_layout> >; \
-    template cppgui::Box__Layouter<Config, With_layout, cppgui::Container_base<Config, With_layout> >;
+    CPPGUI_INSTANTIATE_BORDERED_BOX(Config, With_layout, cppgui::Container_base<Config, With_layout>); \
+    CPPGUI_INSTANTIATE_ABSTRACT_CONTAINER(Config, With_layout);
 

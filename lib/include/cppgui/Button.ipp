@@ -63,7 +63,7 @@ namespace cppgui {
     {
         fill(canvas, offs, Canvas_t::rgba_to_native( this->button_face_color() ));
 
-        draw_border(canvas, offs);
+        draw_border(canvas, this->rectangle(), offs);
 
         auto pos = offs + this->position();
 

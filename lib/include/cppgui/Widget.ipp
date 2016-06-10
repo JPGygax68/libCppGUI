@@ -20,7 +20,7 @@
 #include <iostream> // TODO: REMOVE!!
 
 #include "./Widget.hpp"
-#include "./Container.hpp"
+#include "./Container_base.hpp"
 #include "Root_widget.hpp"
 
 namespace cppgui {

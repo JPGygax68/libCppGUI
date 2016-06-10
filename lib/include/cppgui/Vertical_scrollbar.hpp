@@ -17,7 +17,7 @@
     limitations under the License.
 */
 
-#include "./Container.hpp"
+#include "./Container_base.hpp"
 #include "./Glyph_button.hpp"
 #include "./Resource.hpp"
 //#include "./Drag_controller.hpp"
@@ -60,11 +60,11 @@ namespace cppgui {
      */
     template<class Impl, class Config, bool With_layout>
     class Vertical_scrollbar_base: 
-        public Vertical_scrollbar__Layouter<Impl, Config, With_layout, Container<Config, With_layout> >
+        public Vertical_scrollbar__Layouter<Impl, Config, With_layout, Container_base<Config, With_layout> >
     {
     public:
         using Widget_t = typename Widget<Config, With_layout>;
-        using Container_t = typename Container<Config, With_layout>;
+        using Container_base_t = typename Container_base<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
 
         using Native_color = typename Widget_t::Native_color;

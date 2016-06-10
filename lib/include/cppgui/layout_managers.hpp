@@ -17,7 +17,7 @@
     limitations under the License.
 */
 
-#include "./Container.hpp"
+#include "./Abstract_container.hpp"
 
 namespace cppgui
 {
@@ -28,7 +28,7 @@ namespace cppgui
     struct layouting
     {        
         using Widget_t = Widget<Config, true>;
-        using Container_t = Container<Config, true>;
+        using Abstract_container_t = Abstract_container<Config, true>;
 
         class Manager
         {
@@ -36,8 +36,8 @@ namespace cppgui
 
             virtual ~Manager() = default;
 
-            virtual auto get_minimal_size(Container_t &) -> Extents = 0;
-            virtual void layout(Container_t &) = 0;
+            virtual auto get_minimal_size(Abstract_container_t &) -> Extents = 0;
+            virtual void layout(Abstract_container_t &, const Extents &) = 0;
 
             void set_padding(const Padding &);
             void set_padding(Padding &&);
@@ -45,7 +45,7 @@ namespace cppgui
 
         protected:
 
-            auto minimal_size_horizontal(Container_t &) -> Extents;
+            auto minimal_size_horizontal(Abstract_container_t &) -> Extents;
 
             Padding         _padding;
             Length          _spacing = 0; 
@@ -54,29 +54,29 @@ namespace cppgui
         class Header_content: public Manager
         {
         public:
-            auto get_minimal_size(Container_t &) -> Extents override;
-            void layout(Container_t &) override;
+            auto get_minimal_size(Abstract_container_t &) -> Extents override;
+            void layout(Abstract_container_t &, const Extents &) override;
         };
 
         class Content_footer: public Manager
         {
         public:
-            auto get_minimal_size(Container_t &) -> Extents override;
-            void layout(Container_t &) override;
+            auto get_minimal_size(Abstract_container_t &) -> Extents override;
+            void layout(Abstract_container_t &, const Extents &) override;
         };
 
         class Content_tail: public Manager
         {
         public:
-            auto get_minimal_size(Container_t &) -> Extents override;
-            void layout(Container_t &) override;
+            auto get_minimal_size(Abstract_container_t &) -> Extents override;
+            void layout(Abstract_container_t &, const Extents &) override;
         };
 
         class Stack: public Manager
         {
         public:
-            auto get_minimal_size(Container_t &) -> Extents override;
-            void layout(Container_t &) override;
+            auto get_minimal_size(Abstract_container_t &) -> Extents override;
+            void layout(Abstract_container_t &, const Extents &) override;
         };
 
         /** Left_to_right will do exactly what the name says: it will put the elements one after 
@@ -87,8 +87,15 @@ namespace cppgui
         class Left_to_right: public Manager
         {
         public:
-            auto get_minimal_size(Container_t &) -> Extents override;
-            void layout(Container_t &) override;
+            auto get_minimal_size(Abstract_container_t &) -> Extents override;
+            void layout(Abstract_container_t &, const Extents &) override;
+        };
+
+        class Left_center_right: public Manager
+        {
+        public:
+            auto get_minimal_size(Abstract_container_t &) -> Extents override;
+            void layout(Abstract_container_t &, const Extents &) override;
         };
 
     }; // templated ns layout

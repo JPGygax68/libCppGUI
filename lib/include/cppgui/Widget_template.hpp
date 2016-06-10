@@ -18,6 +18,7 @@
 */
 
 #include "./Widget.hpp"
+#include "Box.hpp"
 
 namespace cppgui {
 
@@ -71,7 +72,7 @@ namespace cppgui {
          */
         template<class Class, class Parent>
         struct Layouter<Class, true, Parent>: public 
-            Box__Layouter<Config, With_layout,
+            Box__Layouter<Config, true, 
                 Parent >
         {
             void init_layout() override;

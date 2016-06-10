@@ -39,15 +39,15 @@ namespace cppgui {
         void set_border(const Border &);
         // TODO: set_border( .. one setting per cardinal direction ...)
 
-        void draw_border(Canvas_t *, const Point &offset);
+        void draw_border(Canvas_t *, const Rectangle &, const Point & offset);
 
-        void draw_vert_separator(Canvas_t *canvas, const Point &offset, const Separator &sep, Position at);
+        //void draw_vert_separator(Canvas_t *canvas, const Point &offset, const Separator &sep, Position at);
 
     protected:
         Border      _border {1, {0, 0, 0, 1}}; // TODO: support different borders for each cardinal direction ?
 
-        class Widget_t: public Widget<Config, With_layout> { friend struct Bordered_box; };
-        auto p() { return static_cast<Widget_t*>(static_cast<Widget<Config, With_layout>*>(this)); }
+        //class Abstract_container_t: public Abstract_container<Config, With_layout> { friend struct Bordered_box; };
+        //auto p() { return static_cast<Abstract_container_t*>(this); }
     };
 
     // Bordered_box  Layouter aspect
@@ -74,6 +74,6 @@ namespace cppgui {
 
     Therefore, instead of calling this macro, you may prefer to just copy and adapt its content.
  */
-#define CPPGUI_INSTANTIATE_BORDERED_BOX(Config, With_layout, Class) \
-    template cppgui::Bordered_box<Config, With_layout, Class>; \
-    template cppgui::Box__Layouter<Config, With_layout, Class>;
+#define CPPGUI_INSTANTIATE_BORDERED_BOX(Config, With_layout, ...) \
+    template cppgui::Bordered_box<Config, With_layout, __VA_ARGS__>; \
+    template cppgui::Box__Layouter<Config, With_layout, __VA_ARGS__>;

@@ -59,9 +59,9 @@ namespace cppgui {
             draw_borders(cnv, rectangle(), offset, button_border_width(), border_ntvclr, border_ntvclr, border_ntvclr, border_ntvclr);
         }
         */
-        draw_border(cnv, offset);
+        draw_border(cnv, this->rectangle(), offset);
 
-        auto pos = offset + position();
+        auto pos = offset + this->position();
 
         // Label
         if (!_label.empty())

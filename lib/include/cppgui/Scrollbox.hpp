@@ -35,10 +35,10 @@ namespace cppgui {
     template<class Config, bool With_layout, class Pane> // = Scrollable_pane<Config, With_layout>>
     class Scrollbox: 
         public Scrollbox__Layouter<Config, With_layout, Pane,
-            Bordered_box<Config, With_layout, Container<Config, With_layout> > >
+            Bordered_box<Config, With_layout, Container_base<Config, With_layout> > >
     {
     public:
-        using Container_t = Container<Config, With_layout>;
+        using Container_t = Container_base<Config, With_layout>;
         using Parent_t = Container_t;
         using Canvas_t = typename Canvas<typename Config::Renderer>;
         using Scrollable_pane_t = Pane; // Scrollable_pane<Config, With_layout>;
@@ -105,7 +105,7 @@ namespace cppgui {
     // Base class
 
     template<class Config, bool With_layout>
-    class Scrollable_pane_base: public Container<Config, With_layout>
+    class Scrollable_pane_base: public Container_base<Config, With_layout>
     {
     public:
         //using Navigation_handler = Custom_vertical_scrollbar<Config, With_layout>;
@@ -151,6 +151,8 @@ namespace cppgui {
     };
 
 } // ns cppgui
+
+// TODO: this is very much incomplete!
 
 #define CPPGUI_INSTANTIATE_SCROLLBOX(Config, With_layout, PaneType) \
     template cppgui::Scrollbox          <Config, With_layout, PaneType>;
