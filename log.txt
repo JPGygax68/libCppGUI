@@ -1,3 +1,81 @@
+2016-06-11
+==========
+
+A plan is needed to (already) overhaul the new Layout Managers. The problem is that they are now dependent on a specific type of layouting data (padding + spacing), which a) may not be enough in all cases, and b) is sometimes not needed at all.
+
+### Idea 1
+
+One possibility would be to handle the possible extra layouting parameters by overloading the layouting methods, e.g.: 
+
+- `layout(Container_base &)`
+- `layout(Container_base &, const Padding &)`
+- `layout(Container_base &, const Padding &, Width spacing)`
+- `layout(Container_base &, Width spacing)`
+  
+[and similar for get_minimal_size()]
+
+This would put the burden on the Layouter aspects of specific Container_base descendants to invoke the layout manager with the right parameters.
+
+### Idea 2
+
+Another possibility would be to again overload the layout manager methods, but this time with specialized Container descendants:
+
+- `layout(Container_base &)` (no padding, border, or spacing)
+- `layout(Container<Config, true, Bordered_box> &)` (border only)
+- `layout(Container<Config, true, Bordered_padded_box> &)` (border and padding)
+- `layout(Container<Config, true, Bordered_padded_box_with_margins> &)` (margins, border, padding)
+
+The advantage is that the Layouter aspects no longer have to adapt by themselves. 
+
+Another possible advantage is that fallbacks are possible: a layout manager that does not explicitly support specialized containers would still support the "naked" Container_base. Though that is probably not worth a whole lot in practice, as all layout managers would have to be support all varieties eventually.
+
+### Idea 3
+
+Yet another idea is to define the Box concept in such a way that the layouting algorithms can stay identical whatever box model is being used. This could be achieved by defining methods on the Box concept implementations that abstract away the differences between those implementations, such as:
+
+- `wrapping_width(border) -> Width`: returns the distance between outer and inner rectangle for the given direction (N, E, S, W), OR 
+- `inner_rectangle(const Rectangle &) -> Rectangle`, achieving the same goal in a different way ?
+
+Those methods would typically be inline and static and/or constexpr and thus wouldn't incur any real runtime cost.
+As an added bonus, layout managers could still provided specialized implementations should the need arise.
+
+----
+
+Clearly, idea (3) is the most promising.
+
+Something else is now bothering me about this, it's that layouting managers as currently defined do work that could be used else where, specifically to do the internal layouting of buttons and other types of "boxed" elements. Thinking about it though, there are more differences than similarities, and the work is not complicated anyway. The best way to think about this is probably to add some conviences routines to the Box concept anyway, most efficiently by defining a common CRTP base class, e.g. `Box_model`.
+
+Correction to the above. In fact, with the current concept, the box model will have to be injected at different places in the class inheritance graph: somewhere below Widget<> for non-container widgets, and somewhere below Container_base<> for container widgets.
+
+This means that either
+
+  a) `Widget<>` methods making use of the box model (e.g. `draw_borders()`) need to be given a reference to the specific box instance they are supposed to work with, or
+  b) Box model-related methods be injected below `Widget<>`
+
+The combination of (a) and (b) would be to derive helper classes from Box_model specializations that know about `Widget<>` and can be easily injected at any level.
+
+It would also be conceivable to inject the box model as a component (HAS_A) instead of an ancestor (IS_A), which however leads to the usual problem that empty structs cannot be optimized away from the memory layout.
+
+In fact, that problem is the reason why this project's "pseudo-aspects" were developed, and indeed the `Box` functionality should be treated as an aspect.
+
+So, we need:
+
+- a `Box_model` concept
+- a `Box` aspect, parameterized with the `Box_model` implementation (though it may take on additional parameters later on)
+
+
+2016-06-10/11 (after midnight)
+=============
+
+I tried to simplify the Container hierarchy today and removed the Container<> class, rewiring things so as to keep the compatibility (as far as possible). That introduced a few bugs, which still need to be resolved.
+
+Part of what I've done was to have Root_widget derive from Container instead of from Abstract_container. This may have been a mistake, as Widget includes the ability the be a child of an Abstract_container, which Root_widget does not need. I will probably have to undo that change.
+
+Because of the above mistake, I had considered moving the invalidation locking functionality to the Window class. It may still make sense to do that.
+
+Another thought is that the Window concept implementation should provide compile-time information about the way updating should work - though that may also depend on the graphics adapter, so the exact mechanics are still subject to more thinking and planning.
+
+
 2016-06-08
 ==========
 

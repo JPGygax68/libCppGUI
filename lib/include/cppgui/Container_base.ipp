@@ -202,7 +202,8 @@ namespace cppgui {
                 return true;
             }
             else {
-                return false; // container_take_focus(nullptr);
+                container_take_focus(nullptr);
+                return false;
             }
 
         }

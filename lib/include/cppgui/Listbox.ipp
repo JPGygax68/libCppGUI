@@ -180,7 +180,7 @@ namespace cppgui {
     {
         auto pos = offset + position();
 
-        Length w = extents().w;
+        Length w = this->extents().w;
         Position y = 0;
 
         for (auto i = 0U; ; ) // i < children().size(); i ++)

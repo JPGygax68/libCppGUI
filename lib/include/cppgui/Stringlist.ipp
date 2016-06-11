@@ -122,7 +122,7 @@ namespace cppgui {
         draw_border(canvas, this->rectangle(), offset);
 
         // Render the separator between the scrollbar and the content rectangle
-        canvas->fill_rect(offset.x, offset.y + _vert_sep_pos, this->extents().w, _sbar_separator.width, 
+        canvas->fill_rect(pos.x + _vert_sep_pos, pos.y, _sbar_separator.width, this->extents().h,
             Canvas_t::rgba_to_native(_sbar_separator.color));
         //draw_vert_separator(canvas, offset, _sbar_separator, _vert_sep_pos);
 
