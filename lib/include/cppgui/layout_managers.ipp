@@ -65,7 +65,7 @@ namespace cppgui
             }
         }
 
-        result += cntnr._padding;
+        // result += cntnr._padding; // TODO: use Box Layouter
 
         return result;
     }
@@ -88,7 +88,7 @@ namespace cppgui
 
         result.h += (cntnr.children().size() - 1) * this->_spacing;
 
-        result += cntnr._padding;
+        // result += cntnr._padding;  // TODO: use Box Layouter
 
         return result;
     }
@@ -134,7 +134,7 @@ namespace cppgui
             if (min_sz .w > result.w) result.w = min_sz .w;
         }
 
-        result += cntnr._padding;
+        // result += cntnr._padding;  // TODO: use Box Layouter
 
         return result;
     }
@@ -207,7 +207,7 @@ namespace cppgui
 
         result.h += (cntnr.children().size() - 1) * this->_spacing;
 
-        result += cntnr._padding;
+        // result += cntnr._padding;  // TODO: use Box Layouter
 
         return result;
     }

@@ -23,9 +23,10 @@ set(GENERATED_HEADERS_DIR ${GENERATED_DIR}/headers)
 
 # Rasterized fonts using the GPCFontRasterizer and the GPCBin2C utilities
 
-if (NOT TARGET gpcfontrasterizer)
-    message(FATAL_ERROR "gpcfontrasterizer must be available as a CMake target")
-endif()
+# Should now be installed via Conan
+#if (NOT TARGET gpcfontrasterizer)
+#    message(FATAL_ERROR "gpcfontrasterizer must be available as a CMake target")
+#endif()
 if (NOT TARGET gpcbin2c)
     message(FATAL_ERROR "gpcbin2c must be available as a CMake target")
 endif()
@@ -156,6 +157,7 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Widget_template.hpp              include/cppgui/Widget_template.ipp
 
     include/cppgui/Canvas.hpp                       include/cppgui/Canvas.ipp
+    include/cppgui/Box_model.hpp
     include/cppgui/Widget.hpp                       include/cppgui/Widget.ipp
     include/cppgui/Button.hpp                       include/cppgui/Button.ipp
     include/cppgui/Glyph_button.hpp                 include/cppgui/Glyph_button.ipp

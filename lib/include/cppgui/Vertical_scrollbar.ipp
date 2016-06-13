@@ -29,8 +29,8 @@ namespace cppgui {
 
         //_up_btn  .enable_border(false);
         //_down_btn.enable_border(false);
-        _up_btn  .set_border({0});
-        _down_btn.set_border({0});
+        //_up_btn  .set_border({0});
+        //_down_btn.set_border({0});
 
         _up_btn  .set_glyph(cppgui::Icon_resources<24>::up_arrow  ());
         _down_btn.set_glyph(cppgui::Icon_resources<24>::down_arrow());

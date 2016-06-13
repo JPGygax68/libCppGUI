@@ -19,6 +19,7 @@
 
 #include "./Widget.hpp"
 #include "./Abstract_container.hpp"
+#include "./Box.hpp"
 
 namespace cppgui {
 
@@ -33,19 +34,31 @@ namespace cppgui {
     {
         template <bool With_layout, class Parent> struct Layouter;
 
-        // Layouter ---------------------------------------
+        // Base class -----------------------------------------------
+
+        #define _CPPGUI_INSTANTIATE_CONTAINER_BASE_BASE(Config, With_layout) \
+            template cppgui::_container_base<Config>::template _Base<With_layout>; \
+            template cppgui::Widget<Config, With_layout>; \
+            template cppgui::Abstract_container<Config, With_layout>;
+
+        template <bool With_layout>
+        class _Base: public Widget<Config, With_layout>, public Abstract_container<Config, With_layout>
+        {            
+        };
+
+        // Layouter -------------------------------------------------
 
         // Dummy implementation
 
         template<class Parent>
-        struct Layouter<false, Parent>: public Parent
+        struct Layouter<false, Parent>: Parent
         {            
         };
 
         // Real implementation
 
         template<class Parent>
-        struct Layouter<true, Parent>: public Parent
+        struct Layouter<true, Parent>: Parent
         {
             using Widget_t = typename Widget<Config, true>;
 
@@ -72,12 +85,18 @@ namespace cppgui {
     /** This generic container class exists primarily to combine the functionalities of 
         Abstract_container with those of Widget.
      */
+
+    #define CPPGUI_INSTANTIATE_CONTAINER_BASE(Config, With_layout) \
+        _CPPGUI_INSTANTIATE_CONTAINER_BASE_BASE(Config, With_layout) \
+        template Config::template Container_base__Container_updater< \
+            cppgui::_container_base<Config>::template Layouter<With_layout, \
+                cppgui::_container_base<Config>::template _Base<With_layout> > >;
+
     template <class Config, bool With_layout>
-    class Container_base: 
-        public _container_base<Config>::template Layouter<With_layout,
-            Widget<Config, With_layout> >,
-        public Config::template Container_base__Container_updater< 
-                Abstract_container<Config, With_layout> >
+    class Container_base: public
+        Config::template Container_base__Container_updater<
+            _container_base<Config>::template Layouter<With_layout,
+                _container_base<Config>::template _Base<With_layout> > >
     {
     public:
         using Renderer = typename Config::Renderer;
@@ -128,7 +147,7 @@ namespace cppgui {
     // Container_base_updater aspect
 
     template <class Config, bool With_layout, class Parent>
-    struct Default__Container_base__Container_updater: public Parent 
+    struct Default__Container_base__Container_updater: Parent 
     {
         class Container_base_t: public Container_base<Config, true> { friend struct Default__Container_base__Container_updater; };
         using Widget_t = Widget<Config, true>;
@@ -141,9 +160,3 @@ namespace cppgui {
     };
 
 } // ns cppgui
-
-#define CPPGUI_INSTANTIATE_CONTAINER_BASE(Config, With_layout) \
-    template cppgui::Container_base<Config, With_layout>; \
-    CPPGUI_INSTANTIATE_BORDERED_BOX(Config, With_layout, cppgui::Container_base<Config, With_layout>); \
-    CPPGUI_INSTANTIATE_ABSTRACT_CONTAINER(Config, With_layout);
-

@@ -32,11 +32,20 @@ namespace cppgui {
 
     // Glyph_button declaration 
 
+
+    #define CPPGUI_INSTANTIATE_GLYPH_BUTTON(Config, With_layout) \
+        template cppgui::Glyph_button<Config, With_layout>; \
+        template cppgui::Glyph_button__Layouter<Config, With_layout, \
+            cppgui::Box<Config, With_layout, \
+                cppgui::Simple_box_model< \
+                    cppgui::Widget<Config, With_layout> > > >;
+
     template<class Config, bool With_layout>
-    class Glyph_button: 
-        public Glyph_button__Layouter<Config, With_layout,
-            Bordered_box<Config, With_layout, 
-                Widget<Config, With_layout> > >
+    class Glyph_button: public 
+        Glyph_button__Layouter<Config, With_layout,
+            Box<Config, With_layout,
+                Simple_box_model<
+                    Widget<Config, With_layout> > > >
     {
     public:
         using Widget_t = Widget<Config, With_layout>;
@@ -79,10 +88,9 @@ namespace cppgui {
     // Layouter aspect
 
     template <class Config, class Parent>
-    struct Glyph_button__Layouter<Config, true, Parent>: 
-        public Box__Layouter<Config, true, Parent>
+    struct Glyph_button__Layouter<Config, true, Parent>: Parent
     {
-        Glyph_button__Layouter() { _padding = this->button_padding(); }
+        // Glyph_button__Layouter() { _padding = this->button_padding(); }
 
         void init_layout() override;
         auto get_minimal_size() -> Extents override;
@@ -105,6 +113,3 @@ namespace cppgui {
 
 
 } // ns cppui
-
-#define CPPGUI_INSTANTIATE_GLYPH_BUTTON(Config, With_layout) \
-    template cppgui::Glyph_button<Config, With_layout>;

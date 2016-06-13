@@ -63,7 +63,7 @@ namespace cppgui {
     {
         fill(canvas, offs, Canvas_t::rgba_to_native( this->button_face_color() ));
 
-        draw_border(canvas, this->rectangle(), offs);
+        draw_border(canvas, offs);
 
         auto pos = offs + this->position();
 
@@ -106,7 +106,7 @@ namespace cppgui {
     template<class Config, class Parent>
     auto Button__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
     {
-        return add_padding( _layout.compute_minimal_size() );
+        return _layout.compute_minimal_size(); // add_padding( _layout.compute_minimal_size() );
     }
 
     template<class Config, class Parent>

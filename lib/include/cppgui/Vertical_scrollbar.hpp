@@ -58,9 +58,20 @@ namespace cppgui {
             value, and do a one-way synchronization from that value to the thumb's
             position, under the control of the consumer.
      */
+
+    #define _CPPGUI_INSTANTIATE_VERTICAL_SCROLLBAR_BASE(Config, With_layout, ...) \
+        template cppgui::Vertical_scrollbar_base<__VA_ARGS__, Config, With_layout>; \
+        template cppgui::Vertical_scrollbar__Layouter<__VA_ARGS__, Config, With_layout, \
+            cppgui::Box<Config, With_layout, \
+                cppgui::Simple_box_model< \
+                    cppgui::Container_base<Config, With_layout> > > >
+
     template<class Impl, class Config, bool With_layout>
-    class Vertical_scrollbar_base: 
-        public Vertical_scrollbar__Layouter<Impl, Config, With_layout, Container_base<Config, With_layout> >
+    class Vertical_scrollbar_base: public 
+        Vertical_scrollbar__Layouter<Impl, Config, With_layout, 
+            Box<Config, With_layout, 
+                Simple_box_model<
+                    Container_base<Config, With_layout> > > >
     {
     public:
         using Widget_t = typename Widget<Config, With_layout>;
@@ -193,6 +204,6 @@ namespace cppgui {
 } // ns cppgui
 
 #define CPPGUI_INSTANTIATE_VERTICAL_SCROLLBAR(Config, With_layout) \
+    _CPPGUI_INSTANTIATE_VERTICAL_SCROLLBAR_BASE(Config, With_layout, cppgui::Vertical_scrollbar<Config, With_layout>); \
     template cppgui::Vertical_scrollbar       <Config, With_layout>; \
-    template cppgui::Vertical_scrollbar_base  <cppgui::Vertical_scrollbar<Config, With_layout>, Config, With_layout>; \
     template cppgui::Custom_vertical_scrollbar<Config, With_layout>;

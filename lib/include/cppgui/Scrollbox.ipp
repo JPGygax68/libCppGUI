@@ -97,9 +97,10 @@ namespace cppgui {
 
         canvas->cancel_clipping();
 
-        draw_border(canvas, this->rectangle(), offset); //, _border.width, _border.color);
+        draw_border(canvas, offset); //, _border.width, _border.color);
 
-        fill_rect(canvas, { _vert_sep_pos, this->_border.width, _separator.width, this->extents().h - 2 * this->_border.width }, 
+        fill_rect(canvas, { _vert_sep_pos, this->get_border_width(0), _separator.width, 
+            this->extents().h - this->get_border_width(3) - this->get_border_width(1) }, 
             r.pos, canvas->rgba_to_native(_separator.color) );
     }
 
@@ -138,7 +139,7 @@ namespace cppgui {
         for ( ;; )
         {
             // Compute container extents
-            cont_exts = { exts.w - 2 * p()->_border.width, exts.h - 2 * p()->_border.width };
+            cont_exts = { exts.w - p()->get_border_width(3) - p()->get_border_width(1), exts.h - p()->get_border_width(0) - p()->get_border_width(2) };
             if (have_vert_sbar) cont_exts.w -= p()->_separator.width + vertsb_minsz.w;
             //if (horz_scrollbar) cont_exts.h -= p()->_separator.width + horzsb_minsz.w;
 
@@ -159,15 +160,15 @@ namespace cppgui {
         // Position and layout the components:
 
         // Content pane and its containing rectangle
-        p()->_content_rect = Rectangle { Point { (Position) p()->_border.width, (Position) p()->_border.width }, cont_exts };
+        p()->_content_rect = Rectangle { Point { p()->get_border_width(3), p()->get_border_width(0) }, cont_exts };
         p()->_content->set_position({ p()->_content_rect.pos.x, p()->_content_rect.pos.y });
         p()->_content->layout(); // usually won't do much (already done by compute_and_set_extents()
 
         // Scrollbars and their separators
         if (have_vert_sbar)
         {
-            p()->_vert_sep_pos = exts.w - p()->_border.width - vertsb_minsz.w - p()->_separator.width;
-            p()->_vert_sbar.set_position({ exts.right() - (Position_delta) (vertsb_minsz.w + p()->_border.width), 0 });
+            p()->_vert_sep_pos = exts.w - p()->get_border_width(1) - vertsb_minsz.w - p()->_separator.width;
+            p()->_vert_sbar.set_position({ exts.right() - (vertsb_minsz.w + p()->get_border_width(1)), 0 });
             p()->_vert_sbar.set_extents ({ vertsb_minsz.w, exts.h });
             p()->_vert_sbar.layout();
         }

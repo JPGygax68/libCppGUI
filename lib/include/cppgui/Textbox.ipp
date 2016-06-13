@@ -617,7 +617,7 @@ namespace cppgui {
     template<class Config, class Parent>
     Textbox__Layouter<Config, true, Parent>::Textbox__Layouter()
     {
-        _padding = default_padding();
+        // _padding = default_padding();
     }
 
     template<class Config, class Parent>
@@ -649,8 +649,8 @@ namespace cppgui {
     {
         // TODO: adjust for border, too
         return { 
-            this->_padding[3] + (p()->size() * p()->_mean_char_width) + this->_padding[1], 
-            this->_padding[0] + (p()->_ascent - p()->_descent       ) + this->_padding[2] 
+            /*this->_padding[3] + */ (p()->size() * p()->_mean_char_width) /* + this->_padding[1] */, 
+            /*this->_padding[0] + */ (p()->_ascent - p()->_descent       ) /* + this->_padding[2] */ 
         };
     }
 
@@ -660,8 +660,8 @@ namespace cppgui {
         auto ext = p()->extents();
 
         p()->_inner_rect = {
-            this->_padding[3], this->_padding[0],
-            ext.w - this->_padding[3] - this->_padding[1], ext.h - this->_padding[0] - this->_padding[1]
+            0, 0, // this->_padding[3], this->_padding[0],
+            ext.w /* - this->_padding[3] - this->_padding[1] */, ext.h /* - this->_padding[0] - this->_padding[1] */
         };
 
         p()->_txpos = { p()->_inner_rect.pos.x, p()->_inner_rect.pos.y + p()->_ascent };

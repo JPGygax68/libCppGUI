@@ -17,63 +17,80 @@
     limitations under the License.
 */
 
-#include <array>
-
-#include "./basic_types.hpp"
-#include "./layouting.hpp"
+#include "./Canvas.hpp"
+#include "./Box_model.hpp"
 #include "./Widget.hpp"
 
 namespace cppgui {
 
-    // Forward declarations
+    // Forward declaration
 
-    template<class Config, bool With_layout, class Parent> struct Box__Layouter;
-    
-    // Bordered_box aspect
+    template<class Config, bool With_layout, class Parent> struct Box;
 
+    // Internal templatized namespace
+
+    template<class Config>
+    struct _box
+    {
+        template<bool With_layout, class Parent> struct Layouter;
+
+        using Canvas_t = Canvas<typename Config::Renderer>;
+
+        template<class Class, class Parent, bool HasBorder = Parent::has_border()> 
+        struct Border_drawer: public Parent
+        {
+            // TODO: obtain rectangle on its own instead
+            static void draw_border(Canvas_t *, const Point &offset) {} // default implementation does nothing
+        };
+
+        template<class Class, class Parent> 
+        struct Border_drawer<Class, Parent, true>: Parent
+        {
+            void draw_border(Canvas_t *canvas,  const Point &offset)
+            {
+                auto rect = p()->get_border_rectangle();
+                Width w;
+
+                w = p()->get_border_width(0);
+                this->fill_rect(canvas, rect.pos + Point{w, 0}, {rect.ext.w - w, w}, offset, Canvas_t::rgba_to_native( p()->get_border_color(0) ) );
+                w = p()->get_border_width(1);
+                this->fill_rect(canvas, rect.pos + Point{rect.ext.w - w, 0}, {w, rect.ext.h}, offset, Canvas_t::rgba_to_native( p()->get_border_color(1) ) );
+                w = p()->get_border_width(2);
+                this->fill_rect(canvas, rect.pos + Point{0, rect.ext.h - w}, {rect.ext.w - w, w}, offset, Canvas_t::rgba_to_native( p()->get_border_color(2) ) );
+                w = p()->get_border_width(3);
+                this->fill_rect(canvas, rect.pos, {w, rect.ext.h}, offset, Canvas_t::rgba_to_native( p()->get_border_color(2) ) );
+            }
+
+            auto p() { return static_cast<Class*>(this); }
+        };
+
+        // Layouter aspect ------------------------------------------
+
+        // Dummy implementation (without layouting capabilities)
+        template<class Parent> struct Layouter<false, Parent>: Parent {};
+
+        // Real implementation
+
+        template<class Parent>
+        struct Layouter<true, Parent>: Parent
+        {
+            // TODO
+        };
+
+    };
+
+    /** This is an aspect that must be given a parent that IS_A BoxModel implementation and
+        IS_A Widget<>.
+        TODO: concept checking ?
+     */
     template<class Config, bool With_layout, class Parent>
-    struct Bordered_box: public Parent
+    struct Box: _box<Config>::template Border_drawer< Box<Config, With_layout, Parent>, Parent >
     {
-        using Canvas_t = typename Canvas<typename Config::Renderer>;
+        auto get_inner_rectangle() const -> Rectangle { return this->inner_rectangle( this->extents() ); }
 
-        void set_border(const Border &);
-        // TODO: set_border( .. one setting per cardinal direction ...)
-
-        void draw_border(Canvas_t *, const Rectangle &, const Point & offset);
-
-        //void draw_vert_separator(Canvas_t *canvas, const Point &offset, const Separator &sep, Position at);
-
-    protected:
-        Border      _border {1, {0, 0, 0, 1}}; // TODO: support different borders for each cardinal direction ?
-
-        //class Abstract_container_t: public Abstract_container<Config, With_layout> { friend struct Bordered_box; };
-        //auto p() { return static_cast<Abstract_container_t*>(this); }
     };
 
-    // Bordered_box  Layouter aspect
-
-    template<class Config, class Parent>
-    struct Box__Layouter<Config, true, Parent>: public Parent
-    {
-        void set_padding(Width);
-        //void set_padding(const std::initializer_list<Length> &);
-        void set_padding(const std::array<Width, 4> &);
-
-        void add_padding(Rectangle &);
-        auto add_padding(const Rectangle &) -> Rectangle;
-        void add_padding(Extents &);
-        auto add_padding(const Extents   &) -> Extents;
-
-        Padding     _padding = { 0 };
-    };
+    template<class Config, class With_layout, class Parent> using Box__Layouter = typename _box<Config>::template Layouter<With_layout, Parent>;
 
 } // ns cppgui
 
-/** The following macro may not be of much use, because of the need to pass a templated class
-    as its last parameter - which is only possible, syntactically, via a typedef.
-
-    Therefore, instead of calling this macro, you may prefer to just copy and adapt its content.
- */
-#define CPPGUI_INSTANTIATE_BORDERED_BOX(Config, With_layout, ...) \
-    template cppgui::Bordered_box<Config, With_layout, __VA_ARGS__>; \
-    template cppgui::Box__Layouter<Config, With_layout, __VA_ARGS__>;

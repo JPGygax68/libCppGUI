@@ -37,14 +37,16 @@ namespace cppgui {
         #define _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Config, With_layout, ...) \
             template cppgui::_stringlist<Config>::Base<__VA_ARGS__, With_layout>; \
             template cppgui::_stringlist<Config>::Layouter<__VA_ARGS__, With_layout, \
-                cppgui::Bordered_box<Config, With_layout, \
-                    cppgui::Container_base<Config, With_layout>>>;
+                cppgui::Box<Config, With_layout, \
+                    cppgui::Simple_box_model< \
+                        cppgui::Container_base<Config, With_layout> > > >;
 
         template<class Class, bool With_layout>
         class Base: public 
             Layouter<Class, With_layout, 
-                Bordered_box<Config, With_layout,
-                    Container_base<Config, With_layout> > >
+                Box<Config, With_layout,
+                    Simple_box_model<
+                        Container_base<Config, With_layout> > > >
         {
         public:
             using Widget_t = Widget<Config, With_layout>;

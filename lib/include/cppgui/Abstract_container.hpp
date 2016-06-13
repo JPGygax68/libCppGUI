@@ -28,6 +28,11 @@ namespace cppgui {
 
     /** Container functionality (ability to contain Widgets).
     */
+
+    #define CPPGUI_INSTANTIATE_ABSTRACT_CONTAINER(Config, With_layout) \
+        template cppgui::Abstract_container<Config, With_layout>; \
+        template cppgui::Abstract_container__Layouter<Config, With_layout, cppgui::Nil_struct>;
+
     template <class Config, bool With_layout>
     class Abstract_container: public Config::template Abstract_container_Container_updater<Nil_struct>,
         public Abstract_container__Layouter<Config, With_layout, Nil_struct>
@@ -116,12 +121,12 @@ namespace cppgui {
     // Dummy implementation
 
     template <class Config, class Parent> 
-    struct Abstract_container__Layouter<Config, false, Parent>: public Parent { };
+    struct Abstract_container__Layouter<Config, false, Parent>: Parent { };
 
     // Real implementation
 
     template <class Config, class Parent> 
-    struct Abstract_container__Layouter<Config, true, Parent>: public Box__Layouter<Config, true, Parent>
+    struct Abstract_container__Layouter<Config, true, Parent>: Parent
     {
         using Widget_t = typename Widget<Config, true>;
         class Abstract_container_t: public Abstract_container<Config, true> { friend struct Abstract_container__Layouter; };
@@ -129,7 +134,7 @@ namespace cppgui {
         template<class ManagerType> void set_layout_manager()
         {
             _manager.reset( new ManagerType{} ); 
-            _manager->set_padding(this->_padding); // TODO: should padding really be a member of Container ?
+            //_manager->set_padding(this->_padding); // TODO: should padding really be a member of Container ?
         };
         auto layout_manager() { return _manager.get(); }
 
@@ -147,8 +152,3 @@ namespace cppgui {
     };
 
 } // ns cppgui
-
-#define CPPGUI_INSTANTIATE_ABSTRACT_CONTAINER(Config, With_layout) \
-    template cppgui::Abstract_container<Config, With_layout>; \
-    template cppgui::Abstract_container__Layouter<Config, With_layout, cppgui::Abstract_container<Config, With_layout> >; \
-    CPPGUI_INSTANTIATE_BORDERED_BOX(Config, With_layout, cppgui::Nil_struct);

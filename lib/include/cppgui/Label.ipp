@@ -63,7 +63,7 @@ namespace cppgui {
     template<class Config, class Parent>
     Label__Layouter<Config, true, Parent>::Label__Layouter()
     {
-        set_padding( default_padding() );
+        // set_padding( default_padding() );
     }
 
     template<class Config, class Parent>
@@ -79,13 +79,13 @@ namespace cppgui {
     {
         assert(!p()->text().empty()); // TODO: TENTATIVE RULE: layouting may not occur before conditions are met (font, text must be set) ?
 
-        return _layout.compute_minimal_size(_padding);
+        return _layout.compute_minimal_size( Padding{} ); // TODO _padding);
     }
 
     template<class Config, class Parent>
     void Label__Layouter<Config, true, Parent>::layout()
     {
-        _layout.compute_layout( p()->extents(), _padding);
+        _layout.compute_layout( p()->extents(), Padding{} ); // TODO _padding);
     }
 
 } // ns cppgui

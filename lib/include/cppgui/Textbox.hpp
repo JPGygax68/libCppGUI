@@ -36,11 +36,19 @@ namespace cppgui {
 
     // TODO: do not stretch vertically to fill all available space, instead display a strip with border and padding to fit the font size
 
+    #define CPPGUI_INSTANTIATE_TEXTBOX(Config, With_layout) \
+        template cppgui::Textbox<Config, With_layout>; \
+        template cppgui::Textbox__Layouter<Config, With_layout, \
+            cppgui::Box<Config, With_layout, \
+                cppgui::Simple_box_model< \
+                    cppgui::Widget<Config, With_layout> > > >;
+
     template <class Config, bool With_layout>
-    class Textbox: 
-        public Textbox__Layouter<Config, With_layout, 
-            Bordered_box<Config, With_layout, 
-                Widget<Config, With_layout> > >
+    class Textbox: public 
+        Textbox__Layouter<Config, With_layout, 
+            Box<Config, With_layout, 
+                Simple_box_model<
+                    Widget<Config, With_layout> > > >
     {
     public:
         using Widget_t      = Widget<Config, With_layout>;
@@ -140,8 +148,7 @@ namespace cppgui {
     };
 
     template <class Config, class Parent>
-    struct Textbox__Layouter<Config, true, Parent>: 
-        public Box__Layouter<Config, true, Parent>
+    struct Textbox__Layouter<Config, true, Parent>: Parent
     {
         class Textbox_t: public Textbox<Config, true> { friend struct Textbox__Layouter; };
 
@@ -162,7 +169,3 @@ namespace cppgui {
     };
 
 } // ns cppgui
-
-#define CPPGUI_INSTANTIATE_TEXTBOX(Config, With_layout) \
-    template cppgui::Textbox<Config, With_layout>; \
-    template cppgui::Textbox__Layouter<Config, With_layout, cppgui::Textbox<Config, With_layout>>;

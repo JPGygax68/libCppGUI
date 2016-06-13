@@ -19,6 +19,8 @@
 
 namespace cppgui {
 
+    #ifdef NOT_DEFINED
+
     template<class Config, bool With_layout, class Parent>
     void Bordered_box<Config, With_layout, Parent>::set_border(const Border &border)
     {
@@ -112,5 +114,7 @@ namespace cppgui {
         ext.w += _padding[3] + _padding[1];
         ext.h += _padding[0] + _padding[2];
     }
+
+    #endif
 
 } // ns cppgui

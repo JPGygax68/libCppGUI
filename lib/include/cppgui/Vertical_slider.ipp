@@ -297,7 +297,7 @@ namespace cppgui {
     template <class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::update_thumb_pos()
     {
-        _thumb_pos = (_value - _range.from) * _slide_rect.height() / _range.length();
+        _thumb_pos = static_cast<Position>( (_value - _range.from) * _slide_rect.height() / _range.length() );
         //std::cerr << "value: " << _value << std::endl;
 
         this->invalidate();

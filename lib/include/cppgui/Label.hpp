@@ -22,6 +22,7 @@
 #include "./utils.hpp" // TODO: move to Widget.hpp
 
 #include "./Widget.hpp"
+#include "./Box.hpp"
 
 namespace gpc { namespace fonts {
 
@@ -32,22 +33,26 @@ namespace cppgui {
 
     template <class Config, bool With_layout, class Parent> struct Label__Layouter;
 
-    template <class Config, bool With_layout> class Root_widget;
-
     /** Label widget.
      */
 
     #define CPPGUI_INSTANTIATE_LABEL(Config, With_layout) \
         template cppgui::Label<Config, With_layout>; \
-        _CPPGUI_INSTANTIATE_LABEL_LAYOUTER(Config, With_layout, cppgui::Widget<Config, With_layout>)
+        template cppgui::Label__Layouter<Config, With_layout, \
+            cppgui::Box<Config, With_layout, \
+                cppgui::Simple_box_model< \
+                    cppgui::Widget<Config, With_layout> > > >;
 
     template <class Config, bool With_layout>
-    class Label: public Label__Layouter<Config, With_layout, Widget<Config, With_layout> >
+    class Label: public 
+        Label__Layouter<Config, With_layout, 
+            Box<Config, With_layout, 
+                Simple_box_model< 
+                    Widget<Config, With_layout> > > >
     {
     public:
         using Renderer = typename Config::Renderer;
         //using Font_handle = typename Renderer::font_handle;
-        using Root_widget_t = Root_widget<Config, With_layout>;
         using Widget_t = Widget<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
         using Font_resource = typename Widget_t::Font_resource;
@@ -74,13 +79,8 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    #define _CPPGUI_INSTANTIATE_LABEL_LAYOUTER(Config, With_layout, ...) \
-        template cppgui::Label__Layouter<Config, With_layout, __VA_ARGS__>; \
-        template cppgui::Box__Layouter<Config, With_layout, __VA_ARGS__>;
-
     template <class Config, class Parent>
-    struct Label__Layouter<Config, true, Parent>: 
-        public Box__Layouter<Config, true, Parent>
+    struct Label__Layouter<Config, true, Parent>: Parent
     {
         Label__Layouter();
 

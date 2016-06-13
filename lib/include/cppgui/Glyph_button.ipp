@@ -59,7 +59,7 @@ namespace cppgui {
             draw_borders(cnv, rectangle(), offset, button_border_width(), border_ntvclr, border_ntvclr, border_ntvclr, border_ntvclr);
         }
         */
-        draw_border(cnv, this->rectangle(), offset);
+        draw_border(cnv, offset);
 
         auto pos = offset + this->position();
 
@@ -128,8 +128,8 @@ namespace cppgui {
     auto Glyph_button__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
     {
         return { 
-            _padding[3] + _label_bounds.width () + _spacing + _glyph_min_edge + _padding[1], 
-            _padding[0] + std::max(_label_bounds.height(), _glyph_min_edge)   + _padding[2]
+            /* _padding[3] + */ _label_bounds.width () + _spacing + _glyph_min_edge /* + _padding[1] */, 
+            /* _padding[0] + */ std::max(_label_bounds.height(), _glyph_min_edge)   /* + _padding[2] */
         };
     }
 
@@ -141,8 +141,8 @@ namespace cppgui {
         if (!p()->_label.empty())
         {
             p()->_label_pos = { 
-                (Position) _padding[3], 
-                (Position) ((ext.h - _label_bounds.height()) / 2) + _label_bounds.y_max 
+                0, // _padding[3], 
+                ((ext.h - _label_bounds.height()) / 2) + _label_bounds.y_max 
             };
 
             /* p()->_label_rect = {
@@ -151,21 +151,21 @@ namespace cppgui {
             }; */
 
             p()->_glyph_pos = {
-                (Position) (ext.w - _padding[1] - _glyph_min_edge),
-                (Position) ((ext.h - _glyph_min_edge) / 2) + _glyph_bounds.y_max
+                (ext.w /* - _padding[1] */ - _glyph_min_edge),
+                ((ext.h - _glyph_min_edge) / 2) + _glyph_bounds.y_max
             };
 
         }
         else {
             p()->_glyph_pos = {
-                (Position) ((ext.w - _glyph_bounds.width ()) / 2), // - _glyph_bounds.x_min,
-                (Position) ((ext.h - _glyph_bounds.height()) / 2) + _glyph_bounds.y_max
+                ((ext.w - _glyph_bounds.width ()) / 2), // - _glyph_bounds.x_min,
+                ((ext.h - _glyph_bounds.height()) / 2) + _glyph_bounds.y_max
             };
         }
 
         // Focus rectangle
         // TODO: stylesheet control
-        p()->_focus_rect = add_padding( Rectangle{ p()->extents() } );
+        p()->_focus_rect = p()->extents(); // add_padding( Rectangle{ p()->extents() } );
     }
 
 } // ns cppgui

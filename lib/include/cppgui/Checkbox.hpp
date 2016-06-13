@@ -34,10 +34,20 @@ namespace cppgui {
 
     struct Font_icon_descr;
 
+
+    #define CPPGUI_INSTANTIATE_CHECKBOX(Config, With_layout) \
+        template cppgui::Checkbox<Config, With_layout>; \
+        template cppgui::Checkbox__Layouter<Config, With_layout, \
+            cppgui::Box<Config, With_layout, \
+                cppgui::Simple_box_model< \
+                    cppgui::Widget<Config, With_layout> > > >;
+
     template <class Config, bool With_layout>
-    class Checkbox: 
-        public Checkbox__Layouter<Config, With_layout, 
-            Widget<Config, With_layout> >
+    class Checkbox: public 
+        Checkbox__Layouter<Config, With_layout, 
+            Box<Config, With_layout,
+                Simple_box_model<
+                    Widget<Config, With_layout> > > >
     {
     public:
         using Widget_t      = Widget<Config, With_layout>;
@@ -80,7 +90,7 @@ namespace cppgui {
     };
 
     template <class Config, class Parent>
-    struct Checkbox__Layouter<Config, true, Parent>: public Parent 
+    struct Checkbox__Layouter<Config, true, Parent>: Parent 
     {
         void init_layout() override;
         auto get_minimal_size() -> Extents override;
@@ -108,7 +118,3 @@ namespace cppgui {
     };
 
 } // ns cppgui
-
-#define CPPGUI_INSTANTIATE_CHECKBOX(Config, With_layout) \
-    template cppgui::Checkbox<Config, With_layout>; \
-    template cppgui::Checkbox__Layouter<Config, With_layout, cppgui::Widget<Config, With_layout>>;

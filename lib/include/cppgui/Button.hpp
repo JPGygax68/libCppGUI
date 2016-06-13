@@ -26,13 +26,23 @@ namespace cppgui {
 
     template <class Config, bool With_layout, class Parent> struct Button__Layouter;
 
+
+    #define CPPGUI_INSTANTIATE_BUTTON(Config, With_layout) \
+        template cppgui::Button<Config, With_layout>; \
+        template cppgui::Button__Layouter<Config, With_layout, \
+            cppgui::Box<Config, With_layout, \
+                cppgui::Simple_box_model< \
+                    cppgui::Widget<Config, With_layout> > > >;
+
     /** TODO: how to support changing label (and later on, icon) at runtime without mixing
             in the layouting aspect ?
      */
     template <class Config, bool With_layout>
-    class Button: 
-        public Button__Layouter<Config, With_layout,
-            Bordered_box<Config, With_layout, Widget<Config, With_layout> > >
+    class Button: public 
+        Button__Layouter<Config, With_layout,
+            Box<Config, With_layout, 
+                Simple_box_model<
+                    Widget<Config, With_layout> > > >
     {
     public:
         using Renderer = typename Config::Renderer;
@@ -75,9 +85,9 @@ namespace cppgui {
     class Single_element_layout;
 
     template <class Config, class Parent>
-    struct Button__Layouter<Config, true, Parent>: public Box__Layouter<Config, true, Parent>  
+    struct Button__Layouter<Config, true, Parent>: public Parent
     {
-        Button__Layouter() { _padding = this->button_padding(); }
+        // Button__Layouter() { _padding = this->button_padding(); }
 
         // Layouter contract
 
@@ -119,6 +129,3 @@ namespace cppgui {
     };
 
 } // ns cppgui
-
-#define CPPGUI_INSTANTIATE_BUTTON(Config, With_layout) \
-    template cppgui::Button<Config, With_layout>;

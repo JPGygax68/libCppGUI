@@ -119,7 +119,7 @@ namespace cppgui {
 
         // fill(canvas, offset, Canvas_t::rgba_to_native({1, 1, 1, 1}) );
 
-        draw_border(canvas, this->rectangle(), offset);
+        draw_border(canvas, offset);
 
         // Render the separator between the scrollbar and the content rectangle
         canvas->fill_rect(pos.x + _vert_sep_pos, pos.y, _sbar_separator.width, this->extents().h,
@@ -265,7 +265,8 @@ namespace cppgui {
         Length sb_width = _vert_sbar.extents().w + _sbar_separator.width;
 
         _content_rect = Rectangle{ this->extents() } - 
-            Margins{ this->_border.width, this->_border.width + sb_width, this->_border.width, this->_border.width };
+            Margins{ this->get_border_width(0), this->get_border_width(1) + sb_width, 
+                this->get_border_width(2), this->get_border_width(3) };
     }
 
     template<class Config>
@@ -553,12 +554,12 @@ namespace cppgui {
         auto vertsb_minsz = p()->_vert_sbar.get_minimal_size();
 
         // Vertical scrollbar
-        p()->_vert_sep_pos = exts.w - p()->_border.width - vertsb_minsz.w - p()->_sbar_separator.width;
+        p()->_vert_sep_pos = exts.w - p()->get_border_width(1) - vertsb_minsz.w - p()->_sbar_separator.width;
         p()->_vert_sbar.set_position({ 
-            exts.right() - (vertsb_minsz.w + p()->_border.width), 
-            p()->_border.width 
+            exts.right() - (vertsb_minsz.w + p()->get_border_width(1)), 
+            p()->get_border_width(0)
         });
-        p()->_vert_sbar.set_extents ({ vertsb_minsz.w, exts.h - 2 * p()->_border.width });
+        p()->_vert_sbar.set_extents ({ vertsb_minsz.w, exts.h - p()->get_border_width(0) - p()->get_border_width(2) });
         p()->_vert_sbar.layout();
 
         //Parent::layout();
