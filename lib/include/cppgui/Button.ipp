@@ -106,7 +106,9 @@ namespace cppgui {
     template<class Config, class Parent>
     auto Button__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
     {
-        return _layout.compute_minimal_size(); // add_padding( _layout.compute_minimal_size() );
+        auto bbox = p()->font()->compute_text_extents(0, p()->_label.data(), p()->_label.size() );
+
+        return p()->add_wrapper({ bbox.width(), bbox.height() });
     }
 
     template<class Config, class Parent>

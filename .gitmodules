@@ -25,6 +25,3 @@
 [submodule "external/GPCBin2C"]
 	path = external/GPCBin2C
 	url = git@github.com:JPGygax68/gpcbin2c.git
-[submodule "external/GPCFontRasterizer"]
-	path = external/GPCFontRasterizer
-	url = git@github.com:JPGygax68/GPCFontRasterizer.git

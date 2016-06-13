@@ -20,6 +20,7 @@
 #include <iostream> // TODO: REMOVE!
 
 #include "./Widget.hpp"
+#include "./Box_model.hpp"
 #include "./Box.hpp"
 
 namespace cppgui {
@@ -31,7 +32,7 @@ namespace cppgui {
         template cppgui::Button<Config, With_layout>; \
         template cppgui::Button__Layouter<Config, With_layout, \
             cppgui::Box<Config, With_layout, \
-                cppgui::Simple_box_model< \
+                cppgui::Simple_padded_box_model< 5, \
                     cppgui::Widget<Config, With_layout> > > >;
 
     /** TODO: how to support changing label (and later on, icon) at runtime without mixing
@@ -41,7 +42,7 @@ namespace cppgui {
     class Button: public 
         Button__Layouter<Config, With_layout,
             Box<Config, With_layout, 
-                Simple_box_model<
+                Simple_padded_box_model< 5,
                     Widget<Config, With_layout> > > >
     {
     public:
@@ -81,8 +82,6 @@ namespace cppgui {
     };
 
     // Layouter aspect
-
-    class Single_element_layout;
 
     template <class Config, class Parent>
     struct Button__Layouter<Config, true, Parent>: public Parent

@@ -36,6 +36,12 @@ namespace cppgui {
 
         using Canvas_t = Canvas<typename Config::Renderer>;
 
+        // Border_drawer --------------------------------------------
+
+        /*  Border_drawer is an aspect that needs to be given a Widget<> descendent for a parent.
+            It also uses CRTP.
+         */
+
         template<class Class, class Parent, bool HasBorder = Parent::has_border()> 
         struct Border_drawer: public Parent
         {
@@ -74,7 +80,14 @@ namespace cppgui {
         template<class Parent>
         struct Layouter<true, Parent>: Parent
         {
-            // TODO
+            // TODO: better term than "wrapper"!
+            auto add_wrapper(const Extents &ext) -> Extents
+            {
+                return { 
+                    ext.w + this->get_border_width(3) + this->get_padding(3) + this->get_border_width(1) + this->get_padding(1),
+                    ext.h + this->get_border_width(0) + this->get_padding(0) + this->get_border_width(2) + this->get_padding(2)
+                };
+            }
         };
 
     };
@@ -84,13 +97,17 @@ namespace cppgui {
         TODO: concept checking ?
      */
     template<class Config, bool With_layout, class Parent>
-    struct Box: _box<Config>::template Border_drawer< Box<Config, With_layout, Parent>, Parent >
+    struct Box: 
+        _box<Config>::template Layouter< With_layout,
+            _box<Config>::template Border_drawer<
+                Box<Config, With_layout, Parent >, 
+                Parent > > 
     {
         auto get_inner_rectangle() const -> Rectangle { return this->inner_rectangle( this->extents() ); }
 
     };
 
-    template<class Config, class With_layout, class Parent> using Box__Layouter = typename _box<Config>::template Layouter<With_layout, Parent>;
+    // template<class Config, class With_layout, class Parent> using Box__Layouter = typename _box<Config>::template Layouter<With_layout, Parent>;
 
 } // ns cppgui
 

@@ -189,8 +189,8 @@ Test_window::Test_window(): Parent_t("Test window")
     root_widget()->on_invalidated([this]() { invalidate(); });
 
     root_widget()->init_layout(); // layout() and init() will be called upon by the Window
-                                  //root_widget()->layout();
-                                  //root_widget()->init();
+                                  // root_widget()->layout();
+                                  // root_widget()->init();
 
     init_window(); // will initialize the GUI and must therefore come last here
 }
