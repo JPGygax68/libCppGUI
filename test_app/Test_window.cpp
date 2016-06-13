@@ -176,6 +176,7 @@ Test_window::Test_window(): Parent_t("Test window")
     root_widget()->add_child(&_container2);
 
     root_widget()->set_background_color({ 0, 0.6f, 0.2f, 1 });
+    root_widget()->set_layout_manager<layouting::Nil>();
 
     //root_widget()->add_child(&_menu);
     ////root_widget()->add_child(&_scrollbox);

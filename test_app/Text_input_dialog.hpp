@@ -11,10 +11,10 @@
 */
 
 template <class Config, bool With_layout>
-class Text_input_dialog: public cppgui::Container<Config, With_layout>
+class Text_input_dialog: public cppgui::Container_base<Config, With_layout>
 {
 public:
-    using Parent_t = cppgui::Container<Config, With_layout>;
+    using Parent_t = cppgui::Container_base<Config, With_layout>;
     using Canvas_t = typename cppgui::Widget<Config, With_layout>::Canvas_t;
 
     Text_input_dialog();
@@ -38,13 +38,13 @@ private:
 
     cppgui::Border                  _border = {0};
     cppgui::Rasterized_font         _glyph_font;
-    Container                       _header_bar;
+    Container_base                  _header_bar;
     Label                           _caption_label;
     //Button                          _close_btn;
     Glyph_button                    _close_btn;
-    Container                       _main_body;
+    Container_base                  _main_body;
     Label                           _prompt_label;
-    Container                       _input_row;
+    Container_base                  _input_row;
     Textbox                         _textbox;
     Button                          _ok_btn;
 };

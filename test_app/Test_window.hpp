@@ -37,11 +37,11 @@ public:
 
 private:
     
-    class Slider_with_display: public Container
+    class Slider_with_display: public Container_base
     {
     public:
         using Value = Vertical_slider::Value;
-        using Parent_t = Container;
+        using Parent_t = Container_base;
 
         Slider_with_display();
 
@@ -61,7 +61,7 @@ private:
     Glyph_button                _button2;
     Textbox                     _textbox;
     Checkbox                    _checkbox;
-    Container                   _menu;
+    Container_base              _menu;
     Label                       _menu_header;
     Text_input_dialog_t         _input_dlg;
     Vertical_scrollbar          _vert_scrollbar;   
@@ -74,5 +74,5 @@ private:
     Slider_with_display         _slider1, _slider2, _slider3;
     //Vertical_slider             _vslider1, _vslider2, _vslider3;
 
-    Container                   _container1, _container2;
+    Container_base              _container1, _container2;
 };

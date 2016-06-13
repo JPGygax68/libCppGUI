@@ -19,7 +19,7 @@ Text_input_dialog<Config, With_layout>::Text_input_dialog()
     // TODO: mechanism to choose between available sizes dynamically ?
     _close_btn.set_glyph(cppgui::Icon_resources<16>::close());
     //_close_btn.enable_border(false);
-    _close_btn.set_border({0});
+    //_close_btn.set_border({0});
     _header_bar.add_child(&_caption_label);
     _header_bar.add_child(&_close_btn);
 

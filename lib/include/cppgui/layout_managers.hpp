@@ -51,6 +51,13 @@ namespace cppgui
             Length          _spacing = 0; 
         };
 
+        class Nil: public Manager
+        {
+        public:
+            auto get_minimal_size(Abstract_container_t &) -> Extents override { return {}; }
+            void layout(Abstract_container_t &, const Extents &) override {}
+        };
+
         class Header_content: public Manager
         {
         public:
