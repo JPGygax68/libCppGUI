@@ -28,9 +28,14 @@ namespace cppgui
         }
 
         constexpr auto get_margin(int border) const { return 0; }
+
         constexpr auto get_border_width(int border) const { return 0; }
-        constexpr auto get_border_color(int border) const { return Color{ 0, 0, 0, 1}; } // TODO: configurable!
+        
+        // TODO: indirect via protected method (does not need default values for parameters) ?
+        constexpr auto get_border_color(int border, bool enabled = true, bool hovered = false, bool focused = false) const { return Color{ 0, 0, 0, 1}; }
+        
         constexpr auto get_padding(int border) const { return 0; }
+        
         constexpr auto get_distance(int border) const { return p()->get_margin(border) + p()->get_border_width(border) + p()->get_padding(border); }
 
     private:
@@ -63,6 +68,15 @@ namespace cppgui
         static constexpr bool has_padding() { return true; }
 
         static constexpr auto get_border_width(int /*border*/) { return BorderWidth; }
+
+        auto get_border_color(int border, bool /*enabled*/ = true, bool hovered = false, bool /*focused*/ = false) const
+        {
+            if (hovered)
+                return Color{ 0, 0, 0.5f, 1};
+            else
+                return Color{ 0, 0, 0, 1};
+        }
+
         static constexpr auto get_padding(int /*border*/) { return PaddingWidth; }
     };
 } // ns cppgui
