@@ -97,7 +97,7 @@ namespace cppgui {
         // void change_glyph();
 
     private:
-        class Main: public Class { friend class Glyph_button__Layouter; };
+        struct Main: public Class { friend struct Glyph_button__Layouter; };
         auto p() { return static_cast<Main*>(this); }
 
         void compute_sizes();

@@ -607,29 +607,28 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template<class Config, class Parent>
-    inline void Textbox__Layouter<Config, true, Parent>::init_layout()
-    {
-        compute_text_extents();
-        this->layout();
-    }
-
-    template<class Config, class Parent>
-    Textbox__Layouter<Config, true, Parent>::Textbox__Layouter()
+    template<class Class, class Parent>
+    Textbox__Layouter<Class, true, Parent>::Textbox__Layouter()
     {
         // _padding = default_padding();
     }
 
-    template<class Config, class Parent>
-    inline void Textbox__Layouter<Config, true, Parent>::change_font(const Rasterized_font *font)
+    template<class Class, class Parent>
+    void Textbox__Layouter<Class, true, Parent>::init_layout()
+    {
+        compute_text_extents();
+    }
+
+    template<class Class, class Parent>
+    void Textbox__Layouter<Class, true, Parent>::change_font(const Rasterized_font *font)
     {
         p()->_font = font;
         compute_text_extents();
         this->layout();
     }
 
-    template<class Config, class Parent>
-    inline void Textbox__Layouter<Config, true, Parent>::compute_text_extents()
+    template<class Class, class Parent>
+    void Textbox__Layouter<Class, true, Parent>::compute_text_extents()
     {
         // TODO: free the font handle
 
@@ -644,24 +643,24 @@ namespace cppgui {
         }
     }
 
-    template<class Config, class Parent>
-    inline auto Textbox__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
+    template<class Class, class Parent>
+    auto Textbox__Layouter<Class, true, Parent>::get_minimal_size() -> Extents
     {
         // TODO: adjust for border, too
-        return { 
-            /*this->_padding[3] + */ (p()->size() * p()->_mean_char_width) /* + this->_padding[1] */, 
-            /*this->_padding[0] + */ (p()->_ascent - p()->_descent       ) /* + this->_padding[2] */ 
-        };
+        return this->add_boxing({ 
+            (p()->size() * p()->_mean_char_width), 
+            (p()->_ascent - p()->_descent       ) 
+        });
     }
 
-    template<class Config, class Parent>
-    inline void Textbox__Layouter<Config, true, Parent>::layout()
+    template<class Class, class Parent>
+    void Textbox__Layouter<Class, true, Parent>::layout()
     {
         auto ext = p()->extents();
 
         p()->_inner_rect = {
-            0, 0, // this->_padding[3], this->_padding[0],
-            ext.w /* - this->_padding[3] - this->_padding[1] */, ext.h /* - this->_padding[0] - this->_padding[1] */
+            this->get_padding(3), this->get_padding(0),
+            ext.w - this->get_padding(3) - this->get_padding(1), ext.h - this->get_padding(0) - this->get_padding(2)
         };
 
         p()->_txpos = { p()->_inner_rect.pos.x, p()->_inner_rect.pos.y + p()->_ascent };

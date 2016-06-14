@@ -49,10 +49,9 @@ Test_window::Test_window(): Parent_t("Test window")
     root_widget()->add_child(&_label);
 
     _textbox.set_font(dflt_font);
-    //_textbox.set_position({50, 120});
-    //_textbox.set_extents({ 200, 30 });
+    _textbox.set_position({50, 120});
+    _textbox.set_extents({ 200, 30 });
     _textbox.set_text(U"Abc1234567890");
-    //root_widget()->add_child(&_textbox);
 
     _stringlist.set_font(dflt_font);
     //_stringlist.set_position({ 50, 240 });
@@ -138,7 +137,7 @@ Test_window::Test_window(): Parent_t("Test window")
 
     _scrollbar_pos.set_font(dflt_font);
     _scrollbar_pos.set_position({ 800, 50 });
-    //_scrollbar_pos.set_extents ({ 100, 30 });
+    _scrollbar_pos.set_extents ({ 100, 30 });
     root_widget()->add_child(&_scrollbar_pos);
 
     // Listbox

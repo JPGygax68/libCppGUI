@@ -24,7 +24,7 @@ namespace cppgui {
 
     // Forward declarations 
 
-    template <class Config, bool With_layout, class Parent>
+    template <class Class, bool With_layout, class Parent>
     struct Textbox__Layouter: public Parent
     {
         void font_changed() { static_assert(false, "Concept: Textbox__Layouter::font_changed(): must never be used"); }
@@ -38,17 +38,15 @@ namespace cppgui {
 
     #define CPPGUI_INSTANTIATE_TEXTBOX(Config, With_layout) \
         template cppgui::Textbox<Config, With_layout>; \
-        template cppgui::Textbox__Layouter<Config, With_layout, \
+        template cppgui::Textbox__Layouter<cppgui::Textbox<Config, With_layout>, With_layout, \
             cppgui::Box<Config, With_layout, \
-                cppgui::Simple_box_model< \
-                    cppgui::Widget<Config, With_layout> > > >;
+                cppgui::Fixed_padding_box_model< 3, cppgui::Widget<Config, With_layout> > > >;
 
     template <class Config, bool With_layout>
     class Textbox: public 
-        Textbox__Layouter<Config, With_layout, 
+        Textbox__Layouter<cppgui::Textbox<Config, With_layout>, With_layout, 
             Box<Config, With_layout, 
-                Simple_box_model<
-                    Widget<Config, With_layout> > > >
+                Fixed_padding_box_model< 3, Widget<Config, With_layout> > > >
     {
     public:
         using Widget_t      = Widget<Config, With_layout>;
@@ -142,17 +140,16 @@ namespace cppgui {
 
     // Layouting aspect ---------------------------------------------
 
-    template <class Config, class Parent>
-    struct Textbox__Layouter<Config, false, Parent>: public Parent
+    template <class Class, class Parent>
+    struct Textbox__Layouter<Class, false, Parent>: public Parent
     {
     };
 
-    template <class Config, class Parent>
-    struct Textbox__Layouter<Config, true, Parent>: Parent
+    template <class Class, class Parent>
+    struct Textbox__Layouter<Class, true, Parent>: Parent
     {
-        class Textbox_t: public Textbox<Config, true> { friend struct Textbox__Layouter; };
-
-        auto p() { return static_cast<Textbox_t*>(static_cast<Textbox<Config, true>*>(this)); }
+        class Textbox_t: public Class { friend struct Textbox__Layouter; };
+        auto p() { return static_cast<Textbox_t*>(this); }
 
         Textbox__Layouter();
 
