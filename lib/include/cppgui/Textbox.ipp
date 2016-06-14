@@ -659,8 +659,8 @@ namespace cppgui {
         auto ext = p()->extents();
 
         p()->_inner_rect = {
-            this->get_padding(3), this->get_padding(0),
-            ext.w - this->get_padding(3) - this->get_padding(1), ext.h - this->get_padding(0) - this->get_padding(2)
+            this->get_distance(3), this->get_distance(0),
+            ext.w - this->get_distance(3) - this->get_distance(1), ext.h - this->get_distance(0) - this->get_distance(2)
         };
 
         p()->_txpos = { p()->_inner_rect.pos.x, p()->_inner_rect.pos.y + p()->_ascent };

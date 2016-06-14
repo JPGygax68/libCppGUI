@@ -140,7 +140,7 @@ namespace cppgui {
         if (!p()->_label.empty())
         {
             p()->_label_pos = { 
-                0, // _padding[3], 
+                this->get_distance(3), 
                 ((ext.h - _label_bounds.height()) / 2) + _label_bounds.y_max 
             };
 
@@ -150,7 +150,7 @@ namespace cppgui {
             }; */
 
             p()->_glyph_pos = {
-                (ext.w /* - _padding[1] */ - _glyph_min_edge),
+                (ext.w - this->get_distance(1) - _glyph_min_edge),
                 ((ext.h - _glyph_min_edge) / 2) + _glyph_bounds.y_max
             };
 

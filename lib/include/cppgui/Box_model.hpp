@@ -17,15 +17,18 @@ namespace cppgui
         {
             return { 
                 { 0, 0 }, 
-                { ext.w - p()->get_padding(3) - p()->get_padding(1), ext.h - p()->get_padding(0) - p()->get_padding(2) } 
+                { ext.w - p()->get_distance(3) - p()->get_distance(1), ext.h - p()->get_distance(0) - p()->get_distance(2) } 
             };
         }
 
-        static constexpr auto get_border_width(int border) { return 0; }
-        static constexpr auto get_padding(int border) { return 0; }
+        constexpr auto get_margin(int border) const { return 0; }
+        constexpr auto get_border_width(int border) const { return 0; }
+        constexpr auto get_padding(int border) const { return 0; }
+        constexpr auto get_distance(int border) const { return p()->get_margin(border) + p()->get_border_width(border) + p()->get_padding(border); }
 
     private:
         auto p() { return static_cast<Impl*>(this); }
+        auto p() const { return static_cast<const Impl*>(this); }
     };
     
     template<class Parent>
