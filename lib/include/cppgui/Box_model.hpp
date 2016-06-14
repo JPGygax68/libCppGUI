@@ -38,7 +38,7 @@ namespace cppgui
 
     /** This box model has no border, no margin and only a fixed-width padding.
      */
-    template<class Class, Width Width, class Parent>
+    template<Width Width, class Parent>
     struct Fixed_padding_box_model: Box_model<Simple_box_model<Parent>, Parent>
     {
         static constexpr bool has_padding() { return true; }
