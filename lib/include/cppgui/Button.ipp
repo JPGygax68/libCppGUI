@@ -63,9 +63,9 @@ namespace cppgui {
     {
         fill(canvas, offs, Canvas_t::rgba_to_native( this->button_face_color() ));
 
-        draw_border(canvas, offs);
-
         auto pos = offs + this->position();
+
+        draw_border(canvas, pos);
 
         canvas->render_text(_font.get(), pos.x + _label_origin.x, pos.y + _label_origin.y, _label.data(), _label.size());
 

@@ -21,8 +21,15 @@ namespace cppgui
             };
         }
 
+        constexpr auto border_rectangle(const Extents &ext) const -> Rectangle
+        {
+            // TODO: margins!
+            return { { 0, 0 }, ext };
+        }
+
         constexpr auto get_margin(int border) const { return 0; }
         constexpr auto get_border_width(int border) const { return 0; }
+        constexpr auto get_border_color(int border) const { return Color{ 0, 0, 0, 1}; } // TODO: configurable!
         constexpr auto get_padding(int border) const { return 0; }
         constexpr auto get_distance(int border) const { return p()->get_margin(border) + p()->get_border_width(border) + p()->get_padding(border); }
 
@@ -46,9 +53,16 @@ namespace cppgui
     {
         static constexpr bool has_padding() { return true; }
 
-        // static constexpr auto get_border_width(int /*border*/) { return 0; }
-        
         static constexpr auto get_padding(int /*border*/) { return Width; }
     };
 
+    template<Width BorderWidth, Width PaddingWidth, class Parent>
+    struct Fixed_border_and_padding_box_model: Box_model<Fixed_border_and_padding_box_model<BorderWidth, PaddingWidth, Parent>, Parent>
+    {
+        static constexpr bool has_border () { return true; }
+        static constexpr bool has_padding() { return true; }
+
+        static constexpr auto get_border_width(int /*border*/) { return BorderWidth; }
+        static constexpr auto get_padding(int /*border*/) { return PaddingWidth; }
+    };
 } // ns cppgui

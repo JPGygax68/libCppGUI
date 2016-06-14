@@ -43,12 +43,13 @@ namespace cppgui {
     struct Default_widgets
     {
         template<class Parent> using Default_fixed_padding_box_model = Fixed_padding_box_model<5, Parent>;
+        template<class Parent> using Default_fixed_border_and_padding_box_model = Fixed_border_and_padding_box_model<1, 5, Parent>;
 
         using Widget             = Widget<Config, With_layout>;
         using Root_widget        = Root_widget<Config, With_layout>;
         using Label              = Label<Config, With_layout>;
         using Textbox            = Textbox<Config, With_layout>;
-        using Button             = Button<Config, With_layout, Default_fixed_padding_box_model>;
+        using Button             = Button<Config, With_layout, Default_fixed_border_and_padding_box_model>;
         using Glyph_button       = Glyph_button<Config, With_layout, Default_fixed_padding_box_model>;
         using Checkbox           = Checkbox<Config, With_layout>;
         using Container          = Container<Config, With_layout>;
@@ -63,8 +64,8 @@ namespace cppgui {
 #define CPPGUI_DEFINE_WIDGET_TYPES(Config, With_layout) \
     using Widget                    = cppgui::Widget                    <Config, With_layout>; \
     using Label                     = cppgui::Label                     <Config, With_layout>; \
-    using Button                    = cppgui::Button                    <Config, With_layout, cppgui::Default_widgets<Config, With_layout>::Default_fixed_padding_box_model>; \
-    using Glyph_button              = cppgui::Glyph_button              <Config, With_layout, cppgui::Default_widgets<Config, With_layout>::Default_fixed_padding_box_model>; \
+    using Button                    = cppgui::Button                    <Config, With_layout, cppgui::Default_widgets<Config, With_layout>::Default_fixed_border_and_padding_box_model>; \
+    using Glyph_button              = cppgui::Glyph_button              <Config, With_layout, cppgui::Default_widgets<Config, With_layout>::Default_fixed_border_and_padding_box_model>; \
     using Root_widget               = cppgui::Root_widget               <Config, With_layout>; \
     using Textbox                   = cppgui::Textbox                   <Config, With_layout>; \
     using Checkbox                  = cppgui::Checkbox                  <Config, With_layout>; \
@@ -84,9 +85,9 @@ namespace cppgui {
     CPPGUI_INSTANTIATE_CANVAS                   (Config); \
     CPPGUI_INSTANTIATE_WIDGET                   (Config, With_layout); \
     CPPGUI_INSTANTIATE_LABEL                    (Config, With_layout); \
-    /* CPPGUI_INSTANTIATE_BUTTON(Config, With_layout, cppgui::Default_widgets<Config, With_layout>::Default_fixed_padding_box_model>); */ \
-    template cppgui::Default_widgets<Config, With_layout>::Button; \
-    CPPGUI_INSTANTIATE_GLYPH_BUTTON             (Config, With_layout, cppgui::template Default_widgets<Config, With_layout>::Default_fixed_padding_box_model) \
+    CPPGUI_INSTANTIATE_BUTTON(Config, With_layout, cppgui::Default_widgets<Config, With_layout>::Default_fixed_border_and_padding_box_model); \
+    /* template cppgui::Default_widgets<Config, With_layout>::Button; */ \
+    CPPGUI_INSTANTIATE_GLYPH_BUTTON             (Config, With_layout, cppgui::template Default_widgets<Config, With_layout>::Default_fixed_border_and_padding_box_model) \
     /* template cppgui::Default_widgets<Config, With_layout>::Glyph_button; */ \
     CPPGUI_INSTANTIATE_ROOT_WIDGET              (Config, With_layout); \
     CPPGUI_INSTANTIATE_TEXTBOX                  (Config, With_layout); \

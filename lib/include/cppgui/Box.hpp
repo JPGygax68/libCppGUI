@@ -58,13 +58,13 @@ namespace cppgui {
                 Width w;
 
                 w = p()->get_border_width(0);
-                this->fill_rect(canvas, rect.pos + Point{w, 0}, {rect.ext.w - w, w}, offset, Canvas_t::rgba_to_native( p()->get_border_color(0) ) );
+                this->fill_rect(canvas, { rect.pos + Point{w, 0}, {rect.ext.w - w, w} }, offset, Canvas_t::rgba_to_native( p()->get_border_color(0) ) );
                 w = p()->get_border_width(1);
-                this->fill_rect(canvas, rect.pos + Point{rect.ext.w - w, 0}, {w, rect.ext.h}, offset, Canvas_t::rgba_to_native( p()->get_border_color(1) ) );
+                this->fill_rect(canvas, { rect.pos + Point{rect.ext.w - w, 0}, {w, rect.ext.h} }, offset, Canvas_t::rgba_to_native( p()->get_border_color(1) ) );
                 w = p()->get_border_width(2);
-                this->fill_rect(canvas, rect.pos + Point{0, rect.ext.h - w}, {rect.ext.w - w, w}, offset, Canvas_t::rgba_to_native( p()->get_border_color(2) ) );
+                this->fill_rect(canvas, { rect.pos + Point{0, rect.ext.h - w}, {rect.ext.w - w, w} }, offset, Canvas_t::rgba_to_native( p()->get_border_color(2) ) );
                 w = p()->get_border_width(3);
-                this->fill_rect(canvas, rect.pos, {w, rect.ext.h}, offset, Canvas_t::rgba_to_native( p()->get_border_color(2) ) );
+                this->fill_rect(canvas, { rect.pos, {w, rect.ext.h} }, offset, Canvas_t::rgba_to_native( p()->get_border_color(2) ) );
             }
 
             auto p() { return static_cast<Class*>(this); }
@@ -102,6 +102,7 @@ namespace cppgui {
                 Box<Config, With_layout, Parent >, 
                 Parent > > 
     {
+        auto get_border_rectangle() const -> Rectangle { return this->border_rectangle( this->extents() ); }
         auto get_inner_rectangle() const -> Rectangle { return this->inner_rectangle( this->extents() ); }
 
     };
