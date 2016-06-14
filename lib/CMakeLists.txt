@@ -190,8 +190,7 @@ add_library( ${PROJECT_NAME} STATIC
 
     include/cppgui/GUI_window.hpp                   include/cppgui/GUI_window.ipp
 
-    include/cppgui/all_widgets.hpp
-    include/cppgui/all_widgets.ipp
+    include/cppgui/Default_widgets.hpp              include/cppgui/Default_widgets.ipp
 
     ${FONT_HEADERS} ${FONT_SOURCES}
     ${GENERATED_HEADERS_DIR}/liberationsans_font.h

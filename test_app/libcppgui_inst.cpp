@@ -7,7 +7,7 @@
 #include <cppgui/sdl/Application.ipp>
 template class cppgui::sdl::Application<Test_window>;
 
-#include <cppgui/all_widgets.ipp>
+#include <cppgui/Default_widgets.ipp>
 #include <cppgui/Default_font.ipp>
 
 CPPGUI_INSTANTIATE_WIDGET_TYPES(GUI_configuration, true)

@@ -10,7 +10,7 @@
 using namespace gl;
 
 #include <gpc/gui/gl/renderer.hpp> // TODO: replace with new namespace/naming
-#include <cppgui/all_widgets.hpp>
+#include <cppgui/Default_widgets.hpp>
 #include <cppgui/GUI_window.hpp>
 
 #include <cppgui/sdl/Window.hpp>

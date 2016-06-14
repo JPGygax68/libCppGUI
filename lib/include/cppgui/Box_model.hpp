@@ -11,9 +11,21 @@ namespace cppgui
         static constexpr bool has_border () { return false; };
         static constexpr bool has_padding() { return false; };
 
-        static constexpr auto inner_rectangle(const Extents &ext) { return ext; }
+        // static constexpr auto inner_rectangle(const Extents &ext) { return ext; }
+
+        constexpr auto inner_rectangle(const Extents &ext) const -> Rectangle
+        {
+            return { 
+                { 0, 0 }, 
+                { ext.w - p()->get_padding(3) - p()->get_padding(1), ext.h - p()->get_padding(0) - p()->get_padding(2) } 
+            };
+        }
+
         static constexpr auto get_border_width(int border) { return 0; }
         static constexpr auto get_padding(int border) { return 0; }
+
+    private:
+        auto p() { return static_cast<Impl*>(this); }
     };
     
     template<class Parent>
@@ -24,17 +36,16 @@ namespace cppgui
         //static constexpr auto get_padding(int border) { return 0; }
     };
 
-    template<Width Padding, class Parent>
-    struct Simple_padded_box_model: Box_model<Simple_box_model<Parent>, Parent>
+    /** This box model has no border, no margin and only a fixed-width padding.
+     */
+    template<class Class, Width Width, class Parent>
+    struct Fixed_padding_box_model: Box_model<Simple_box_model<Parent>, Parent>
     {
         static constexpr bool has_padding() { return true; }
 
-        static constexpr auto inner_rectangle(const Extents &ext)
-        {
-            return { Extents{ 0, 0 }, { ext.w - 2 * Padding, ext.h - 2 * Padding } };
-        }
-        static constexpr auto get_border_width(int /*border*/) { return 0; }
-        static constexpr auto get_padding(int /*border*/) { return Padding; }
+        // static constexpr auto get_border_width(int /*border*/) { return 0; }
+        
+        static constexpr auto get_padding(int /*border*/) { return Width; }
     };
 
 } // ns cppgui

@@ -3,7 +3,7 @@
 #include <string>
 
 #include <cppgui/basic_types.hpp>
-#include <cppgui/all_widgets.hpp>
+#include <cppgui/Default_widgets.hpp>
 /*
 #include <cppgui/Container.hpp>
 #include <cppgui/Label.hpp>

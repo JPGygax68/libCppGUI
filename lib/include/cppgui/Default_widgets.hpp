@@ -40,13 +40,13 @@ namespace cppgui {
 
 
     template<class Config, bool With_layout>
-    struct All_widgets
+    struct Default_widgets
     {
         using Widget             = Widget<Config, With_layout>;
         using Root_widget        = Root_widget<Config, With_layout>;
         using Label              = Label<Config, With_layout>;
         using Textbox            = Textbox<Config, With_layout>;
-        using Button             = Button<Config, With_layout>;
+        using Button             = Button<Config, With_layout, 5>;
         using Glyph_button       = Glyph_button<Config, With_layout>;
         using Checkbox           = Checkbox<Config, With_layout>;
         using Container          = Container<Config, With_layout>;
@@ -61,7 +61,7 @@ namespace cppgui {
 #define CPPGUI_DEFINE_WIDGET_TYPES(Config, With_layout) \
     using Widget                    = cppgui::Widget                    <Config, With_layout>; \
     using Label                     = cppgui::Label                     <Config, With_layout>; \
-    using Button                    = cppgui::Button                    <Config, With_layout>; \
+    using Button                    = cppgui::Button                    <Config, With_layout, 5>; \
     using Glyph_button              = cppgui::Glyph_button              <Config, With_layout>; \
     using Root_widget               = cppgui::Root_widget               <Config, With_layout>; \
     using Textbox                   = cppgui::Textbox                   <Config, With_layout>; \
@@ -82,7 +82,7 @@ namespace cppgui {
     CPPGUI_INSTANTIATE_CANVAS                   (Config); \
     CPPGUI_INSTANTIATE_WIDGET                   (Config, With_layout); \
     CPPGUI_INSTANTIATE_LABEL                    (Config, With_layout); \
-    CPPGUI_INSTANTIATE_BUTTON                   (Config, With_layout); \
+    CPPGUI_INSTANTIATE_BUTTON                   (Config, With_layout, 5); \
     CPPGUI_INSTANTIATE_GLYPH_BUTTON             (Config, With_layout); \
     CPPGUI_INSTANTIATE_ROOT_WIDGET              (Config, With_layout); \
     CPPGUI_INSTANTIATE_TEXTBOX                  (Config, With_layout); \

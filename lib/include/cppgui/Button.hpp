@@ -25,24 +25,24 @@
 
 namespace cppgui {
 
-    template <class Config, bool With_layout, class Parent> struct Button__Layouter;
+    template <class Config, bool With_layout, int Padding, class Parent> struct Button__Layouter;
 
 
-    #define CPPGUI_INSTANTIATE_BUTTON(Config, With_layout) \
-        template cppgui::Button<Config, With_layout>; \
-        template cppgui::Button__Layouter<Config, With_layout, \
+    #define CPPGUI_INSTANTIATE_BUTTON(Config, With_layout, Padding) \
+        template cppgui::Button<Config, With_layout, Padding>; \
+        template cppgui::Button__Layouter<Config, With_layout, Padding,\
             cppgui::Box<Config, With_layout, \
-                cppgui::Simple_padded_box_model< 5, \
-                    cppgui::Widget<Config, With_layout> > > >;
+                cppgui::Fixed_padding_box_model< cppgui::Button<Config, With_layout, Padding>, Padding, \
+                cppgui::Widget<Config, With_layout> > > >;
 
     /** TODO: how to support changing label (and later on, icon) at runtime without mixing
             in the layouting aspect ?
      */
-    template <class Config, bool With_layout>
+    template <class Config, bool With_layout, int Padding>
     class Button: public 
-        Button__Layouter<Config, With_layout,
+        Button__Layouter<Config, With_layout, Padding,
             Box<Config, With_layout, 
-                Simple_padded_box_model< 5,
+                Fixed_padding_box_model< Button<Config, With_layout, Padding>, Padding,
                     Widget<Config, With_layout> > > >
     {
     public:
@@ -83,8 +83,8 @@ namespace cppgui {
 
     // Layouter aspect
 
-    template <class Config, class Parent>
-    struct Button__Layouter<Config, true, Parent>: public Parent
+    template <class Config, int Padding, class Parent>
+    struct Button__Layouter<Config, true, Padding, Parent>: public Parent
     {
         // Button__Layouter() { _padding = this->button_padding(); }
 
@@ -108,9 +108,9 @@ namespace cppgui {
         void text_changed();
 
     protected:
-        class Button_t: public Button<Config, true> { friend struct Button__Layouter; };
+        class Button_t: public Button<Config, true, Padding> { friend struct Button__Layouter; };
 
-        auto p() { return static_cast<Button_t*>(static_cast<Button<Config, true>*>(this)); }
+        auto p() { return static_cast<Button_t*>(static_cast<Button<Config, true, Padding>*>(this)); }
         void compute_bounding_box();
 
         Text_bounding_box       _bbox;
@@ -119,8 +119,8 @@ namespace cppgui {
 
     // Nil implementation (must short out interface with main class)
 
-    template <class Config, class Parent>
-    struct Button__Layouter<Config, false, Parent>: public Parent 
+    template <class Config, int Padding, class Parent>
+    struct Button__Layouter<Config, false, Padding, Parent>: public Parent 
     {
         void layout() {} // called from init
         void font_changed() {}
