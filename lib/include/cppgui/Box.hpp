@@ -80,8 +80,7 @@ namespace cppgui {
         template<class Parent>
         struct Layouter<true, Parent>: Parent
         {
-            // TODO: better term than "wrapper"!
-            auto add_wrapper(const Extents &ext) -> Extents
+            auto add_boxing(const Extents &ext) -> Extents
             {
                 return { 
                     ext.w + this->get_border_width(3) + this->get_padding(3) + this->get_border_width(1) + this->get_padding(1),

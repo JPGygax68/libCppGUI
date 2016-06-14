@@ -108,7 +108,7 @@ namespace cppgui {
     {
         auto bbox = p()->font()->compute_text_extents(0, p()->_label.data(), p()->_label.size() );
 
-        return p()->add_wrapper({ bbox.width(), bbox.height() });
+        return p()->add_boxing({ bbox.width(), bbox.height() });
     }
 
     template<class Config, template<class> class BoxModel, class Parent>

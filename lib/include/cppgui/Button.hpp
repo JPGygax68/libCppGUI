@@ -32,7 +32,7 @@ namespace cppgui {
         template cppgui::Button<Config, With_layout, __VA_ARGS__>; \
         template cppgui::Button__Layouter<Config, With_layout, __VA_ARGS__, \
             cppgui::Box<Config, With_layout, \
-                BoxModel< cppgui::Widget<Config, With_layout> > > >;
+                __VA_ARGS__< cppgui::Widget<Config, With_layout> > > >;
 
     /** TODO: how to support changing label (and later on, icon) at runtime without mixing
             in the layouting aspect ?

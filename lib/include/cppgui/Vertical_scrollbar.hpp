@@ -114,7 +114,8 @@ namespace cppgui {
         void update_position(Position); // TODO: assert() against calling this while not at end of navigation ?
 
     protected:
-        using Glyph_button_t = typename Glyph_button<Config, With_layout>;
+        template<class Parent> using Button_box_model = Fixed_padding_box_model<5, Parent>; // TODO: get constant from somewhere
+        using Glyph_button_t = Glyph_button<Config, With_layout, Button_box_model>;
         using Color_resource = typename Widget_t::Color_resource;
 
         void move_thumb_to(Position);

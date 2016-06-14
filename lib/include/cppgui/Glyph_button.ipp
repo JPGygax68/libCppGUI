@@ -21,35 +21,35 @@ namespace cppgui {
 
     // Main class implementation ------------------------------------
 
-    template<class Config, bool With_layout>
-    void Glyph_button<Config, With_layout>::on_pushed(Pushed_handler handler)
+    template<class Config, bool With_layout, template<class> class BoxModel>
+    void Glyph_button<Config, With_layout, BoxModel>::on_pushed(Pushed_handler handler)
     {
         _on_pushed = handler;
     }
 
-    template<class Config, bool With_layout>
-    void Glyph_button<Config, With_layout>::set_glyph(const Icon_glyph &icgl)
+    template<class Config, bool With_layout, template<class> class BoxModel>
+    void Glyph_button<Config, With_layout, BoxModel>::set_glyph(const Icon_glyph &icgl)
     {
         _glyph_font.assign( gpc::fonts::get(icgl.data_store) );
         _glyph_cp  = icgl.code_point;
     }
 
-    template<class Config, bool With_layout>
-    void Glyph_button<Config, With_layout>::init()
+    template<class Config, bool With_layout, template<class> class BoxModel>
+    void Glyph_button<Config, With_layout, BoxModel>::init()
     {
-        if (_label_font.source()) _label_font.translate( root_widget()->canvas() );
+        if (_label_font.source()) _label_font.translate( this->root_widget()->canvas() );
 
         if (_glyph_cp)
         {
-            _glyph_font.translate( root_widget()->canvas() );
+            _glyph_font.translate( this->root_widget()->canvas() );
         }
     }
 
-    template<class Config, bool With_layout>
-    void Glyph_button<Config, With_layout>::render(Canvas_t *cnv, const Point & offset)
+    template<class Config, bool With_layout, template<class> class BoxModel>
+    void Glyph_button<Config, With_layout, BoxModel>::render(Canvas_t *cnv, const Point & offset)
     {
         // Background
-        fill(cnv, offset, rgba_to_native( button_face_color() ));
+        fill(cnv, offset, this->rgba_to_native( this->button_face_color() ));
 
         // Border
         /*
@@ -59,7 +59,7 @@ namespace cppgui {
             draw_borders(cnv, rectangle(), offset, button_border_width(), border_ntvclr, border_ntvclr, border_ntvclr, border_ntvclr);
         }
         */
-        draw_border(cnv, offset);
+        this->draw_border(cnv, offset);
 
         auto pos = offset + this->position();
 
@@ -75,7 +75,7 @@ namespace cppgui {
             cnv->render_text(_glyph_font.get(), pos.x + _glyph_pos.x, pos.y + _glyph_pos.y, &_glyph_cp, 1);
         }
 
-        if (has_focus())
+        if (this->has_focus())
         {
             // TODO: draw the rectangle along the border instead of around the label ?
             auto &r = _focus_rect; // _label_rect.grow({3, 3});
@@ -83,25 +83,24 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Glyph_button<Config, With_layout>::mouse_click(const Point & /*point*/, int button, Count /*count*/)
+    template<class Config, bool With_layout, template<class> class BoxModel>
+    void Glyph_button<Config, With_layout, BoxModel>::mouse_click(const Point & /*point*/, int button, Count /*count*/)
     {
         if (_on_pushed && button == 1) _on_pushed();
     }
-
 
     // Layouter aspect ----------------------------------------------
 
     // TODO: 1) write a layout class that can handle a label + a glyph  2) use it here
 
-    template <class Config, class Parent>
-    void Glyph_button__Layouter<Config, true, Parent>::init_layout()
+    template <class Class, class Parent>
+    void Glyph_button__Layouter<Class, true, Parent>::init_layout()
     {
         compute_sizes();
     }
 
-    template <class Config, class Parent>
-    void Glyph_button__Layouter<Config, true, Parent>::compute_sizes()
+    template <class Class, class Parent>
+    void Glyph_button__Layouter<Class, true, Parent>::compute_sizes()
     {
         if (p()->_glyph_cp)
         {
@@ -124,17 +123,17 @@ namespace cppgui {
         }
     }
 
-    template <class Config, class Parent>
-    auto Glyph_button__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
+    template <class Class, class Parent>
+    auto Glyph_button__Layouter<Class, true, Parent>::get_minimal_size() -> Extents
     {
-        return { 
-            /* _padding[3] + */ _label_bounds.width () + _spacing + _glyph_min_edge /* + _padding[1] */, 
-            /* _padding[0] + */ std::max(_label_bounds.height(), _glyph_min_edge)   /* + _padding[2] */
-        };
+        return this->add_boxing({ 
+            _label_bounds.width () + _spacing + _glyph_min_edge, 
+            std::max(_label_bounds.height(), _glyph_min_edge)  
+        });
     }
 
-    template <class Config, class Parent>
-    void Glyph_button__Layouter<Config, true, Parent>::layout()
+    template <class Class, class Parent>
+    void Glyph_button__Layouter<Class, true, Parent>::layout()
     {
         auto ext = p()->extents();
 

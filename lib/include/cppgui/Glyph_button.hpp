@@ -28,24 +28,21 @@ namespace cppgui {
 
     struct Icon_glyph;
 
-    template <class Config, bool With_layout, class Parent> struct Glyph_button__Layouter;
+    template <class Class, bool With_layout, class Parent> struct Glyph_button__Layouter;
 
     // Glyph_button declaration 
 
-
-    #define CPPGUI_INSTANTIATE_GLYPH_BUTTON(Config, With_layout) \
-        template cppgui::Glyph_button<Config, With_layout>; \
-        template cppgui::Glyph_button__Layouter<Config, With_layout, \
+    #define CPPGUI_INSTANTIATE_GLYPH_BUTTON(Config, With_layout, ...) \
+        template cppgui::Glyph_button<Config, With_layout, __VA_ARGS__>; \
+        template cppgui::Glyph_button__Layouter<cppgui::Glyph_button<Config, With_layout, __VA_ARGS__>, With_layout, \
             cppgui::Box<Config, With_layout, \
-                cppgui::Simple_box_model< \
-                    cppgui::Widget<Config, With_layout> > > >;
+                __VA_ARGS__< cppgui::Widget<Config, With_layout> > > >;
 
-    template<class Config, bool With_layout>
+    template<class Config, bool With_layout, template<class> class BoxModel>
     class Glyph_button: public 
-        Glyph_button__Layouter<Config, With_layout,
-            Box<Config, With_layout,
-                Simple_box_model<
-                    Widget<Config, With_layout> > > >
+        Glyph_button__Layouter<Glyph_button<Config, With_layout, BoxModel>, With_layout,
+            Box<Config, With_layout, 
+                BoxModel< Widget<Config, With_layout> > > >
     {
     public:
         using Widget_t = Widget<Config, With_layout>;
@@ -87,8 +84,8 @@ namespace cppgui {
 
     // Layouter aspect
 
-    template <class Config, class Parent>
-    struct Glyph_button__Layouter<Config, true, Parent>: Parent
+    template <class Class, class Parent>
+    struct Glyph_button__Layouter<Class, true, Parent>: Parent
     {
         // Glyph_button__Layouter() { _padding = this->button_padding(); }
 
@@ -100,8 +97,8 @@ namespace cppgui {
         // void change_glyph();
 
     private:
-        class Glyph_button_t: public Glyph_button<Config, true> { friend struct Glyph_button__Layouter; };
-        auto p() { return static_cast<Glyph_button_t*>(static_cast<Glyph_button<Config, true>*>(this)); }
+        class Main: public Class { friend class Glyph_button__Layouter; };
+        auto p() { return static_cast<Main*>(this); }
 
         void compute_sizes();
 
