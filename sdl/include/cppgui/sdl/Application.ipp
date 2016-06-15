@@ -5,6 +5,8 @@
 #include "./Window.hpp"
 #include "./Application.hpp"
 
+#include "./Window.ipp"
+
 namespace cppgui {
 
     namespace sdl {

@@ -9,6 +9,7 @@
 
 // Explicit template instantiations for libCppGUI
 
+#include <cppgui/Default_widgets.ipp>
 #include <cppgui/sdl/Window.ipp>
 #include <cppgui/GUI_window.ipp>
 
