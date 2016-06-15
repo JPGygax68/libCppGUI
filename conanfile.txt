@@ -1,6 +1,5 @@
 [requires]
 Boost/1.60.0@lasote/stable
-freetype/2.6.3@lasote/ci              # for gpcfontrasterizer
 libGPCFonts/0.1.1@JPGygax68/alpha     # ditto
 gpcfontrasterizer/0.1.2@JPGygax68/testing
 
