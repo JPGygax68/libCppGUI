@@ -530,8 +530,8 @@ namespace cppgui {
     // Layouter aspect ----------------------------------------------
 
     template<class Config>
-    template<template<class> class BoxModel, class Parent>
-    void _stringlist<Config>::Layouter<true, BoxModel, Parent>::init_layout()
+    template<class Class, class Parent>
+    void _stringlist<Config>::Layouter<Class, true, Parent>::init_layout()
     {
         this->compute_text_extents();
 
@@ -539,15 +539,15 @@ namespace cppgui {
     }
 
     template<class Config>
-    template<template<class> class BoxModel, class Parent>
-    auto _stringlist<Config>::Layouter<true, BoxModel, Parent>::get_minimal_size() -> Extents
+    template<class Class, class Parent>
+    auto _stringlist<Config>::Layouter<Class, true, Parent>::get_minimal_size() -> Extents
     {
         return { 100, 100 }; // TODO
     }
 
     template<class Config>
-    template<template<class> class BoxModel, class Parent>
-    void _stringlist<Config>::Layouter<true, BoxModel, Parent>::layout()
+    template<class Class, class Parent>
+    void _stringlist<Config>::Layouter<Class, true, Parent>::layout()
     {
         // Preparations
         auto exts = p()->extents();
@@ -566,8 +566,8 @@ namespace cppgui {
     }
 
     template<class Config>
-    template<template<class> class BoxModel, class Parent>
-    void _stringlist<Config>::Layouter<true, BoxModel, Parent>::compute_text_extents()
+    template<class Class, class Parent>
+    void _stringlist<Config>::Layouter<Class, true, Parent>::compute_text_extents()
     {
         if (p()->_font.source())
         {

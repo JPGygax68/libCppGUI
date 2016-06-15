@@ -30,21 +30,20 @@ namespace cppgui {
 
         // Forward declarations
 
-        template<bool With_layout, template<class> class BoxModel, class Parent> struct Layouter;
+        template<class Class, bool With_layout, class Parent> struct Layouter;
 
         // Main class declaration ---------------------------------------
 
-        #define _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Config, With_layout, /*BoxModel*/...) \
-            template cppgui::_stringlist<Config>::Base<With_layout, __VA_ARGS__>; \
-            template cppgui::_stringlist<Config>::Layouter<With_layout, __VA_ARGS__, \
-                cppgui::Box<Config, With_layout, \
-                    __VA_ARGS__< \
-                        cppgui::Container_base<Config, With_layout> > > >;
+        //#define _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Config, With_layout, /*BoxModel*/...) \
+        //    template cppgui::_stringlist<Config>::Base<With_layout, __VA_ARGS__>; \
+        //    template cppgui::_stringlist<Config>::Layouter<With_layout, __VA_ARGS__, \
+        //        cppgui::Box<Config, With_layout, \
+        //            __VA_ARGS__< \
+        //                cppgui::Container_base<Config, With_layout> > > >;
 
         template<bool With_layout, template<class> class BoxModel>
         class Base: public 
-            Layouter<With_layout, 
-                BoxModel,
+            Layouter<Base<With_layout, BoxModel>, With_layout, 
                 Box<Config, With_layout, 
                     BoxModel<
                         Container_base<Config, With_layout> > > >
@@ -132,12 +131,12 @@ namespace cppgui {
 
         /** Dummy template specialization for when With_layout = false.
         */
-        template<template<class> class BoxModel, class Parent> struct Layouter<false, BoxModel, Parent>: public Parent {};
+        template<class Class, class Parent> struct Layouter<Class, false, Parent>: public Parent {};
 
         /** "Real" layouter specialization that will be selected when With_layout = true.
         */
-        template<template<class> class BoxModel, class Parent>
-        struct Layouter<true, BoxModel, Parent>: Parent
+        template<class Class, class Parent>
+        struct Layouter<Class, true, Parent>: Parent
         {
             void init_layout() override;
 
@@ -146,7 +145,7 @@ namespace cppgui {
             void layout() override;
 
         protected:
-            class Stringlist_t: public Base<true, BoxModel>  { friend struct Layouter; };
+            class Stringlist_t: public Class  { friend struct Layouter; };
 
             auto p() { return static_cast<Stringlist_t *>(this); }
 
@@ -157,10 +156,10 @@ namespace cppgui {
 
     // Specializations ----------------------------------------------
 
-    #define CPPGUI_INSTANTIATE_STRINGLIST(Config, With_layout, /*BoxModel*/...) \
-        template cppgui::Stringlist<Config, With_layout, __VA_ARGS__>; \
-        template cppgui::_stringlist<Config>; \
-        _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Config, With_layout, __VA_ARGS__)
+    //#define CPPGUI_INSTANTIATE_STRINGLIST(Config, With_layout, /*BoxModel*/...) \
+    //    template cppgui::Stringlist<Config, With_layout, __VA_ARGS__>; \
+    //    template cppgui::_stringlist<Config>; \
+    //    _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Config, With_layout, __VA_ARGS__)
 
     template<class Config, bool With_layout, template<class> class BoxModel>
     class Stringlist: public _stringlist<Config>::template Base<With_layout, BoxModel> { };
