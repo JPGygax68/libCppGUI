@@ -34,16 +34,16 @@ namespace cppgui {
 
         // Main class declaration ---------------------------------------
 
-        #define _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Config, With_layout, ...) \
-            template cppgui::_stringlist<Config>::Base<__VA_ARGS__, With_layout>; \
-            template cppgui::_stringlist<Config>::Layouter<__VA_ARGS__, With_layout, \
+        #define _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Config, With_layout) \
+            template cppgui::_stringlist<Config>::Base<With_layout>; \
+            template cppgui::_stringlist<Config>::Layouter<cppgui::_stringlist<Config>::Base<With_layout>, With_layout, \
                 cppgui::Box<Config, With_layout, \
                     cppgui::Simple_box_model< \
                         cppgui::Container_base<Config, With_layout> > > >;
 
-        template<class Class, bool With_layout>
+        template<bool With_layout>
         class Base: public 
-            Layouter<Class, With_layout, 
+            Layouter<Base<With_layout>, With_layout, 
                 Box<Config, With_layout,
                     Simple_box_model<
                         Container_base<Config, With_layout> > > >
@@ -145,7 +145,7 @@ namespace cppgui {
             void layout() override;
 
         protected:
-            class Stringlist_t: public Base<Class, true> { friend struct Layouter; };
+            class Stringlist_t: public Base<true> { friend struct Layouter; };
 
             auto p() { return static_cast<Stringlist_t *>(this); }
 
@@ -159,9 +159,9 @@ namespace cppgui {
     #define CPPGUI_INSTANTIATE_STRINGLIST(Config, With_layout) \
         template cppgui::Stringlist<Config, With_layout>; \
         template cppgui::_stringlist<Config>; \
-        _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Config, With_layout, cppgui::Stringlist<Config, With_layout>);
+        _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Config, With_layout);
 
     template<class Config, bool With_layout>
-    class Stringlist: public _stringlist<Config>::template Base<Stringlist<Config, With_layout>, With_layout> { };
+    class Stringlist: public _stringlist<Config>::template Base<With_layout> { };
 
 } // ns cppgui

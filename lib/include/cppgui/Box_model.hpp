@@ -21,7 +21,7 @@ namespace cppgui
             };
         }
 
-        constexpr auto border_rectangle(const Extents &ext) const -> Rectangle
+        static constexpr auto border_rectangle(const Extents &ext) -> Rectangle
         {
             // TODO: margins!
             return { { 0, 0 }, ext };
@@ -62,7 +62,9 @@ namespace cppgui
     };
 
     template<Width BorderWidth, Width PaddingWidth, class Parent>
-    struct Fixed_border_and_padding_box_model: Box_model<Fixed_border_and_padding_box_model<BorderWidth, PaddingWidth, Parent>, Parent>
+    struct Fixed_border_and_padding_box_model: 
+        Box_model<Fixed_border_and_padding_box_model<BorderWidth, PaddingWidth, Parent>, 
+            Parent>
     {
         static constexpr bool has_border () { return true; }
         static constexpr bool has_padding() { return true; }
