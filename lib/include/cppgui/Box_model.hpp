@@ -16,7 +16,7 @@ namespace cppgui
         constexpr auto inner_rectangle(const Extents &ext) const -> Rectangle
         {
             return { 
-                { 0, 0 }, 
+                { p()->get_distance(3), p()->get_distance(0) }, 
                 { ext.w - p()->get_distance(3) - p()->get_distance(1), ext.h - p()->get_distance(0) - p()->get_distance(2) } 
             };
         }

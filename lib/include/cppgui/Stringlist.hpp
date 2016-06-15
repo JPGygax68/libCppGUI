@@ -41,11 +41,11 @@ namespace cppgui {
         //            __VA_ARGS__< \
         //                cppgui::Container_base<Config, With_layout> > > >;
 
-        template<bool With_layout, template<class> class BoxModel>
+        template<bool With_layout, int BorderWidth>
         class Base: public 
-            Layouter<Base<With_layout, BoxModel>, With_layout, 
+            Layouter<Base<With_layout, BorderWidth>, With_layout, 
                 Box<Config, With_layout, 
-                    BoxModel<
+                    Fixed_border_and_padding_box_model<BorderWidth, 0,
                         Container_base<Config, With_layout> > > >
         {
         public:
@@ -161,7 +161,7 @@ namespace cppgui {
     //    template cppgui::_stringlist<Config>; \
     //    _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Config, With_layout, __VA_ARGS__)
 
-    template<class Config, bool With_layout, template<class> class BoxModel>
-    class Stringlist: public _stringlist<Config>::template Base<With_layout, BoxModel> { };
+    template<class Config, bool With_layout, int BorderWidth>
+    class Stringlist: public _stringlist<Config>::template Base<With_layout, BorderWidth> { };
 
 } // ns cppgui

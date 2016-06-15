@@ -55,7 +55,7 @@ namespace cppgui {
         using Container          = Container<Config, With_layout>;
         using Vertical_scrollbar = Vertical_scrollbar<Config, With_layout>;
         using Listbox            = Listbox<Config, With_layout>;
-        using Stringlist         = Stringlist<Config, With_layout, Default_fixed_border_and_padding_box_model>;
+        using Stringlist         = Stringlist<Config, With_layout, 2>;
         using Vertical_slider    = Vertical_slider<Config, With_layout>;
 
     };
@@ -76,7 +76,7 @@ namespace cppgui {
     using Vertical_scrollbar        = cppgui::Vertical_scrollbar        <Config, With_layout>; \
     using Listbox                   = cppgui::Listbox                   <Config, With_layout>; \
     using List_pane_base            = cppgui::List_pane_base            <Config, With_layout>; \
-    using Stringlist                = cppgui::Stringlist                <Config, With_layout, cppgui::Default_widgets<Config, With_layout>::Default_fixed_border_and_padding_box_model>; \
+    using Stringlist                = cppgui::Stringlist                <Config, With_layout, 1>; \
     using Vertical_slider           = cppgui::Vertical_slider           <Config, With_layout>; \
     using layouting                 = cppgui::layouting                 <Config>; 
 
@@ -95,7 +95,7 @@ namespace cppgui {
     CPPGUI_INSTANTIATE_CONTAINER_BASE           (Config, With_layout); \
     CPPGUI_INSTANTIATE_VERTICAL_SCROLLBAR       (Config, With_layout); \
     CPPGUI_INSTANTIATE_LISTBOX                  (Config, With_layout); \
-    CPPGUI_INSTANTIATE_STRINGLIST               (Config, With_layout, cppgui::template Default_widgets<Config, With_layout>::Default_fixed_border_and_padding_box_model); \
+    /* CPPGUI_INSTANTIATE_STRINGLIST               (Config, With_layout, 1); */ \
     CPPGUI_INSTANTIATE_DEFAULT_VERTICAL_SLIDER  (Config, With_layout); \
     CPPGUI_INSTANTIATE_LAYOUTING                (Config);
 
