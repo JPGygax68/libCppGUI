@@ -27,17 +27,29 @@ namespace cppgui {
 
     template<class Config, bool With_layout, template<class> class BoxModel, class Parent> struct Button__Layouter;
 
+    // Internal stuff
+
+    template<class Config>
+    struct _button
+    {
+        template<class Parent>
+        using Default_box_model = Fixed_border_and_padding_box_model<1, 3, Parent>; // TODO: take DPI into account
+    };
+
+    #ifdef NOT_DEFINED
 
     #define CPPGUI_INSTANTIATE_BUTTON(Config, With_layout, ...) \
         template cppgui::Button<Config, With_layout, __VA_ARGS__>; \
         template cppgui::Button__Layouter<Config, With_layout, __VA_ARGS__, \
             cppgui::Box<Config, With_layout, \
                 __VA_ARGS__< cppgui::Widget<Config, With_layout> > > >;
+    
+    #endif
 
     /** TODO: how to support changing label (and later on, icon) at runtime without mixing
             in the layouting aspect ?
      */
-    template <class Config, bool With_layout, template<class> class BoxModel>
+    template <class Config, bool With_layout, template<class> class BoxModel = _button<Config>::Default_box_model>
     class Button: public 
         Button__Layouter<Config, With_layout, BoxModel,
             Box<Config, With_layout, 

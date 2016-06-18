@@ -20,6 +20,7 @@
 #include <string>
 
 #include "./Widget.hpp"
+#include "./Box_model.hpp"
 #include "./Box.hpp"
 
 namespace cppgui {
@@ -30,7 +31,18 @@ namespace cppgui {
 
     template <class Class, bool With_layout, class Parent> struct Glyph_button__Layouter;
 
+    // Internal stuff
+
+    template<class Config>
+    struct _glyph_button
+    {
+        template<class Parent>
+        using Default_box_model = Fixed_border_and_padding_box_model<1, 3, Parent>; // TODO: take DPI into account
+    };
+
     // Glyph_button declaration 
+
+    #ifdef NOT_DEFINED
 
     #define CPPGUI_INSTANTIATE_GLYPH_BUTTON(Config, With_layout, ...) \
         template cppgui::Glyph_button<Config, With_layout, __VA_ARGS__>; \
@@ -38,7 +50,9 @@ namespace cppgui {
             cppgui::Box<Config, With_layout, \
                 __VA_ARGS__< cppgui::Widget<Config, With_layout> > > >;
 
-    template<class Config, bool With_layout, template<class> class BoxModel>
+    #endif
+
+    template<class Config, bool With_layout, template<class> class BoxModel = _glyph_button<Config>::Default_box_model >
     class Glyph_button: public 
         Glyph_button__Layouter<Glyph_button<Config, With_layout, BoxModel>, With_layout,
             Box<Config, With_layout, 

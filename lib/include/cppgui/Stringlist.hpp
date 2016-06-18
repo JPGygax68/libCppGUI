@@ -32,6 +32,10 @@ namespace cppgui {
 
         template<class Class, bool With_layout, class Parent> struct Layouter;
 
+        // Default settings
+
+        static constexpr auto default_border_width = 1; // TODO: base on DPI
+
         // Main class declaration ---------------------------------------
 
         //#define _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Config, With_layout, /*BoxModel*/...) \
@@ -161,7 +165,7 @@ namespace cppgui {
     //    template cppgui::_stringlist<Config>; \
     //    _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Config, With_layout, __VA_ARGS__)
 
-    template<class Config, bool With_layout, int BorderWidth>
+    template<class Config, bool With_layout, int BorderWidth = _stringlist<Config>::default_border_width>
     class Stringlist: public _stringlist<Config>::template Base<With_layout, BorderWidth> { };
 
 } // ns cppgui

@@ -30,22 +30,23 @@ public:
     void render(Canvas_t *, const cppgui::Point &offset) override;
 
 private:
-    CPPGUI_DEFINE_WIDGET_TYPES(Config, With_layout);
+
+    // CPPGUI_DEFINE_WIDGET_TYPES(Config, With_layout);
 
     //using Label_t = cppgui::Label<Config, With_layout>;
     //using Container_t = cppgui::Container<Config, With_layout>;
     //using Textbox_t = cppgui::Textbox<Config, With_layout>;
 
-    cppgui::Border                  _border = {0};
-    cppgui::Rasterized_font         _glyph_font;
-    Container_base                  _header_bar;
-    Label                           _caption_label;
-    //Button                          _close_btn;
-    Glyph_button                    _close_btn;
-    Container_base                  _main_body;
-    Label                           _prompt_label;
-    Container_base                  _input_row;
-    Textbox                         _textbox;
-    Button                          _ok_btn;
+    cppgui::Border                              _border = {0};
+    cppgui::Rasterized_font                     _glyph_font;
+    Container_base                              _header_bar;
+    cppgui::Label<Config, With_layout>          _caption_label;
+    //Button                                      _close_btn;
+    cppgui::Glyph_button<Config, With_layout>   _close_btn;
+    Container_base                              _main_body;
+    cppgui::Label<Config, With_layout>          _prompt_label;
+    Container_base                              _input_row;
+    cppgui::Textbox<Config, With_layout>        _textbox;
+    cppgui::Button<Config, With_layout>         _ok_btn;
 };
 

@@ -74,7 +74,7 @@ Test_window::Test_window(): Parent_t("Test window")
     _container1.add_child(&_textbox);
     _container1.add_child(&_stringlist);
     //_container1.set_layout_type(cppgui::Layout_type::header_content);
-    _container1.set_layout_manager<layouting::Header_content>();
+    _container1.set_layout_manager<cppgui::layouting<GUI_configuration>::Header_content>();
     root_widget()->add_child(&_container1);
 
     _button.set_font(dflt_font);
@@ -116,7 +116,7 @@ Test_window::Test_window(): Parent_t("Test window")
     _menu_header.set_text(U"Look at this:");
     _menu_header.set_background_color({ 1, 1, 1, 1 });
     //_menu_header.set_padding({ 3, 3, 3, 3 });
-    _menu.set_layout_manager<layouting::Header_content>();
+    _menu.set_layout_manager<cppgui::layouting<GUI_configuration>::Header_content>();
     _menu.add_child(&_menu_header);
     //_menu.add_child(&_stack);
     _menu.set_position({  50, 250 });
@@ -171,12 +171,12 @@ Test_window::Test_window(): Parent_t("Test window")
     _slider3.slider().define_range({  0.001f, 0.010f });
     _slider3.slider().set_value( 0.001f );
     _container2.add_child(&_slider3);
-    _container2.set_layout_manager<layouting::Left_to_right>();
+    _container2.set_layout_manager<cppgui::layouting<GUI_configuration>::Left_to_right>();
     _container2.layout_manager()->set_spacing(5);
     root_widget()->add_child(&_container2);
 
     root_widget()->set_background_color({ 0, 0.6f, 0.2f, 1 });
-    root_widget()->set_layout_manager<layouting::Nil>();
+    root_widget()->set_layout_manager<cppgui::layouting<GUI_configuration>::Nil>();
 
     //root_widget()->add_child(&_menu);
     ////root_widget()->add_child(&_scrollbox);
@@ -205,7 +205,7 @@ Test_window::Slider_with_display::Slider_with_display()
     add_child( &_textbox );
     add_child( &_slider );
 
-    this->set_layout_manager<layouting::Header_content>();
+    this->set_layout_manager<cppgui::layouting<GUI_configuration>::Header_content>();
     layout_manager()->set_spacing(3);
 }
 

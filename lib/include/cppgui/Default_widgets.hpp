@@ -45,22 +45,23 @@ namespace cppgui {
         template<class Parent> using Default_fixed_padding_box_model = Fixed_padding_box_model<5, Parent>;
         template<class Parent> using Default_fixed_border_and_padding_box_model = Fixed_border_and_padding_box_model<1, 5, Parent>;
 
-        using Widget             = Widget<Config, With_layout>;
-        using Root_widget        = Root_widget<Config, With_layout>;
-        using Label              = Label<Config, With_layout>;
-        using Textbox            = Textbox<Config, With_layout>;
-        using Button             = Button<Config, With_layout, Default_fixed_border_and_padding_box_model>;
-        using Glyph_button       = Glyph_button<Config, With_layout, Default_fixed_border_and_padding_box_model>;
-        using Checkbox           = Checkbox<Config, With_layout>;
-        using Container          = Container<Config, With_layout>;
-        using Vertical_scrollbar = Vertical_scrollbar<Config, With_layout>;
-        using Listbox            = Listbox<Config, With_layout>;
-        using Stringlist         = Stringlist<Config, With_layout, 2>;
-        using Vertical_slider    = Vertical_slider<Config, With_layout>;
-
+        using Widget_t             = Widget<Config, With_layout>;
+        using Root_widget_t        = Root_widget<Config, With_layout>;
+        using Label_t              = Label<Config, With_layout>;
+        using Textbox_t            = Textbox<Config, With_layout>;
+        using Button_t             = Button<Config, With_layout, Default_fixed_border_and_padding_box_model>;
+        using Glyph_button_t       = Glyph_button<Config, With_layout, Default_fixed_border_and_padding_box_model>;
+        using Checkbox_t           = Checkbox<Config, With_layout>;
+        using Container_t          = Container<Config, With_layout>;
+        using Vertical_scrollbar_t = Vertical_scrollbar<Config, With_layout>;
+        using Listbox_t            = Listbox<Config, With_layout>;
+        using Stringlist_t         = Stringlist<Config, With_layout, 2>;
+        using Vertical_slider_t    = Vertical_slider<Config, With_layout>;
     };
 
 } // ns cppgui
+
+#ifdef NOT_DEFINED
 
 #define CPPGUI_DEFINE_WIDGET_TYPES(Config, With_layout) \
     using Widget                    = cppgui::Widget                    <Config, With_layout>; \
@@ -79,6 +80,8 @@ namespace cppgui {
     using Stringlist                = cppgui::Stringlist                <Config, With_layout, 1>; \
     using Vertical_slider           = cppgui::Vertical_slider           <Config, With_layout>; \
     using layouting                 = cppgui::layouting                 <Config>; 
+
+#endif
 
 //using Canvas_t = cppgui::Canvas<Renderer>; 
 
