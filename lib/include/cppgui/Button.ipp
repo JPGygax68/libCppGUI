@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "./layouting.hpp"
 #include "./unicode.hpp"
 
 #include "./Button.hpp"
@@ -98,9 +97,12 @@ namespace cppgui {
     void Button__Layouter<Config, true, BoxModel, Parent>::init_layout()
     {
         // TODO: implement configurable alignment ?
-        _layout.set_major_alignment(Alignment::cultural_major_middle);
-        _layout.set_minor_alignment(Alignment::cultural_minor_middle);
-        _layout.set_text_element(p()->font(), p()->_label.data(), p()->_label.size(), & p()->_label_origin, & p()->_label_rect);
+        this->_major_align = Alignment::cultural_major_middle;
+        this->_minor_align = Alignment::cultural_minor_middle;
+        
+        this->compute_bounding_box();
+
+        //_layout.set_text_element(p()->font(), p()->_label.data(), p()->_label.size(), & p()->_label_origin, & p()->_label_rect);
     }
 
     template<class Config, template<class> class BoxModel, class Parent>
@@ -114,29 +116,34 @@ namespace cppgui {
     template<class Config, template<class> class BoxModel, class Parent>
     void Button__Layouter<Config, true, BoxModel, Parent>::layout()
     {
-        _layout.compute_layout( p()->extents() );
+        p()->_label_origin = this->position_text_element(this->_bounding_box, this->_minor_align, this->_major_align);
+
+        p()->_label_rect = {
+            p()->_label_origin.x + this->_bounding_box.x_min, p()->_label_origin.y - this->_bounding_box.y_max,
+            this->_bounding_box.width(), this->_bounding_box.height()
+        };
     }
 
     template<class Config, template<class> class BoxModel, class Parent>
     void Button__Layouter<Config, true, BoxModel, Parent>::font_changed()
     {
-        compute_bounding_box();
-        layout();
+        this->compute_bounding_box();
+        this->layout();
         this->invalidate();
     }
 
     template<class Config, template<class> class BoxModel, class Parent>
     void Button__Layouter<Config, true, BoxModel, Parent>::text_changed()
     {
-        compute_bounding_box();
-        layout();
+        this->compute_bounding_box();
+        this->layout();
         this->invalidate();
     }
 
     template<class Config, template<class> class BoxModel, class Parent>
     void Button__Layouter<Config, true, BoxModel, Parent>::compute_bounding_box()
     {
-        _bbox = p()->_font.source()->compute_text_extents(0, p()->_label.data(), p()->_label.size());
+        this->_bounding_box = p()->_font.source()->compute_text_extents(0, p()->_label.data(), p()->_label.size());
     }
 
 } // ns cppgui

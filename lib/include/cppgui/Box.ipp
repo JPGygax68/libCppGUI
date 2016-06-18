@@ -117,4 +117,52 @@ namespace cppgui {
 
     #endif
 
+    template <class Config>
+    template <class Parent>
+    auto _box<Config>::Layouter<true, Parent>::position_text_element(const Text_bounding_box & bbox, Alignment minor_align, Alignment major_align) -> Point
+    {
+        auto r = this->inner_rectangle( this->extents() );
+        Point pos;
+
+        if (minor_align == Alignment::cultural_minor_start)
+        {
+            pos.x = r.pos.x;
+        }
+        else if (minor_align == Alignment::cultural_minor_middle)
+        {
+            pos.x = r.left() + (r.ext.w - bbox.width()) / 2;
+        }
+        else if (minor_align == Alignment::cultural_minor_end)
+        {
+            pos.x = r.right() - bbox.width();
+        }
+
+        if (major_align == Alignment::cultural_major_start)
+        {
+            pos.y = r.top() + bbox.y_max;
+        }
+        else if (major_align == Alignment::cultural_major_middle)
+        {
+            pos.y = r.top() + (r.ext.h - bbox.height()) / 2 + bbox.y_max;
+        }
+        else if (major_align == Alignment::cultural_major_end)
+        {
+            pos.y = r.bottom() + bbox.y_min;
+        }
+        else
+        {
+            assert(false); return {};
+        }
+
+        return pos;
+
+        /*
+        // Rectangle around text
+        *rectangle = {
+            pos.x + bbox.x_min, pos.y - bbox.y_max,
+            static_cast<Length>(bbox.width()), static_cast<Length>(bbox.height())
+        };
+        */
+    }
+
 } // ns cppgui

@@ -181,8 +181,6 @@ add_library( ${PROJECT_NAME} STATIC
 
     include/cppgui/Icon_resources.hpp               # all constexpr -> inline -> no .ipp file
 
-    include/cppgui/layouting.hpp                    include/cppgui/layouting.ipp
-
     include/cppgui/Resource.hpp
     include/cppgui/Resource_mapper.hpp              include/cppgui/Resource_mapper.ipp
     include/cppgui/Cheap_resource_mapper.hpp        include/cppgui/Cheap_resource_mapper.ipp

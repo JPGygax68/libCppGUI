@@ -60,7 +60,7 @@ namespace cppgui {
         void set_font(const Rasterized_font *);
         auto font() const { return _font.source(); }
         void set_text(const std::u32string &);
-        auto text() const { return _text; }
+        auto& text() const { return _text; }
 
         void init() override;
 
@@ -101,11 +101,12 @@ namespace cppgui {
         auto p() { return static_cast<Label_t*>(static_cast<Label<Config, true>*>(this)); }
 
         // "Stylesheet"
-        static constexpr auto default_padding() -> Padding { return { 4, 4, 4, 4 }; }
+        //static constexpr auto default_padding() -> Padding { return { 4, 4, 4, 4 }; }
 
         Alignment               _minor_alignment = Alignment::cultural_minor_middle;
         Alignment               _major_alignment = Alignment::cultural_major_middle;
-        Single_element_layout   _layout;
+        Text_bounding_box       _bounding_box;
+        //Single_element_layout   _layout;
     };
 
 } // ns cppgui

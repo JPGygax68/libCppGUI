@@ -25,7 +25,6 @@
 
 #include "./basic_types.hpp"
 #include "./geometry.hpp"
-#include "./layouting.hpp"
 
 //#include "./Stylesheet.hpp"
 #include "./Resource.hpp"

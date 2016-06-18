@@ -23,7 +23,6 @@
 #include "./Full_resource_mapper.ipp"
 #include "./Cheap_resource_mapper.ipp"
 #include "./Canvas.ipp"
-#include "./layouting.ipp" // TODO: obsolete ?
 #include "./layout_managers.ipp"
 #include "./Box.ipp"
 #include "./Widget.ipp"

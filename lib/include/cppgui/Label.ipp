@@ -19,8 +19,6 @@
 
 #include <gpc/fonts/rasterized_font.hpp>
 
-#include "./layouting.hpp"
-
 #include "./Label.hpp"
 
 namespace cppgui {
@@ -53,6 +51,7 @@ namespace cppgui {
 
         if (has_focus())
         {
+            // TODO: make this into a method of Box<>
             auto r = _text_rect + Extents{ 3, 2 };
             cnv->draw_stippled_rectangle_outline(pos.x + r.pos.x, pos.y + r.pos.y, r.ext.w, r.ext.h, {0, 0, 0.5f, 1});
         }
@@ -69,23 +68,30 @@ namespace cppgui {
     template<class Config, class Parent>
     void Label__Layouter<Config, true, Parent>::init_layout()
     {
-        _layout.set_major_alignment(_major_alignment);
-        _layout.set_minor_alignment(_minor_alignment);
-        _layout.set_text_element(p()->font(), p()->_text.data(), p()->_text.size(), & p()->_text_origin, & p()->_text_rect);
+        assert(!p()->text().empty());
+
+        this->_bounding_box = p()->font()->compute_text_extents(0, p()->text().data(), p()->text().size() );
     }
 
     template<class Config, class Parent>
     auto Label__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
     {
-        assert(!p()->text().empty()); // TODO: TENTATIVE RULE: layouting may not occur before conditions are met (font, text must be set) ?
+        assert(!p()->text().empty());
 
-        return _layout.compute_minimal_size( Padding{} ); // TODO _padding);
+        return p()->add_boxing({ _bounding_box.width(), _bounding_box.height() });
     }
 
     template<class Config, class Parent>
     void Label__Layouter<Config, true, Parent>::layout()
     {
-        _layout.compute_layout( p()->extents(), Padding{} ); // TODO _padding);
+        // _layout.compute_layout( p()->extents(), Padding{} ); // TODO _padding);
+
+        p()->_text_origin = this->position_text_element(this->_bounding_box, this->_minor_alignment, this->_major_alignment);
+
+        p()->_text_rect = {
+            p()->_text_origin.x + this->_bounding_box.x_min, p()->_text_origin.y - this->_bounding_box.y_max,
+            this->_bounding_box.width(), this->_bounding_box.height()
+        };
     }
 
 } // ns cppgui

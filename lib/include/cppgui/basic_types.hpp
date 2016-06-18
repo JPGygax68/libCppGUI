@@ -68,14 +68,15 @@ namespace cppgui {
         constexpr auto length() const { return to - from; }
     };
 
-    /*
     enum Alignment {
-        none = 0,
-        left, center, middle = center, right,
-        top, bottom
-        // TODO: additional values for culture-adaptive settings, or reuse the geometrical ones above ?
+        cultural_minor_start,       // = left in western culture
+        cultural_minor_middle,      
+        cultural_minor_end,         // = right in western culture
+        cultural_major_start,       // = top in western culture
+        cultural_major_middle,
+        cultural_major_end,         // = bottom in western culture
+        _end
     };
-    */
 
     // TODO: use this everywhere!
     // TODO: rename to Simple_border ?

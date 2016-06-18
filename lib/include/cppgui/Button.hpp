@@ -123,8 +123,9 @@ namespace cppgui {
         auto p() { return static_cast<Button_t*>(static_cast<Button<Config, true, BoxModel>*>(this)); }
         void compute_bounding_box();
 
-        Text_bounding_box       _bbox;
-        Single_element_layout   _layout;
+        Alignment               _minor_align = Alignment::cultural_minor_middle;
+        Alignment               _major_align = Alignment::cultural_major_middle;
+        Text_bounding_box       _bounding_box;
     };
 
     // Nil implementation (must short out interface with main class)

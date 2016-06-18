@@ -95,6 +95,8 @@ namespace cppgui {
                     ext.h + this->get_distance(0) + this->get_distance(2)
                 };
             }
+
+            auto position_text_element(const Text_bounding_box &bbox, Alignment minor_align, Alignment major_align) -> Point;
         };
 
     };

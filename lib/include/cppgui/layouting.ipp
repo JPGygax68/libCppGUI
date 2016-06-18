@@ -19,8 +19,6 @@
 
 #include <gpc/fonts/rasterized_font.hpp>
 
-#include "./layouting.hpp"
-
 namespace cppgui {
 
     void Single_element_layout::set_text_element(const Rasterized_font * font, const char32_t * text, size_t len, 
