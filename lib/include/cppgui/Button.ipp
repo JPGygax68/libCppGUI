@@ -93,8 +93,8 @@ namespace cppgui {
 
     // Layouter -----------------------------------------------------
 
-    template<class Config, template<class> class BoxModel, class Parent>
-    void Button__Layouter<Config, true, BoxModel, Parent>::init_layout()
+    template<class Class, class Config, class Parent>
+    void Button__Layouter<Class, Config, true, Parent>::init_layout()
     {
         // TODO: implement configurable alignment ?
         this->_major_align = Alignment::cultural_major_middle;
@@ -105,16 +105,16 @@ namespace cppgui {
         //_layout.set_text_element(p()->font(), p()->_label.data(), p()->_label.size(), & p()->_label_origin, & p()->_label_rect);
     }
 
-    template<class Config, template<class> class BoxModel, class Parent>
-    auto Button__Layouter<Config, true, BoxModel, Parent>::get_minimal_size() -> Extents
+    template<class Class, class Config, class Parent>
+    auto Button__Layouter<Class, Config, true, Parent>::get_minimal_size() -> Extents
     {
         auto bbox = p()->font()->compute_text_extents(0, p()->_label.data(), p()->_label.size() );
 
         return p()->add_boxing({ bbox.width(), bbox.height() });
     }
 
-    template<class Config, template<class> class BoxModel, class Parent>
-    void Button__Layouter<Config, true, BoxModel, Parent>::layout()
+    template<class Class, class Config, class Parent>
+    void Button__Layouter<Class, Config, true, Parent>::layout()
     {
         p()->_label_origin = this->position_text_element(this->_bounding_box, this->_minor_align, this->_major_align);
 
@@ -124,24 +124,24 @@ namespace cppgui {
         };
     }
 
-    template<class Config, template<class> class BoxModel, class Parent>
-    void Button__Layouter<Config, true, BoxModel, Parent>::font_changed()
+    template<class Class, class Config, class Parent>
+    void Button__Layouter<Class, Config, true, Parent>::font_changed()
     {
         this->compute_bounding_box();
         this->layout();
         this->invalidate();
     }
 
-    template<class Config, template<class> class BoxModel, class Parent>
-    void Button__Layouter<Config, true, BoxModel, Parent>::text_changed()
+    template<class Class, class Config, class Parent>
+    void Button__Layouter<Class, Config, true, Parent>::text_changed()
     {
         this->compute_bounding_box();
         this->layout();
         this->invalidate();
     }
 
-    template<class Config, template<class> class BoxModel, class Parent>
-    void Button__Layouter<Config, true, BoxModel, Parent>::compute_bounding_box()
+    template<class Class, class Config, class Parent>
+    void Button__Layouter<Class, Config, true, Parent>::compute_bounding_box()
     {
         this->_bounding_box = p()->_font.source()->compute_text_extents(0, p()->_label.data(), p()->_label.size());
     }

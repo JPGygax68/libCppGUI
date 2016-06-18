@@ -27,14 +27,14 @@ namespace cppgui
             return { { 0, 0 }, ext };
         }
 
-        constexpr auto get_margin(int border) const { return 0; }
+        constexpr auto get_margin(int /*border*/) const { return 0; }
 
-        constexpr auto get_border_width(int border) const { return 0; }
+        constexpr auto get_border_width(int /*border*/) const { return 0; }
         
         // TODO: indirect via protected method (does not need default values for parameters) ?
         constexpr auto get_border_color(int border, bool enabled = true, bool hovered = false, bool focused = false) const { return Color{ 0, 0, 0, 1}; }
         
-        constexpr auto get_padding(int border) const { return 0; }
+        constexpr auto get_padding(int /*border*/) const { return 0; }
         
         constexpr auto get_distance(int border) const { return p()->get_margin(border) + p()->get_border_width(border) + p()->get_padding(border); }
 

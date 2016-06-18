@@ -25,7 +25,7 @@
 
 namespace cppgui {
 
-    template<class Config, bool With_layout, template<class> class BoxModel, class Parent> struct Button__Layouter;
+    template<class Class, class Config, bool With_layout, class Parent> struct Button__Layouter;
 
     // Internal stuff
 
@@ -51,7 +51,7 @@ namespace cppgui {
      */
     template <class Config, bool With_layout, template<class> class BoxModel = _button<Config>::Default_box_model>
     class Button: public 
-        Button__Layouter<Config, With_layout, BoxModel,
+        Button__Layouter<Button<Config, With_layout, BoxModel>, Config, With_layout,
             Box<Config, With_layout, 
                 BoxModel< Widget<Config, With_layout> > > >
     {
@@ -91,10 +91,22 @@ namespace cppgui {
         Rectangle               _label_rect;
     };
 
-    // Layouter aspect
+    // Layouter aspect ----------------------------------------------
 
-    template <class Config, template<class> class BoxModel, class Parent>
-    struct Button__Layouter<Config, true, BoxModel, Parent>: public Parent
+    // Dummy implementation (no layouting)
+
+    template <class Class, class Config, class Parent>
+    struct Button__Layouter<Class, Config, false, Parent>: public Parent
+    {
+        void layout() {} // called from init
+        void font_changed() {}
+        void text_changed() {}
+    };
+
+    // Real implementation
+
+    template <class Class, class Config, class Parent>
+    struct Button__Layouter<Class, Config, true, Parent>: public Parent
     {
         // Button__Layouter() { _padding = this->button_padding(); }
 
@@ -118,24 +130,14 @@ namespace cppgui {
         void text_changed();
 
     protected:
-        class Button_t: public Button<Config, true, BoxModel> { friend struct Button__Layouter; };
+        class Button_t: public Class { friend struct Button__Layouter; };
 
-        auto p() { return static_cast<Button_t*>(static_cast<Button<Config, true, BoxModel>*>(this)); }
+        auto p() { return static_cast<Button_t*>(this); }
         void compute_bounding_box();
 
         Alignment               _minor_align = Alignment::cultural_minor_middle;
         Alignment               _major_align = Alignment::cultural_major_middle;
         Text_bounding_box       _bounding_box;
-    };
-
-    // Nil implementation (must short out interface with main class)
-
-    template <class Config, template<class> class BoxModel, class Parent>
-    struct Button__Layouter<Config, false, BoxModel, Parent>: public Parent 
-    {
-        void layout() {} // called from init
-        void font_changed() {}
-        void text_changed() {}
     };
 
 } // ns cppgui
