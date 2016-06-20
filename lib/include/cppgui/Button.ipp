@@ -16,8 +16,10 @@ limitations under the License.
 */
 
 #include "./unicode.hpp"
-
 #include "./Button.hpp"
+
+#include "./Widget.ipp"
+#include "./Box.ipp"
 
 namespace cppgui {
 

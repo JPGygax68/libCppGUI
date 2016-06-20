@@ -1,3 +1,5 @@
+#pragma once
+
 /*  libCppGUI - A GUI library for C++11/14
     
     Copyright 2016 Hans-Peter Gygax
@@ -16,6 +18,8 @@
 */
 
 #include "./layout_managers.hpp"
+
+#include "./Abstract_container.ipp"
 
 namespace cppgui
 {

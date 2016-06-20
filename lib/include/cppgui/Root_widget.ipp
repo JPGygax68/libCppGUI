@@ -1,3 +1,5 @@
+#pragma once
+
 /*  libCppGUI - A GUI library for C++11/14
     
     Copyright 2016 Hans-Peter Gygax
@@ -16,6 +18,9 @@
 */
 
 #include <cppgui/Root_widget.hpp>
+
+#include "./Widget.ipp"
+#include "./Container_base.ipp"
 
 namespace cppgui {
 
@@ -48,7 +53,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::init()
     {
-        init_child_resources();
+        this->init_child_resources();
 
         Abstract_widget_t::init();
     }
@@ -65,7 +70,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::compute_view_from_data()
     {
-        compute_child_views();
+        this->compute_child_views();
 
         Abstract_widget_t::compute_view_from_data();
     }
@@ -115,7 +120,7 @@ namespace cppgui {
         // Note: there should be no harm in repeating a mouse motion event (contrary to e.g. mouse button events)
         //  (we need to repeat the event so as to support drag-and-drop, e.g. highlighting potential targets)
         // TODO: this will trigger mouse_exit() even if the mouse was captured - is that correct/acceptable ?
-        container_mouse_motion(pos);
+        this->container_mouse_motion(pos);
 
         this->unlock();
     }
@@ -159,17 +164,17 @@ namespace cppgui {
     void Root_widget<Config, With_layout>::mouse_wheel(const Vector &dir)
     {
         this->lock();
-        container_mouse_wheel(dir);
+        this->container_mouse_wheel(dir);
         this->unlock();
     }
 
     template<class Config, bool With_layout>
     void Root_widget<Config, With_layout>::text_input(const char32_t *text, size_t size)
     {
-        if (focused_child())
+        if (this->focused_child())
         {
             this->lock();
-            focused_child()->text_input(text, size);
+            this->focused_child()->text_input(text, size);
             this->unlock();
         }
     }
@@ -231,14 +236,14 @@ namespace cppgui {
     template<class Config, bool WithLayout>
     inline void Root_widget<Config, WithLayout>::render(Canvas_t *cv, const Point &offs)
     {
-        auto pos = offs + position();
+        auto pos = offs + this->position();
 
         if (_bkgnd_clr[3] > 0)
         {
             cv->clear(cv->rgba_to_native(_bkgnd_clr));
         }
         
-        for (auto& child : children())
+        for (auto& child : this->children())
         {
             if (child->visible()) child->render(cv, pos);
         }

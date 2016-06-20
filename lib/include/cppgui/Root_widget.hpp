@@ -44,7 +44,7 @@ namespace cppgui {
         //using Renderer = typename GUIConfig::Renderer;
         using Keycode  = typename Config::Keyboard::Keycode;
         using Widget_t = typename Widget<Config, With_layout>;
-        //using Abstract_widget_t = typename Abstract_widget<Config, With_layout>;
+        using Abstract_widget_t = typename Abstract_widget<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
         //using Abstract_container_t = Abstract_container<Config, With_layout>;
         using Container_base_t = Container_base<Config, With_layout>;

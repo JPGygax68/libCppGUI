@@ -1,3 +1,5 @@
+#pragma once
+
 /*  libCppGUI - A GUI library for C++11/14
     
     Copyright 2016 Hans-Peter Gygax
@@ -19,8 +21,10 @@
 //#include <codecvt>
 
 #include "./unicode.hpp"
-
 #include "./Textbox.hpp"
+
+#include "./Widget.ipp"
+#include "./Box.ipp"
 
 namespace cppgui {
     

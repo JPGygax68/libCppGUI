@@ -46,7 +46,7 @@ namespace cppgui {
         struct Border_drawer: public Parent
         {
             // TODO: obtain rectangle on its own instead
-            static void draw_border(Canvas_t *, const Point &offset) {} // default implementation does nothing
+            static void draw_border(Canvas_t *, const Point &/*offset*/) {} // default implementation does nothing
         };
 
         template<class Class, class Parent> 

@@ -71,7 +71,7 @@ namespace cppgui
 
         static constexpr auto get_border_width(int /*border*/) { return BorderWidth; }
 
-        auto get_border_color(int border, bool /*enabled*/ = true, bool hovered = false, bool /*focused*/ = false) const
+        auto get_border_color(int /*border*/, bool /*enabled*/ = true, bool hovered = false, bool /*focused*/ = false) const
         {
             if (hovered)
                 return Color{ 0, 0, 0.5f, 1};

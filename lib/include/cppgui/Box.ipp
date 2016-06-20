@@ -1,3 +1,5 @@
+#pragma once
+
 #include "./Box.hpp"
 
 /*  libCppGUI - A GUI library for C++11/14
@@ -16,6 +18,9 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 */
+
+#include "./Canvas.ipp"
+#include "./Widget.ipp"
 
 namespace cppgui {
 

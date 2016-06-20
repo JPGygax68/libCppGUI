@@ -23,6 +23,8 @@
 #include "./Container_base.hpp"
 #include "Root_widget.hpp"
 
+#include "./Canvas.ipp"
+
 namespace cppgui {
 
     // Abstract_widget<> --------------------------------------------

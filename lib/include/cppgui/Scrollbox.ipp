@@ -1,3 +1,5 @@
+#pragma once
+
 /*  libCppGUI - A GUI library for C++11/14
     
     Copyright 2016 Hans-Peter Gygax
@@ -16,6 +18,10 @@
 */
 
 #include "./Scrollbox.hpp"
+
+#include "./Widget.ipp"
+#include "./Box.ipp"
+#include "./Vertical_scrollbar.ipp"
 
 namespace cppgui {
 

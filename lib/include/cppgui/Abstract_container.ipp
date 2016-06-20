@@ -21,6 +21,8 @@
 
 #include "./Abstract_container.hpp"
 
+#include "./Widget.ipp"
+
 namespace cppgui {
 
     template<class Config, bool With_layout>

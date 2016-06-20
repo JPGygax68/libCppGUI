@@ -16,8 +16,11 @@
 */
 
 #include "./unicode.hpp"
-
 #include "./Stringlist.hpp"
+
+#include "./Box.ipp"
+#include "./Container_base.ipp"
+#include "./Vertical_scrollbar.ipp"
 
 namespace cppgui {
 
