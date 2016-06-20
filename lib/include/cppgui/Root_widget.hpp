@@ -22,6 +22,7 @@
 
 #include "./Widget.hpp"
 #include "./Container_base.hpp"
+#include "./layout_managers.hpp"
 
 namespace cppgui {
 
@@ -38,7 +39,7 @@ namespace cppgui {
         public Root_widget__Layouter<Config, With_layout, 
             typename Config::template Root_widget__Container_updater<
                 typename Config::template Root_widget__Updater< 
-                    Container_base<Config, With_layout> > > >
+                    Container_base<Config, With_layout, layouting<Config>::template Nil > > > >
     {
     public:
         //using Renderer = typename GUIConfig::Renderer;
@@ -47,7 +48,7 @@ namespace cppgui {
         using Abstract_widget_t = typename Abstract_widget<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
         //using Abstract_container_t = Abstract_container<Config, With_layout>;
-        using Container_base_t = Container_base<Config, With_layout>;
+        using Container_base_t = Container_base<Config, With_layout, layouting<Config>::template Nil>;
         //using Font_mapper = typename Config::Font_mapper;
         using Font_handle = typename Canvas_t::Font_handle;
         using Cursor_handle = typename Config::Mouse::Cursor_handle;
@@ -134,7 +135,7 @@ namespace cppgui {
     struct Default__Root_widget__Container_updater: public Parent
     {
         using Widget_t = Widget<Config, With_layout>;
-        using Container_base_t = Container_base<Config, With_layout>;
+        using Container_base_t = Container_base<Config, With_layout, layouting<Config>::template Nil>;
         using Root_widget_t = Root_widget<Config, With_layout>;
 
         // Container_updater contract

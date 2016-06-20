@@ -242,11 +242,11 @@ namespace cppgui {
     }
 
     template <class Config, class Parent>
-    void Abstract_container__Layouter<Config, true, Parent>::layout_children(const Extents &ext)
+    void Abstract_container__Layouter<Config, true, Parent>::layout_children(const Rectangle &rect)
     {
         assert( _manager );
 
-        _manager->layout( *p(), ext);
+        _manager->layout( *p(), rect);
 
         for (auto child : p()->children())
         {

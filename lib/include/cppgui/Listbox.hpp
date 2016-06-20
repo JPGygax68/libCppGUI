@@ -86,15 +86,15 @@ namespace cppgui {
     template<class Config, bool With_layout>
     class List_pane_base: 
         public List_pane__Layouter<Config, With_layout, 
-            Scrollable_pane<Config, With_layout> >
+            Scrollable_pane<Config, With_layout, Simple_box_model> >
     {
     public:
         using Widget_t = Widget<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
         using Listbox_t = Listbox<Config, With_layout>;
-        using Scrollable_pane_t = Scrollable_pane<Config, With_layout>;
+        using Scrollable_pane_t = Scrollable_pane<Config, With_layout, Simple_box_model>;
         using Parent_t = Scrollable_pane_t;
-        using Parent_class = Scrollable_pane<Config, With_layout>;
+        using Parent_class = Scrollable_pane_t;
 
         void set_separator(const Separator &);
 

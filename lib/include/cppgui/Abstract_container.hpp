@@ -142,7 +142,7 @@ namespace cppgui {
 
         void init_children_layout();
         auto compute_minimal_size() -> Extents;
-        void layout_children(const Extents &);
+        void layout_children(const Rectangle &);
 
     protected:
         bool contains_widget(Widget_t *);

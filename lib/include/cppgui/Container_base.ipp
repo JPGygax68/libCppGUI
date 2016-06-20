@@ -27,24 +27,24 @@ namespace cppgui {
 
     // Main class ---------------------------------------------------
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::init()
+    template <class Config, bool With_layout, template <class> class BoxModel>
+    void Container_base<Config, With_layout, BoxModel>::init()
     {
         this->init_child_resources();
 
         this->Widget_t::init();
     }
 
-    template <class Config, bool With_layout>
-    void Container_base<Config, With_layout>::compute_view_from_data()
+    template <class Config, bool With_layout, template <class> class BoxModel>
+    void Container_base<Config, With_layout, BoxModel>::compute_view_from_data()
     {
         this->compute_child_views();
 
         this->Widget_t::compute_view_from_data();
     }
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::container_take_focus(Widget_t *child)
+    template <class Config, bool With_layout, template <class> class BoxModel>
+    void Container_base<Config, With_layout, BoxModel>::container_take_focus(Widget_t *child)
     {
         // Inform former focused child, update focused_child property
         Abstract_container_t::container_take_focus(child);
@@ -54,8 +54,8 @@ namespace cppgui {
         this->pass_up_and_notify_focus();
     }
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::gained_focus()
+    template <class Config, bool With_layout, template <class> class BoxModel>
+    void Container_base<Config, With_layout, BoxModel>::gained_focus()
     {
         if (this->_focused_child)
         {
@@ -65,8 +65,8 @@ namespace cppgui {
         Widget_t::gained_focus();
     }
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::loosing_focus()
+    template <class Config, bool With_layout, template <class> class BoxModel>
+    void Container_base<Config, With_layout, BoxModel>::loosing_focus()
     {
         Widget_t::loosing_focus();
 
@@ -76,14 +76,14 @@ namespace cppgui {
         }
     }
 
-    template <class Config, bool With_layout>
-    void Container_base<Config, With_layout>::mouse_motion(const Point &pos)
+    template <class Config, bool With_layout, template <class> class BoxModel>
+    void Container_base<Config, With_layout, BoxModel>::mouse_motion(const Point &pos)
     {
         this->container_mouse_motion(pos);
     }
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
+    template <class Config, bool With_layout, template <class> class BoxModel>
+    void Container_base<Config, With_layout, BoxModel>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
     {
         // TODO: call Widget_t::mouse_button() if container_mouse_button() did nothing
         this->container_mouse_button(pos, button, state, clicks);
@@ -91,28 +91,28 @@ namespace cppgui {
 
     #ifdef NOT_DEFINED
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::mouse_click(const Point &pos, int button, Count count)
+    template <class Config, bool With_layout, template <class> class BoxModel>
+    void Container_base<Config, With_layout, BoxModel>::mouse_click(const Point &pos, int button, Count count)
     {
         container_mouse_click(pos, button, count);
     }
 
     #endif
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::mouse_wheel(const Vector &dist)
+    template <class Config, bool With_layout, template <class> class BoxModel>
+    void Container_base<Config, With_layout, BoxModel>::mouse_wheel(const Vector &dist)
     {
-        container_mouse_wheel(dist);
+        this->container_mouse_wheel(dist);
     }
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::text_input(const char32_t *text, size_t size)
+    template <class Config, bool With_layout, template <class> class BoxModel>
+    void Container_base<Config, With_layout, BoxModel>::text_input(const char32_t *text, size_t size)
     {
-        container_text_input(text, size);
+        this->container_text_input(text, size);
     }
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::key_down(const Keycode &key)
+    template <class Config, bool With_layout, template <class> class BoxModel>
+    void Container_base<Config, With_layout, BoxModel>::key_down(const Keycode &key)
     {
         // If a child has focused, pass it on to that child, otherwise fall back to
         // Widget default behaviour (i.e. try to handle locally, then bubble back up)
@@ -126,8 +126,8 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    bool Container_base<Config, With_layout>::handle_key_down(const Keycode &key)
+    template <class Config, bool With_layout, template <class> class BoxModel>
+    bool Container_base<Config, With_layout, BoxModel>::handle_key_down(const Keycode &key)
     {
         if (Config::Keyboard::is_tab(key))
         {
@@ -139,8 +139,8 @@ namespace cppgui {
         return container_key_down(key);
     }
 
-    template<class Config, bool With_layout>
-    bool Container_base<Config, With_layout>::cycle_focus_forward()
+    template <class Config, bool With_layout, template <class> class BoxModel>
+    bool Container_base<Config, With_layout, BoxModel>::cycle_focus_forward()
     {
         assert(this->has_focus());
 
@@ -175,31 +175,31 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    bool Container_base<Config, With_layout>::cycle_focus_backward()
+    template <class Config, bool With_layout, template <class> class BoxModel>
+    bool Container_base<Config, With_layout, BoxModel>::cycle_focus_backward()
     {
-        assert(has_focus());
+        assert(this->has_focus());
 
-        if (children().empty())
+        if (this->children().empty())
         {
             return false; // cannot cycle, report back to sender
         }
         else
         {
-            decltype(std::rbegin(children())) it;
+            decltype(std::rbegin(this->children())) it;
 
-            if (focused_child())
+            if (this->focused_child())
             {
-                it = std::find(std::rbegin(children()), std::rend(children()), focused_child());  
+                it = std::find(std::rbegin(this->children()), std::rend(this->children()), this->focused_child());  
                 it ++;
             }
             else {
-                it = std::rbegin(children());
+                it = std::rbegin(this->children());
             }
 
-            while (it != std::rend(children()) && !(*it)->focussable()) it ++;
+            while (it != std::rend(this->children()) && !(*it)->focussable()) it ++;
 
-            if (it != std::rend(children()))
+            if (it != std::rend(this->children()))
             {
                 (*it)->gained_focus();
                 container_take_focus(*it);
@@ -213,15 +213,16 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::mouse_exit()
+    template <class Config, bool With_layout, template <class> class BoxModel>
+    void Container_base<Config, With_layout, BoxModel>::mouse_exit()
     {
-        container_mouse_exit();
+        this->container_mouse_exit();
+
         Widget_t::mouse_exit();
     }
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::child_key_down(const Keycode & key)
+    template <class Config, bool With_layout, template <class> class BoxModel>
+    void Container_base<Config, With_layout, BoxModel>::child_key_down(const Keycode & key)
     {
         if (!handle_key_down(key))
         {
@@ -229,8 +230,8 @@ namespace cppgui {
         }
     }
 
-    template <class Config, bool With_layout>
-    void Container_base<Config, With_layout>::render(Canvas_t *cv, const Point &offs)
+    template <class Config, bool With_layout, template <class> class BoxModel>
+    void Container_base<Config, With_layout, BoxModel>::render(Canvas_t *cv, const Point &offs)
     {
         fill(cv, offs, this->background_color());
 
@@ -242,35 +243,35 @@ namespace cppgui {
     template<class Config, bool With_layout, class Parent>
     void Default__Container_base__Container_updater<Config, With_layout, Parent>::child_invalidated(Widget_t *)
     {
-        p()->container()->child_invalidated(p());
+        this->container()->child_invalidated(this);
     }
 
     // Layouter aspect --------------------------------------------------------
 
     template <class Config>
-    template <class Parent>
-    void _container_base<Config>::Layouter<true, Parent>::init_layout()
+    template <class Class, class Parent>
+    void _container_base<Config>::Layouter<Class, true, Parent>::init_layout()
     {
         p()->init_children_layout();
     }
 
     template <class Config>
-    template <class Parent>
-    auto _container_base<Config>::Layouter<true, Parent>::get_minimal_size() -> Extents
+    template <class Class, class Parent>
+    auto _container_base<Config>::Layouter<Class, true, Parent>::get_minimal_size() -> Extents
     {
         return p()->compute_minimal_size();
     }
 
     template <class Config>
-    template <class Parent>
-    void _container_base<Config>::Layouter<true, Parent>::layout()
+    template <class Class, class Parent>
+    void _container_base<Config>::Layouter<Class, true, Parent>::layout()
     {
-        p()->layout_children( p()->extents() );
+        p()->layout_children( p()->get_inner_rectangle() );
     }
 
     template <class Config>
-    template <class Parent>
-    void _container_base<Config>::Layouter<true, Parent>::insert_child(Widget_t *child)
+    template <class Class, class Parent>
+    void _container_base<Config>::Layouter<Class, true, Parent>::insert_child(Widget_t *child)
     {
         p()->add_child(child);
 
@@ -278,8 +279,8 @@ namespace cppgui {
     }
 
     template <class Config>
-    template <class Parent>
-    void _container_base<Config>::Layouter<true, Parent>::drop_child(Widget_t *child)
+    template <class Class, class Parent>
+    void _container_base<Config>::Layouter<Class, true, Parent>::drop_child(Widget_t *child)
     {
         if (this->contains_widget( this->root_widget()->mouse_holder() ))
         {

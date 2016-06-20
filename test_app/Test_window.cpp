@@ -47,7 +47,7 @@ Test_window::Test_window(): Parent_t("Test window")
     });
     _label.set_position({  50, 50 });
     _label.set_extents ({ 200, 50 });
-    root_widget()->add_child(&_label);
+    //root_widget()->add_child(&_label);
 
     _textbox.set_font(dflt_font);
     _textbox.set_position({50, 120});
@@ -75,32 +75,32 @@ Test_window::Test_window(): Parent_t("Test window")
     _container1.add_child(&_stringlist);
     //_container1.set_layout_type(cppgui::Layout_type::header_content);
     _container1.set_layout_manager<cppgui::layouting<GUI_configuration>::Header_content>();
-    root_widget()->add_child(&_container1);
+    //root_widget()->add_child(&_container1);
 
     _button.set_font(dflt_font);
     _button.set_position({ 350, 160 });
     _button.set_extents ({ 200,  30 });
     _button.set_label(U"Click Me!");
-    root_widget()->add_child(&_button);
+    //root_widget()->add_child(&_button);
 
     _button2.set_font(dflt_font);
     _button2.set_label(U"Decorated btn");
     _button2.set_glyph(cppgui::Icon_resources<Default_font::size>::close());
     _button2.set_position({ 350, 195 });
     _button2.set_extents ({ 200,  30 });
-    root_widget()->add_child(&_button2);
+    //root_widget()->add_child(&_button2);
 
     _glyph_btn.set_glyph(cppgui::Icon_resources<Default_font::size>::close());
     _glyph_btn.set_position({ 570, 160 });
     _glyph_btn.set_extents ({  30,  30 });
-    root_widget()->add_child(&_glyph_btn);
+    //root_widget()->add_child(&_glyph_btn);
 
     _checkbox.set_font( dflt_font );
     _checkbox.set_tick_glyph( glyph_font, tick_descr );
     _checkbox.set_position({ 350, 50 });
     _checkbox.set_extents ({ 200, 40 });
     _checkbox.set_label( U"Check me!" );
-    root_widget()->add_child(&_checkbox);
+    //root_widget()->add_child(&_checkbox);
 
     /*
     _button_list.resize(9);
@@ -134,12 +134,12 @@ Test_window::Test_window(): Parent_t("Test window")
     _vert_scrollbar.set_extents ({  30, 200 });
     _vert_scrollbar.define_values( 150, 40 );
     _vert_scrollbar.on_position_change([&](cppgui::Position pos) { _scrollbar_pos.change_text( std::to_string(pos) ); });
-    root_widget()->add_child(&_vert_scrollbar);
+    //root_widget()->add_child(&_vert_scrollbar);
 
     _scrollbar_pos.set_font(dflt_font);
     _scrollbar_pos.set_position({ 800, 50 });
     _scrollbar_pos.set_extents ({ 100, 30 });
-    root_widget()->add_child(&_scrollbar_pos);
+    //root_widget()->add_child(&_scrollbar_pos);
 
     // Listbox
     _lb_buttons.resize(25);
@@ -153,7 +153,7 @@ Test_window::Test_window(): Parent_t("Test window")
     _listbox.set_extents ({ 400, 120 });
     _listbox.content_pane()->set_item_padding({ 5, 5 });
     _listbox.content_pane()->set_separator({ 1, { 0.5f, 0.5f, 0.5f, 1 }});
-    root_widget()->add_child(&_listbox);
+    //root_widget()->add_child(&_listbox);
 
     // Container with Vertical_slider's
 
@@ -173,7 +173,7 @@ Test_window::Test_window(): Parent_t("Test window")
     _container2.add_child(&_slider3);
     _container2.set_layout_manager<cppgui::layouting<GUI_configuration>::Left_to_right>();
     _container2.layout_manager()->set_spacing(5);
-    root_widget()->add_child(&_container2);
+    //root_widget()->add_child(&_container2);
 
     root_widget()->set_background_color({ 0, 0.6f, 0.2f, 1 });
     root_widget()->set_layout_manager<cppgui::layouting<GUI_configuration>::Nil>();
@@ -181,10 +181,11 @@ Test_window::Test_window(): Parent_t("Test window")
     //root_widget()->add_child(&_menu);
     ////root_widget()->add_child(&_scrollbox);
 
-    _stringlist.take_focus();
+    //_stringlist.take_focus();
     //root_widget()->set_focus_to(&_menu); // ); // &_textbox);
     //_scrollbox.take_focus();
     //_listbox.take_focus();
+    _input_dlg.take_focus();
 
     root_widget()->on_invalidated([this]() { invalidate(); });
 

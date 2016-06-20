@@ -26,7 +26,7 @@ namespace cppgui {
     // Forward declarations
 
     template<class Config, bool With_layout, class Pane, class Parent> struct Scrollbox__Layouter;
-    template<class Config, bool With_layout> class Scrollable_pane;
+    template<class Config, bool With_layout, template<class> class BoxModel> class Scrollable_pane;
 
     // Class definition
 
@@ -34,22 +34,14 @@ namespace cppgui {
 
     // TODO: this is very much incomplete!
 
-    #define CPPGUI_INSTANTIATE_SCROLLBOX(Config, With_layout, PaneType) \
-        template cppgui::Scrollbox<Config, With_layout, PaneType>; \
-        template cppgui::Scrollbox__Layouter<Config, With_layout, \
-            cppgui::Box<Config, With_layout, \
-                cppgui::Simple_box_model< \
-                    cppgui::Widget<Config, With_layout> > > >;
-
     template<class Config, bool With_layout, class Pane> // = Scrollable_pane<Config, With_layout>>
     class Scrollbox: public 
         Scrollbox__Layouter<Config, With_layout, Pane,
             Box<Config, With_layout, 
-                Simple_box_model<
-                    Container_base<Config, With_layout> > > >
+                Container_base<Config, With_layout, Simple_box_model> > >
     {
     public:
-        using Container_t = Container_base<Config, With_layout>;
+        using Container_t = Container_base<Config, With_layout, Simple_box_model>;
         using Parent_t = Container_t;
         using Canvas_t = typename Canvas<typename Config::Renderer>;
         using Scrollable_pane_t = Pane; // Scrollable_pane<Config, With_layout>;
@@ -111,12 +103,12 @@ namespace cppgui {
 
     // Forward declarations
 
-    template<class Config, bool With_layout, class Parent> struct Scrollable_pane__Layouter;
+    template<class Class, class Config, bool With_layout, class Parent> struct Scrollable_pane__Layouter;
 
     // Base class
 
-    template<class Config, bool With_layout>
-    class Scrollable_pane_base: public Container_base<Config, With_layout>
+    template<class Config, bool With_layout, template<class> class BoxModel>
+    class Scrollable_pane_base: public Container_base<Config, With_layout, BoxModel>
     {
     public:
         //using Navigation_handler = Custom_vertical_scrollbar<Config, With_layout>;
@@ -135,9 +127,10 @@ namespace cppgui {
 
     // Main class template
 
-    template<class Config, bool With_layout>
+    template<class Config, bool With_layout, template<class> class BoxModel>
     class Scrollable_pane: 
-        public Scrollable_pane__Layouter<Config, With_layout, Scrollable_pane_base<Config, With_layout> >
+        public Scrollable_pane__Layouter<Scrollable_pane<Config, With_layout, BoxModel>, 
+            Config, With_layout, Scrollable_pane_base<Config, With_layout, BoxModel> >
     {
     protected:
         static constexpr auto element_background_color() { return Color{ 1, 1, 1, 1 }; }
@@ -145,11 +138,11 @@ namespace cppgui {
 
     // Layouter aspect
 
-    template<class Config, class Parent>
-    struct Scrollable_pane__Layouter<Config, true, Parent>: public Parent
+    template<class Class, class Config, class Parent>
+    struct Scrollable_pane__Layouter<Class, Config, true, Parent>: public Parent
     {
-        struct Scrollable_pane_t: public Scrollable_pane<Config, true> { friend struct Scrollable_pane__Layouter; };
-        auto p() { return static_cast<Scrollable_pane_t*>(static_cast<Scrollable_pane<Config, true>*>(this)); }
+        struct Scrollable_pane_t: public Class { friend struct Scrollable_pane__Layouter; };
+        auto p() { return static_cast<Scrollable_pane_t*>(this); }
 
         /** Because the size of a scrollable pane can by definition exceed that of its container,
             this additional (CRTP) entry point is provided as an occasion for the pane implementation

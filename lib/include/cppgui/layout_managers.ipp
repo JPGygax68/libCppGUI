@@ -26,18 +26,6 @@ namespace cppgui
     // TODO: all layout managers must take visible() property into account
 
     template <class Config>
-    void layouting<Config>::Manager::set_padding(const Padding &padding)
-    {
-        _padding = padding;
-    }
-
-    template <class Config>
-    void layouting<Config>::Manager::set_padding(Padding &&padding)
-    {
-        _padding = std::move(padding);
-    }
-
-    template <class Config>
     void layouting<Config>::Manager::set_spacing(Length spacing)
     {
         _spacing = spacing;
@@ -98,24 +86,24 @@ namespace cppgui
     }
     
     template <class Config>
-    void layouting<Config>::Header_content::layout(Abstract_container_t &cntnr, const Extents &ext)
+    void layouting<Config>::Header_content::layout(Abstract_container_t &cntnr, const Rectangle &rect)
     {
         Widget_t *header  = cntnr.children()[0];
         Widget_t *content = cntnr.children()[1];
 
-        Length h_rem = ext.h - this->_padding[0] - this->_padding[2];
+        Length h_rem = rect.ext.h;
         Length h;
-        Position y = this->_padding[0];
+        Position y = rect.pos.y;
 
         h = header->get_minimal_size().h;
 
-        header->set_position({ this->_padding[3], y });
-        header->set_extents ({ ext.w - this->_padding[3] - this->_padding[1], h });
+        header->set_position({ rect.pos.x, y });
+        header->set_extents ({ rect.ext.w, h });
         y += h + this->_spacing;
         h_rem -= h + this->_spacing;
 
-        content->set_position({ this->_padding[3], y });
-        content->set_extents ({ ext.w - this->_padding[3] - this->_padding[1], h_rem });
+        content->set_position({ rect.pos.x, y });
+        content->set_extents ({ rect.ext.w, h_rem });
 
         // for (auto child : cntnr.children()) child->layout(); TODO: must be done in Container_base::layout()
     }
@@ -144,24 +132,24 @@ namespace cppgui
     }
 
     template <class Config>
-    void layouting<Config>::Content_footer::layout(Abstract_container_t &cntnr, const Extents &ext)
+    void layouting<Config>::Content_footer::layout(Abstract_container_t &cntnr, const Rectangle &rect)
     {
         Widget_t *content = cntnr.children()[0];
         Widget_t *footer  = cntnr.children()[1];
 
-        Length h_rem = ext.h - this->_padding[0] - this->_padding[2]; // "remaining" height
+        Length h_rem = rect.ext.h; // "remaining" height
         Length h;
-        Position y = ext.h - this->_padding[2];
+        Position y = rect.bottom();
 
         h = footer->get_minimal_size().h;
 
         y -= h;
-        footer->set_position({ this->_padding[3], y });
-        footer->set_extents ({ ext.w - this->_padding[3] - this->_padding[2], h });
+        footer->set_position({ rect.pos.x, y });
+        footer->set_extents ({ rect.ext.w, h });
         h_rem -= h;
 
-        content->set_position({ this->_padding[3], this->_padding[0] });
-        content->set_extents ({ ext.w - this->_padding[3] - this->_padding[2], h_rem });
+        content->set_position( rect.pos );
+        content->set_extents ({ rect.ext.w, h_rem });
     }
 
     template <class Config>
@@ -171,26 +159,26 @@ namespace cppgui
     }
 
     template <class Config>
-    void layouting<Config>::Content_tail::layout(Abstract_container_t &cntnr, const Extents &ext)
+    void layouting<Config>::Content_tail::layout(Abstract_container_t &cntnr, const Rectangle &rect)
     {
         Widget_t *content = cntnr.children()[0];
         Widget_t *tail    = cntnr.children()[1];
 
-        Length w_rem = ext.w - this->_padding[1] - this->_padding[3]; // "remaining" width
+        Length w_rem = rect.ext.w; // "remaining" width
         Length w;
-        Position x = ext.w - this->_padding[1];
+        Position x = rect.right();
 
         w = tail->get_minimal_size().w;
 
         x -= w;
-        tail->set_position({ x, this->_padding[0] });
-        tail->set_extents ({ w, ext.h - this->_padding[0] - this->_padding[2] });
+        tail->set_position({ x, rect.top() });
+        tail->set_extents ({ w, rect.ext.h });
         w_rem -= w;
 
         w_rem -= this->_spacing;
 
-        content->set_position({ this->_padding[3], this->_padding[0] });
-        content->set_extents ({ w_rem, ext.h - this->_padding[0] - this->_padding[2] });
+        content->set_position({ rect.pos.x, rect.pos.y });
+        content->set_extents ({ w_rem, rect.ext.h });
     }
 
     template <class Config>
@@ -217,15 +205,15 @@ namespace cppgui
     }
 
     template <class Config>
-    void layouting<Config>::Stack::layout(Abstract_container_t &cntnr, const Extents &ext)
+    void layouting<Config>::Stack::layout(Abstract_container_t &cntnr, const Rectangle &rect)
     {
-        Position y = 0; //_padding[0];
-        Position x = 0; //_padding[3];
+        Position y = 0;
+        Position x = 0;
 
         for (auto child: cntnr.children())
         {
             child->set_position({ x, y });
-            child->set_extents({ ext.w, child->get_minimal_size().h });
+            child->set_extents({ rect.ext.w, child->get_minimal_size().h });
 
             //child->layout();
 
@@ -240,9 +228,9 @@ namespace cppgui
     }
 
     template <class Config>
-    void layouting<Config>::Left_to_right::layout(Abstract_container_t &cntnr, const Extents &ext)
+    void layouting<Config>::Left_to_right::layout(Abstract_container_t &cntnr, const Rectangle &rect)
     {
-        Position x = this->_padding[3];
+        Position x = rect.left();
 
         auto n = 0;
         for (auto child: cntnr.children())
@@ -252,8 +240,8 @@ namespace cppgui
                 if (n++ > 0) x += this->_spacing;
 
                 auto minsz = child->get_minimal_size();
-                child->set_position({ x, this->_padding[0] });
-                child->set_extents ({ minsz.w, ext.h - this->_padding[0] - this->_padding[2] });
+                child->set_position({ x, rect.top() });
+                child->set_extents ({ minsz.w, rect.ext.h });
             
                 x += child->extents().w;
             }
@@ -269,30 +257,30 @@ namespace cppgui
     }
 
     template <class Config>
-    void layouting<Config>::Left_center_right::layout(Abstract_container_t &cntnr, const Extents &ext)
+    void layouting<Config>::Left_center_right::layout(Abstract_container_t &cntnr, const Rectangle &rect)
     {
         assert(cntnr.children().size() == 3);
 
-        auto h_inner = ext.h - this->_padding[0] - this->_padding[2];
+        auto h_inner = rect.ext.h;
 
         // Left
         auto child = cntnr.children()[0];
         auto minsz = child->get_minimal_size();
-        child->set_position({ this->_padding[3], this->_padding[0] });
+        auto x1 = rect.left();
+        child->set_position({ x1, rect.top() });
         child->set_extents({ minsz.w, h_inner });
-        auto x1 = this->_padding[3] + minsz.w;
 
         // Right
         child = cntnr.children()[2];
         minsz = child->get_minimal_size();
-        child->set_position({ ext.w - this->_padding[1] - child->get_minimal_size().w });
+        auto x2 = rect.right() - minsz.w;
+        child->set_position({ x2, rect.top() });
         child->set_extents ({ minsz.w, h_inner });
-        auto x2 = ext.w - minsz.w - this->_padding[1];
 
         // Center
         x1 += this->_spacing, x2 -= this->_spacing;
         child = cntnr.children()[1];
-        child->set_position({ x1, this->_padding[1] });
+        child->set_position({ x1, rect.top() });
         child->set_extents ({ x2 - x1, h_inner });
     }
 

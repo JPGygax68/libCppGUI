@@ -4,17 +4,28 @@
 
 #include <cppgui/basic_types.hpp>
 #include <cppgui/Default_widgets.hpp>
+#include <cppgui/Box_model.hpp>
+
 /*
 #include <cppgui/Container.hpp>
 #include <cppgui/Label.hpp>
 #include <cppgui/Textbox.hpp>
 */
 
+namespace _text_input_dlg
+{
+    template<int BorderWidth, int PaddingWidth>
+    struct Box_model_wrapper
+    {
+        template<class Parent> using Aspect = cppgui::Fixed_border_and_padding_box_model<BorderWidth, PaddingWidth, Parent>;
+    };
+}
+
 template <class Config, bool With_layout>
-class Text_input_dialog: public cppgui::Container_base<Config, With_layout>
+class Text_input_dialog: public cppgui::Container_base<Config, With_layout, _text_input_dlg::Box_model_wrapper<1, 0>::template Aspect>
 {
 public:
-    using Parent_t = cppgui::Container_base<Config, With_layout>;
+    using Parent_t = cppgui::Container_base<Config, With_layout, _text_input_dlg::Box_model_wrapper<1, 0>::template Aspect>;
     using Canvas_t = typename cppgui::Widget<Config, With_layout>::Canvas_t;
 
     Text_input_dialog();

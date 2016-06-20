@@ -59,23 +59,15 @@ namespace cppgui {
             position, under the control of the consumer.
      */
 
-    #define _CPPGUI_INSTANTIATE_VERTICAL_SCROLLBAR_BASE(Config, With_layout, ...) \
-        template cppgui::Vertical_scrollbar_base<__VA_ARGS__, Config, With_layout>; \
-        template cppgui::Vertical_scrollbar__Layouter<__VA_ARGS__, Config, With_layout, \
-            cppgui::Box<Config, With_layout, \
-                cppgui::Simple_box_model< \
-                    cppgui::Container_base<Config, With_layout> > > >
-
     template<class Impl, class Config, bool With_layout>
     class Vertical_scrollbar_base: public 
         Vertical_scrollbar__Layouter<Impl, Config, With_layout, 
             Box<Config, With_layout, 
-                Simple_box_model<
-                    Container_base<Config, With_layout> > > >
+                Container_base<Config, With_layout, Simple_box_model> > >
     {
     public:
         using Widget_t = typename Widget<Config, With_layout>;
-        using Container_base_t = typename Container_base<Config, With_layout>;
+        using Container_base_t = typename Container_base<Config, With_layout, Simple_box_model>;
         using Canvas_t = typename Widget_t::Canvas_t;
 
         using Native_color = typename Widget_t::Native_color;

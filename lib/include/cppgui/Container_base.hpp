@@ -23,23 +23,16 @@
 
 namespace cppgui {
 
-    // Forward declaration
-
-    template <class Config, bool With_layout> class Container_base;
+    template <class Config, bool With_layout, template<class> class BoxModel> class Container_base;
 
     // Internal (templated) pseudo-namespace 
 
     template<class Config>
     struct _container_base
     {
-        template <bool With_layout, class Parent> struct Layouter;
+        template<class Class, bool With_layout, class Parent> struct Layouter;
 
         // Base class -----------------------------------------------
-
-        #define _CPPGUI_INSTANTIATE_CONTAINER_BASE_BASE(Config, With_layout) \
-            template cppgui::_container_base<Config>::template _Base<With_layout>; \
-            template cppgui::Widget<Config, With_layout>; \
-            template cppgui::Abstract_container<Config, With_layout>;
 
         template <bool With_layout>
         class _Base: public Widget<Config, With_layout>, public Abstract_container<Config, With_layout>
@@ -50,15 +43,15 @@ namespace cppgui {
 
         // Dummy implementation
 
-        template<class Parent>
-        struct Layouter<false, Parent>: Parent
+        template<class Class, class Parent>
+        struct Layouter<Class, false, Parent>: Parent
         {            
         };
 
         // Real implementation
 
-        template<class Parent>
-        struct Layouter<true, Parent>: Parent
+        template<class Class, class Parent>
+        struct Layouter<Class, true, Parent>: Parent
         {
             using Widget_t = typename Widget<Config, true>;
 
@@ -74,8 +67,8 @@ namespace cppgui {
             void drop_child  (Widget_t *);
 
         private:
-            class Container_base_t: public Container_base<Config, true> { friend struct Layouter; };
-            auto p() { return static_cast<Container_base_t*>(this); }
+            class Container_base_t: public Class { friend struct Layouter; };
+            auto p() { return static_cast<Class*>(this); }
 
         };
     };
@@ -86,23 +79,18 @@ namespace cppgui {
         Abstract_container with those of Widget.
      */
 
-    #define CPPGUI_INSTANTIATE_CONTAINER_BASE(Config, With_layout) \
-        _CPPGUI_INSTANTIATE_CONTAINER_BASE_BASE(Config, With_layout) \
-        template Config::template Container_base__Container_updater< \
-            cppgui::_container_base<Config>::template Layouter<With_layout, \
-                cppgui::_container_base<Config>::template _Base<With_layout> > >;
-
-    template <class Config, bool With_layout>
+    template <class Config, bool With_layout, template<class> class BoxModel>
     class Container_base: public
         Config::template Container_base__Container_updater<
-            _container_base<Config>::template Layouter<With_layout,
-                _container_base<Config>::template _Base<With_layout> > >
+            _container_base<Config>::template Layouter<Container_base<Config, With_layout, BoxModel>, With_layout,
+                BoxModel<
+                    typename _container_base<Config>::template _Base<With_layout> > > >
     {
     public:
         using Renderer = typename Config::Renderer;
-        using Widget_t = typename Widget<Config, With_layout>;
+        using Widget_t = Widget<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
-        using Abstract_container_t = typename Abstract_container<Config, With_layout>;
+        using Abstract_container_t = Abstract_container<Config, With_layout>;
         using Keyboard = typename Config::Keyboard;
         using Keycode = typename Keyboard::Keycode;
 
@@ -149,14 +137,11 @@ namespace cppgui {
     template <class Config, bool With_layout, class Parent>
     struct Default__Container_base__Container_updater: Parent 
     {
-        class Container_base_t: public Container_base<Config, true> { friend struct Default__Container_base__Container_updater; };
-        using Widget_t = Widget<Config, true>;
-
-        auto p() { return static_cast<Container_base_t*>(static_cast<Container_base<Config, true>*>(this)); }
+        using Widget_t = Widget<Config, With_layout>;
 
         void child_invalidated(Widget_t *) override;
 
-        auto container_root_widget() { return p()->root_widget(); }
+        auto container_root_widget() { return this->root_widget(); }
     };
 
 } // ns cppgui

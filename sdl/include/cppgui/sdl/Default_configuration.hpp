@@ -23,9 +23,9 @@ namespace cppgui {
         template<class ConfigT, class RendererT, bool With_layout>
         struct Default_configuration
         {    
-            using Renderer = typename RendererT;
+            using Renderer = RendererT;
 
-            using Configuration = typename ConfigT; // Default_configuration<Renderer, With_layout>;
+            using Configuration = ConfigT; // Default_configuration<Renderer, With_layout>;
             using Font_handle = typename Renderer::font_handle;
 
             template<class Parent> using Widget_updater =  

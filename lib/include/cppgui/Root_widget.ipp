@@ -265,6 +265,8 @@ namespace cppgui {
         p()->init_children_layout();
     }
 
+    // TODO: the following is probably no longer necessary
+
     template<class Config, class Parent>
     void Root_widget__Layouter<Config, true, Parent>::layout()
     {

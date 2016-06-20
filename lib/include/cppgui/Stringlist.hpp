@@ -36,27 +36,27 @@ namespace cppgui {
 
         static constexpr auto default_border_width = 1; // TODO: base on DPI
 
-        // Main class declaration ---------------------------------------
+        // Box model customization
 
-        //#define _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Config, With_layout, /*BoxModel*/...) \
-        //    template cppgui::_stringlist<Config>::Base<With_layout, __VA_ARGS__>; \
-        //    template cppgui::_stringlist<Config>::Layouter<With_layout, __VA_ARGS__, \
-        //        cppgui::Box<Config, With_layout, \
-        //            __VA_ARGS__< \
-        //                cppgui::Container_base<Config, With_layout> > > >;
+        template<int BorderWidth, int PaddingWidth>
+        struct Box_model_wrapper
+        {
+            template<class Parent> using Aspect = Fixed_border_and_padding_box_model<BorderWidth, PaddingWidth, Parent>;
+        };
+
+        // Main class declaration ---------------------------------------
 
         template<bool With_layout, int BorderWidth>
         class Base: public 
             Layouter<Base<With_layout, BorderWidth>, With_layout, 
                 Box<Config, With_layout, 
-                    Fixed_border_and_padding_box_model<BorderWidth, 0,
-                        Container_base<Config, With_layout> > > >
+                    Container_base<Config, With_layout, Box_model_wrapper<BorderWidth, 0>::template Aspect > > >
         {
         public:
             using Widget_t = Widget<Config, With_layout>;
-            using Parent_t = Container_base<Config, With_layout>;
+            using Parent_t = Container_base<Config, With_layout, Box_model_wrapper<BorderWidth, 0>::template Aspect>;
             using Canvas_t = typename Widget_t::Canvas_t;
-            using Container_base_t = Container_base<Config, With_layout>;
+            using Container_base_t = Parent_t;
             using Keyboard = typename Config::Keyboard;
             using Keycode = typename Keyboard::Keycode;
 
