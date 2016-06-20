@@ -296,4 +296,22 @@ namespace cppgui
         child->set_extents ({ x2 - x1, h_inner });
     }
 
+    template <class Config>
+    void layouting<Config>::Sequence_with_percentile_widths::set_element_length(int index, float length)
+    {
+        _lengths[index] = length;
+    }
+
+    template <class Config>
+    auto layouting<Config>::Sequence_with_percentile_widths::get_minimal_size(Abstract_container_t &cntnr) -> Extents
+    {
+        return this->minimal_size_horizontal(cntnr);
+    }
+
+    template <class Config>
+    void layouting<Config>::Sequence_with_percentile_widths::layout(Abstract_container_t &cntnr, const Extents &)
+    {
+
+    }
+
 } // ns cppgui

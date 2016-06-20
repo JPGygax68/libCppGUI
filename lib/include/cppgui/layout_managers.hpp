@@ -17,6 +17,8 @@
     limitations under the License.
 */
 
+#include <vector>
+
 #include "./Abstract_container.hpp"
 
 namespace cppgui
@@ -103,6 +105,19 @@ namespace cppgui
         public:
             auto get_minimal_size(Abstract_container_t &) -> Extents override;
             void layout(Abstract_container_t &, const Extents &) override;
+        };
+
+        class Sequence_with_percentile_widths: public Manager
+        {
+        public:
+
+            void set_element_length(int index, float);
+
+            auto get_minimal_size(Abstract_container_t &) -> Extents override;
+            void layout(Abstract_container_t &, const Extents &) override;
+
+        private:
+            std::vector<float>  _lengths;
         };
 
     }; // templated ns layout

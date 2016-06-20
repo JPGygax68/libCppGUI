@@ -131,10 +131,12 @@ namespace cppgui {
         using Widget_t = typename Widget<Config, true>;
         class Abstract_container_t: public Abstract_container<Config, true> { friend struct Abstract_container__Layouter; };
 
-        template<class ManagerType> void set_layout_manager()
+        template<class ManagerType> auto set_layout_manager() -> ManagerType *
         {
             _manager.reset( new ManagerType{} ); 
             //_manager->set_padding(this->_padding); // TODO: should padding really be a member of Container ?
+
+            return static_cast<ManagerType*>( _manager.get() ); // as a convenience
         };
         auto layout_manager() { return _manager.get(); }
 
