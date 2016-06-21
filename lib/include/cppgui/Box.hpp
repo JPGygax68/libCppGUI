@@ -114,7 +114,6 @@ namespace cppgui {
     {
         auto get_border_rectangle() const -> Rectangle { return this->border_rectangle( this->extents() ); }
         auto get_inner_rectangle() const -> Rectangle { return this->inner_rectangle( this->extents() ); }
-
     };
 
     // template<class Config, class With_layout, class Parent> using Box__Layouter = typename _box<Config>::template Layouter<With_layout, Parent>;

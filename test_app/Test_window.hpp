@@ -39,7 +39,9 @@ public:
 
 private:
     
-    class Slider_with_display: public cppgui::Container_base<GUI_configuration, true>
+    // TODO: use even simpler box model
+
+    class Slider_with_display: public cppgui::Container<GUI_configuration, true, cppgui::Fixed_border_and_padding<0, 0>::Box_model>
     {
     public:
         using Value = cppgui::Vertical_slider<GUI_configuration, true>::Value;
@@ -57,24 +59,24 @@ private:
         cppgui::Vertical_slider<GUI_configuration, true>    _slider;
     };
 
-    cppgui::Label<GUI_configuration, true>                      _label;
-    cppgui::Button<GUI_configuration, true>                     _button;
-    cppgui::Glyph_button<GUI_configuration, true>               _glyph_btn;
-    cppgui::Glyph_button<GUI_configuration, true>               _button2;
-    cppgui::Textbox<GUI_configuration, true>                    _textbox;
-    cppgui::Checkbox<GUI_configuration, true>                   _checkbox;
-    cppgui::Container_base<GUI_configuration, true>             _menu;
-    cppgui::Label<GUI_configuration, true>                      _menu_header;
-    Text_input_dialog<GUI_configuration, true>                  _input_dlg;
-    cppgui::Vertical_scrollbar<GUI_configuration, true>         _vert_scrollbar;   
-    cppgui::Textbox<GUI_configuration, true>                    _scrollbar_pos;
-    cppgui::List_pane_base<GUI_configuration, true>             _sb_pane;
-    std::vector<cppgui::Button<GUI_configuration, true>>        _sb_buttons;
-    std::vector<cppgui::Button<GUI_configuration, true>>        _lb_buttons;
-    cppgui::Listbox<GUI_configuration, true>                    _listbox;
-    cppgui::Stringlist<GUI_configuration, true>                 _stringlist;
-    Slider_with_display                                         _slider1, _slider2, _slider3;
+    cppgui::Label<GUI_configuration, true>                                                          _label;
+    cppgui::Button<GUI_configuration, true>                                                         _button;
+    cppgui::Glyph_button<GUI_configuration, true>                                                   _glyph_btn;
+    cppgui::Glyph_button<GUI_configuration, true>                                                   _button2;
+    cppgui::Textbox<GUI_configuration, true>                                                        _textbox;
+    cppgui::Checkbox<GUI_configuration, true>                                                       _checkbox;
+    cppgui::Container<GUI_configuration, true, cppgui::Fixed_border_and_padding<1, 3>::Box_model>   _menu;
+    cppgui::Label<GUI_configuration, true>                                                          _menu_header;
+    Text_input_dialog<GUI_configuration, true>                                                      _input_dlg;
+    cppgui::Vertical_scrollbar<GUI_configuration, true>                                             _vert_scrollbar;   
+    cppgui::Textbox<GUI_configuration, true>                                                        _scrollbar_pos;
+    cppgui::List_pane_base<GUI_configuration, true>                                                 _sb_pane;
+    std::vector<cppgui::Button<GUI_configuration, true>>                                            _sb_buttons;
+    std::vector<cppgui::Button<GUI_configuration, true>>                                            _lb_buttons;
+    cppgui::Listbox<GUI_configuration, true>                                                        _listbox;
+    cppgui::Stringlist<GUI_configuration, true>                                                     _stringlist;
+    Slider_with_display                                                                             _slider1, _slider2, _slider3;
     //Vertical_slider             _vslider1, _vslider2, _vslider3;
 
-    cppgui::Container_base<GUI_configuration, true>              _container1, _container2;
+    cppgui::Container<GUI_configuration, true, cppgui::Fixed_border_and_padding<1, 3>::Box_model>   _container1, _container2;
 };

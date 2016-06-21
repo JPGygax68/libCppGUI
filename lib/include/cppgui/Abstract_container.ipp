@@ -233,27 +233,6 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template <class Config, class Parent>
-    auto Abstract_container__Layouter<Config, true, Parent>::compute_minimal_size() -> Extents
-    {
-        assert( _manager );
-
-        return _manager->get_minimal_size( *p());
-    }
-
-    template <class Config, class Parent>
-    void Abstract_container__Layouter<Config, true, Parent>::layout_children(const Extents &ext)
-    {
-        assert( _manager );
-
-        _manager->layout( *p(), ext);
-
-        for (auto child : p()->children())
-        {
-            child->layout();
-        }
-    }
-
     template<class Config, class Parent>
     void Abstract_container__Layouter<Config, true, Parent>::init_children_layout()
     {

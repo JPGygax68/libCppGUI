@@ -52,7 +52,7 @@ namespace cppgui {
         using Button_t             = Button<Config, With_layout, Default_fixed_border_and_padding_box_model>;
         using Glyph_button_t       = Glyph_button<Config, With_layout, Default_fixed_border_and_padding_box_model>;
         using Checkbox_t           = Checkbox<Config, With_layout>;
-        using Container_t          = Container<Config, With_layout>;
+        using Container_base_t     = Container_base<Config, With_layout>;
         using Vertical_scrollbar_t = Vertical_scrollbar<Config, With_layout>;
         using Listbox_t            = Listbox<Config, With_layout>;
         using Stringlist_t         = Stringlist<Config, With_layout, 2>;
@@ -60,48 +60,6 @@ namespace cppgui {
     };
 
 } // ns cppgui
-
-#ifdef NOT_DEFINED
-
-#define CPPGUI_DEFINE_WIDGET_TYPES(Config, With_layout) \
-    using Widget                    = cppgui::Widget                    <Config, With_layout>; \
-    using Label                     = cppgui::Label                     <Config, With_layout>; \
-    using Button                    = cppgui::Button                    <Config, With_layout, cppgui::Default_widgets<Config, With_layout>::Default_fixed_border_and_padding_box_model>; \
-    using Glyph_button              = cppgui::Glyph_button              <Config, With_layout, cppgui::Default_widgets<Config, With_layout>::Default_fixed_border_and_padding_box_model>; \
-    using Root_widget               = cppgui::Root_widget               <Config, With_layout>; \
-    using Textbox                   = cppgui::Textbox                   <Config, With_layout>; \
-    using Checkbox                  = cppgui::Checkbox                  <Config, With_layout>; \
-    using Abstract_container        = cppgui::Abstract_container        <Config, With_layout>; \
-    using Container_base            = cppgui::Container_base            <Config, With_layout>; \
-    using Custom_vertical_scrollbar = cppgui::Custom_vertical_scrollbar <Config, With_layout>; \
-    using Vertical_scrollbar        = cppgui::Vertical_scrollbar        <Config, With_layout>; \
-    using Listbox                   = cppgui::Listbox                   <Config, With_layout>; \
-    using List_pane_base            = cppgui::List_pane_base            <Config, With_layout>; \
-    using Stringlist                = cppgui::Stringlist                <Config, With_layout, 1>; \
-    using Vertical_slider           = cppgui::Vertical_slider           <Config, With_layout>; \
-    using layouting                 = cppgui::layouting                 <Config>; 
-
-#endif
-
-//using Canvas_t = cppgui::Canvas<Renderer>; 
-
-#define CPPGUI_INSTANTIATE_WIDGET_TYPES(Config, With_layout) \
-    CPPGUI_INSTANTIATE_CANVAS                   (Config); \
-    CPPGUI_INSTANTIATE_WIDGET                   (Config, With_layout); \
-    CPPGUI_INSTANTIATE_LABEL                    (Config, With_layout); \
-    CPPGUI_INSTANTIATE_BUTTON(Config, With_layout, cppgui::Default_widgets<Config, With_layout>::Default_fixed_border_and_padding_box_model); \
-    CPPGUI_INSTANTIATE_GLYPH_BUTTON             (Config, With_layout, cppgui::template Default_widgets<Config, With_layout>::Default_fixed_border_and_padding_box_model) \
-    CPPGUI_INSTANTIATE_ROOT_WIDGET              (Config, With_layout); \
-    CPPGUI_INSTANTIATE_TEXTBOX                  (Config, With_layout); \
-    CPPGUI_INSTANTIATE_CHECKBOX                 (Config, With_layout); \
-    CPPGUI_INSTANTIATE_ABSTRACT_CONTAINER       (Config, With_layout); \
-    CPPGUI_INSTANTIATE_CONTAINER_BASE           (Config, With_layout); \
-    CPPGUI_INSTANTIATE_VERTICAL_SCROLLBAR       (Config, With_layout); \
-    CPPGUI_INSTANTIATE_LISTBOX                  (Config, With_layout); \
-    /* CPPGUI_INSTANTIATE_STRINGLIST               (Config, With_layout, 1); */ \
-    CPPGUI_INSTANTIATE_DEFAULT_VERTICAL_SLIDER  (Config, With_layout); \
-    CPPGUI_INSTANTIATE_LAYOUTING                (Config);
-
 
 #define CPPGUI_INSTANTIATE_FONT_RESOURCES(Size) \
     CPPGUI_INSTANTIATE_ICON_RESOURCES(Size)

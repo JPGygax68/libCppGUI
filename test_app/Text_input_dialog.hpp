@@ -4,14 +4,15 @@
 
 #include <cppgui/basic_types.hpp>
 #include <cppgui/Default_widgets.hpp>
-/*
+#include <cppgui/Box_model.hpp>
 #include <cppgui/Container.hpp>
+/*
 #include <cppgui/Label.hpp>
 #include <cppgui/Textbox.hpp>
 */
 
 template <class Config, bool With_layout>
-class Text_input_dialog: public cppgui::Container_base<Config, With_layout>
+class Text_input_dialog: public cppgui::Container<Config, With_layout, cppgui::Fixed_border_and_padding<1, 4>::Box_model>
 {
 public:
     using Parent_t = cppgui::Container_base<Config, With_layout>;
@@ -37,16 +38,16 @@ private:
     //using Container_t = cppgui::Container<Config, With_layout>;
     //using Textbox_t = cppgui::Textbox<Config, With_layout>;
 
-    cppgui::Border                              _border = {0};
-    cppgui::Rasterized_font                     _glyph_font;
-    Container_base                              _header_bar;
-    cppgui::Label<Config, With_layout>          _caption_label;
-    //Button                                      _close_btn;
-    cppgui::Glyph_button<Config, With_layout>   _close_btn;
-    Container_base                              _main_body;
-    cppgui::Label<Config, With_layout>          _prompt_label;
-    Container_base                              _input_row;
-    cppgui::Textbox<Config, With_layout>        _textbox;
-    cppgui::Button<Config, With_layout>         _ok_btn;
+    cppgui::Border                                                                              _border = {0};
+    cppgui::Rasterized_font                                                                     _glyph_font;
+    cppgui::Container<Config, With_layout, cppgui::Fixed_border_and_padding<0, 2>::Box_model>   _header_bar;
+    cppgui::Label<Config, With_layout>                                                          _caption_label;
+    //Button                                                                                      _close_btn;
+    cppgui::Glyph_button<Config, With_layout>                                                   _close_btn;
+    cppgui::Container<Config, With_layout, cppgui::Fixed_border_and_padding<0, 2>::Box_model>   _main_body;
+    cppgui::Label<Config, With_layout>                                                          _prompt_label;
+    cppgui::Container<Config, With_layout, cppgui::Fixed_border_and_padding<0, 2>::Box_model>   _input_row;
+    cppgui::Textbox<Config, With_layout>                                                        _textbox;
+    cppgui::Button<Config, With_layout>                                                         _ok_btn;
 };
 

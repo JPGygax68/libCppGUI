@@ -256,16 +256,12 @@ namespace cppgui {
 
     template <class Config>
     template <class Parent>
-    auto _container_base<Config>::Layouter<true, Parent>::get_minimal_size() -> Extents
-    {
-        return p()->compute_minimal_size();
-    }
-
-    template <class Config>
-    template <class Parent>
     void _container_base<Config>::Layouter<true, Parent>::layout()
     {
-        p()->layout_children( p()->extents() );
+        for (auto child : p()->children())
+        {
+            child->layout();
+        }
     }
 
     template <class Config>

@@ -36,11 +36,6 @@ namespace cppgui {
 
         // Base class -----------------------------------------------
 
-        #define _CPPGUI_INSTANTIATE_CONTAINER_BASE_BASE(Config, With_layout) \
-            template cppgui::_container_base<Config>::template _Base<With_layout>; \
-            template cppgui::Widget<Config, With_layout>; \
-            template cppgui::Abstract_container<Config, With_layout>;
-
         template <bool With_layout>
         class _Base: public Widget<Config, With_layout>, public Abstract_container<Config, With_layout>
         {            
@@ -65,7 +60,7 @@ namespace cppgui {
             // Contract
 
             void init_layout() override;
-            auto get_minimal_size() -> Extents override;
+            //auto get_minimal_size() -> Extents override;
             void layout() override;
 
             // New methods
@@ -85,12 +80,6 @@ namespace cppgui {
     /** This generic container class exists primarily to combine the functionalities of 
         Abstract_container with those of Widget.
      */
-
-    #define CPPGUI_INSTANTIATE_CONTAINER_BASE(Config, With_layout) \
-        _CPPGUI_INSTANTIATE_CONTAINER_BASE_BASE(Config, With_layout) \
-        template Config::template Container_base__Container_updater< \
-            cppgui::_container_base<Config>::template Layouter<With_layout, \
-                cppgui::_container_base<Config>::template _Base<With_layout> > >;
 
     template <class Config, bool With_layout>
     class Container_base: public

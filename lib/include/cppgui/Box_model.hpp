@@ -81,4 +81,13 @@ namespace cppgui
 
         static constexpr auto get_padding(int /*border*/) { return PaddingWidth; }
     };
+
+    // Wrappers that give access to standardized templates (taking Parent for parameter = "aspects")
+
+    template<Width BorderWidth, Width PaddingWidth>
+    struct Fixed_border_and_padding
+    {
+        template<class Parent> using Box_model = Fixed_border_and_padding_box_model<BorderWidth, PaddingWidth, Parent>;
+    };
+
 } // ns cppgui

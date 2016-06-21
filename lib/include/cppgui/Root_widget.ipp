@@ -268,7 +268,7 @@ namespace cppgui {
     template<class Config, class Parent>
     void Root_widget__Layouter<Config, true, Parent>::layout()
     {
-        p()->layout_children( p()->extents() ); 
+        Container_base_t::layout();
     }
 
     template<class Config, class Parent>
@@ -298,13 +298,3 @@ namespace cppgui {
 
 } // ns cppgui
 
-
-/*
-template cppgui::Root_widget<Config, With_layout>; \
-    template cppgui::Config::template Root_widget__Updater< \
-            cppgui::Container_base<Config, With_layout> > >; \
-    template cppgui::Root_widget__Layouter<Config, With_layout, \
-        typename Config::template Root_widget__Updater< \
-            cppgui::Container_base<Config, With_layout> > >;
-
-*/

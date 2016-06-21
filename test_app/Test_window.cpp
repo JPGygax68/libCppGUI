@@ -12,6 +12,7 @@
 #include <cppgui/Default_widgets.ipp>
 #include <cppgui/sdl/Window.ipp>
 #include <cppgui/GUI_window.ipp>
+#include <cppgui/Container.ipp>
 
 CPPGUI_SDL_INSTANTIATE_WINDOW(Test_window)
 CPPGUI_INSTANTIATE_GUI_WINDOW(Test_window, GUI_configuration, cppgui::sdl::Window<Test_window>, cppgui::sdl::OpenGL_adapter)
@@ -176,7 +177,7 @@ Test_window::Test_window(): Parent_t("Test window")
     root_widget()->add_child(&_container2);
 
     root_widget()->set_background_color({ 0, 0.6f, 0.2f, 1 });
-    root_widget()->set_layout_manager<cppgui::layouting<GUI_configuration>::Nil>();
+    //root_widget()->set_layout_manager<cppgui::layouting<GUI_configuration>::Nil>();
 
     //root_widget()->add_child(&_menu);
     ////root_widget()->add_child(&_scrollbox);

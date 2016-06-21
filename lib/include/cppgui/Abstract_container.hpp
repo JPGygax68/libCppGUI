@@ -96,7 +96,7 @@ namespace cppgui {
         Widget_t *_focused_child = nullptr;
     };
 
-    template <class Config, bool With_layout> class Container;
+    template <class Config, bool With_layout> class Container_base;
 
     // Container_updater aspect -------------------------------------
 
@@ -106,10 +106,10 @@ namespace cppgui {
     struct Default_Abstract_container_Container_updater: public Parent 
     {
         using Widget_t = Widget<Config, With_layout>;
-        class Container_t: public Container<Config, With_layout> { friend struct Default_Abstract_container_Container_updater; };
+        class Container_base_t: public Container_base<Config, With_layout> { friend struct Default_Abstract_container_Container_updater; };
         using Root_widget_t = Root_widget<Config, With_layout>;
 
-        auto p() { return static_cast<Container_t*>(static_cast<Container<Config, With_layout>*>(this)); }
+        auto p() { return static_cast<Container_base_t*>(static_cast<Container_base<Config, With_layout>*>(this)); }
 
         virtual void child_invalidated(Widget_t *) = 0;
 
@@ -131,26 +131,13 @@ namespace cppgui {
         using Widget_t = typename Widget<Config, true>;
         class Abstract_container_t: public Abstract_container<Config, true> { friend struct Abstract_container__Layouter; };
 
-        template<class ManagerType> auto set_layout_manager() -> ManagerType *
-        {
-            _manager.reset( new ManagerType{} ); 
-            //_manager->set_padding(this->_padding); // TODO: should padding really be a member of Container ?
-
-            return static_cast<ManagerType*>( _manager.get() ); // as a convenience
-        };
-        auto layout_manager() { return _manager.get(); }
-
         void init_children_layout();
-        auto compute_minimal_size() -> Extents;
-        void layout_children(const Extents &);
 
     protected:
         bool contains_widget(Widget_t *);
 
     private:
         auto p() { return static_cast<Abstract_container_t*>(static_cast<Abstract_container<Config, true>*>(this)); }
-
-        std::unique_ptr<typename layouting<Config>::Manager> _manager;
     };
 
 } // ns cppgui

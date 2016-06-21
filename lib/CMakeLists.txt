@@ -168,7 +168,7 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Abstract_container.hpp           include/cppgui/Abstract_container.ipp
     include/cppgui/layout_managers.hpp              include/cppgui/layout_managers.ipp
     include/cppgui/Container_base.hpp               include/cppgui/Container_base.ipp
-    #include/cppgui/Container.hpp                    include/cppgui/Container.ipp
+    include/cppgui/Container.hpp                    include/cppgui/Container.ipp
     #include/cppgui/Stack.hpp                        include/cppgui/Stack.ipp
     include/cppgui/Root_widget.hpp                  include/cppgui/Root_widget.ipp
     include/cppgui/Vertical_scrollbar.hpp           include/cppgui/Vertical_scrollbar.ipp

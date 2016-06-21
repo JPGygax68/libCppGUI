@@ -38,7 +38,7 @@ namespace cppgui {
     {
     public:
         using Widget_t = Widget<Config, With_layout>;
-        using Container_t = Container<Config, With_layout>;
+        using Container_base_t = Container_base<Config, With_layout>;
         //using Canvas_t = typename Canvas<typename Config::Renderer>;
         using List_pane_t = List_pane_base<Config, With_layout>;
         using Layoutable_widget_t = Widget<Config, true>; // THIS IS SPECIAL - only layoutable widgets can be added at runtime
