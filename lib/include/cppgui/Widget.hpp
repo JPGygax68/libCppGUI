@@ -51,6 +51,10 @@ namespace cppgui {
     class Abstract_widget
     {
     public:
+        virtual ~Abstract_widget()
+        {
+        }
+
         using Abstract_widget_t = Abstract_widget;
         using Root_widget_t     = Root_widget<Config, With_layout>;
         using Canvas_t          = typename Canvas<typename Config::Renderer>;
