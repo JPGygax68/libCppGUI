@@ -72,7 +72,7 @@ namespace cppgui {
 
         void layout() override;
 
-        //auto get_preferred_size() -> Extents override;
+        auto get_preferred_size() -> Extents;
 
     protected:
         struct Listbox_t: public Listbox<Config, true> { friend struct Listbox__Layouter; };
@@ -161,9 +161,3 @@ namespace cppgui {
     };
 
 } // ns cppgui
-
-#define CPPGUI_INSTANTIATE_LISTBOX(Config, With_layout) \
-    template cppgui::Listbox<Config, With_layout>; \
-    template cppgui::List_pane<Config, With_layout>; \
-    template cppgui::List_pane_base<Config, With_layout>; \
-    template cppgui::List_pane__Layouter<Config, With_layout, cppgui::Scrollable_pane<Config, With_layout> >;

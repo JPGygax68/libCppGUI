@@ -33,6 +33,7 @@
 #include "./Checkbox.ipp"
 #include "./Abstract_container.ipp"
 #include "./Container_base.ipp"
+#include "./Container.ipp"
 #include "./Vertical_scrollbar.ipp"
 #include "./Scrollbox.ipp"
 #include "./Listbox.ipp"

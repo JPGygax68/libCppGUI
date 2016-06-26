@@ -138,21 +138,19 @@ namespace cppgui {
         Scrollbox_t::layout();
     }
 
-    /*
     template<class Config, class Parent>
     auto Listbox__Layouter<Config, true, Parent>::get_preferred_size() -> Extents
     {
         // TODO: borders, padding, separation
 
-        auto pane_size  = p()->_content_pane.get_preferred_size();
-        auto vsbar_size = p()->vertical_scrollbar().get_preferred_size();
+        auto pane_size  = p()->_content_pane.get_minimal_size();
+        auto vsbar_size = p()->vertical_scrollbar().get_minimal_size();
 
         auto w = pane_size.w + vsbar_size.w;
         auto h = std::max( pane_size.h, vsbar_size.h );
 
-        return { w + 2 * p()->_border.width, h + 2 * p()->_border.width };
+        return this->add_boxing({ w, h }); //  + 2 * p()->_border.width, h + 2 * p()->_border.width };
     }
-    */
 
     // List_pane_base ====================================================
 
