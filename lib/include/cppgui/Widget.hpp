@@ -36,7 +36,7 @@ namespace cppgui {
 
     // Forward declarations 
 
-    template <class Config, bool With_layout> class Root_widget;
+    template <class Config, bool With_layout> class Root_widget_base;
     template <class Config, bool With_layout> class Abstract_container;
     /*template <class Config, bool With_layout>*/ class Drag_controller;
 
@@ -52,7 +52,7 @@ namespace cppgui {
     {
     public:
         using Abstract_widget_t = Abstract_widget;
-        using Root_widget_t     = Root_widget<Config, With_layout>;
+        using Root_widget_t     = Root_widget_base<Config, With_layout>;
         using Canvas_t          = typename Canvas<typename Config::Renderer>;
         using Native_color      = typename Canvas_t::Native_color;
         using Font_handle       = typename Canvas_t::Font_handle;
@@ -147,7 +147,7 @@ namespace cppgui {
         using Keyboard = typename Config::Keyboard;
         using Keycode = typename Keyboard::Keycode;
         using Abstract_container_t = Abstract_container<Config, With_layout>;
-        using Root_widget_t = Root_widget<Config, With_layout>;
+        using Root_widget_t = Root_widget_base<Config, With_layout>;
         using Click_handler = typename Abstract_widget<Config, With_layout>::Click_handler;
 
         Widget();
@@ -240,7 +240,7 @@ namespace cppgui {
 
     private:
         friend class Drag_controller;
-        friend class Root_widget<Config, With_layout>;
+        friend class Root_widget_base<Config, With_layout>;
 
         Color                   _bkgnd_clr = {0, 0, 0, 0};
         Click_handler           _click_hndlr;

@@ -46,7 +46,7 @@ namespace cppgui {
         template<class Parent> using Default_fixed_border_and_padding_box_model = Fixed_border_and_padding_box_model<1, 5, Parent>;
 
         using Widget_t             = Widget<Config, With_layout>;
-        using Root_widget_t        = Root_widget<Config, With_layout>;
+        using Root_widget_t        = Root_widget_base<Config, With_layout>;
         using Label_t              = Label<Config, With_layout>;
         using Textbox_t            = Textbox<Config, With_layout>;
         using Button_t             = Button<Config, With_layout, Default_fixed_border_and_padding_box_model>;

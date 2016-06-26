@@ -37,6 +37,8 @@ public:
 
     Test_window();
 
+    auto root_widget() { return &_root_widget; }
+
 private:
     
     // TODO: use even simpler box model
@@ -54,10 +56,13 @@ private:
         auto& textbox() { return _textbox; }
         auto& slider () { return _slider; }
 
+
     private:
         cppgui::Textbox<GUI_configuration, true>            _textbox;
         cppgui::Vertical_slider<GUI_configuration, true>    _slider;
     };
+
+    cppgui::Root_widget<GUI_configuration, true, cppgui::Simple_box_model, cppgui::Horizontal_box<GUI_configuration>> _root_widget;
 
     cppgui::Label<GUI_configuration, true>                                                          _label;
     cppgui::Button<GUI_configuration, true>                                                         _button;

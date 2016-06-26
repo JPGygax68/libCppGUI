@@ -22,19 +22,20 @@
 
 #include "./Widget.hpp"
 #include "./Container_base.hpp"
+#include "./Container_layouter.hpp"
 
 namespace cppgui {
 
     extern int dummy;
 
-    template <class Config, bool With_layout, class Parent> struct Root_widget__Layouter;
+    // Root_widget_base -------------------------------------------------------
 
-    // Root widget
+    template <class Config, bool With_layout, class Parent> struct Root_widget__Layouter;
 
     // TODO: confer the ability to render a background ?
 
     template <class Config, bool With_layout>
-    class Root_widget: 
+    class Root_widget_base: 
         public Root_widget__Layouter<Config, With_layout, 
             typename Config::template Root_widget__Container_updater<
                 typename Config::template Root_widget__Updater< 
@@ -114,7 +115,7 @@ namespace cppgui {
     {
         using Abstract_container_t = Abstract_container<Config, With_layout>;
         using Invalidated_handler = std::function<void()>;
-        using Root_widget_t = Root_widget<Config, With_layout>;
+        using Root_widget_t = Root_widget_base<Config, With_layout>;
 
         auto root_widget() { return p(); }
 
@@ -123,7 +124,7 @@ namespace cppgui {
         void on_invalidated(Invalidated_handler handler) { _on_invalidated = handler; }
 
     private:
-        auto p() -> Root_widget_t * { return static_cast<Root_widget_t*>(static_cast<Root_widget<Config, true>*>(this)); }
+        auto p() -> Root_widget_t * { return static_cast<Root_widget_t*>(static_cast<Root_widget_base<Config, true>*>(this)); }
 
         Invalidated_handler _on_invalidated;
     };
@@ -135,7 +136,7 @@ namespace cppgui {
     {
         using Widget_t = Widget<Config, With_layout>;
         using Container_base_t = Container_base<Config, With_layout>;
-        using Root_widget_t = Root_widget<Config, With_layout>;
+        using Root_widget_t = Root_widget_base<Config, With_layout>;
 
         // Container_updater contract
 
@@ -150,17 +151,27 @@ namespace cppgui {
         void unlock() { if (_must_update) p()->invalidate(); }
 
     private:
-        auto p() { return static_cast<Root_widget_t*>(static_cast<Root_widget<Config, With_layout>*>(this)); }
+        auto p() { return static_cast<Root_widget_t*>(static_cast<Root_widget_base<Config, With_layout>*>(this)); }
 
         bool                _must_update;
     };
+
+    // Root_widget ------------------------------------------------------------
+
+    template<class Config, bool With_layout, template<class> class BoxModel, class Layouter>
+    class Root_widget: public 
+        Layouter::template Aspect< Root_widget<Config, With_layout, BoxModel, Layouter>,
+            Box<Config, With_layout,
+                BoxModel<
+                    Root_widget_base<Config, With_layout> > > >
+    {};
 
     // Layouting aspect
 
     template <class Config, class Parent> 
     struct Root_widget__Layouter<Config, true, Parent>: public Parent 
     {
-        class Root_widget_t: public Root_widget<Config, true> { friend struct Root_widget__Layouter; };
+        class Root_widget_t: public Root_widget_base<Config, true> { friend struct Root_widget__Layouter; };
 
         using Widget_t = Widget<Config, true>;
 

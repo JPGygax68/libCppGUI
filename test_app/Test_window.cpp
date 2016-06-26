@@ -38,6 +38,8 @@ Test_window::Test_window(): Parent_t("Test window")
     glyph_font = gpc::fonts::get(tick_font_data.first, tick_font_data.second);
     auto tick_descr = cppgui::Icon_resources<Default_font::size>::tick_descr();
 
+    #ifdef NOT_DEFINED
+
     _label.set_font(dflt_font);
     _label.set_background_color({1, 1, 1, 1});
     _label.set_text(U"Hello World!");
@@ -187,13 +189,32 @@ Test_window::Test_window(): Parent_t("Test window")
     //_scrollbox.take_focus();
     //_listbox.take_focus();
 
-    root_widget()->on_invalidated([this]() { invalidate(); });
+    #else
 
-    root_widget()->init_layout(); // layout() and init() will be called upon by the Window
+    _stringlist.set_font(dflt_font);
+    for (auto i = 1U; i <= 25; i ++)
+    {
+        _stringlist.add_item( "gee, item #"s + std::to_string(i) );
+    }
+    _stringlist.on_item_selected([](cppgui::Index index, const std::u32string &item) {
+        std::cout << "Item #" << index << " selected: " << cppgui::utf32_to_utf8(item) << std::endl;
+    });
+    _stringlist.on_item_activated([](cppgui::Index index, const std::u32string &item) {
+        std::cout << "Item #" << index << " activated: " << cppgui::utf32_to_utf8(item) << std::endl;
+    });
+
+    _root_widget.set_background_color({ 0, 0.6f, 0.2f, 1 });
+    _root_widget.set_left(&_stringlist, {1/3});
+
+    #endif
+
+    _root_widget.on_invalidated([this]() { invalidate(); });
+
+    _root_widget.init_layout(); // layout() and init() will be called upon by the Window
                                   // root_widget()->layout();
                                   // root_widget()->init();
 
-    init_window(); // will initialize the GUI and must therefore come last here
+    this->init_window(); // will initialize the GUI and must therefore come last here
 }
 
 Test_window::Slider_with_display::Slider_with_display()
