@@ -108,10 +108,17 @@ namespace cppgui {
 
         void change_values(Length range, Length thumb);
         auto full_range() const { return _full_range; }
-        auto fraction() const { return _fraction; }
+            // (Integer) range represented by the length of the sliding zone.
+        auto thumb_range() const { return _thumb_range; }
+            // (Integer) range represented by the length of the thumb.
 
-        auto current_position() -> Fraction<int>;
-        void update_position(Position); // TODO: assert() against calling this while not at end of navigation ?
+        auto current_position() -> Fraction<Length>;
+            // Converts the current thumb position to a rational number.
+            /*  TODO: this approach may (needlessly ?) sacrifice precision; it may be better to 
+                store and update this rational number instead of deriving it from a pixel position. */
+
+        void update_thumb_position(Length value); // TODO: assert() against calling this while not at end of navigation ?
+            // Recomputes and updates the thumb position according to the specified value.
 
     protected:
         template<class Parent> using Button_box_model = Fixed_padding_box_model<5, Parent>; // TODO: get constant from somewhere
@@ -128,8 +135,8 @@ namespace cppgui {
         Color_resource          _thumb_hovered_color;
 
         Glyph_button_t          _up_btn, _down_btn;
-        Position                _full_range = 0;    // the range represented by the full length of the "slide" (= strip on which the thumb moves)
-        Position                _fraction = 0;      // the range represented by the length of the thumb
+        Length                  _full_range = 0;    // the range represented by the full length of the "slide" (= strip on which the thumb moves)
+        Length                  _thumb_range = 0;      // the range represented by the length of the thumb
 
         Range<Position>         _sliding_range;
         Rectangle               _thumb_rect;

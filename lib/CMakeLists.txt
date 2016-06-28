@@ -158,6 +158,7 @@ add_library( ${PROJECT_NAME} STATIC
 
     include/cppgui/Canvas.hpp                       include/cppgui/Canvas.ipp
     include/cppgui/Box_model.hpp
+    include/cppgui/Container_layouter.hpp           include/cppgui/Container_layouter.ipp
     include/cppgui/Widget.hpp                       include/cppgui/Widget.ipp
     include/cppgui/Button.hpp                       include/cppgui/Button.ipp
     include/cppgui/Glyph_button.hpp                 include/cppgui/Glyph_button.ipp

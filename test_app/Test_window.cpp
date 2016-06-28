@@ -204,15 +204,15 @@ Test_window::Test_window(): Parent_t("Test window")
     });
 
     _root_widget.set_background_color({ 0, 0.6f, 0.2f, 1 });
-    _root_widget.set_left(&_stringlist, {1/3});
+    _root_widget.set_left(&_stringlist, {1, 3});
 
     #endif
 
     _root_widget.on_invalidated([this]() { invalidate(); });
 
-    _root_widget.init_layout(); // layout() and init() will be called upon by the Window
-                                  // root_widget()->layout();
-                                  // root_widget()->init();
+    _root_widget.init_layout();     // layout() and init() will be called upon by the Window
+                                    // root_widget()->layout();
+                                    // root_widget()->init();
 
     this->init_window(); // will initialize the GUI and must therefore come last here
 }

@@ -401,7 +401,7 @@ namespace cppgui {
     template <bool With_layout, int BorderWidth>
     void _stringlist<Config>::Base<With_layout, BorderWidth>::update_scrollbar_position()
     {
-        _vert_sbar.update_position(_first_vis_item);
+        _vert_sbar.update_thumb_position(_first_vis_item);
     }
 
     template <class Config>

@@ -50,7 +50,7 @@ namespace cppgui
         auto rect = this->get_inner_rectangle();
 
         _left->widget->set_position(rect.pos);
-        _left->widget->set_extents (rect.ext);
+        _left->widget->set_extents ({ rect.ext.w * _left->size, rect.ext.h });
 
         Parent::layout();
     }

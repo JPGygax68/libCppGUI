@@ -17,8 +17,11 @@
     limitations under the License.
 */
 
-#include "./Vertical_scrollbar.hpp"
+#include <algorithm>
 
+#include "./basic_types.hpp"
+
+#include "./Vertical_scrollbar.hpp"
 #include "./Container_base.ipp"
 #include "./Glyph_button.ipp"
 
@@ -57,7 +60,7 @@ namespace cppgui {
         if (full < fraction) full = fraction; // TODO: better way ?
 
         _full_range = full;
-        _fraction = fraction;
+        _thumb_range = fraction;
     }
 
     template<class Impl, class Config, bool With_layout>
@@ -187,12 +190,12 @@ namespace cppgui {
     }
 
     template<class Impl, class Config, bool With_layout>
-    auto Vertical_scrollbar_base<Impl, Config, With_layout>::current_position() -> Fraction<int>
+    auto Vertical_scrollbar_base<Impl, Config, With_layout>::current_position() -> Fraction<Length>
     {
         if (_sliding_range.length() > _thumb_rect.ext.h)
         {
             return {
-                (_full_range - _fraction) * (_thumb_rect.pos.y - _sliding_range.from),
+                (_full_range - _thumb_range) * (_thumb_rect.pos.y - _sliding_range.from),
                 _sliding_range.length() - _thumb_rect.ext.h
             };
         }
@@ -201,22 +204,22 @@ namespace cppgui {
     }
 
     template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::update_position(Position pos)
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::update_thumb_position(Length value)
     {
-        assert(_full_range >= _fraction);
+        assert(_full_range >= _thumb_range);
 
-        if (_full_range > _fraction)
+        if (_full_range > _thumb_range)
         {
-            if (pos < 0) pos = 0; else if (pos > _full_range - _fraction) pos = _full_range - _fraction;
+            value = clamp(value, 0, _full_range - _thumb_range);
 
-            auto new_pos = _sliding_range.from + (pos * (_sliding_range.length() - _thumb_rect.ext.h) / (_full_range - _fraction));
+            auto new_y = _sliding_range.from + (value * (_sliding_range.length() - _thumb_rect.ext.h) / (_full_range - _thumb_range));
 
             if (_dragging_thumb)
             {
-                _drag_anchor_pos += new_pos - _thumb_rect.pos.y;
+                _drag_anchor_pos += new_y - _thumb_rect.pos.y;
             }
 
-            _thumb_rect.pos.y = new_pos;
+            _thumb_rect.pos.y = new_y;
         }
 
         this->invalidate();
@@ -238,7 +241,7 @@ namespace cppgui {
     void Vertical_scrollbar_base<Impl, Config, With_layout>::recalc_thumb()
     {
         _thumb_rect.ext.h = std::max(
-            _full_range == 0 ? 0 : _sliding_range.length() * _fraction / _full_range, 
+            _full_range == 0 ? 0 : _sliding_range.length() * _thumb_range / _full_range, 
             _thumb_rect.ext.w / 2
         );
 
@@ -353,17 +356,18 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Vertical_scrollbar<Config, With_layout>::move_by_page(int pages)
     {
-        auto delta = static_cast<cppgui::Position_delta>(fraction()) * pages;
-        update_position(current_position() + delta);
+        auto delta = this->thumb_range() * pages;
+        auto new_pos = this->current_position() + delta;
+        this->update_thumb_position( this->current_position() + delta );
         notify_position_change();
     }
 
     template<class Config, bool With_layout>
     void Vertical_scrollbar<Config, With_layout>::move_by_elements(int elements)
     {
-        update_position(current_position() + elements * 10); // TODO: make step configurable
+        this->update_thumb_position(this->current_position() + elements * 10); // TODO: make step configurable
         notify_position_change();
-        invalidate();
+        this->invalidate();
     }
 
     template<class Config, bool With_layout>
@@ -371,16 +375,16 @@ namespace cppgui {
     {
         auto delta = full_range() * frac.num / frac.den;
         if (delta == 0) delta = frac.num * frac.den < 0 ? -1 : 1;
-        auto thumb_pos = current_position();
-        auto new_pos = (Position) (thumb_pos.num + delta * (Position) thumb_pos.den) / (Position) thumb_pos.den;
-        update_position( new_pos );
+        auto thumb_pos = this->current_position();
+        auto new_pos = (thumb_pos.num + delta * thumb_pos.den) / thumb_pos.den;
+        this->update_thumb_position( new_pos );
         notify_position_change();
     }
 
     template<class Config, bool With_layout>
     void cppgui::Vertical_scrollbar<Config, With_layout>::notify_position_change()
     {
-        if (_on_pos_chng) _on_pos_chng(current_position());
+        if (_on_pos_chng) _on_pos_chng(this->current_position());
     }
 
 } // ns cppgui

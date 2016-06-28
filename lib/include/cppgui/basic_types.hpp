@@ -41,15 +41,36 @@ namespace cppgui {
     using Index             = int; // Index is signed so that -1 can be used to report "invalid" or "not found"
     using Count             = unsigned int;
 
+    // TODO: move Fraction<> to its own module
+
     template<typename T = unsigned int>
     struct Fraction {
         T num, den;
 
-        template<typename Float>
-        constexpr auto Float() const -> Float { return static_cast<Float>(static_cast<double>(num) / static_cast<double>(den)); }
-       
-        constexpr operator T () const { return num / den; }
+        template<typename ResT>
+        constexpr operator ResT() const
+        {
+            return static_cast<ResT>(static_cast<ResT>(num) / static_cast<ResT>(den));
+        }
     };
+
+    template<typename FracT, typename T>
+    constexpr auto operator + (const Fraction<FracT> &op1, const T &op2) -> Fraction<FracT>
+    {
+        return Fraction<FracT>{ op1.num + op1.den * op2, op1.den };
+    }
+
+    template<typename FracT, typename T>
+    constexpr auto operator * (const Fraction<FracT> &op1, const T &op2) 
+    {
+        return Fraction<FracT>{ op2 * op1.num, op1.den };
+    }
+
+    template<typename FracT, typename T>
+    constexpr auto operator * (const T &op1, const Fraction<FracT> &op2) 
+    {
+        return op1 * op2.num / op2.den;
+    }
 
     template<typename T>
     struct Range

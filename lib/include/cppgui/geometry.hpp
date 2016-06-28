@@ -41,6 +41,8 @@ namespace cppgui {
         auto operator - (const Point &delta) const { return Point{ x - delta.x, y - delta.y }; }
         auto& operator += (const Point &delta) { x += delta.x, y += delta.y; return *this; }
 
+        auto operator + (const Extents & ext) const -> Point;
+        auto operator - (const Extents & ext) const -> Point;
     };
 
     using Vector = Point;
@@ -115,14 +117,14 @@ namespace cppgui {
         }
     };
 
-    inline auto operator + (const Point &pos, const Extents &ext) -> Point { 
-
-        return { pos.x + static_cast<Position>(ext.w), pos.y + static_cast<Position>(ext.h) }; 
+    inline auto Point::operator+(const Extents & ext) const -> Point
+    {
+        return {x + ext.w, y + ext.h};
     }
 
-    inline auto operator - (const Point &pos, const Extents &ext) -> Point { 
-
-        return { pos.x - static_cast<Position>(ext.w), pos.y - static_cast<Position>(ext.h) }; 
+    inline auto Point::operator-(const Extents & ext) const -> Point
+    {
+        return {x - ext.w, y - ext.h};
     }
 
     struct Rectangle {
