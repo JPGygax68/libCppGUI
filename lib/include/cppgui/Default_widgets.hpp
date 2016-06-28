@@ -38,7 +38,6 @@
 
 namespace cppgui {
 
-
     template<class Config, bool With_layout>
     struct Default_widgets
     {
@@ -53,7 +52,7 @@ namespace cppgui {
         using Glyph_button_t       = Glyph_button<Config, With_layout, Default_fixed_border_and_padding_box_model>;
         using Checkbox_t           = Checkbox<Config, With_layout>;
         using Container_base_t     = Container_base<Config, With_layout>;
-        using Container_t          = Container<Config, With_layout, Default_fixed_border_and_padding_box_model>;
+        //using Container_t          = Container<Config, With_layout, Default_fixed_border_and_padding_box_model>;
         using Vertical_scrollbar_t = Vertical_scrollbar<Config, With_layout>;
         using Listbox_t            = Listbox<Config, With_layout>;
         using Stringlist_t         = Stringlist<Config, With_layout, 2>;

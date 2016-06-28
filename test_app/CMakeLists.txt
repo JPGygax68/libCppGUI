@@ -9,7 +9,7 @@ add_executable( ${PROJECT_NAME}
   libcppgui_inst.cpp
 
   Test_window.hpp           Test_window.cpp
-  Text_input_dialog.hpp     Text_input_dialog.ipp
+  #Text_input_dialog.hpp     Text_input_dialog.ipp
 
   #Application.hpp           Application.ipp
   #Window.hpp                Window.ipp

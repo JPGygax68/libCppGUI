@@ -260,20 +260,24 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
+    /*
+
     template<class Config, class Parent>
-    void Root_widget__Layouter<Config, true, Parent>::init_layout()
+    void Root_widget_base__Layouter<Config, true, Parent>::init_layout()
     {
         p()->init_children_layout();
     }
 
     template<class Config, class Parent>
-    void Root_widget__Layouter<Config, true, Parent>::layout()
+    void Root_widget_base__Layouter<Config, true, Parent>::layout()
     {
         Container_base_t::layout();
     }
 
+    */
+
     template<class Config, class Parent>
-    void Root_widget__Layouter<Config, true, Parent>::insert_child(Widget_t *child)
+    void Root_widget_base__Layouter<Config, true, Parent>::insert_child(Widget_t *child)
     {
         p()->add_child(child);
 
@@ -285,7 +289,7 @@ namespace cppgui {
     }
 
     template<class Config, class Parent>
-    void Root_widget__Layouter<Config, true, Parent>::drop_child(Widget_t *child)
+    void Root_widget_base__Layouter<Config, true, Parent>::drop_child(Widget_t *child)
     {
         if (p()->contains_widget( p()->mouse_holder() ))
         {

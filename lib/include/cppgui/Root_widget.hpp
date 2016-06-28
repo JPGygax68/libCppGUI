@@ -30,13 +30,13 @@ namespace cppgui {
 
     // Root_widget_base -------------------------------------------------------
 
-    template <class Config, bool With_layout, class Parent> struct Root_widget__Layouter;
+    template <class Config, bool With_layout, class Parent> struct Root_widget_base__Layouter;
 
     // TODO: confer the ability to render a background ?
 
     template <class Config, bool With_layout>
     class Root_widget_base: 
-        public Root_widget__Layouter<Config, With_layout, 
+        public Root_widget_base__Layouter<Config, With_layout, 
             typename Config::template Root_widget__Container_updater<
                 typename Config::template Root_widget__Updater< 
                     Container_base<Config, With_layout> > > >
@@ -156,34 +156,34 @@ namespace cppgui {
         bool                _must_update;
     };
 
-    // Root_widget ------------------------------------------------------------
-
-    template<class Config, bool With_layout, template<class> class BoxModel, class Layouter>
-    class Root_widget: public 
-        Layouter::template Aspect< Root_widget<Config, With_layout, BoxModel, Layouter>,
-            Box<Config, With_layout,
-                BoxModel<
-                    Root_widget_base<Config, With_layout> > > >
-    {};
-
     // Layouting aspect
 
     template <class Config, class Parent> 
-    struct Root_widget__Layouter<Config, true, Parent>: public Parent 
+    struct Root_widget_base__Layouter<Config, true, Parent>: public Parent 
     {
-        class Root_widget_t: public Root_widget_base<Config, true> { friend struct Root_widget__Layouter; };
+        class Root_widget_t: public Root_widget_base<Config, true> { friend struct Root_widget_base__Layouter; };
 
         using Widget_t = Widget<Config, true>;
 
         auto p() { return static_cast<Root_widget_t*>(this); }
 
-        virtual void init_layout();
-        virtual auto get_minimal_size() -> Extents { return {0, 0}; }
-        virtual void layout();
+        //virtual void init_layout();
+        auto get_minimal_size() -> Extents override { return {0, 0}; }
+        //virtual void layout();
 
         void insert_child(Widget_t *);
         void drop_child(Widget_t *);
     };
+
+    // Root_widget ------------------------------------------------------------
+
+    template<class Config, bool With_layout, template<class> class BoxModel, class Layouter>
+    class Root_widget: public 
+        Layouter::template Aspect< Root_widget<Config, With_layout, BoxModel, Layouter>,
+        Box<Config, With_layout,
+        BoxModel<
+        Root_widget_base<Config, With_layout> > > >
+    {};
 
 } // ns cppgui
 

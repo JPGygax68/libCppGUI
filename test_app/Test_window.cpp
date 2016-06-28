@@ -15,10 +15,10 @@
 #include <cppgui/Container.ipp>
 
 CPPGUI_SDL_INSTANTIATE_WINDOW(Test_window)
-CPPGUI_INSTANTIATE_GUI_WINDOW(Test_window, GUI_configuration, cppgui::sdl::Window<Test_window>, cppgui::sdl::OpenGL_adapter)
+CPPGUI_INSTANTIATE_GUI_WINDOW(Test_window, GUI_config, cppgui::sdl::Window<Test_window>, cppgui::sdl::OpenGL_adapter)
 
-#include "./Text_input_dialog.ipp"
-template Text_input_dialog<GUI_configuration, true>;
+//#include "./Text_input_dialog.ipp"
+//template Text_input_dialog<GUI_config, true>;
 
 static cppgui::Rasterized_font *dflt_font;
 static cppgui::Rasterized_font *glyph_font;     // TODO: move this to a reusable module in cppgui itself
@@ -27,7 +27,7 @@ static cppgui::Rasterized_font *glyph_font;     // TODO: move this to a reusable
 
 Test_window::Test_window(): Parent_t("Test window")
 {
-    using Default_font = GUI_configuration::Default_font;
+    using Default_font = GUI_config::Default_font;
     using namespace std::string_literals;
 
     // TODO: doesn't really belong here (could be executed more than once)
@@ -202,9 +202,10 @@ Test_window::Test_window(): Parent_t("Test window")
     _stringlist.on_item_activated([](cppgui::Index index, const std::u32string &item) {
         std::cout << "Item #" << index << " activated: " << cppgui::utf32_to_utf8(item) << std::endl;
     });
+    _left_panel.set_left(&_stringlist, {1, 1});
 
     _root_widget.set_background_color({ 0, 0.6f, 0.2f, 1 });
-    _root_widget.set_left(&_stringlist, {1, 3});
+    _root_widget.set_left(&_left_panel, {1, 3});
 
     #endif
 
@@ -217,6 +218,8 @@ Test_window::Test_window(): Parent_t("Test window")
     this->init_window(); // will initialize the GUI and must therefore come last here
 }
 
+#ifdef NOT_DEFINED
+
 Test_window::Slider_with_display::Slider_with_display()
 {
     _slider.on_value_changed([this](const Value &value)
@@ -227,7 +230,7 @@ Test_window::Slider_with_display::Slider_with_display()
     add_child( &_textbox );
     add_child( &_slider );
 
-    this->set_layout_manager<cppgui::layouting<GUI_configuration>::Header_content>();
+    this->set_layout_manager<cppgui::layouting<GUI_config>::Header_content>();
     layout_manager()->set_spacing(3);
 }
 
@@ -237,3 +240,5 @@ void Test_window::Slider_with_display::compute_view_from_data()
 
     _textbox.set_text( std::to_string( _slider.value() ) );
 }
+
+#endif
