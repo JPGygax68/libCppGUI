@@ -216,7 +216,8 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Container_base<Config, With_layout>::mouse_exit()
     {
-        container_mouse_exit();
+        this->container_mouse_exit();
+
         Widget_t::mouse_exit();
     }
 

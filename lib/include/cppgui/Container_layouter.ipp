@@ -83,6 +83,13 @@ namespace cppgui
 
     template <class Config>
     template <class Class, class Parent>
+    void Single_line_layout<Config, true>::Aspect<Class, Parent>::set_spacing(Width spacing)
+    {
+        _spacing = spacing;
+    }
+
+    template <class Config>
+    template <class Class, class Parent>
     void Single_line_layout<Config, true>::Aspect<Class, Parent>::add_element(Widget<Config, true> * widget)
     {
         _elements.push_back( std::make_unique<Element_ref>(widget) );
@@ -114,6 +121,8 @@ namespace cppgui
             total.h = std::max(total.h, size.h);
         }
 
+        total.w += (_elements.size() - 1) * _spacing;
+
         return total;
     }
 
@@ -123,7 +132,7 @@ namespace cppgui
     {
         auto rect = p()->get_inner_rectangle();
 
-        // TODO: PRELIMINARY IMPLEMENTATION, NOT ALLOCATING EXTRA HEIGHT YET
+        // TODO: PRELIMINARY IMPLEMENTATION, NOT ALLOCATING EXTRA WIDTH YET
 
         for (auto& elem: _elements)
         {
@@ -132,10 +141,17 @@ namespace cppgui
             elem->_widget->set_position(rect.pos);
             elem->_widget->set_extents ({ size.w, rect.ext.h });
 
-            rect.pos.x += size.w; // TODO: spacing
+            rect.pos.x += size.w + _spacing; 
         }
 
         Parent::layout();
+    }
+
+    template <class Config>
+    template <class Class, class Parent>
+    void Single_column_layout<Config, true>::Aspect<Class, Parent>::set_spacing(Length spacing)
+    {
+        _spacing = spacing;
     }
 
     template <class Config>
@@ -171,6 +187,8 @@ namespace cppgui
             total.h += std::max(size.h, elem->_min_length);
         }
 
+        total.h += (_elements.size() - 1) * _spacing;
+
         return total;
     }
 
@@ -189,7 +207,7 @@ namespace cppgui
             elem->_widget->set_position(rect.pos);
             elem->_widget->set_extents ({ rect.ext.w, size.h });
 
-            rect.pos.y += size.h; // TODO: spacing
+            rect.pos.y += size.h + _spacing;
         }
 
         Parent::layout();

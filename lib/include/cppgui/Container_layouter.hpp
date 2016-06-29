@@ -121,7 +121,10 @@ namespace cppgui
                 auto& set_max_length(Length w) { _max_length = w; return *this; }
             };
 
-            std::vector<std::unique_ptr<Element_ref>> _elements;
+            std::vector<std::unique_ptr<Element_ref>>   _elements;
+            Width                                       _spacing = 0;
+
+            void set_spacing(Width);
 
             void add_element(Widget<Config, true> * widget);
 
@@ -158,7 +161,10 @@ namespace cppgui
                 auto& set_max_length(Width w) { _max_length = w; return *this; }
             };
 
-            std::vector<std::unique_ptr<Element_ref>> _elements;
+            std::vector<std::unique_ptr<Element_ref>>   _elements;
+            Length                                      _spacing = 0;
+
+            void set_spacing(Length);
 
             void add_element(Widget<Config, true> * widget);
 

@@ -209,6 +209,7 @@ Test_window::Test_window(): Parent_t("Test window")
     // Right panel
 
     _right_panel.set_id("RIGHT PANEL");
+    _right_panel.set_spacing(5);
     _slider1.set_id("SLIDER1");
     _slider1.textbox().set_font(dflt_font);
     _slider1.slider().define_range({  50, 120 });
@@ -246,6 +247,12 @@ Test_window::Slider_with_display::Slider_with_display()
     {
         _textbox.change_text( std::to_string(value) );
     });
+    _textbox.on_done([this](const std::u32string &text)
+    {
+        _slider.change_value( std::stof(cppgui::utf32_to_utf8(text) ) );
+    });
+
+    this->set_spacing(5);
 
     add_element( &_textbox );
     add_element( &_slider );
