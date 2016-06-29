@@ -22,7 +22,10 @@ namespace cppgui
 
     /*  Unordered_layouter:
 
-        A "dummy" layouter that does not do anything.
+        A "dummy" layouter that does not do anything expect providing a dummy implementation
+        of get_mimimal_size().
+        Inject this container layouter when your container does not need any layouting (e.g.
+        because you position and size elements yourself).
      */
 
     template<class Config, bool With_layout> struct Unordered_layouter;
@@ -72,6 +75,92 @@ namespace cppgui
             std::unique_ptr<Element_ref>    _left;
             std::unique_ptr<Element_ref>    _center;
             std::unique_ptr<Element_ref>    _right;
+
+            void init_layout() override;
+            auto get_minimal_size() -> Extents override;
+            void layout() override;
+
+            auto p() { return static_cast<Class*>(this); }
+        };
+    };
+
+    /*  Single_line_layout
+
+        This container layouter arranges contained elements on a single line. It allows setting 
+        the following constraints on each element:
+
+        - minimum space before [FUTURE] [NOTE: for first element, take box-model padding into account!]
+        - minimum space after [FUTURE] [NOTE: sim. for last element]
+        - vertical alignment [FUTURE]
+        - minimum width
+        - maximum width
+
+        More constraints and indications may be added in the future.
+
+     */
+
+    template<class Config, bool With_layout> struct Single_line_layout;
+
+    template<class Config> struct Single_line_layout<Config, false> { template<class Class, class Parent> struct Aspect: Parent {}; };
+
+    template<class Config>
+    struct Single_line_layout<Config, true>
+    {
+        template<class Class, class Parent>
+        struct Aspect: Parent
+        {
+            struct Element_ref
+            {
+                Element_ref(Widget<Config, true> *widget_): _widget{widget_} {}
+
+                Widget<Config, true> *_widget = nullptr;
+                Width _min_length = 0;
+                Width _max_length = 0;
+
+                auto& set_min_length(Length w) { _min_length = w; return *this; }
+                auto& set_max_length(Length w) { _max_length = w; return *this; }
+            };
+
+            std::vector<std::unique_ptr<Element_ref>> _elements;
+
+            void add_element(Widget<Config, true> * widget);
+
+            void init_layout() override;
+            auto get_minimal_size() -> Extents override;
+            void layout() override;
+
+            auto p() { return static_cast<Class*>(this); }
+        };
+    };
+
+    /*  Single_column_layout
+     */
+
+    template<class Config, bool With_layout> struct Single_column_layout;
+
+    template<class Config> struct Single_column_layout<Config, false> { template<class Class, class Parent> struct Aspect: Parent {}; };
+
+    template<class Config>
+    struct Single_column_layout<Config, true>
+    {
+        template<class Class, class Parent>
+        struct Aspect: Parent
+        {
+            struct Element_ref
+            {
+                Element_ref(Widget<Config, true> *widget_): _widget{widget_} {}
+
+                Widget<Config, true> *_widget = nullptr;
+                Width _min_length = 0;
+                Width _max_length = 0;
+
+                auto& set_min_length(Width w) { _min_length = w; return *this; }
+                auto& set_max_length(Width w) { _max_length = w; return *this; }
+            };
+
+            std::vector<std::unique_ptr<Element_ref>> _elements;
+
+            void add_element(Widget<Config, true> * widget);
 
             void init_layout() override;
             auto get_minimal_size() -> Extents override;

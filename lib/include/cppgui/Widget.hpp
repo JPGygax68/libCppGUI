@@ -69,6 +69,13 @@ namespace cppgui {
         using Click_handler     = std::function<void(const Point &, int button, Count clicks)>; // TODO: support return value ?
         using Pushed_handler    = std::function<void()>; // for buttons TODO: renamed event to "Push" (as in "a push happened") ?
 
+        void set_id(const char *id)
+        {
+            #ifdef _DEBUG
+            _id = id;
+            #endif
+        }
+
         auto& rectangle() { return _rect; }
         auto& rectangle() const { return _rect; }
         auto& position() { return _rect.pos; }
@@ -131,6 +138,10 @@ namespace cppgui {
         static auto paper_color() -> Color { return {1, 1, 1, 1}; }
 
     private:
+
+        #ifdef _DEBUG
+        const char  *_id;
+        #endif
 
         Rectangle   _rect = {};
     };

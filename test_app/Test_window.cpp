@@ -191,6 +191,8 @@ Test_window::Test_window(): Parent_t("Test window")
 
     #else
 
+    // Left panel
+
     _stringlist.set_font(dflt_font);
     for (auto i = 1U; i <= 25; i ++)
     {
@@ -204,8 +206,28 @@ Test_window::Test_window(): Parent_t("Test window")
     });
     _left_panel.set_left(&_stringlist, {1, 1});
 
+    // Right panel
+
+    _right_panel.set_id("RIGHT PANEL");
+    _slider1.set_id("SLIDER1");
+    _slider1.textbox().set_font(dflt_font);
+    _slider1.slider().define_range({  50, 120 });
+    _slider1.slider().set_value( 50 );
+    _right_panel.add_element(&_slider1);
+    _slider2.textbox().set_font(dflt_font);
+    _slider2.slider().define_range({  -50, 50 });
+    _slider2.slider().set_value( 20 );
+    _right_panel.add_element(&_slider2);
+    _slider3.textbox().set_font(dflt_font);
+    _slider3.slider().define_range({  0.001f, 0.010f });
+    _slider3.slider().set_value( 0.001f );
+    _right_panel.add_element(&_slider3);
+
+    // Root widget
+
     _root_widget.set_background_color({ 0, 0.6f, 0.2f, 1 });
-    _root_widget.set_left(&_left_panel, {1, 3});
+    _root_widget.set_left (&_left_panel , {1, 4});
+    _root_widget.set_right(&_right_panel, {1, 4});
 
     #endif
 
@@ -218,8 +240,6 @@ Test_window::Test_window(): Parent_t("Test window")
     this->init_window(); // will initialize the GUI and must therefore come last here
 }
 
-#ifdef NOT_DEFINED
-
 Test_window::Slider_with_display::Slider_with_display()
 {
     _slider.on_value_changed([this](const Value &value)
@@ -227,11 +247,11 @@ Test_window::Slider_with_display::Slider_with_display()
         _textbox.change_text( std::to_string(value) );
     });
 
-    add_child( &_textbox );
-    add_child( &_slider );
+    add_element( &_textbox );
+    add_element( &_slider );
 
-    this->set_layout_manager<cppgui::layouting<GUI_config>::Header_content>();
-    layout_manager()->set_spacing(3);
+    //this->set_layout_manager<cppgui::layouting<GUI_config>::Header_content>();
+    //layout_manager()->set_spacing(3);
 }
 
 void Test_window::Slider_with_display::compute_view_from_data()
@@ -240,5 +260,3 @@ void Test_window::Slider_with_display::compute_view_from_data()
 
     _textbox.set_text( std::to_string( _slider.value() ) );
 }
-
-#endif

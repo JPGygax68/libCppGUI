@@ -58,6 +58,11 @@ namespace cppgui {
         using Container_base_t::add_child;
         using Container_base_t::remove_child;
 
+        Root_widget_base()
+        {
+            this->set_id("Root_widget_base");
+        }
+
         void set_background_color(const Color &color) { _bkgnd_clr = color; }
 
         void set_canvas(Canvas_t *);
