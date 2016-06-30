@@ -203,6 +203,15 @@ namespace cppgui {
         render(_canvas, {0, 0});
     }
 
+    template <class Config, bool With_layout>
+    void Root_widget_base<Config, With_layout>::child_key_down(const Keycode &key)
+    {
+        if (!handle_key_down(key))
+        {
+            std::cerr << "Root_widget_base::child_key_down(): could not handle key event" << std::endl;
+        }
+    }
+
     template<class Config, bool With_layout>
     void Root_widget_base<Config, With_layout>::capture_mouse(Widget_t *holder)
     {

@@ -213,11 +213,11 @@ namespace cppgui {
         {
             if (_focussable)
             {
-                container()->container_take_focus(this);
+                container()->switch_focused_child(this);
                 gained_focus();
             }
             else {
-                container()->container_take_focus(nullptr);
+                container()->switch_focused_child(nullptr);
             }
         }
     }
@@ -225,7 +225,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Widget<Config, With_layout>::gained_focus()
     {
-        invalidate();
+        this->invalidate();
     }
 
     template<class Config, bool With_layout>

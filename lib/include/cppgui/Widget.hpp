@@ -225,7 +225,7 @@ namespace cppgui {
 
         virtual auto root_widget() -> Root_widget_t * { return _container->container_root_widget(); }
 
-        void pass_up_and_notify_focus(); // default take_focus() action
+        void pass_up_and_notify_focus();
 
         // Graphics system integration
         void shift_horizontally(Position_delta);

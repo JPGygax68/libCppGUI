@@ -44,10 +44,10 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::container_take_focus(Widget_t *child)
+    void Container_base<Config, With_layout>::switch_focused_child(Widget_t *child)
     {
         // Inform former focused child, update focused_child property
-        Abstract_container_t::container_take_focus(child);
+        Abstract_container_t::switch_focused_child(child);
 
         // Propagate
         //container()->container_take_focus(this);
@@ -104,13 +104,13 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Container_base<Config, With_layout>::mouse_wheel(const Vector &dist)
     {
-        container_mouse_wheel(dist);
+        this->container_mouse_wheel(dist);
     }
 
     template<class Config, bool With_layout>
     void Container_base<Config, With_layout>::text_input(const char32_t *text, size_t size)
     {
-        container_text_input(text, size);
+        this->container_text_input(text, size);
     }
 
     template<class Config, bool With_layout>
@@ -119,9 +119,9 @@ namespace cppgui {
         // If a child has focused, pass it on to that child, otherwise fall back to
         // Widget default behaviour (i.e. try to handle locally, then bubble back up)
 
-        if (focused_child())
+        if (this->focused_child())
         {
-            focused_child()->key_down(key);
+            this->focused_child()->key_down(key);
         }
         else {
             Widget_t::key_down(key); // try to handle locally, bubble up if that fails
@@ -168,7 +168,7 @@ namespace cppgui {
             if (it != std::end(this->children()))
             {
                 (*it)->gained_focus();
-                container_take_focus(*it);
+                switch_focused_child(*it);
                 return true;
             }
             else {
@@ -180,35 +180,42 @@ namespace cppgui {
     template<class Config, bool With_layout>
     bool Container_base<Config, With_layout>::cycle_focus_backward()
     {
-        assert(has_focus());
+        assert(this->has_focus());
 
-        if (children().empty())
+        if (this->children().empty())
         {
             return false; // cannot cycle, report back to sender
         }
         else
         {
-            decltype(std::rbegin(children())) it;
+            decltype(std::rbegin(this->children())) it;
 
-            if (focused_child())
+            // Does one of the children have focus ?
+            if (this->focused_child())
             {
-                it = std::find(std::rbegin(children()), std::rend(children()), focused_child());  
-                it ++;
+                // Yes: move to the predecessor
+                it = std::find(std::rbegin(this->children()), std::rend(this->children()), this->focused_child());  
+                ++it;
             }
             else {
-                it = std::rbegin(children());
+                // No: select the last child
+                it = std::rbegin(this->children());
             }
 
-            while (it != std::rend(children()) && !(*it)->focussable()) it ++;
+            // Skip non-focussable children
+            while (it != std::rend(this->children()) && !(*it)->focussable()) ++it;
 
-            if (it != std::rend(children()))
+            // Ended up on a child ?
+            if (it != std::rend(this->children()))
             {
+                // Inform child it gained focus
                 (*it)->gained_focus();
-                container_take_focus(*it);
+                // 
+                switch_focused_child(*it);
                 return true;
             }
             else {
-                container_take_focus(nullptr);
+                switch_focused_child(nullptr);
                 return false;
             }
 

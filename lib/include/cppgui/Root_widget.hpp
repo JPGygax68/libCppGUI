@@ -94,7 +94,7 @@ namespace cppgui {
 
         void render();
 
-        void child_key_down(const Keycode &) override {}
+        void child_key_down(const Keycode &) override;
 
         void capture_mouse(Widget_t *);
         void release_mouse();
