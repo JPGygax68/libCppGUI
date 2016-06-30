@@ -254,7 +254,7 @@ Test_window::Slider_with_display::Slider_with_display()
     this->set_spacing(5);
 
     add_element( &_textbox );
-    add_element( &_slider );
+    add_element( &_slider ).set_weight(1);
 
     //this->set_layout_manager<cppgui::layouting<GUI_config>::Header_content>();
     //layout_manager()->set_spacing(3);

@@ -156,9 +156,12 @@ namespace cppgui
                 Widget<Config, true> *_widget = nullptr;
                 Width _min_length = 0;
                 Width _max_length = 0;
+                float _weight = 0;
 
                 auto& set_min_length(Width w) { _min_length = w; return *this; }
                 auto& set_max_length(Width w) { _max_length = w; return *this; }
+
+                auto& set_weight(float weight) { _weight = weight; return *this; }
             };
 
             std::vector<std::unique_ptr<Element_ref>>   _elements;
@@ -166,7 +169,7 @@ namespace cppgui
 
             void set_spacing(Length);
 
-            void add_element(Widget<Config, true> * widget);
+            auto add_element(Widget<Config, true> * widget) -> Element_ref &;
 
             void init_layout() override;
             auto get_minimal_size() -> Extents override;

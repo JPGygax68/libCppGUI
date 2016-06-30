@@ -91,16 +91,6 @@ namespace cppgui {
         Parent_t::mouse_button(pos, button, state, clicks);
     }
 
-    #ifdef NOT_DEFINED
-
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::mouse_click(const Point &pos, int button, Count count)
-    {
-        container_mouse_click(pos, button, count);
-    }
-
-    #endif
-
     template<class Config, bool With_layout>
     void Container_base<Config, With_layout>::mouse_wheel(const Vector &dist)
     {
@@ -157,13 +147,13 @@ namespace cppgui {
             if (this->focused_child())
             {
                 it = std::find(std::begin(this->children()), std::end(this->children()), this->focused_child());  
-                it ++;
+                ++it;
             }
             else {
                 it = std::begin(this->children());
             }
 
-            while (it != std::end(this->children()) && !(*it)->focussable()) it ++;
+            while (it != std::end(this->children()) && !(*it)->focussable()) ++it;
 
             if (it != std::end(this->children()))
             {
@@ -172,6 +162,7 @@ namespace cppgui {
                 return true;
             }
             else {
+                switch_focused_child(nullptr);
                 return false;
             }
         }
