@@ -36,12 +36,6 @@ namespace cppgui {
 
     // TODO: do not stretch vertically to fill all available space, instead display a strip with border and padding to fit the font size
 
-    #define CPPGUI_INSTANTIATE_TEXTBOX(Config, With_layout) \
-        template cppgui::Textbox<Config, With_layout>; \
-        template cppgui::Textbox__Layouter<cppgui::Textbox<Config, With_layout>, With_layout, \
-            cppgui::Box<Config, With_layout, \
-                cppgui::Fixed_padding_box_model< 3, cppgui::Widget<Config, With_layout> > > >;
-
     template <class Config, bool With_layout>
     class Textbox: public 
         Textbox__Layouter<cppgui::Textbox<Config, With_layout>, With_layout, 

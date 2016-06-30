@@ -30,11 +30,6 @@ namespace cppgui {
 
         // Main class declaration -----------------------------------
 
-        #define _CPPGUI_INSTANTIATE_VERTICAL_SLIDER_BASE(Config, With_layout, ValueType, ...) \
-            template cppgui::_vertical_slider<Config, ValueType>::Base<__VA_ARGS__, With_layout>; \
-            template cppgui::_vertical_slider<Config, ValueType>::Layouter<__VA_ARGS__, With_layout, \
-                cppgui::Widget<Config, With_layout> >;
-
         /** The class is called "Base" because it is intended to be customized via template parameters.
          */
         template<class Class, bool With_layout>
@@ -43,7 +38,7 @@ namespace cppgui {
                 Widget<Config, With_layout> >       // ... the actual parent class: Widget<>
         {
         public:
-            using Value    = typename ValueType;
+            using Value_type    = typename ValueType;
 
             using Widget_t = Widget<Config, With_layout>;
             using Parent_t = Widget_t;
@@ -51,12 +46,12 @@ namespace cppgui {
             using Keyboard = typename Config::Keyboard;
             using Keycode = typename Keyboard::Keycode;
 
-            using Value_changed_handler = std::function<void(const Value &)>;
+            using Value_changed_handler = std::function<void(const Value_type &)>;
 
-            void define_range(const Range<Value> &);
-            void define_range(const Range<Value> &, const Value &step_major, const Value &step_minor);
-            void set_value(const Value &);
-            auto value() -> Value;
+            void define_range(const Range<Value_type> &);
+            void define_range(const Range<Value_type> &, const Value_type &step_major, const Value_type &step_minor);
+            void set_value(const Value_type &);
+            auto value() -> Value_type;
 
             void on_value_changed(Value_changed_handler);
 
@@ -64,9 +59,9 @@ namespace cppgui {
 
             void compute_view_from_data() override;
 
-            void change_range(const Range<Value> &);
-            void change_range(const Range<Value> &, const Value &step_major, const Value &step_minor);
-            void change_value(const Value &);
+            void change_range(const Range<Value_type> &);
+            void change_range(const Range<Value_type> &, const Value_type &step_major, const Value_type &step_minor);
+            void change_value(const Value_type &);
 
             void render(Canvas_t *, const Point &offset) override;
 
@@ -104,32 +99,22 @@ namespace cppgui {
 
             Value_changed_handler   _on_value_changed;
 
-            Range<Value>            _range;
-            Value                   _incr_major, _incr_minor;
+            Range<Value_type>            _range;
+            Value_type                   _incr_major, _incr_minor;
 
             Rectangle               _slide_rect;
             Rectangle               _thumb_rect;
 
-            Value                   _value;
+            Value_type                   _value;
             Position                _thumb_pos;
 
             bool                    _thumb_hovered = false;
             bool                    _dragging_thumb = false;
             Position                _thumb_drag_start_pos;
-            Value                   _thumb_drag_start_value;
+            Value_type                   _thumb_drag_start_value;
         };
 
         // Layouter aspect ----------------------------------------------
-
-        /** This macro definition must mirror the layouter aspect class declaration.
-            It should instantiate not just all specializations of the Layouter aspect
-            itself (meaning both the empty one for With_layout = false and the real one
-            wgere With_layout = true), but also any aspects it injects on  its own 
-            (this example does not inject any, but see Label.hpp for an example).
-         */
-        #define _CPPGUI_INSTANTIATE_VERTICAL_SLIDER_LAYOUTER(Config, With_layout, ...) \
-            template cppgui::_vertical_slider<Config>::Layouter<With_layout, __VA_ARGS__>; \
-            template cppgui::Box__Layouter<Config, With_layout, __VA_ARGS__>;
 
         /** Dummy template specialization for when With_layout = false.
          */
@@ -157,14 +142,6 @@ namespace cppgui {
     }; // templated ns _vertical_slider
 
     // Export section -----------------------------------------------
-
-    #define CPPGUI_INSTANTIATE_VERTICAL_SLIDER(Config, With_layout, ValueType) \
-        template cppgui::Vertical_slider<Config, With_layout, ValueType>; \
-        template cppgui::_vertical_slider<Config, ValueType>; \
-        _CPPGUI_INSTANTIATE_VERTICAL_SLIDER_BASE(Config, With_layout, ValueType, cppgui::Vertical_slider<Config, With_layout, ValueType>);
-
-    #define CPPGUI_INSTANTIATE_DEFAULT_VERTICAL_SLIDER(Config, With_layout) \
-        CPPGUI_INSTANTIATE_VERTICAL_SLIDER(Config, With_layout, float);
 
     template<class Config, bool With_layout, typename ValueType = float>
     class Vertical_slider: public _vertical_slider<Config, ValueType>::template Base<Vertical_slider<Config, With_layout>, With_layout> { };

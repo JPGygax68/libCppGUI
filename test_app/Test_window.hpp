@@ -47,13 +47,17 @@ private:
         cppgui::Fixed_border_and_padding<0, 0>::Box_model, cppgui::Single_column_layout<GUI_config, true>>
     {
     public:
-        using Value = cppgui::Vertical_slider<GUI_config, true>::Value;
+        using Value_type = cppgui::Vertical_slider<GUI_config, true>::Value_type;
         using Parent_t = cppgui::Container<GUI_config, true, cppgui::Fixed_border_and_padding<0, 0>::Box_model, 
             cppgui::Single_column_layout<GUI_config, true>>;
 
         Slider_with_display();
 
+        void set_font(const cppgui::Rasterized_font *);
+        void set_value(Value_type);
+
         void compute_view_from_data() override;
+
 
         auto& textbox() { return _textbox; }
         auto& slider () { return _slider; }

@@ -268,6 +268,8 @@ namespace cppgui {
     {
         if (state == Key_state::pressed)
         {
+            take_focus();
+
             root_widget()->capture_mouse(this);
         }
         else if (state == Key_state::released)
@@ -287,8 +289,6 @@ namespace cppgui {
     template<class Config, bool With_layouting>
     void Widget<Config, With_layouting>::mouse_click(const Point &pos, int button, Count count)
     {
-        take_focus();
-
         if (_click_hndlr) _click_hndlr(pos, button, count);
     }
 

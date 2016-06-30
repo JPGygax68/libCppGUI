@@ -27,15 +27,15 @@ namespace cppgui {
 
     template<class Config, typename ValueType>
     template<class Class, bool With_layout>
-    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::define_range(const Range<Value> &range)
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::define_range(const Range<Value_type> &range)
     {
         define_range(range, range.length() / 10, range.length() / 100);
     }
 
     template <class Config, typename ValueType>
     template <class Class, bool With_layout>
-    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::define_range(const Range<Value> &range, 
-        const Value &incr_major, const Value & incr_minor)
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::define_range(const Range<Value_type> &range, 
+        const Value_type &incr_major, const Value_type & incr_minor)
     {
         _range = range;
         assert(incr_major >= incr_minor);
@@ -45,7 +45,7 @@ namespace cppgui {
 
     template <class Config, typename ValueType>
     template <class Class, bool With_layout>
-    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::set_value(const Value &val)
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::set_value(const Value_type &val)
     {
         assert(val >= _range.from && val <= _range.to);
         
@@ -54,7 +54,7 @@ namespace cppgui {
 
     template <class Config, typename ValueType>
     template <class Class, bool With_layout>
-    auto _vertical_slider<Config, ValueType>::Base<Class, With_layout>::value() -> Value
+    auto _vertical_slider<Config, ValueType>::Base<Class, With_layout>::value() -> Value_type
     {
         return _value;
     }
@@ -90,7 +90,7 @@ namespace cppgui {
 
     template <class Config, typename ValueType>
     template <class Class, bool With_layout>
-    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::change_range(const Range<Value> &range)
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::change_range(const Range<Value_type> &range)
     {
         define_range(range);
         update_thumb_pos();
@@ -98,8 +98,8 @@ namespace cppgui {
 
     template <class Config, typename ValueType>
     template <class Class, bool With_layout>
-    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::change_range(const Range<Value> &range, 
-        const Value & incr_major, const Value & incr_minor)
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::change_range(const Range<Value_type> &range, 
+        const Value_type & incr_major, const Value_type & incr_minor)
     {
         define_range(range, incr_major, incr_minor);
         update_thumb_pos();
@@ -279,7 +279,7 @@ namespace cppgui {
 
     template <class Config, typename ValueType>
     template <class Class, bool With_layout>
-    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::change_value(const Value &value)
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::change_value(const Value_type &value)
     {
         if      (value < _range.from) _value = _range.from;
         else if (value > _range.to  ) _value = _range.to;

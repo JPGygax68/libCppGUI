@@ -210,18 +210,17 @@ Test_window::Test_window(): Parent_t("Test window")
 
     _right_panel.set_id("RIGHT PANEL");
     _right_panel.set_spacing(5);
-    _slider1.set_id("SLIDER1");
-    _slider1.textbox().set_font(dflt_font);
+    _slider1.set_font(dflt_font);
     _slider1.slider().define_range({  50, 120 });
-    _slider1.slider().set_value( 50 );
+    _slider1.set_value( 50 );
     _right_panel.add_element(&_slider1);
-    _slider2.textbox().set_font(dflt_font);
+    _slider2.set_font(dflt_font);
     _slider2.slider().define_range({  -50, 50 });
-    _slider2.slider().set_value( 20 );
+    _slider2.set_value( 20 );
     _right_panel.add_element(&_slider2);
-    _slider3.textbox().set_font(dflt_font);
+    _slider3.set_font(dflt_font);
     _slider3.slider().define_range({  0.001f, 0.010f });
-    _slider3.slider().set_value( 0.001f );
+    _slider3.set_value( 0.001f );
     _right_panel.add_element(&_slider3);
 
     // Root widget
@@ -243,7 +242,7 @@ Test_window::Test_window(): Parent_t("Test window")
 
 Test_window::Slider_with_display::Slider_with_display()
 {
-    _slider.on_value_changed([this](const Value &value)
+    _slider.on_value_changed([this](const Value_type &value)
     {
         _textbox.change_text( std::to_string(value) );
     });
@@ -259,6 +258,17 @@ Test_window::Slider_with_display::Slider_with_display()
 
     //this->set_layout_manager<cppgui::layouting<GUI_config>::Header_content>();
     //layout_manager()->set_spacing(3);
+}
+
+void Test_window::Slider_with_display::set_font(const cppgui::Rasterized_font *font)
+{
+    _textbox.set_font(font);
+}
+
+void Test_window::Slider_with_display::set_value(Value_type value)
+{
+    _textbox.set_text( std::to_string(value) );
+    _slider.set_value(value);
 }
 
 void Test_window::Slider_with_display::compute_view_from_data()

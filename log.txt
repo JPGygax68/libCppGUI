@@ -1,3 +1,9 @@
+2016-06-30
+==========
+
+- There is a problem with focus cycling
+
+
 2016-06-11
 ==========
 

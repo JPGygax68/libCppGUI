@@ -87,6 +87,8 @@ namespace cppgui {
     {
         // TODO: call Widget_t::mouse_button() if container_mouse_button() did nothing
         this->container_mouse_button(pos, button, state, clicks);
+
+        Parent_t::mouse_button(pos, button, state, clicks);
     }
 
     #ifdef NOT_DEFINED

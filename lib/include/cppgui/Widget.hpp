@@ -336,9 +336,3 @@ namespace cppgui {
     };
 
 } // ns cppgui
-
-#define CPPGUI_INSTANTIATE_WIDGET(Config, With_layout) \
-    template cppgui::Abstract_widget<Config, With_layout>; \
-    template cppgui::Widget<Config, With_layout>; \
-    template cppgui::Widget__Layouter<Config, With_layout, cppgui::Abstract_widget<Config, With_layout>>;
-
