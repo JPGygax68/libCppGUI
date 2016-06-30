@@ -209,19 +209,20 @@ Test_window::Test_window(): Parent_t("Test window")
     // Right panel
 
     _right_panel.set_id("RIGHT PANEL");
+    _right_panel.set_background_color({0.8f, 0.8f, 0.8f, 1});
     _right_panel.set_spacing(5);
     _slider1.set_font(dflt_font);
     _slider1.slider().define_range({  50, 120 });
     _slider1.set_value( 50 );
-    _right_panel.add_element(&_slider1);
+    _right_panel.add_element(&_slider1, 1);
     _slider2.set_font(dflt_font);
     _slider2.slider().define_range({  -50, 50 });
     _slider2.set_value( 20 );
-    _right_panel.add_element(&_slider2);
+    _right_panel.add_element(&_slider2, 1);
     _slider3.set_font(dflt_font);
     _slider3.slider().define_range({  0.001f, 0.010f });
     _slider3.set_value( 0.001f );
-    _right_panel.add_element(&_slider3);
+    _right_panel.add_element(&_slider3, 1);
 
     // Root widget
 
@@ -253,8 +254,8 @@ Test_window::Slider_with_display::Slider_with_display()
 
     this->set_spacing(5);
 
-    add_element( &_textbox );
-    add_element( &_slider ).set_weight(1);
+    add_element(&_textbox);
+    add_element(&_slider, 1);
 
     //this->set_layout_manager<cppgui::layouting<GUI_config>::Header_content>();
     //layout_manager()->set_spacing(3);

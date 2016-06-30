@@ -66,7 +66,7 @@ namespace cppgui
 
             struct Element_ref
             {
-                Element_ref(Widget<Config, true> *widget_, const Fraction<Length> &size_ = 0): widget{widget_}, size{size_} {}
+                Element_ref(Widget<Config, true> *widget_, const Fraction<Length> &size_ = {}): widget{widget_}, size{size_} {}
 
                 Widget<Config, true>       *widget = nullptr;
                 Fraction<Length>            size;
@@ -111,14 +111,16 @@ namespace cppgui
         {
             struct Element_ref
             {
-                Element_ref(Widget<Config, true> *widget_): _widget{widget_} {}
+                Element_ref(Widget<Config, true> *widget_, float weight_): _widget{widget_}, _weight{weight_} {}
 
                 Widget<Config, true> *_widget = nullptr;
                 Width _min_length = 0;
                 Width _max_length = 0;
+                float _weight = 0;
 
                 auto& set_min_length(Length w) { _min_length = w; return *this; }
                 auto& set_max_length(Length w) { _max_length = w; return *this; }
+                auto& set_weight(float weight) { _weight = weight; return *this; }
             };
 
             std::vector<std::unique_ptr<Element_ref>>   _elements;
@@ -126,7 +128,7 @@ namespace cppgui
 
             void set_spacing(Width);
 
-            void add_element(Widget<Config, true> * widget);
+            auto add_element(Widget<Config, true> *widget, float weight = 0) -> Class &;
 
             void init_layout() override;
             auto get_minimal_size() -> Extents override;
@@ -151,7 +153,7 @@ namespace cppgui
         {
             struct Element_ref
             {
-                Element_ref(Widget<Config, true> *widget_): _widget{widget_} {}
+                Element_ref(Widget<Config, true> *widget_, float weight_): _widget{widget_}, _weight{weight_} {}
 
                 Widget<Config, true> *_widget = nullptr;
                 Width _min_length = 0;
@@ -169,7 +171,7 @@ namespace cppgui
 
             void set_spacing(Length);
 
-            auto add_element(Widget<Config, true> * widget) -> Element_ref &;
+            auto add_element(Widget<Config, true> * widget, float weight = 0) -> Class &;
 
             void init_layout() override;
             auto get_minimal_size() -> Extents override;

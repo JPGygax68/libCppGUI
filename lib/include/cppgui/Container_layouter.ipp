@@ -91,9 +91,11 @@ namespace cppgui
 
     template <class Config>
     template <class Class, class Parent>
-    void Single_line_layout<Config, true>::Aspect<Class, Parent>::add_element(Widget<Config, true> * widget)
+    auto Single_line_layout<Config, true>::Aspect<Class, Parent>::add_element(Widget<Config, true> *widget, float weight) -> Class &
     {
-        _elements.push_back( std::make_unique<Element_ref>(widget) );
+        _elements.push_back( std::make_unique<Element_ref>(widget, weight) );
+
+        return * p();
     }
 
     template <class Config>
@@ -133,16 +135,22 @@ namespace cppgui
     {
         auto rect = p()->get_inner_rectangle();
 
-        // TODO: PRELIMINARY IMPLEMENTATION, NOT ALLOCATING EXTRA WIDTH YET
+        // Total of all "weights"
+        auto total_weight = std::accumulate(std::begin(_elements), std::end(_elements), 0.0f, [](float sum, auto& elem) { return sum + elem->_weight; });
+
+        // Calculate extra height to distribute among
+        auto extra_width = rect.ext.w - get_minimal_size().w;
 
         for (auto& elem: _elements)
         {
             auto size = elem->_widget->get_minimal_size();
 
-            elem->_widget->set_position(rect.pos);
-            elem->_widget->set_extents ({ size.w, rect.ext.h });
+            Length w = size.w + (total_weight > 0 ? static_cast<Length>( extra_width * elem->_weight / total_weight ) : 0);
 
-            rect.pos.x += size.w + _spacing; 
+            elem->_widget->set_position(rect.pos);
+            elem->_widget->set_extents ({ w, rect.ext.h });
+
+            rect.pos.x += w + _spacing; 
         }
 
         Parent::layout();
@@ -157,11 +165,11 @@ namespace cppgui
 
     template <class Config>
     template <class Class, class Parent>
-    auto Single_column_layout<Config, true>::Aspect<Class, Parent>::add_element(Widget<Config, true> * widget) -> Element_ref &
+    auto Single_column_layout<Config, true>::Aspect<Class, Parent>::add_element(Widget<Config, true> * widget, float weight) -> Class &
     {
-        _elements.push_back( std::make_unique<Element_ref>(widget) );
+        _elements.push_back( std::make_unique<Element_ref>(widget, weight) );
 
-        return * _elements.back();
+        return * p();
     }
 
     template <class Config>
