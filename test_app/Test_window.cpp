@@ -205,6 +205,7 @@ Test_window::Test_window(): Parent_t("Test window")
         std::cout << "Item #" << index << " activated: " << cppgui::utf32_to_utf8(item) << std::endl;
     });
     _left_panel.set_left(&_stringlist, {1, 1});
+    _left_panel.set_background_color({0.8f, 0.8f, 0.8f, 1});
 
     // Right panel
 
@@ -256,6 +257,7 @@ Test_window::Slider_with_display::Slider_with_display()
 
     add_element(&_textbox);
     add_element(&_slider, 1);
+    add_spacer(1);
 
     //this->set_layout_manager<cppgui::layouting<GUI_config>::Header_content>();
     //layout_manager()->set_spacing(3);

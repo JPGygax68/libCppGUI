@@ -20,6 +20,20 @@ namespace cppgui
         Just as the widget class templates
      */
 
+    /*
+    struct Layout_element
+    {
+        
+    };
+
+    template<class Config>
+    struct Widget_element: Layout_element
+    {
+        Widget<Config, true>   *_widget;
+        float                   _weight = 0; 
+    };
+    */
+
     /*  Unordered_layouter:
 
         A "dummy" layouter that does not do anything expect providing a dummy implementation
@@ -172,6 +186,7 @@ namespace cppgui
             void set_spacing(Length);
 
             auto add_element(Widget<Config, true> * widget, float weight = 0) -> Class &;
+            auto add_spacer(float weight = 1) -> Class &;
 
             void init_layout() override;
             auto get_minimal_size() -> Extents override;

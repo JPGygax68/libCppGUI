@@ -169,7 +169,18 @@ namespace cppgui
     {
         _elements.push_back( std::make_unique<Element_ref>(widget, weight) );
 
-        return * p();
+        return *p();
+    }
+
+    template <class Config>
+    template <class Class, class Parent>
+    auto Single_column_layout<Config, true>::Aspect<Class, Parent>::add_spacer(float weight) -> Class &
+    {
+        assert(_elements.empty() || _elements.back()->_widget); // predecessor must not be spacer
+
+        _elements.push_back( std::make_unique<Element_ref>(nullptr, weight) );
+
+        return *p();
     }
 
     template <class Config>
@@ -178,7 +189,7 @@ namespace cppgui
     {
         for (auto& elem: _elements)
         {
-            p()->add_child(elem->_widget);
+            if (elem->_widget) p()->add_child(elem->_widget);
         }
 
         Parent::init_layout();
@@ -190,15 +201,24 @@ namespace cppgui
     {
         Extents total;
 
-        for (auto& elem: _elements)
+        for (auto i = 0U; i < _elements.size(); ++i)
         {
-            auto size = elem->_widget->get_minimal_size();
+            auto& elem =_elements[i];
 
-            total.w = std::max(total.w, size.w);
-            total.h += std::max(size.h, elem->_min_length);
+            // Widget element ?
+            if (elem->_widget)
+            {
+                if (i > 0 && _elements[i-1]->_widget) total.h += _spacing;
+
+                auto size = elem->_widget->get_minimal_size();
+                total.w = std::max(total.w, size.w);
+                total.h += std::max(size.h, elem->_min_length);
+            }
+            else // Not a widget, just a spacer
+            {
+                // Does not occupy any space on its own
+            }
         }
-
-        total.h += (_elements.size() - 1) * _spacing;
 
         return total;
     }
@@ -207,6 +227,17 @@ namespace cppgui
     template <class Class, class Parent>
     void Single_column_layout<Config, true>::Aspect<Class, Parent>::layout()
     {
+        /** Note: the algorithm used here gives each element its minimum height, plus a portion of
+                any available extra height, attributed according to its relative "weight".
+                It follows from this that this layouter is not suited for allocating available space
+                in precisely defined portions.
+
+            Note 2: a spacer is treated differently from a widget in that the default spacing will
+                not be added either before or after a spacer - instead, the spacer replaces the
+                default spacing.
+                This is another reason why this layouter is not suited for precise positioning.
+         */
+
         auto rect = p()->get_inner_rectangle();
 
         // Total of all "weights"
@@ -215,16 +246,30 @@ namespace cppgui
         // Calculate extra height to distribute among
         auto extra_height = rect.ext.h - get_minimal_size().h;
 
-        for (auto& elem: _elements)
+        // Assign position and size to all widgets
+        for (auto i = 0U; i < _elements.size(); ++i)
         {
-            auto size = elem->_widget->get_minimal_size();
+            auto& elem = _elements[i];
 
-            Length h = size.h + static_cast<Length>( extra_height * elem->_weight / total_weight );
+            auto h_extra = static_cast<Length>( extra_height * elem->_weight / total_weight );
 
-            elem->_widget->set_position(rect.pos);
-            elem->_widget->set_extents ({ rect.ext.w, h });
+            if (elem->_widget)
+            {
+                if (i > 0 && _elements[i-1]->_widget) rect.pos.y += _spacing;
 
-            rect.pos.y += h + _spacing;
+                auto size = elem->_widget->get_minimal_size();
+
+                Length h = size.h + h_extra;
+
+                elem->_widget->set_position(rect.pos);
+                elem->_widget->set_extents ({ rect.ext.w, h });
+
+                rect.pos.y += h;
+            }
+            else
+            {
+                rect.pos.y += h_extra;
+            }
         }
 
         Parent::layout();

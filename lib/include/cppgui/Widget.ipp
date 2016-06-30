@@ -189,7 +189,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    inline void Widget<Config, With_layout>::added_to_container(Abstract_container_t *cont)
+    void Widget<Config, With_layout>::added_to_container(Abstract_container_t *cont)
     {
         _container = cont;
     }
@@ -232,7 +232,7 @@ namespace cppgui {
     void Widget<Config, With_layout>::loosing_focus()
     {
         // container()->child_is_loosing_focus(); // TODO ?
-        invalidate();
+        this->invalidate();
     }
 
     template<class Config, bool With_layout>
