@@ -33,8 +33,6 @@ namespace cppgui
         but they can have more), and an inner, normalized one that always takes the same two parameters 
         "Class" and "Parent". "Parent" is used for chaining, like with all aspect templates, while "Class" 
         is the exact widget type that the container layouter will work upon.
-
-        Just as the widget class templates
      */
 
     template<class Config>
@@ -111,6 +109,8 @@ namespace cppgui
 
         A container layouter that divides space horizontally between fixed-width left and right
         parts (both optional), and a center part that is given the remaining space.
+
+        TODO: use new "accessors" to obtain implementation that works for both axes
      */
 
     template<class Config, bool With_layout> struct Horizontal_box;

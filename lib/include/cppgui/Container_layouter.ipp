@@ -182,7 +182,7 @@ namespace cppgui
             }
         }
 
-        return total;
+        return this->add_boxing( total );
     }
 
     template <class Config, class Accessor>

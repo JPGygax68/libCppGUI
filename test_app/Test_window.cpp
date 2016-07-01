@@ -256,6 +256,8 @@ Test_window::Slider_with_display::Slider_with_display()
 
     this->set_spacing(5);
 
+    _textbox.set_size(5);
+
     add_element(&_textbox);
     add_element(&_slider, 1);
     add_spacer(1);
