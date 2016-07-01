@@ -44,12 +44,12 @@ private:
     // TODO: use even simpler box model
 
     class Slider_with_display: public cppgui::Container<GUI_config, true, 
-        cppgui::Fixed_border_and_padding<0, 0>::Box_model, cppgui::Single_column_layout<GUI_config, true>>
+        cppgui::Fixed_border_and_padding<0, 0>::Box_model, cppgui::Single_column_flow_layout<GUI_config, true>>
     {
     public:
         using Value_type = cppgui::Vertical_slider<GUI_config, true>::Value_type;
         using Parent_t = cppgui::Container<GUI_config, true, cppgui::Fixed_border_and_padding<0, 0>::Box_model, 
-            cppgui::Single_column_layout<GUI_config, true>>;
+            cppgui::Single_column_flow_layout<GUI_config, true>>;
 
         Slider_with_display();
 
@@ -70,7 +70,7 @@ private:
 
     template<class Layout>
     using Panel = cppgui::Container<GUI_config, true, cppgui::Fixed_border_and_padding<1, 10>::Box_model, Layout>;
-    using Single_line_layout = cppgui::Single_line_layout<GUI_config, true>;
+    using Single_line_layout = cppgui::Single_row_flow_layout<GUI_config, true>;
     using Horizontal_box_layout = cppgui::Horizontal_box<GUI_config, true>;
 
     cppgui::Root_widget<GUI_config, true, cppgui::Simple_box_model, cppgui::Horizontal_box<GUI_config, true>> _root_widget;

@@ -215,15 +215,16 @@ Test_window::Test_window(): Parent_t("Test window")
     _slider1.set_font(dflt_font);
     _slider1.slider().define_range({  50, 120 });
     _slider1.set_value( 50 );
-    _right_panel.add_element(&_slider1, 1);
+    _right_panel.add_element(&_slider1);
     _slider2.set_font(dflt_font);
     _slider2.slider().define_range({  -50, 50 });
     _slider2.set_value( 20 );
-    _right_panel.add_element(&_slider2, 1);
+    _right_panel.add_element(&_slider2);
     _slider3.set_font(dflt_font);
     _slider3.slider().define_range({  0.001f, 0.010f });
     _slider3.set_value( 0.001f );
-    _right_panel.add_element(&_slider3, 1);
+    _right_panel.add_element(&_slider3);
+    _right_panel.add_spacer(1);
 
     // Root widget
 

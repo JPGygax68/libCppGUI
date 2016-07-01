@@ -528,7 +528,7 @@ namespace cppgui {
     {
         if (this->has_focus())
         {
-            return { 0.4f, 0.7f, 1, 1 };
+            return { 0.5f, 0.8f, 1, 1 };
         }
         else {
             return { 0.8f, 0.8f, 0.8f, 1 };

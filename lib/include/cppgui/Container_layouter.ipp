@@ -1,3 +1,22 @@
+#pragma once 
+
+/*  libCppGUI - A GUI library for C++11/14
+    
+    Copyright 2016 Hans-Peter Gygax
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+
 #include <cassert>
 #include <numeric>
 
@@ -5,6 +24,20 @@
 
 namespace cppgui
 {
+    // Container_layouter_base --------------------------------------
+
+    template <class Class, class ElementRef, class Config, class Parent>
+    void Container_layouter_base<Class, ElementRef, Config, Parent>::_add_element(ElementRef *elem)
+    {
+        _elements.push_back( std::unique_ptr<ElementRef>{ elem } );
+    }
+
+    template <class Class, class ElementRef, class Config, class Parent>
+    auto Container_layouter_base<Class, ElementRef, Config, Parent>::sum_of_weights() -> float
+    {
+        return std::accumulate(std::begin(_elements), std::end(_elements), 0.0f, [](float sum, auto& elem) { return sum + elem->weight; });
+    }
+
     template <class Config>
     template <class Class, class Parent>
     void Horizontal_box<Config, true>::Aspect<Class, Parent>::set_left(Widget<Config, true> *child, const Fraction<Length> &width)
@@ -82,137 +115,66 @@ namespace cppgui
         Parent::layout();
     }
 
-    template <class Config>
+    // Single_beam_flow_layout ------------------------------------------------
+
+    template <class Config, class Accessor>
     template <class Class, class Parent>
-    void Single_line_layout<Config, true>::Aspect<Class, Parent>::set_spacing(Width spacing)
+    void Single_beam_flow_layout<Config, true, Accessor>::Aspect<Class, Parent>::set_spacing(Length spacing)
     {
         _spacing = spacing;
     }
 
-    template <class Config>
+    template <class Config, class Accessor>
     template <class Class, class Parent>
-    auto Single_line_layout<Config, true>::Aspect<Class, Parent>::add_element(Widget<Config, true> *widget, float weight) -> Class &
+    auto Single_beam_flow_layout<Config, true, Accessor>::Aspect<Class, Parent>::add_element(Widget<Config, true> * widget, float weight) 
+        -> Class &
     {
-        _elements.push_back( std::make_unique<Element_ref>(widget, weight) );
+        this->_add_element( new Element_ref{widget, weight} );
 
         return * p();
     }
 
-    template <class Config>
+    template <class Config, class Accessor>
     template <class Class, class Parent>
-    void Single_line_layout<Config, true>::Aspect<Class, Parent>::init_layout()
+    auto Single_beam_flow_layout<Config, true, Accessor>::Aspect<Class, Parent>::add_spacer(float weight) -> Class &
     {
-        for (auto& elem: _elements)
+        assert(this->elements().empty() || this->elements().back()->widget); // predecessor must not be spacer
+
+        this->_add_element( new Element_ref{ nullptr, weight } );
+
+        return * p();
+    }
+
+    template <class Config, class Accessor>
+    template <class Class, class Parent>
+    void Single_beam_flow_layout<Config, true, Accessor>::Aspect<Class, Parent>::init_layout()
+    {
+        for (auto& elem: this->elements())
         {
-            p()->add_child(elem->_widget);
+            if (elem->widget) p()->add_child(elem->widget);
         }
 
         Parent::init_layout();
     }
 
-    template <class Config>
+    template <class Config, class Accessor>
     template <class Class, class Parent>
-    auto Single_line_layout<Config, true>::Aspect<Class, Parent>::get_minimal_size() -> Extents
+    auto Single_beam_flow_layout<Config, true, Accessor>::Aspect<Class, Parent>::get_minimal_size() -> Extents
     {
         Extents total;
 
-        for (auto& elem: _elements)
+        for (auto i = 0U; i < this->elements().size(); ++i)
         {
-            auto size = elem->_widget->get_minimal_size();
-
-            total.w += std::max(size.w, elem->_min_length);
-            total.h = std::max(total.h, size.h);
-        }
-
-        total.w += (_elements.size() - 1) * _spacing;
-
-        return total;
-    }
-
-    template <class Config>
-    template <class Class, class Parent>
-    void Single_line_layout<Config, true>::Aspect<Class, Parent>::layout()
-    {
-        auto rect = p()->get_inner_rectangle();
-
-        // Total of all "weights"
-        auto total_weight = std::accumulate(std::begin(_elements), std::end(_elements), 0.0f, [](float sum, auto& elem) { return sum + elem->_weight; });
-
-        // Calculate extra height to distribute among
-        auto extra_width = rect.ext.w - get_minimal_size().w;
-
-        for (auto& elem: _elements)
-        {
-            auto size = elem->_widget->get_minimal_size();
-
-            Length w = size.w + (total_weight > 0 ? static_cast<Length>( extra_width * elem->_weight / total_weight ) : 0);
-
-            elem->_widget->set_position(rect.pos);
-            elem->_widget->set_extents ({ w, rect.ext.h });
-
-            rect.pos.x += w + _spacing; 
-        }
-
-        Parent::layout();
-    }
-
-    template <class Config>
-    template <class Class, class Parent>
-    void Single_column_layout<Config, true>::Aspect<Class, Parent>::set_spacing(Length spacing)
-    {
-        _spacing = spacing;
-    }
-
-    template <class Config>
-    template <class Class, class Parent>
-    auto Single_column_layout<Config, true>::Aspect<Class, Parent>::add_element(Widget<Config, true> * widget, float weight) -> Class &
-    {
-        _elements.push_back( std::make_unique<Element_ref>(widget, weight) );
-
-        return *p();
-    }
-
-    template <class Config>
-    template <class Class, class Parent>
-    auto Single_column_layout<Config, true>::Aspect<Class, Parent>::add_spacer(float weight) -> Class &
-    {
-        assert(_elements.empty() || _elements.back()->_widget); // predecessor must not be spacer
-
-        _elements.push_back( std::make_unique<Element_ref>(nullptr, weight) );
-
-        return *p();
-    }
-
-    template <class Config>
-    template <class Class, class Parent>
-    void Single_column_layout<Config, true>::Aspect<Class, Parent>::init_layout()
-    {
-        for (auto& elem: _elements)
-        {
-            if (elem->_widget) p()->add_child(elem->_widget);
-        }
-
-        Parent::init_layout();
-    }
-
-    template <class Config>
-    template <class Class, class Parent>
-    auto Single_column_layout<Config, true>::Aspect<Class, Parent>::get_minimal_size() -> Extents
-    {
-        Extents total;
-
-        for (auto i = 0U; i < _elements.size(); ++i)
-        {
-            auto& elem =_elements[i];
+            auto& elem = this->elements()[i];
 
             // Widget element ?
-            if (elem->_widget)
+            if (elem->widget)
             {
-                if (i > 0 && _elements[i-1]->_widget) total.h += _spacing;
+                if (i > 0 && this->elements()[i-1]->widget) this->forward_length(total) += _spacing;
 
-                auto size = elem->_widget->get_minimal_size();
-                total.w = std::max(total.w, size.w);
-                total.h += std::max(size.h, elem->_min_length);
+                auto size = elem->widget->get_minimal_size();
+                this->sideways_width(total) = std::max(this->sideways_width(total), this->sideways_width(size));
+                this->forward_length(total) += std::max(this->forward_length(size), elem->_min_length);
             }
             else // Not a widget, just a spacer
             {
@@ -223,9 +185,9 @@ namespace cppgui
         return total;
     }
 
-    template <class Config>
+    template <class Config, class Accessor>
     template <class Class, class Parent>
-    void Single_column_layout<Config, true>::Aspect<Class, Parent>::layout()
+    void Single_beam_flow_layout<Config, true, Accessor>::Aspect<Class, Parent>::layout()
     {
         /** Note: the algorithm used here gives each element its minimum height, plus a portion of
                 any available extra height, attributed according to its relative "weight".
@@ -241,34 +203,37 @@ namespace cppgui
         auto rect = p()->get_inner_rectangle();
 
         // Total of all "weights"
-        auto total_weight = std::accumulate(std::begin(_elements), std::end(_elements), 0.0f, [](float sum, auto& elem) { return sum + elem->_weight; });
+        auto total_weight = this->sum_of_weights();
+        //std::accumulate(std::begin(_elements), std::end(_elements), 0.0f, [](float sum, auto& elem) { return sum + elem->weight; });
 
         // Calculate extra height to distribute among
-        auto extra_height = rect.ext.h - get_minimal_size().h;
+        auto minsz = get_minimal_size();
+        auto extra_length = this->forward_length(rect.ext) - this->forward_length(minsz);
 
         // Assign position and size to all widgets
-        for (auto i = 0U; i < _elements.size(); ++i)
+        for (auto i = 0U; i < this->elements().size(); ++i)
         {
-            auto& elem = _elements[i];
+            auto& elem = this->elements()[i];
 
-            auto h_extra = static_cast<Length>( extra_height * elem->_weight / total_weight );
+            auto extra_portion = static_cast<Length>( extra_length * elem->weight / total_weight );
 
-            if (elem->_widget)
+            if (elem->widget)
             {
-                if (i > 0 && _elements[i-1]->_widget) rect.pos.y += _spacing;
+                if (i > 0 && this->elements()[i-1]->widget) this->forward_position(rect.pos) += _spacing;
 
-                auto size = elem->_widget->get_minimal_size();
+                auto size = elem->widget->get_minimal_size();
 
-                Length h = size.h + h_extra;
+                Length l = this->forward_length(size) + extra_portion;
 
-                elem->_widget->set_position(rect.pos);
-                elem->_widget->set_extents ({ rect.ext.w, h });
+                elem->widget->set_position(rect.pos);
+                this->sideways_width(elem->widget->extents()) = this->sideways_width(rect.ext);
+                this->forward_length (elem->widget->extents()) = l;
 
-                rect.pos.y += h;
+                this->forward_position(rect.pos) += l;
             }
             else
             {
-                rect.pos.y += h_extra;
+                this->forward_position(rect.pos) += extra_portion;
             }
         }
 

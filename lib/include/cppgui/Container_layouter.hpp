@@ -1,5 +1,22 @@
 #pragma once
 
+/*  libCppGUI - A GUI library for C++11/14
+    
+    Copyright 2016 Hans-Peter Gygax
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+
 #include <memory>
 
 #include "./basic_types.hpp"
@@ -20,19 +37,51 @@ namespace cppgui
         Just as the widget class templates
      */
 
-    /*
-    struct Layout_element
+    template<class Config>
+    struct Element_ref_base
     {
-        
+        using Widget_t = Widget<Config, true>;
+
+        explicit Element_ref_base(Widget_t *widget_, float weight_ = 0): widget{widget_}, weight{weight_} {}
+
+        auto& set_weight(float weight_) { weight = weight_; return *this; }
+
+        Widget_t   *widget = nullptr;
+        float       weight = 0;
     };
 
-    template<class Config>
-    struct Widget_element: Layout_element
+    struct Horizontal_element_accessor
     {
-        Widget<Config, true>   *_widget;
-        float                   _weight = 0; 
+        static auto forward_position(Point &point) -> Position & { return point.x; }
+        static auto sideways_position(Point &point) -> Position & { return point.y; }
+        static auto forward_length(Extents &ext) -> Length & { return ext.w; }
+        static auto sideways_width(Extents &ext) -> Length & { return ext.h; }
     };
-    */
+
+    struct Vertical_element_accessor
+    {
+        static auto forward_position(Point &point) -> Position & { return point.y; }
+        static auto sideways_position(Point &point) -> Position & { return point.x; }
+        static auto forward_length(Extents &ext) -> Length & { return ext.h; }
+        static auto sideways_width(Extents &ext) -> Length & { return ext.w; }
+    };
+
+    /** Base class for common functionality.
+     */
+    template<class Class, class ElementRef, class Config, class Parent>
+    class Container_layouter_base: public Parent
+    {
+    protected:
+
+        void _add_element(ElementRef *);
+
+        const auto& elements() const { return _elements; }
+
+        auto sum_of_weights() -> float;
+
+    private:
+        std::vector<std::unique_ptr<ElementRef>> _elements;
+    };
 
     /*  Unordered_layouter:
 
@@ -98,91 +147,33 @@ namespace cppgui
         };
     };
 
-    /*  Single_line_layout
-
-        This container layouter arranges contained elements on a single line. It allows setting 
-        the following constraints on each element:
-
-        - minimum space before [FUTURE] [NOTE: for first element, take box-model padding into account!]
-        - minimum space after [FUTURE] [NOTE: sim. for last element]
-        - vertical alignment [FUTURE]
-        - minimum width
-        - maximum width
-
-        More constraints and indications may be added in the future.
-
+    /*  Single_beam_flow_layout
      */
 
-    template<class Config, bool With_layout> struct Single_line_layout;
+    template<class Config, bool With_layout, class Accessor> struct Single_beam_flow_layout;
 
-    template<class Config> struct Single_line_layout<Config, false> { template<class Class, class Parent> struct Aspect: Parent {}; };
+    template<class Config, class Accessor> 
+    struct Single_beam_flow_layout<Config, false, Accessor> { template<class Class, class Parent> struct Aspect: Parent {}; };
 
-    template<class Config>
-    struct Single_line_layout<Config, true>
+    template<class Config, class Accessor>
+    struct Single_beam_flow_layout<Config, true, Accessor>
     {
-        template<class Class, class Parent>
-        struct Aspect: Parent
+        struct Element_ref: Element_ref_base<Config>
         {
-            struct Element_ref
-            {
-                Element_ref(Widget<Config, true> *widget_, float weight_): _widget{widget_}, _weight{weight_} {}
+            using Element_ref_base<Config>::Element_ref_base;
+            
+            Element_ref() = delete;
 
-                Widget<Config, true> *_widget = nullptr;
-                Width _min_length = 0;
-                Width _max_length = 0;
-                float _weight = 0;
+            Length _min_length = 0;
+            //Length _max_length = 0;
 
-                auto& set_min_length(Length w) { _min_length = w; return *this; }
-                auto& set_max_length(Length w) { _max_length = w; return *this; }
-                auto& set_weight(float weight) { _weight = weight; return *this; }
-            };
-
-            std::vector<std::unique_ptr<Element_ref>>   _elements;
-            Width                                       _spacing = 0;
-
-            void set_spacing(Width);
-
-            auto add_element(Widget<Config, true> *widget, float weight = 0) -> Class &;
-
-            void init_layout() override;
-            auto get_minimal_size() -> Extents override;
-            void layout() override;
-
-            auto p() { return static_cast<Class*>(this); }
+            auto& set_min_length(Width w) { _min_length = w; return *this; }
+            //auto& set_max_length(Width w) { _max_length = w; return *this; }
         };
-    };
 
-    /*  Single_column_layout
-     */
-
-    template<class Config, bool With_layout> struct Single_column_layout;
-
-    template<class Config> struct Single_column_layout<Config, false> { template<class Class, class Parent> struct Aspect: Parent {}; };
-
-    template<class Config>
-    struct Single_column_layout<Config, true>
-    {
         template<class Class, class Parent>
-        struct Aspect: Parent
+        struct Aspect: public Container_layouter_base<Aspect<Class, Parent>, Element_ref, Config, Parent>, Accessor
         {
-            struct Element_ref
-            {
-                Element_ref(Widget<Config, true> *widget_, float weight_): _widget{widget_}, _weight{weight_} {}
-
-                Widget<Config, true> *_widget = nullptr;
-                Width _min_length = 0;
-                Width _max_length = 0;
-                float _weight = 0;
-
-                auto& set_min_length(Width w) { _min_length = w; return *this; }
-                auto& set_max_length(Width w) { _max_length = w; return *this; }
-
-                auto& set_weight(float weight) { _weight = weight; return *this; }
-            };
-
-            std::vector<std::unique_ptr<Element_ref>>   _elements;
-            Length                                      _spacing = 0;
-
             void set_spacing(Length);
 
             auto add_element(Widget<Config, true> * widget, float weight = 0) -> Class &;
@@ -193,7 +184,15 @@ namespace cppgui
             void layout() override;
 
             auto p() { return static_cast<Class*>(this); }
+
+            Length  _spacing = 0;
         };
     };
+
+    template<class Config, bool With_layout> 
+    using Single_row_flow_layout = Single_beam_flow_layout<Config, With_layout, Horizontal_element_accessor>;
+
+    template<class Config, bool With_layout> 
+    using Single_column_flow_layout = Single_beam_flow_layout<Config, With_layout, Vertical_element_accessor>;
 
 } // ns cppgui
