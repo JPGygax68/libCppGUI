@@ -158,6 +158,8 @@ namespace cppgui
     template<class Config, class Accessor>
     struct Single_beam_flow_layout<Config, true, Accessor>
     {
+        using Widget_t = Widget<Config, true>;
+
         struct Element_ref: Element_ref_base<Config>
         {
             using Element_ref_base<Config>::Element_ref_base;

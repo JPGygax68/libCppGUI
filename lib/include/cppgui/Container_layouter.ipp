@@ -51,7 +51,7 @@ namespace cppgui
     template <class Class, class Parent>
     void Horizontal_box<Config, true>::Aspect<Class, Parent>::set_center(Widget<Config, true> *child)
     {
-        assert(!_left);
+        assert(!_center);
 
         _center = std::make_unique<Element_ref>(child);
     }
@@ -163,22 +163,28 @@ namespace cppgui
     {
         Extents total;
 
+        Widget_t *prev_widget = nullptr;
+
         for (auto i = 0U; i < this->elements().size(); ++i)
         {
             auto& elem = this->elements()[i];
 
             // Widget element ?
-            if (elem->widget)
+            if (elem->widget && elem->widget->visible())
             {
-                if (i > 0 && this->elements()[i-1]->widget) this->forward_length(total) += _spacing;
+                if (prev_widget) this->forward_length(total) += _spacing;
 
                 auto size = elem->widget->get_minimal_size();
                 this->sideways_width(total) = std::max(this->sideways_width(total), this->sideways_width(size));
                 this->forward_length(total) += std::max(this->forward_length(size), elem->_min_length);
+
+                prev_widget = elem->widget;
             }
             else // Not a widget, just a spacer
             {
                 // Does not occupy any space on its own
+
+                prev_widget = nullptr;
             }
         }
 
@@ -211,15 +217,18 @@ namespace cppgui
         auto extra_length = this->forward_length(rect.ext) - this->forward_length(minsz);
 
         // Assign position and size to all widgets
+
+        Widget_t *prev_widget = nullptr;
+
         for (auto i = 0U; i < this->elements().size(); ++i)
         {
             auto& elem = this->elements()[i];
 
-            auto extra_portion = static_cast<Length>( extra_length * elem->weight / total_weight );
+            auto extra_portion = static_cast<Length>( total_weight > 0 ? extra_length * elem->weight / total_weight : 0 );
 
-            if (elem->widget)
+            if (elem->widget && elem->widget->visible())
             {
-                if (i > 0 && this->elements()[i-1]->widget) this->forward_position(rect.pos) += _spacing;
+                if (prev_widget) this->forward_position(rect.pos) += _spacing;
 
                 auto size = elem->widget->get_minimal_size();
 
@@ -230,10 +239,14 @@ namespace cppgui
                 this->forward_length (elem->widget->extents()) = l;
 
                 this->forward_position(rect.pos) += l;
+
+                prev_widget = elem->widget;
             }
             else
             {
                 this->forward_position(rect.pos) += extra_portion;
+
+                prev_widget = nullptr;
             }
         }
 
