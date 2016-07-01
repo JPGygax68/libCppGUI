@@ -213,8 +213,8 @@ namespace cppgui
         //std::accumulate(std::begin(_elements), std::end(_elements), 0.0f, [](float sum, auto& elem) { return sum + elem->weight; });
 
         // Calculate extra height to distribute among
-        auto minsz = get_minimal_size();
-        auto extra_length = this->forward_length(rect.ext) - this->forward_length(minsz);
+        auto realsz = p()->extents(), minsz = get_minimal_size();
+        auto extra_length = this->forward_length(realsz) - this->forward_length(minsz);
 
         // Assign position and size to all widgets
 
