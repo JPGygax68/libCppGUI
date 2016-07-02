@@ -56,7 +56,7 @@ namespace cppgui {
         void update_scrollbar_position();
 
     protected:
-        using Vertical_scrollbar_t = Custom_vertical_scrollbar<Config, With_layout>;
+        using Vertical_scrollbar_t = Custom_vertical_scrollbar<Config, With_layout>; // NOTE: this may the wrong variant - use Standalone ?
 
         List_pane_t         _content_pane;
     };

@@ -54,13 +54,13 @@ namespace cppgui {
     }
 
     template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::define_values(Length full, Length fraction)
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::define_sizes(Length full, Length fraction)
     {
         // assert(full >= fraction);
         if (full < fraction) full = fraction; // TODO: better way ?
 
         _full_range = full;
-        _thumb_range = fraction;
+        _shown_range = fraction;
     }
 
     template<class Impl, class Config, bool With_layout>
@@ -76,7 +76,7 @@ namespace cppgui {
     template<class Impl, class Config, bool With_layout>
     void Vertical_scrollbar_base<Impl, Config, With_layout>::compute_view_from_data()
     {
-        _thumb_rect.pos = { 2, _sliding_range.from };
+        _thumb_rect.pos = { 2, _track.from };
         // TODO: position from style
 
         recalc_thumb();
@@ -99,9 +99,9 @@ namespace cppgui {
     // TODO: test!!
 
     template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::change_values(Length full, Length shown)
+    void Vertical_scrollbar_base<Impl, Config, With_layout>::change_sizes(Length full, Length shown)
     {
-        define_values(full, shown);
+        define_sizes(full, shown);
         recalc_thumb();
         this->invalidate();
     }
@@ -111,7 +111,7 @@ namespace cppgui {
     {
         if (button == 1 && state == Key_state::pressed)
         {
-            if (pos.y > _sliding_range.from && pos.y < _sliding_range.to)
+            if (pos.y > _track.from && pos.y < _track.to)
             {
                 auto y_rel = pos.y - _thumb_rect.pos.y;
 
@@ -192,11 +192,11 @@ namespace cppgui {
     template<class Impl, class Config, bool With_layout>
     auto Vertical_scrollbar_base<Impl, Config, With_layout>::current_position() -> Fraction<Length>
     {
-        if (_sliding_range.length() > _thumb_rect.ext.h)
+        if (_track.length() > _thumb_rect.ext.h)
         {
             return {
-                (_full_range - _thumb_range) * (_thumb_rect.pos.y - _sliding_range.from),
-                _sliding_range.length() - _thumb_rect.ext.h
+                (_full_range - _shown_range) * (_thumb_rect.pos.y - _track.from),
+                _track.length() - _thumb_rect.ext.h
             };
         }
         else
@@ -206,13 +206,13 @@ namespace cppgui {
     template<class Impl, class Config, bool With_layout>
     void Vertical_scrollbar_base<Impl, Config, With_layout>::update_thumb_position(Length value)
     {
-        assert(_full_range >= _thumb_range);
+        assert(_full_range >= _shown_range);
 
-        if (_full_range > _thumb_range)
+        if (_full_range > _shown_range)
         {
-            value = clamp(value, 0, _full_range - _thumb_range);
+            value = clamp(value, 0, _full_range - _shown_range);
 
-            auto new_y = _sliding_range.from + (value * (_sliding_range.length() - _thumb_rect.ext.h) / (_full_range - _thumb_range));
+            auto new_y = _track.from + (value * (_track.length() - _thumb_rect.ext.h) / (_full_range - _shown_range));
 
             if (_dragging_thumb)
             {
@@ -228,8 +228,8 @@ namespace cppgui {
     template<class Impl, class Config, bool With_layout>
     void Vertical_scrollbar_base<Impl, Config, With_layout>::move_thumb_to(Position new_pos)
     {
-        new_pos = std::max(new_pos, _sliding_range.from);
-        new_pos = std::min(new_pos, _sliding_range.to - _thumb_rect.ext.h);
+        new_pos = std::max(new_pos, _track.from);
+        new_pos = std::min(new_pos, _track.to - _thumb_rect.ext.h);
 
         _thumb_rect.pos = {2, new_pos};
         
@@ -241,7 +241,7 @@ namespace cppgui {
     void Vertical_scrollbar_base<Impl, Config, With_layout>::recalc_thumb()
     {
         _thumb_rect.ext.h = std::max(
-            _full_range == 0 ? 0 : _sliding_range.length() * _thumb_range / _full_range, 
+            _full_range == 0 ? 0 : _track.length() * _shown_range / _full_range, 
             _thumb_rect.ext.w / 2
         );
 
@@ -251,13 +251,13 @@ namespace cppgui {
     template<class Impl, class Config, bool With_layout>
     void Vertical_scrollbar_base<Impl, Config, With_layout>::clip_thumb_pos()
     {
-        if (_thumb_rect.bottom() > _sliding_range.to)
+        if (_thumb_rect.bottom() > _track.to)
         {
-            _thumb_rect.pos.y = _sliding_range.to - static_cast<Position>(_thumb_rect.ext.h);
+            _thumb_rect.pos.y = _track.to - static_cast<Position>(_thumb_rect.ext.h);
         }
-        else if (_thumb_rect.pos.y < _sliding_range.from)
+        else if (_thumb_rect.pos.y < _track.from)
         {
-            _thumb_rect.pos.y = _sliding_range.from;
+            _thumb_rect.pos.y = _track.from;
         }
     }
 
@@ -268,7 +268,7 @@ namespace cppgui {
         {
             //std::cerr << "delta = " << delta << std::endl;
             //static_cast<Impl*>(this)->move_by_fraction(_drag_start_pos, { delta, static_cast<int>(_sliding_range.l - _thumb_rect.ext.h) });
-            static_cast<Impl*>(this)->move_by_fraction({ delta, _sliding_range.length() - _thumb_rect.ext.h });
+            static_cast<Impl*>(this)->move_by_fraction({ delta, _track.length() - _thumb_rect.ext.h });
         }
     }
 
@@ -295,7 +295,7 @@ namespace cppgui {
         p()->_up_btn  .set_rectangle_nw({0, 0           }, { ext.w, minsz_up_btn  .h} );
         p()->_down_btn.set_rectangle_sw({0, ext.bottom()}, { ext.w, minsz_down_btn.h} );
 
-        p()->_sliding_range.define( p()->_up_btn.rectangle().bottom() + 2, p()->_down_btn.rectangle().top() - 2 );
+        p()->_track.define( p()->_up_btn.rectangle().bottom() + 2, p()->_down_btn.rectangle().top() - 2 );
 
         p()->_thumb_rect.pos.x = 2; // TODO: obtain margin from style
         p()->_thumb_rect.ext.w = p()->extents().w - 4; // obtain margin from style
@@ -356,7 +356,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Vertical_scrollbar<Config, With_layout>::move_by_page(int pages)
     {
-        auto delta = this->thumb_range() * pages;
+        auto delta = this->shown_range() * pages;
         auto new_pos = this->current_position() + delta;
         this->update_thumb_position( this->current_position() + delta );
         notify_position_change();

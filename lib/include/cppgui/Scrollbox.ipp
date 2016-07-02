@@ -50,7 +50,7 @@ namespace cppgui {
     void Scrollbox<Config, With_layout, Pane>::compute_view_from_data()
     {
         // Content pane must have its size set at this point
-        _vert_sbar.define_values(_content->extents().h, _content_rect.ext.h);
+        _vert_sbar.define_sizes(_content->extents().h, _content_rect.ext.h);
 
         Parent_t::compute_view_from_data();
     }
