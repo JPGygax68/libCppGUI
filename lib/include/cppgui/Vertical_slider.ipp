@@ -226,28 +226,32 @@ namespace cppgui {
     template <class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::move_down_major()
     {
-        change_value( _value + _incr_major );
+        //change_value( _value + _incr_major );
+        change_value( _value - _incr_major );
     }
 
     template <class Config, typename ValueType>
     template <class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::move_up_major()
     {
-        change_value( _value - _incr_major );
+        //change_value( _value - _incr_major );
+        change_value( _value + _incr_major );
     }
 
     template <class Config, typename ValueType>
     template <class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::move_down_minor()
     {
-        change_value( _value + _incr_minor );
+        //change_value( _value + _incr_minor );
+        change_value( _value - _incr_minor );
     }
 
     template <class Config, typename ValueType>
     template <class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::move_up_minor()
     {
-        change_value( _value - _incr_minor );
+        //change_value( _value - _incr_minor );
+        change_value( _value + _incr_minor );
     }
 
     template <class Config, typename ValueType>
@@ -274,7 +278,8 @@ namespace cppgui {
     {
         auto dy = pos.y - _knob_drag_start_pos;
 
-        change_value( _knob_drag_start_value + dy * _range.length() / _slide_rect.height() );
+        //change_value( _knob_drag_start_value + dy * _range.length() / _slide_rect.height() );
+        change_value( _knob_drag_start_value - dy * _range.length() / _slide_rect.height() );
     }
 
     template <class Config, typename ValueType>
@@ -301,7 +306,8 @@ namespace cppgui {
     template <class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::update_knob_pos()
     {
-        _knob_pos = static_cast<Position>( (_value - _range.from) * _slide_rect.height() / _range.length() );
+        //_knob_pos = static_cast<Position>( (_value - _range.from) * _slide_rect.height() / _range.length() );
+        _knob_pos = static_cast<Position>( _slide_rect.height() - (_value - _range.from) * _slide_rect.height() / _range.length() );
         //std::cerr << "value: " << _value << std::endl;
 
         this->invalidate();
