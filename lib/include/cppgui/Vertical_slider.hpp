@@ -76,7 +76,7 @@ namespace cppgui {
         protected:
 
             static constexpr auto slide_width() -> Width   { return 10; }
-            static constexpr auto thumb_size () -> Extents { return { 30, 16 }; }
+            static constexpr auto knob_size  () -> Extents { return { 30, 16 }; }
 
             // Actions
 
@@ -87,31 +87,31 @@ namespace cppgui {
 
             // Internal methods
 
-            void start_thumb_drag(const Point &);
-            void end_thumb_drag  ();
-            void drag_thumb      (const Point &);
+            void start_knob_drag(const Point &);
+            void end_knob_drag  ();
+            void drag_knob      (const Point &);
 
             void notify_value_change();
-            void update_thumb_pos();
+            void update_knob_pos();
 
             auto top_of_slide   () const -> Rectangle;
             auto bottom_of_slide() const -> Rectangle;
 
             Value_changed_handler   _on_value_changed;
 
-            Range<Value_type>            _range;
-            Value_type                   _incr_major, _incr_minor;
+            Range<Value_type>       _range;
+            Value_type              _incr_major, _incr_minor;
 
             Rectangle               _slide_rect;
-            Rectangle               _thumb_rect;
+            Rectangle               _knob_rect;
 
-            Value_type                   _value;
-            Position                _thumb_pos;
+            Value_type              _value;
+            Position                _knob_pos;
 
-            bool                    _thumb_hovered = false;
-            bool                    _dragging_thumb = false;
-            Position                _thumb_drag_start_pos;
-            Value_type                   _thumb_drag_start_value;
+            bool                    _knob_hovered = false;
+            bool                    _dragging_knob = false;
+            Position                _knob_drag_start_pos;
+            Value_type              _knob_drag_start_value;
         };
 
         // Layouter aspect ----------------------------------------------
