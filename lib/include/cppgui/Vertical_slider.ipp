@@ -193,7 +193,7 @@ namespace cppgui {
     template <class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::mouse_wheel(const Vector &dist)
     {
-        change_value( _value - dist.y * _incr_minor );
+        change_value( _value + dist.y * _incr_minor );
         update_knob_pos();
     }
 
