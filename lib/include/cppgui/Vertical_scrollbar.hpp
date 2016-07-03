@@ -59,13 +59,6 @@ namespace cppgui {
             position, under the control of the consumer.
      */
 
-    #define _CPPGUI_INSTANTIATE_VERTICAL_SCROLLBAR_BASE(Config, With_layout, ...) \
-        template cppgui::Vertical_scrollbar_base<__VA_ARGS__, Config, With_layout>; \
-        template cppgui::Vertical_scrollbar__Layouter<__VA_ARGS__, Config, With_layout, \
-            cppgui::Box<Config, With_layout, \
-                cppgui::Simple_box_model< \
-                    cppgui::Container_base<Config, With_layout> > > >
-
     template<class Impl, class Config, bool With_layout>
     class Vertical_scrollbar_base: public 
         Vertical_scrollbar__Layouter<Impl, Config, With_layout, 
@@ -112,7 +105,7 @@ namespace cppgui {
         auto thumb_range() const { return _thumb_range; }
             // (Integer) range represented by the length of the thumb.
 
-        auto current_position() -> Fraction<Length>;
+        auto current_value_from_thumb_position() -> Fraction<Length>;
             // Converts the current thumb position to a rational number.
             /*  TODO: this approach may (needlessly ?) sacrifice precision; it may be better to 
                 store and update this rational number instead of deriving it from a pixel position. */
@@ -125,7 +118,7 @@ namespace cppgui {
         using Glyph_button_t = Glyph_button<Config, With_layout, Button_box_model>;
         using Color_resource = typename Widget_t::Color_resource;
 
-        void move_thumb_to(Position);
+        //void move_thumb_to(Position);
         void recalc_thumb();
         void clip_thumb_pos();
         void notify_drag_navigation(Position_delta);
@@ -210,8 +203,3 @@ namespace cppgui {
     };
 
 } // ns cppgui
-
-#define CPPGUI_INSTANTIATE_VERTICAL_SCROLLBAR(Config, With_layout) \
-    _CPPGUI_INSTANTIATE_VERTICAL_SCROLLBAR_BASE(Config, With_layout, cppgui::Vertical_scrollbar<Config, With_layout>); \
-    template cppgui::Vertical_scrollbar       <Config, With_layout>; \
-    template cppgui::Custom_vertical_scrollbar<Config, With_layout>;
