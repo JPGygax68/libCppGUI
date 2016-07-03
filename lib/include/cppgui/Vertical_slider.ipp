@@ -85,7 +85,7 @@ namespace cppgui {
     template<class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::compute_view_from_data()
     {
-        update_thumb_pos();
+        update_knob_pos();
     }
 
     template <class Config, typename ValueType>
@@ -93,7 +93,7 @@ namespace cppgui {
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::change_range(const Range<Value_type> &range)
     {
         define_range(range);
-        update_thumb_pos();
+        update_knob_pos();
     }
 
     template <class Config, typename ValueType>
@@ -102,7 +102,7 @@ namespace cppgui {
         const Value_type & incr_major, const Value_type & incr_minor)
     {
         define_range(range, incr_major, incr_minor);
-        update_thumb_pos();
+        update_knob_pos();
     }
 
     template<class Config, typename ValueType>
@@ -125,8 +125,8 @@ namespace cppgui {
         this->fill_rect(canvas, _slide_rect, pos, Canvas_t::rgba_to_native({ 0.3f, 0.3f, 0.3f, 1 }));
 
         // Thumb
-        auto thclr = _thumb_hovered ? Canvas_t::rgba_to_native({ 1, 1, 1, 1 }) : Canvas_t::rgba_to_native({ 0.7f, 0.7f, 0.7f, 1 });
-        this->fill_rect(canvas, _thumb_rect, pos + Point{ 0, _thumb_pos }, thclr);
+        auto thclr = _knob_hovered ? Canvas_t::rgba_to_native({ 1, 1, 1, 1 }) : Canvas_t::rgba_to_native({ 0.7f, 0.7f, 0.7f, 1 });
+        this->fill_rect(canvas, _knob_rect, pos + Point{ 0, _knob_pos }, thclr);
     }
 
     template <class Config, typename ValueType>
@@ -145,16 +145,16 @@ namespace cppgui {
                 //std::cerr << "bottom of slide" << std::endl;
                 move_down_major();
             }
-            else if (state == pressed && (_thumb_rect + Point{ 0, _thumb_pos }).contains(pos) && !_dragging_thumb)
+            else if (state == pressed && (_knob_rect + Point{ 0, _knob_pos }).contains(pos) && !_dragging_knob)
             {
-                start_thumb_drag(pos);
+                start_knob_drag(pos);
             }
-            else if (state == released && _dragging_thumb)
+            else if (state == released && _dragging_knob)
             {
-                end_thumb_drag();
+                end_knob_drag();
             }
 
-            if (state == released && (_thumb_rect + Point{ 0, _thumb_pos }).contains(pos) && !_dragging_thumb)
+            if (state == released && (_knob_rect + Point{ 0, _knob_pos }).contains(pos) && !_dragging_knob)
             {
                 this->take_focus();
             }
@@ -169,21 +169,21 @@ namespace cppgui {
     {
         if (this->hovered())
         {
-            if (!_thumb_hovered && (_thumb_rect + Point{ 0, _thumb_pos }).contains(pos))
+            if (!_knob_hovered && (_knob_rect + Point{ 0, _knob_pos }).contains(pos))
             {
-                _thumb_hovered = true;
+                _knob_hovered = true;
                 this->invalidate();
             }
-            else if (_thumb_hovered && !(_thumb_rect + Point{ 0, _thumb_pos }).contains(pos))
+            else if (_knob_hovered && !(_knob_rect + Point{ 0, _knob_pos }).contains(pos))
             {
-                _thumb_hovered = false;
+                _knob_hovered = false;
                 this->invalidate();
             }
         }
 
-        if (_dragging_thumb)
+        if (_dragging_knob)
         {
-            drag_thumb(pos);
+            drag_knob(pos);
         }
 
         Parent_t::mouse_motion(pos);
@@ -193,8 +193,8 @@ namespace cppgui {
     template <class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::mouse_wheel(const Vector &dist)
     {
-        change_value( _value - dist.y * _incr_minor );
-        update_thumb_pos();
+        change_value( _value + dist.y * _incr_minor );
+        update_knob_pos();
     }
 
     template <class Config, typename ValueType>
@@ -213,9 +213,9 @@ namespace cppgui {
     template <class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::mouse_exit()
     {
-        if (_thumb_hovered)
+        if (_knob_hovered)
         {
-            _thumb_hovered = false;
+            _knob_hovered = false;
             this->invalidate();
         }
 
@@ -226,55 +226,60 @@ namespace cppgui {
     template <class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::move_down_major()
     {
-        change_value( _value + _incr_major );
+        //change_value( _value + _incr_major );
+        change_value( _value - _incr_major );
     }
 
     template <class Config, typename ValueType>
     template <class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::move_up_major()
     {
-        change_value( _value - _incr_major );
+        //change_value( _value - _incr_major );
+        change_value( _value + _incr_major );
     }
 
     template <class Config, typename ValueType>
     template <class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::move_down_minor()
     {
-        change_value( _value + _incr_minor );
+        //change_value( _value + _incr_minor );
+        change_value( _value - _incr_minor );
     }
 
     template <class Config, typename ValueType>
     template <class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::move_up_minor()
     {
-        change_value( _value - _incr_minor );
+        //change_value( _value - _incr_minor );
+        change_value( _value + _incr_minor );
     }
 
     template <class Config, typename ValueType>
     template <class Class, bool With_layout>
-    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::start_thumb_drag(const Point &pos)
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::start_knob_drag(const Point &pos)
     {
-        assert(!_dragging_thumb);
-        _dragging_thumb = true;
-        _thumb_drag_start_pos = pos.y;
-        _thumb_drag_start_value = _value;
+        assert(!_dragging_knob);
+        _dragging_knob = true;
+        _knob_drag_start_pos = pos.y;
+        _knob_drag_start_value = _value;
     }
 
     template <class Config, typename ValueType>
     template <class Class, bool With_layout>
-    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::end_thumb_drag()
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::end_knob_drag()
     {
-        assert(_dragging_thumb);
-        _dragging_thumb = false;
+        assert(_dragging_knob);
+        _dragging_knob = false;
     }
 
     template <class Config, typename ValueType>
     template <class Class, bool With_layout>
-    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::drag_thumb(const Point &pos)
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::drag_knob(const Point &pos)
     {
-        auto dy = pos.y - _thumb_drag_start_pos;
+        auto dy = pos.y - _knob_drag_start_pos;
 
-        change_value( _thumb_drag_start_value + dy * _range.length() / _slide_rect.height() );
+        //change_value( _knob_drag_start_value + dy * _range.length() / _slide_rect.height() );
+        change_value( _knob_drag_start_value - dy * _range.length() / _slide_rect.height() );
     }
 
     template <class Config, typename ValueType>
@@ -287,7 +292,7 @@ namespace cppgui {
 
         notify_value_change();
 
-        update_thumb_pos();
+        update_knob_pos();
     }
 
     template <class Config, typename ValueType>
@@ -299,9 +304,10 @@ namespace cppgui {
 
     template <class Config, typename ValueType>
     template <class Class, bool With_layout>
-    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::update_thumb_pos()
+    void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::update_knob_pos()
     {
-        _thumb_pos = static_cast<Position>( (_value - _range.from) * _slide_rect.height() / _range.length() );
+        //_knob_pos = static_cast<Position>( (_value - _range.from) * _slide_rect.height() / _range.length() );
+        _knob_pos = static_cast<Position>( _slide_rect.height() - (_value - _range.from) * _slide_rect.height() / _range.length() );
         //std::cerr << "value: " << _value << std::endl;
 
         this->invalidate();
@@ -311,7 +317,7 @@ namespace cppgui {
     template <class Class, bool With_layout>
     auto _vertical_slider<Config, ValueType>::Base<Class, With_layout>::top_of_slide() const -> Rectangle
     {
-        Position top = _thumb_rect.top() + _thumb_pos;
+        Position top = _knob_rect.top() + _knob_pos;
         if (top > _slide_rect.top())
         {
             Rectangle res = _slide_rect;
@@ -326,7 +332,7 @@ namespace cppgui {
     template <class Class, bool With_layout>
     auto _vertical_slider<Config, ValueType>::Base<Class, With_layout>::bottom_of_slide() const -> Rectangle
     {
-        auto bottom = _thumb_rect.bottom() + _thumb_pos;
+        auto bottom = _knob_rect.bottom() + _knob_pos;
         if (bottom < _slide_rect.bottom())
         {
             Rectangle res = _slide_rect;
@@ -355,8 +361,8 @@ namespace cppgui {
     auto _vertical_slider<Config, ValueType>::Layouter<Class, true, Parent>::get_minimal_size() -> Extents
     {
         return {
-            std::max( p()->thumb_size().w, p()->slide_width() ),
-            5 * p()->thumb_size().h // TODO: less arbitrary definition ?
+            std::max( p()->knob_size().w, p()->slide_width() ),
+            5 * p()->knob_size().h // TODO: less arbitrary definition ?
         };
     }
 
@@ -370,14 +376,14 @@ namespace cppgui {
          */
 
         auto& exts = p()->extents();
-        auto thsize = p()->thumb_size();
+        auto thsize = p()->knob_size();
 
         p()->_slide_rect = {
             { (exts.w - p()->slide_width()) / 2, thsize.h / 2 },
             { p()->slide_width(), p()->extents().h - thsize.h }
         };
 
-        p()->_thumb_rect = { (exts.w - thsize.w) / 2, 0, thsize.w, thsize.h };
+        p()->_knob_rect = { (exts.w - thsize.w) / 2, 0, thsize.w, thsize.h };
     }
 
 } // ns cppgui

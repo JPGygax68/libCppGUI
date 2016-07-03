@@ -95,7 +95,7 @@ namespace cppgui {
     {
         compute_content_rectangle();
 
-        _vert_sbar.define_values(_items.size(), fully_visible_item_count());
+        _vert_sbar.define_sizes(_items.size(), fully_visible_item_count());
 
         Container_base_t::compute_view_from_data();
     }
