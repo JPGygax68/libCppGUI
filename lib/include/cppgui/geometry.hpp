@@ -20,6 +20,8 @@
 #include <array>
 #include <cassert>
 
+#include "./utils.hpp"
+
 namespace cppgui {
 
     // 1D ----------------------------
@@ -319,6 +321,56 @@ namespace cppgui {
 
         ///@}
 
+    };
+
+    template<class Impl>
+    struct Geometry_accessor_base
+    {
+        auto add_forward(const Point &point, Position_delta delta)
+        {
+            auto result = point;
+            Impl::forward_position(result) += delta;
+            return result;
+        }
+
+        auto add_forward(const Rectangle &rect, Position_delta delta)
+        {
+            auto result = rect;
+            Impl::forward_position(result.pos) += delta;
+            return result;
+        }
+
+        auto add_sideways(const Point &point, Position_delta delta)
+        {
+            auto result = point;
+            Impl::sideways_position(result) += delta;
+            return result;
+        }
+
+        auto add_sideways(const Rectangle &rect, Position_delta delta)
+        {
+            auto result = rect;
+            Impl::sideways_position(result.pos) += delta;
+            return result;
+        }
+    };
+
+    struct Horizontal_geometry_accessor: Geometry_accessor_base<Horizontal_geometry_accessor>
+    {
+        template<typename T> static auto forward_position (T &point) -> enable_member_ref_for_class_t<T, Point, Position> & { return point.x; }
+        template<typename T> static auto sideways_position(T &point) -> enable_member_ref_for_class_t<T, Point, Position> & { return point.y; }
+
+        static auto forward_length   (Extents &ext) -> Length   & { return ext.w;   }
+        static auto sideways_width   (Extents &ext) -> Length   & { return ext.h;   }
+    };
+
+    struct Vertical_geometry_accessor: Geometry_accessor_base<Vertical_geometry_accessor>
+    {
+        template<typename T> static auto forward_position (T &point) -> enable_member_ref_for_class_t<T, Point, Position> & { return point.y; }
+        template<typename T> static auto sideways_position(T &point) -> enable_member_ref_for_class_t<T, Point, Position> & { return point.x; }
+
+        static auto forward_length   (Extents &ext) -> Length   & { return ext.h;   }
+        static auto sideways_width   (Extents &ext) -> Length   & { return ext.w;   }
     };
 
 } // ns cppgui

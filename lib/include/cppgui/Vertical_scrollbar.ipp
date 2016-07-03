@@ -190,7 +190,7 @@ namespace cppgui {
     }
 
     template<class Impl, class Config, bool With_layout>
-    auto Vertical_scrollbar_base<Impl, Config, With_layout>::current_position() -> Fraction<Length>
+    auto Vertical_scrollbar_base<Impl, Config, With_layout>::current_value_from_thumb_position() -> Fraction<Length>
     {
         if (_track.length() > _thumb_rect.ext.h)
         {
@@ -225,6 +225,7 @@ namespace cppgui {
         this->invalidate();
     }
 
+    /*
     template<class Impl, class Config, bool With_layout>
     void Vertical_scrollbar_base<Impl, Config, With_layout>::move_thumb_to(Position new_pos)
     {
@@ -236,6 +237,7 @@ namespace cppgui {
         //notify_position_change();
         this->invalidate();
     }
+    */
 
     template<class Impl, class Config, bool With_layout>
     void Vertical_scrollbar_base<Impl, Config, With_layout>::recalc_thumb()

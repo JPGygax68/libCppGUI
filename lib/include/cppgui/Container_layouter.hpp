@@ -48,22 +48,6 @@ namespace cppgui
         float       weight = 0;
     };
 
-    struct Horizontal_element_accessor
-    {
-        static auto forward_position(Point &point) -> Position & { return point.x; }
-        static auto sideways_position(Point &point) -> Position & { return point.y; }
-        static auto forward_length(Extents &ext) -> Length & { return ext.w; }
-        static auto sideways_width(Extents &ext) -> Length & { return ext.h; }
-    };
-
-    struct Vertical_element_accessor
-    {
-        static auto forward_position(Point &point) -> Position & { return point.y; }
-        static auto sideways_position(Point &point) -> Position & { return point.x; }
-        static auto forward_length(Extents &ext) -> Length & { return ext.h; }
-        static auto sideways_width(Extents &ext) -> Length & { return ext.w; }
-    };
-
     /** Base class for common functionality.
      */
     template<class Class, class ElementRef, class Config, class Parent>
@@ -192,9 +176,9 @@ namespace cppgui
     };
 
     template<class Config, bool With_layout> 
-    using Single_row_flow_layout = Single_beam_flow_layout<Config, With_layout, Horizontal_element_accessor>;
+    using Single_row_flow_layout = Single_beam_flow_layout<Config, With_layout, Horizontal_geometry_accessor>;
 
     template<class Config, bool With_layout> 
-    using Single_column_flow_layout = Single_beam_flow_layout<Config, With_layout, Vertical_element_accessor>;
+    using Single_column_flow_layout = Single_beam_flow_layout<Config, With_layout, Vertical_geometry_accessor>;
 
 } // ns cppgui

@@ -35,7 +35,8 @@ namespace cppgui {
         template<class Class, bool With_layout>
         class Base: 
             public Layouter<Class, With_layout,     // Layouter aspect, parameterized with ...
-                Widget<Config, With_layout> >       // ... the actual parent class: Widget<>
+                Widget<Config, With_layout> >,       // ... the actual parent class: Widget<>
+            public Vertical_geometry_accessor      // TODO: select via template parameter
         {
         public:
             using Value_type    = typename ValueType;

@@ -32,7 +32,7 @@
 #include <cppgui/Scrollbox.hpp>
 #include <cppgui/Listbox.hpp>
 #include <cppgui/Stringlist.hpp>
-#include <cppgui/Vertical_slider.hpp>
+#include <cppgui/Slider.hpp>
 #include <cppgui/Icon_resources.hpp>
 #include <cppgui/Canvas.hpp>
 
@@ -56,6 +56,7 @@ namespace cppgui {
         using Vertical_scrollbar_t = Vertical_scrollbar<Config, With_layout>;
         using Listbox_t            = Listbox<Config, With_layout>;
         using Stringlist_t         = Stringlist<Config, With_layout, 2>;
+        //using Horizontal_slider_t  = Horizontal_slider<Config, With_layout>; // TODO
         using Vertical_slider_t    = Vertical_slider<Config, With_layout>;
     };
 

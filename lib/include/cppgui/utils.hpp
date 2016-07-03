@@ -32,4 +32,33 @@ namespace cppgui {
         else                   return value;
     }
 
+    template<typename T1, typename T2>
+    struct copy_constness
+    {
+        using type = std::conditional_t<std::is_const<T1>::value, std::add_const_t<T2>, T2>;
+    };
+
+    template<typename T1, typename T2> using copy_constness_t = typename copy_constness<T1, T2>::type;
+
+    /** Specialized application of SFINAE: enable a return type if the specified class is, or is derived from, a specified
+        base class, AND also apply the constness of the class to the return type.
+     */
+
+    template<typename Class, typename Base, typename Return>
+    struct enable_if_class_ref_copy_constness
+    {
+        using type = std::enable_if_t<
+            std::is_base_of<Base, std::remove_const_t<Class>>::value, 
+            copy_constness_t<std::remove_reference_t<Class>, 
+            Return>>;
+    };
+
+    template<typename Class, typename Base, typename Return> 
+    using enable_if_class_ref_copy_constness_t = typename enable_if_class_ref_copy_constness<Class, Base, Return>::type;
+
+    // Even more specific use case
+
+    template<typename Class, typename Base, typename Return> 
+    using enable_member_ref_for_class_t = typename enable_if_class_ref_copy_constness<Class, Base, Return>::type &;
+
 } // ns cppgui

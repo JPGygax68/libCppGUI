@@ -38,5 +38,5 @@
 #include "./Scrollbox.ipp"
 #include "./Listbox.ipp"
 #include "./Stringlist.ipp"
-#include "./Vertical_slider.ipp"
+#include "./Slider.ipp"
 #include "./Root_widget.ipp"

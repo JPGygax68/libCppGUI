@@ -17,7 +17,7 @@
     limitations under the License.
 */
 
-#include "./Vertical_slider.hpp"
+#include "./Slider.hpp"
 
 #include "./Widget.ipp"
 
@@ -126,7 +126,7 @@ namespace cppgui {
 
         // Thumb
         auto thclr = _knob_hovered ? Canvas_t::rgba_to_native({ 1, 1, 1, 1 }) : Canvas_t::rgba_to_native({ 0.7f, 0.7f, 0.7f, 1 });
-        this->fill_rect(canvas, _knob_rect, pos + Point{ 0, _knob_pos }, thclr);
+        this->fill_rect(canvas, _knob_rect, this->add_forward(pos, _knob_pos), thclr);
     }
 
     template <class Config, typename ValueType>
@@ -145,7 +145,7 @@ namespace cppgui {
                 //std::cerr << "bottom of slide" << std::endl;
                 move_down_major();
             }
-            else if (state == pressed && (_knob_rect + Point{ 0, _knob_pos }).contains(pos) && !_dragging_knob)
+            else if (state == pressed && this->add_forward(_knob_rect, _knob_pos).contains(pos) && !_dragging_knob)
             {
                 start_knob_drag(pos);
             }
@@ -154,7 +154,7 @@ namespace cppgui {
                 end_knob_drag();
             }
 
-            if (state == released && (_knob_rect + Point{ 0, _knob_pos }).contains(pos) && !_dragging_knob)
+            if (state == released && this->add_forward(_knob_rect, _knob_pos).contains(pos) && !_dragging_knob)
             {
                 this->take_focus();
             }
@@ -169,12 +169,14 @@ namespace cppgui {
     {
         if (this->hovered())
         {
-            if (!_knob_hovered && (_knob_rect + Point{ 0, _knob_pos }).contains(pos))
+            auto rect = this->add_forward(_knob_rect, _knob_pos);
+
+            if (!_knob_hovered && rect.contains(pos))
             {
                 _knob_hovered = true;
                 this->invalidate();
             }
-            else if (_knob_hovered && !(_knob_rect + Point{ 0, _knob_pos }).contains(pos))
+            else if (_knob_hovered && !rect.contains(pos))
             {
                 _knob_hovered = false;
                 this->invalidate();
@@ -193,7 +195,7 @@ namespace cppgui {
     template <class Class, bool With_layout>
     void _vertical_slider<Config, ValueType>::Base<Class, With_layout>::mouse_wheel(const Vector &dist)
     {
-        change_value( _value + dist.y * _incr_minor );
+        change_value( _value + this->forward_position(dist) * _incr_minor );
         update_knob_pos();
     }
 
