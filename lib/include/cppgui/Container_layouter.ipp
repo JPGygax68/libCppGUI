@@ -236,7 +236,7 @@ namespace cppgui
 
                 elem->widget->set_position(rect.pos);
                 this->sideways_width(elem->widget->extents()) = this->sideways_width(rect.ext);
-                this->forward_length (elem->widget->extents()) = l;
+                this->forward_length(elem->widget->extents()) = l;
 
                 this->forward_position(rect.pos) += l;
 

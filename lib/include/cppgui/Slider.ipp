@@ -195,7 +195,8 @@ namespace cppgui {
     template <class Class, bool With_layout, class GeometryAccessor>
     void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::mouse_wheel(const Vector &dist)
     {
-        change_value( _value + this->forward_position(dist) * _incr_minor );
+        //change_value( _value + this->forward_position(dist) * _incr_minor );
+        change_value( _value + dist.y * _incr_minor ); // TODO: support horizontal wheel ? (? does that exist ?)
         update_knob_pos();
     }
 
@@ -269,7 +270,7 @@ namespace cppgui {
     {
         assert(!_dragging_knob);
         _dragging_knob = true;
-        _knob_drag_start_pos = this->forward_position(pos);
+        _knob_drag_start_pos = Oriented_point<bottom_up>{pos}.first_axis_position(); // this->forward_position(pos);
         _knob_drag_start_value = _value;
     }
 
@@ -285,10 +286,10 @@ namespace cppgui {
     template <class Class, bool With_layout, class GeometryAccessor>
     void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::drag_knob(const Point &pos)
     {
-        auto delta = this->forward_position(pos) - _knob_drag_start_pos;
+        auto delta = Oriented_point<bottom_up>{pos}.first_axis_position() - _knob_drag_start_pos;
 
         //change_value( _knob_drag_start_value + delta * _range.length() / _slide_rect.height() );
-        change_value( _knob_drag_start_value - delta * _range.length() / _slide_rect.first_axis_length() );
+        change_value( _knob_drag_start_value - delta * _range.length() / _slide_rect.length() );
     }
 
     template <class Config, typename ValueType>
@@ -315,7 +316,7 @@ namespace cppgui {
     template <class Class, bool With_layout, class GeometryAccessor>
     void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::update_knob_pos()
     {
-        _knob_pos = static_cast<Position>( (_value - _range.from) * _slide_rect.first_axis_length() / _range.length() );
+        _knob_pos = static_cast<Position>( (_value - _range.from) * _slide_rect.length() / _range.length() );
 
         this->invalidate();
     }
@@ -338,7 +339,7 @@ namespace cppgui {
     template <class Class, bool With_layout, class GeometryAccessor>
     auto _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::track_portion_before_knob() const -> Rectangle
     {
-        if (_knob_pos < _slide_rect.first_axis_length())
+        if (_knob_pos < _slide_rect.length())
         {
             auto res = _slide_rect;
             res.set_first_axis_length_to( _knob_pos - knob_size().h / 2 );
@@ -365,12 +366,10 @@ namespace cppgui {
     template<class Class, class Parent>
     auto _slider<Config, ValueType>::Layouter<Class, true, Parent>::get_minimal_size() -> Extents
     {
-        auto knob_size = p()->knob_size();
+        Oriented_extents<bottom_up> size; // TODO: adapt to template parameter
 
-        Extents size;
-
-        p()->forward_length(size) = 5 * p()->sideways_width(knob_size);
-        p()->sideways_width(size) = p()->forward_length(knob_size); // TODO: less arbitrary definition ?
+        size.length () = 5 * p()->knob_size().h; // TODO: less arbitrary definition ?
+        size.width() = p()->knob_size().w;      
 
         return size;
     }
@@ -384,22 +383,21 @@ namespace cppgui {
             position and size all contained elements.
          */
 
-        auto& ext = p()->extents();
-        auto knob_size = p()->knob_size();
+        Oriented_extents<bottom_up> ext{ p()->extents() };
+        Oriented_rectangle<bottom_up> rect{ p()->extents() };
+        Oriented_extents<bottom_up> knob_size{ p()->knob_size() };
 
-        Rectangle slide_rect;
-        Class::sideways_position(slide_rect.pos) = (Class::sideways_width(ext) - Class::slide_width()) / 2;
-        Class::forward_position (slide_rect.pos) = Class::forward_length(knob_size) / 2;
-        Class::sideways_width(slide_rect.ext) = p()->slide_width();
-        Class::forward_length(slide_rect.ext) = Class::forward_length(ext) - Class::forward_length(knob_size);
-        p()->_slide_rect = slide_rect;
+        p()->_slide_rect = rect.define_relative_rectangle( knob_size.h / 2, rect.length() - knob_size.h,
+            (rect.width() - p()->slide_width()) / 2, p()->slide_width() );
 
-        Rectangle knob_rect;
-        Class::sideways_position(knob_rect.pos) = (Class::sideways_width(ext) - Class::sideways_width(knob_size)) / 2;
-        Class::forward_position (knob_rect.pos) = 0;
-        Class::sideways_width(knob_rect.ext) = Class::sideways_width(knob_size);
-        Class::forward_length(knob_rect.ext) = Class::forward_length(knob_size);
-        p()->_knob_rect = knob_rect;
+        //Oriented_rectangle<bottom_up> knob_rect;
+        //knob_rect.define_first_edge ( 0,  knob_size.h );
+        //knob_rect.define_second_edge( (ext.second_axis_length() - knob_size.w) / 2, knob_size.w );
+        //p()->_knob_rect = knob_rect;
+        p()->_knob_rect = Oriented_rectangle<bottom_up>{ 
+            Oriented_point  <bottom_up>{ 0, (ext.width() - knob_size.w) / 2 }, 
+            Oriented_extents<bottom_up>{ knob_size.h, knob_size.w } 
+        };
     }
 
 } // ns cppgui
