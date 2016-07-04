@@ -24,7 +24,7 @@ namespace cppgui {
     // Main class declaration ---------------------------------------
 
     template<class Config, typename ValueType>
-    struct _vertical_slider
+    struct _slider
     {
         template<class Class, bool With_layout, class Parent> struct Layouter;
 
@@ -32,11 +32,11 @@ namespace cppgui {
 
         /** The class is called "Base" because it is intended to be customized via template parameters.
          */
-        template<class Class, bool With_layout>
+        template<class Class, bool With_layout, class GeometryAccessor>
         class Base: 
             public Layouter<Class, With_layout,     // Layouter aspect, parameterized with ...
-                Widget<Config, With_layout> >,       // ... the actual parent class: Widget<>
-            public Vertical_geometry_accessor      // TODO: select via template parameter
+                Widget<Config, With_layout> >,      // ... the actual parent class: Widget<>
+            public GeometryAccessor                 // no need for an aspect here as all methods are static
         {
         public:
             using Value_type    = typename ValueType;
@@ -79,12 +79,14 @@ namespace cppgui {
             static constexpr auto slide_width() -> Width   { return 10; }
             static constexpr auto knob_size  () -> Extents { return { 30, 16 }; }
 
+            auto knob_rectangle() const -> Rectangle;
+
             // Actions
 
-            void move_down_major();
-            void move_up_major  ();
-            void move_down_minor();
-            void move_up_minor  ();
+            void decrease_major();
+            void increase_major  ();
+            void decrease_minor();
+            void increase_minor  ();
 
             // Internal methods
 
@@ -95,24 +97,24 @@ namespace cppgui {
             void notify_value_change();
             void update_knob_pos();
 
-            auto top_of_slide   () const -> Rectangle;
-            auto bottom_of_slide() const -> Rectangle;
+            auto track_portion_after_knob   () const -> Rectangle;
+            auto track_portion_before_knob() const -> Rectangle;
 
-            Value_changed_handler   _on_value_changed;
+            Value_changed_handler           _on_value_changed;
 
-            Range<Value_type>       _range;
-            Value_type              _incr_major, _incr_minor;
+            Range<Value_type>               _range;
+            Value_type                      _incr_major, _incr_minor;
 
-            Rectangle               _slide_rect;
-            Rectangle               _knob_rect;
+            Oriented_rectangle<bottom_up>   _slide_rect;
+            Oriented_rectangle<bottom_up>   _knob_rect;
 
-            Value_type              _value;
-            Position                _knob_pos;
+            Value_type                      _value;
+            Position                        _knob_pos;
 
-            bool                    _knob_hovered = false;
-            bool                    _dragging_knob = false;
-            Position                _knob_drag_start_pos;
-            Value_type              _knob_drag_start_value;
+            bool                            _knob_hovered = false;
+            bool                            _dragging_knob = false;
+            Position                        _knob_drag_start_pos;
+            Value_type                      _knob_drag_start_value;
         };
 
         // Layouter aspect ----------------------------------------------
@@ -133,11 +135,11 @@ namespace cppgui {
             void layout() override;
 
         protected:
-            class Vertical_slider_t: public Base<Class, true> { friend struct Layouter; };
+            class Class_t: public Class { friend struct Layouter; };
 
             /** Gives access to the main class, including protected and private sections.
             */
-            auto p() { return static_cast<Vertical_slider_t*>(this); }
+            auto p() { return static_cast<Class_t*>(this); }
         };
 
     }; // templated ns _vertical_slider
@@ -145,6 +147,13 @@ namespace cppgui {
     // Export section -----------------------------------------------
 
     template<class Config, bool With_layout, typename ValueType = float>
-    class Vertical_slider: public _vertical_slider<Config, ValueType>::template Base<Vertical_slider<Config, With_layout>, With_layout> { };
+    class Horizontal_slider:
+        public _slider<Config, ValueType>::template Base<Horizontal_slider<Config, With_layout>, With_layout, Horizontal_geometry_accessor> 
+    { };
+
+    template<class Config, bool With_layout, typename ValueType = float>
+    class Vertical_slider:
+        public _slider<Config, ValueType>::template Base<Vertical_slider<Config, With_layout>, With_layout, Vertical_geometry_accessor> 
+    { };
 
 } // ns cppgui

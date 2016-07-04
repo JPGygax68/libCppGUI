@@ -33,6 +33,15 @@ namespace cppgui {
 
     // 2D ----------------------------
 
+    enum Orientation
+    {
+        none,
+        left_to_right,
+        bottom_up,
+        right_to_left,
+        top_down
+    };
+
     struct Extents;
 
     struct Point {
@@ -326,51 +335,141 @@ namespace cppgui {
     template<class Impl>
     struct Geometry_accessor_base
     {
-        auto add_forward(const Point &point, Position_delta delta)
+        static constexpr auto add_forward(const Point &point, Position_delta delta)
         {
-            auto result = point;
-            Impl::forward_position(result) += delta;
-            return result;
+            return point + Impl::forward_vector(delta);
         }
 
-        auto add_forward(const Rectangle &rect, Position_delta delta)
+        static constexpr auto add_forward(const Rectangle &rect, Position_delta delta)
         {
-            auto result = rect;
-            Impl::forward_position(result.pos) += delta;
-            return result;
+            return rect + Impl::forward_vector(delta);
         }
 
-        auto add_sideways(const Point &point, Position_delta delta)
+        static constexpr auto add_sideways(const Point &point, Position_delta delta)
         {
-            auto result = point;
-            Impl::sideways_position(result) += delta;
-            return result;
+            return point + Impl::sideways_vector(delta);
         }
 
-        auto add_sideways(const Rectangle &rect, Position_delta delta)
+        static constexpr auto add_sideways(const Rectangle &rect, Position_delta delta)
         {
-            auto result = rect;
-            Impl::sideways_position(result.pos) += delta;
-            return result;
+            return rect + Impl::sideways_vector(delta);
+        }
+
+        static constexpr void set_oriented_position(Point &ext, Position forward, Position sideways)
+        {
+            Impl::forward_position (ext) = forward;
+            Impl::sideways_position(ext) = sideways;
+        }
+
+        static constexpr void set_oriented_extents(Extents &ext, Length l, Length w)
+        {
+            Impl::forward_length(ext) = l;
+            Impl::sideways_width(ext) = w;
         }
     };
 
     struct Horizontal_geometry_accessor: Geometry_accessor_base<Horizontal_geometry_accessor>
     {
-        template<typename T> static auto forward_position (T &point) -> enable_member_ref_for_class_t<T, Point, Position> & { return point.x; }
-        template<typename T> static auto sideways_position(T &point) -> enable_member_ref_for_class_t<T, Point, Position> & { return point.y; }
+        static constexpr auto forward_vector (Position_delta delta) -> Vector { return { delta, 0 }; }
+        static constexpr auto sideways_vector(Position_delta delta) -> Vector { return { 0, delta }; }
 
-        static auto forward_length   (Extents &ext) -> Length   & { return ext.w;   }
-        static auto sideways_width   (Extents &ext) -> Length   & { return ext.h;   }
+        template<typename T> 
+        static constexpr auto forward_position (T &point) -> enable_member_ref_for_class_t<T, Point, Position> & { return point.x; }
+        template<typename T> 
+        static constexpr auto sideways_position(T &point) -> enable_member_ref_for_class_t<T, Point, Position> & { return point.y; }
+
+        template<typename T> 
+        static constexpr auto forward_length(T &ext) -> enable_member_ref_for_class_t<T, Extents, Length> & { return ext.w; }
+        template<typename T> 
+        static constexpr auto sideways_width(T &ext) -> enable_member_ref_for_class_t<T, Extents, Length> & { return ext.h; }
     };
 
     struct Vertical_geometry_accessor: Geometry_accessor_base<Vertical_geometry_accessor>
     {
-        template<typename T> static auto forward_position (T &point) -> enable_member_ref_for_class_t<T, Point, Position> & { return point.y; }
-        template<typename T> static auto sideways_position(T &point) -> enable_member_ref_for_class_t<T, Point, Position> & { return point.x; }
+        static constexpr auto forward_vector (Position_delta delta) -> Vector { return { 0, delta }; }
+        static constexpr auto sideways_vector(Position_delta delta) -> Vector { return { delta, 0 }; }
 
-        static auto forward_length   (Extents &ext) -> Length   & { return ext.h;   }
-        static auto sideways_width   (Extents &ext) -> Length   & { return ext.w;   }
+        template<typename T> 
+        constexpr static auto forward_position (T &point) -> enable_member_ref_for_class_t<T, Point, Position> & { return point.y; }               
+        template<typename T> 
+        constexpr static auto sideways_position(T &point) -> enable_member_ref_for_class_t<T, Point, Position> & { return point.x; }               
+        template<typename T> 
+        constexpr static auto forward_length(T &ext) -> enable_member_ref_for_class_t<T, Extents, Length> & { return ext.h; }
+        template<typename T> 
+        constexpr static auto sideways_width(T &ext) -> enable_member_ref_for_class_t<T, Extents, Length> & { return ext.w; }
+    };
+
+    // Oriented rectangles
+
+    template<class Impl>
+    struct Oriented_rectangle_base: Rectangle
+    {
+        // auto first_axis_start() -> Position;
+        // auto first_axis_length() -> Length;
+        // auto second_axis_start() -> Position;
+        // auto second_axis_length() -> Length;
+        // auto second_axis_end() -> Position;
+
+    private:
+        auto p() { return static_cast<Impl*>(this); }
+    };
+
+    template<Orientation Orientation> struct Oriented_rectangle {};
+
+    // Origin is top left corner, positive is to the right and down
+
+    template<>
+    struct Oriented_rectangle<left_to_right>: Oriented_rectangle_base<Oriented_rectangle<left_to_right>>
+    {
+        operator Rectangle & () { return * static_cast<Rectangle*>(this); }
+        operator const Rectangle & () const { return * static_cast<const Rectangle *>(this); }
+
+        auto first_axis_start  () const -> Position { return this->pos.x; }
+        auto first_axis_end    () const -> Position { return this->pos.x + this->ext.w; }
+        auto first_axis_length () const -> Length   { return this->ext.w; }
+        auto second_axis_start () const -> Position { return this->pos.y; }
+        auto second_axis_end   () const -> Position { return this->pos.y + this->ext.h; }
+        auto second_axis_length() const -> Length   { return this->ext.h; }
+    };
+
+    // Origin is the bottom left corner, positive is up and to the right
+
+    template<>
+    struct Oriented_rectangle<bottom_up>: Oriented_rectangle_base<Oriented_rectangle<bottom_up>>
+    {
+        //operator Rectangle & () { return * static_cast<Rectangle*>(this); }
+        //operator const Rectangle & () const { return * static_cast<const Rectangle *>(this); }
+
+        auto& operator = (const Rectangle &r) { this->pos = r.pos; this->ext = r.ext; return *this; }
+        auto& operator = (Rectangle &&r) { this->pos = std::move(r.pos); this->ext = std::move(r.ext); return *this; }
+
+        auto first_axis_start  () const -> Position { return this->pos.y + this->ext.h; }
+        auto first_axis_end    () const -> Position { return this->pos.y; }
+        auto first_axis_length () const -> Length   { return this->ext.h; }
+        auto second_axis_start () const -> Position { return this->pos.x; }
+        auto second_axis_end   () const -> Position { return this->pos.x + this->ext.w; }
+        auto second_axis_length() const -> Length   { return this->ext.w; }
+
+        auto delta_from_first_axis_start (Position_delta d) const -> Position_delta { return this->ext.h - d; }
+        auto delta_from_first_axis_end   (Position_delta d) const -> Position_delta { return d; }
+        auto vector_from_first_axis_start(Position_delta d) const -> Vector { return { 0, delta_from_first_axis_start(d) }; }
+        auto vector_from_first_axis_end  (Position_delta d) const -> Vector { return { 0, delta_from_first_axis_end  (d) }; }
+
+        static auto first_axis_vector_from_undirected_delta(Position_delta d) -> Vector { return { 0,  d }; }
+
+        void move_first_axis_start_by(Position_delta d) { this->ext.h -= d; }
+
+        auto add_delta_to_first_axis_position(Position_delta d) const -> Oriented_rectangle 
+        { 
+            Oriented_rectangle result{ *this };
+            result.pos.y -= d;
+            return result;
+        }
+
+        void set_first_axis_start_to (Position p) { auto delta = p - first_axis_start(); this->pos.y -= delta; this->ext.h -= delta; }
+        void set_first_axis_length_to(Length   l) { auto delta = l - first_axis_length(); this->pos.y -= delta; this->ext.h += delta; }
+
+        void set_first_axis_center(Position p) { this->pos.y = p - this->ext.h / 2; }
     };
 
 } // ns cppgui

@@ -22,6 +22,8 @@
 #include "./Widget.ipp"
 #include "./Box.ipp"
 
+#pragma warning(disable:4505)
+
 namespace cppgui {
 
     // Main class implementation ------------------------------------

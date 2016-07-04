@@ -47,10 +47,10 @@ namespace cppgui {
     template<typename Class, typename Base, typename Return>
     struct enable_if_class_ref_copy_constness
     {
-        using type = std::enable_if_t<
+        using type = typename std::enable_if_t<
             std::is_base_of<Base, std::remove_const_t<Class>>::value, 
-            copy_constness_t<std::remove_reference_t<Class>, 
-            Return>>;
+            copy_constness_t<std::remove_reference_t<Class>, Return>
+        >;
     };
 
     template<typename Class, typename Base, typename Return> 

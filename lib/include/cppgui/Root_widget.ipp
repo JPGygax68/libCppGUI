@@ -23,6 +23,8 @@
 #include "./Container_base.ipp"
 #include "./Container_layouter.ipp"
 
+#pragma warning(disable: 4505)
+
 namespace cppgui {
 
     /*
