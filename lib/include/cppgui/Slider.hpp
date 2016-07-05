@@ -96,7 +96,7 @@ namespace cppgui {
             void notify_value_change();
             void update_knob_pos();
 
-            auto track_portion_after_knob   () const -> Rectangle;
+            auto track_portion_after_knob () const -> Rectangle;
             auto track_portion_before_knob() const -> Rectangle;
 
             Value_changed_handler           _on_value_changed;

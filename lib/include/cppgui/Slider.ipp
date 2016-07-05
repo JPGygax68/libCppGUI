@@ -290,7 +290,7 @@ namespace cppgui {
     template <class Class, bool With_layout>
     void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::drag_knob(const Point &pos)
     {
-        auto delta = Oriented_point<Orientation>{pos}.longitude() - _knob_drag_start_pos;
+        auto delta = Oriented_point<Orientation>{ pos }.longitude_diff( _knob_drag_start_pos );
         //std::cerr << "delta = " << delta << std::endl;
 
         //change_value( _knob_drag_start_value + delta * _range.length() / _slide_rect.height() );

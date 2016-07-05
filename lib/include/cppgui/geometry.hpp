@@ -415,10 +415,13 @@ namespace cppgui {
     {
         explicit Oriented_point(Position p1, Position p2 = 0): Point{ p1, p2 } {}
         explicit Oriented_point(const Point &pt): Point{ pt } {}
+
         auto& longitude()       { return this->x; }
         auto  longitude() const { return this->x; }
         auto& latitude ()       { return this->y; }
         auto  latitude () const { return this->y; }
+
+        auto longitude_diff(Position p) { return longitude() - p; }
     };
 
     template<>
@@ -427,10 +430,13 @@ namespace cppgui {
         explicit Oriented_point(Position p1, Position p2 = 0): Point{ p2, p1 } {}
         explicit Oriented_point(const Point &from): Point{ from } {}
         explicit Oriented_point(Point &&from): Point{ from } {}
+
         auto& longitude()       { return this->y; }
         auto  longitude() const { return this->y; }
         auto& latitude ()       { return this->x; }
         auto  latitude () const { return this->x; }
+
+        auto longitude_diff(Position p) { return p - longitude(); }
     };
 
     // Oriented extents
