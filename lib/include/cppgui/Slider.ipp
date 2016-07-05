@@ -27,16 +27,16 @@ namespace cppgui {
 
     // Main class -------------------------------------------------------------
 
-    template<class Config, typename ValueType>
-    template<class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::define_range(const Range<Value_type> &range)
+    template<class Config, Orientation Orientation, typename ValueType>
+    template<class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::define_range(const Range<Value_type> &range)
     {
         define_range(range, range.length() / 10, range.length() / 100);
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::define_range(const Range<Value_type> &range, 
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::define_range(const Range<Value_type> &range, 
         const Value_type &incr_major, const Value_type & incr_minor)
     {
         _range = range;
@@ -45,34 +45,34 @@ namespace cppgui {
         _incr_minor = incr_minor;
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::set_value(const Value_type &val)
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::set_value(const Value_type &val)
     {
         assert(val >= _range.from && val <= _range.to);
         
         _value = val;
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    auto _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::value() -> Value_type
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    auto _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::value() -> Value_type
     {
         return _value;
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::on_value_changed(Value_changed_handler handler)
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::on_value_changed(Value_changed_handler handler)
     {
         assert(!_on_value_changed);
 
         _on_value_changed = handler;
     }
 
-    template<class Config, typename ValueType>
-    template<class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::init()
+    template<class Config, Orientation Orientation, typename ValueType>
+    template<class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::init()
     {
         Widget_t::init();
 
@@ -83,33 +83,33 @@ namespace cppgui {
         // notify_value_change();
     }
 
-    template<class Config, typename ValueType>
-    template<class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::compute_view_from_data()
+    template<class Config, Orientation Orientation, typename ValueType>
+    template<class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::compute_view_from_data()
     {
         update_knob_pos();
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::change_range(const Range<Value_type> &range)
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::change_range(const Range<Value_type> &range)
     {
         define_range(range);
         update_knob_pos();
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::change_range(const Range<Value_type> &range, 
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::change_range(const Range<Value_type> &range, 
         const Value_type & incr_major, const Value_type & incr_minor)
     {
         define_range(range, incr_major, incr_minor);
         update_knob_pos();
     }
 
-    template<class Config, typename ValueType>
-    template<class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::render(Canvas_t *canvas, const Point &offset)
+    template<class Config, Orientation Orientation, typename ValueType>
+    template<class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::render(Canvas_t *canvas, const Point &offset)
     {
         // TODO: PLACEHOLDER
         //this->fill_rect(canvas, this->rectangle(), offset, Canvas_t::rgba_to_native({0.8f, 0, 0.7f, 1}));
@@ -128,12 +128,16 @@ namespace cppgui {
 
         // Thumb
         auto thclr = _knob_hovered ? Canvas_t::rgba_to_native({ 1, 1, 1, 1 }) : Canvas_t::rgba_to_native({ 0.7f, 0.7f, 0.7f, 1 });
-        this->fill_rect(canvas, _knob_rect, pos + _slide_rect.vector_from_first_axis_start(_knob_pos), thclr);
+        this->fill_rect(canvas, _knob_rect, pos + _slide_rect.longitude_to_vector(_knob_pos), thclr);
+
+        // Debug
+        this->fill_rect(canvas, track_portion_before_knob(), pos, Canvas_t::rgba_to_native({1, 0, 0, 0.5f}));
+        this->fill_rect(canvas, track_portion_after_knob() , pos, Canvas_t::rgba_to_native({0, 1, 0, 0.5f}));
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::mouse_button(const Point& pos, int button, Key_state state, Count clicks)
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::mouse_button(const Point& pos, int button, Key_state state, Count clicks)
     {
         if (button == 1)
         {
@@ -165,9 +169,9 @@ namespace cppgui {
         Parent_t::mouse_button(pos, button, state, clicks);
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::mouse_motion(const Point& pos)
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::mouse_motion(const Point& pos)
     {
         if (this->hovered())
         {
@@ -191,18 +195,18 @@ namespace cppgui {
         Parent_t::mouse_motion(pos);
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::mouse_wheel(const Vector &dist)
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::mouse_wheel(const Vector &dist)
     {
         //change_value( _value + this->forward_position(dist) * _incr_minor );
         change_value( _value + dist.y * _incr_minor ); // TODO: support horizontal wheel ? (? does that exist ?)
         update_knob_pos();
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::key_down(const Keycode & key)
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::key_down(const Keycode & key)
     {
         if      (Keyboard::is_page_up  (key)) increase_major();
         else if (Keyboard::is_page_down(key)) decrease_major();
@@ -212,9 +216,9 @@ namespace cppgui {
             Parent_t::key_down(key);
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::mouse_exit()
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::mouse_exit()
     {
         if (_knob_hovered)
         {
@@ -225,76 +229,77 @@ namespace cppgui {
         Parent_t::mouse_exit();
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    auto _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::knob_rectangle() const -> Rectangle
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    auto _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::knob_rectangle() const -> Rectangle
     {
-        return _knob_rect + _slide_rect.vector_from_first_axis_start(_knob_pos);
+        return _knob_rect + _slide_rect.longitude_to_vector(_knob_pos);
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::decrease_major()
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::decrease_major()
     {
         //change_value( _value + _incr_major );
         change_value( _value - _incr_major );
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::increase_major()
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::increase_major()
     {
         //change_value( _value - _incr_major );
         change_value( _value + _incr_major );
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::decrease_minor()
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::decrease_minor()
     {
         //change_value( _value + _incr_minor );
         change_value( _value - _incr_minor );
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::increase_minor()
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::increase_minor()
     {
         //change_value( _value - _incr_minor );
         change_value( _value + _incr_minor );
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::start_knob_drag(const Point &pos)
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::start_knob_drag(const Point &pos)
     {
         assert(!_dragging_knob);
         _dragging_knob = true;
-        _knob_drag_start_pos = Oriented_point<bottom_up>{pos}.first_axis_position(); // this->forward_position(pos);
+        _knob_drag_start_pos = Oriented_point<Orientation>{pos}.longitude();
         _knob_drag_start_value = _value;
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::end_knob_drag()
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::end_knob_drag()
     {
         assert(_dragging_knob);
         _dragging_knob = false;
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::drag_knob(const Point &pos)
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::drag_knob(const Point &pos)
     {
-        auto delta = Oriented_point<bottom_up>{pos}.first_axis_position() - _knob_drag_start_pos;
+        auto delta = Oriented_point<Orientation>{pos}.longitude() - _knob_drag_start_pos;
+        //std::cerr << "delta = " << delta << std::endl;
 
         //change_value( _knob_drag_start_value + delta * _range.length() / _slide_rect.height() );
-        change_value( _knob_drag_start_value - delta * _range.length() / _slide_rect.length() );
+        change_value( _knob_drag_start_value + delta * _range.length() / _slide_rect.length() );
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::change_value(const Value_type &value)
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::change_value(const Value_type &value)
     {
         if      (value < _range.from) _value = _range.from;
         else if (value > _range.to  ) _value = _range.to;
@@ -305,55 +310,49 @@ namespace cppgui {
         update_knob_pos();
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::notify_value_change()
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::notify_value_change()
     {
         if (_on_value_changed) _on_value_changed(_value);
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::update_knob_pos()
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::update_knob_pos()
     {
         _knob_pos = static_cast<Position>( (_value - _range.from) * _slide_rect.length() / _range.length() );
 
         this->invalidate();
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    auto _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::track_portion_after_knob() const -> Rectangle
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    auto _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::track_portion_after_knob() const -> Rectangle
     {
-        if (_knob_pos > 0)
-        {
-            auto res = _slide_rect;
-            res.move_first_axis_start_by( _knob_pos + knob_size().h / 2 );
-            return res;
-        }
-        else 
-            return {};
+        auto res = _slide_rect;
+
+        res.move_longitude_start_by( _knob_pos + knob_size().h / 2 );
+
+        return res;
     }
 
-    template <class Config, typename ValueType>
-    template <class Class, bool With_layout, Orientation Orientation>
-    auto _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::track_portion_before_knob() const -> Rectangle
+    template <class Config, Orientation Orientation, typename ValueType>
+    template <class Class, bool With_layout>
+    auto _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::track_portion_before_knob() const -> Rectangle
     {
-        if (_knob_pos < _slide_rect.length())
-        {
-            auto res = _slide_rect;
-            res.set_first_axis_length_to( _knob_pos - knob_size().h / 2 );
-            return res;
-        }
-        else
-            return {};
+        auto res = _slide_rect;
+
+        res.set_length( _knob_pos - knob_size().h / 2 );
+
+        return res;
     }
 
     // Layouter aspect --------------------------------------------------------
 
-    template<class Config, typename ValueType>
+    template<class Config, Orientation Orientation, typename ValueType>
     template<class Class, class Parent>
-    void _slider<Config, ValueType>::Layouter<Class, true, Parent>::init_layout()
+    void _slider<Config, Orientation, ValueType>::Layouter<Class, true, Parent>::init_layout()
     {
         /** The init_layout() method is called on the complete widget tree 
             before either get_minimal_size() or layout(). It is intended as 
@@ -362,11 +361,11 @@ namespace cppgui {
          */
     }
 
-    template<class Config, typename ValueType>
+    template<class Config, Orientation Orientation, typename ValueType>
     template<class Class, class Parent>
-    auto _slider<Config, ValueType>::Layouter<Class, true, Parent>::get_minimal_size() -> Extents
+    auto _slider<Config, Orientation, ValueType>::Layouter<Class, true, Parent>::get_minimal_size() -> Extents
     {
-        Oriented_extents<bottom_up> size; // TODO: adapt to template parameter
+        Oriented_extents<Orientation> size; // TODO: adapt to template parameter
 
         size.length () = 5 * p()->knob_size().h; // TODO: less arbitrary definition ?
         size.width() = p()->knob_size().w;      
@@ -374,25 +373,19 @@ namespace cppgui {
         return size;
     }
 
-    template<class Config, typename ValueType>
+    template<class Config, Orientation Orientation, typename ValueType>
     template<class Class, class Parent>
-    void _slider<Config, ValueType>::Layouter<Class, true, Parent>::layout()
+    void _slider<Config, Orientation, ValueType>::Layouter<Class, true, Parent>::layout()
     {
-        /** The layout() method is usually called once, recursively, on the 
-            whole widget tree. This is where the Layouter aspect must
-            position and size all contained elements.
-         */
-
-        Oriented_extents<bottom_up> ext{ p()->extents() };
-        Oriented_rectangle<bottom_up> rect{ p()->extents() };
-        Oriented_extents<bottom_up> knob_size{ p()->knob_size() };
+        Oriented_rectangle<Orientation> rect{ p()->extents() };
+        Oriented_extents<Orientation> knob_size{ p()->knob_size() };
 
         p()->_slide_rect = rect.define_relative_rectangle( knob_size.h / 2, rect.length() - knob_size.h,
             (rect.width() - p()->slide_width()) / 2, p()->slide_width() );
 
-        p()->_knob_rect = Oriented_rectangle<bottom_up>{ 
-            Oriented_point  <bottom_up>{ 0, (ext.width() - knob_size.w) / 2 }, 
-            Oriented_extents<bottom_up>{ knob_size.h, knob_size.w } 
+        p()->_knob_rect = Oriented_rectangle<Orientation>{ 
+            Oriented_point  <Orientation>{ 0, (rect.extents().width() - knob_size.w) / 2 }, 
+            Oriented_extents<Orientation>{ knob_size.h, knob_size.w } 
         };
     }
 

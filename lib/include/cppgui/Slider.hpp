@@ -23,7 +23,7 @@ namespace cppgui {
 
     // Main class declaration ---------------------------------------
 
-    template<class Config, typename ValueType>
+    template<class Config, Orientation Orientation, typename ValueType>
     struct _slider
     {
         template<class Class, bool With_layout, class Parent> struct Layouter;
@@ -32,7 +32,7 @@ namespace cppgui {
 
         /** The class is called "Base" because it is intended to be customized via template parameters.
          */
-        template<class Class, bool With_layout, Orientation Orientation>
+        template<class Class, bool With_layout>
         class Base: 
             public Layouter<Class, With_layout,     // Layouter aspect, parameterized with ...
                 Widget<Config, With_layout> >       // ... the actual parent class: Widget<>
@@ -104,8 +104,8 @@ namespace cppgui {
             Range<Value_type>               _range;
             Value_type                      _incr_major, _incr_minor;
 
-            Oriented_rectangle<bottom_up>   _slide_rect;
-            Oriented_rectangle<bottom_up>   _knob_rect;
+            Oriented_rectangle<Orientation> _slide_rect;
+            Oriented_rectangle<Orientation> _knob_rect;
 
             Value_type                      _value;
             Position                        _knob_pos;
@@ -147,12 +147,12 @@ namespace cppgui {
 
     template<class Config, bool With_layout, typename ValueType = float>
     class Horizontal_slider:
-        public _slider<Config, ValueType>::template Base<Horizontal_slider<Config, With_layout, ValueType>, With_layout, left_to_right> 
+        public _slider<Config, left_to_right, ValueType>::template Base<Horizontal_slider<Config, With_layout, ValueType>, With_layout> 
     { };
 
     template<class Config, bool With_layout, typename ValueType = float>
     class Vertical_slider:
-        public _slider<Config, ValueType>::template Base<Vertical_slider<Config, With_layout, ValueType>, With_layout, bottom_up> 
+        public _slider<Config, bottom_up, ValueType>::template Base<Vertical_slider<Config, With_layout, ValueType>, With_layout> 
     { };
 
 } // ns cppgui
