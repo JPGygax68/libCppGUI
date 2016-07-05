@@ -32,7 +32,7 @@ namespace cppgui {
 
         /** The class is called "Base" because it is intended to be customized via template parameters.
          */
-        template<class Class, bool With_layout, class GeometryAccessor>
+        template<class Class, bool With_layout, Orientation Orientation>
         class Base: 
             public Layouter<Class, With_layout,     // Layouter aspect, parameterized with ...
                 Widget<Config, With_layout> >       // ... the actual parent class: Widget<>
@@ -147,12 +147,12 @@ namespace cppgui {
 
     template<class Config, bool With_layout, typename ValueType = float>
     class Horizontal_slider:
-        public _slider<Config, ValueType>::template Base<Horizontal_slider<Config, With_layout>, With_layout, Horizontal_geometry_accessor> 
+        public _slider<Config, ValueType>::template Base<Horizontal_slider<Config, With_layout, ValueType>, With_layout, left_to_right> 
     { };
 
     template<class Config, bool With_layout, typename ValueType = float>
     class Vertical_slider:
-        public _slider<Config, ValueType>::template Base<Vertical_slider<Config, With_layout>, With_layout, Vertical_geometry_accessor> 
+        public _slider<Config, ValueType>::template Base<Vertical_slider<Config, With_layout, ValueType>, With_layout, bottom_up> 
     { };
 
 } // ns cppgui

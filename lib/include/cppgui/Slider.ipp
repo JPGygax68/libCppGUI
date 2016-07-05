@@ -28,15 +28,15 @@ namespace cppgui {
     // Main class -------------------------------------------------------------
 
     template<class Config, typename ValueType>
-    template<class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::define_range(const Range<Value_type> &range)
+    template<class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::define_range(const Range<Value_type> &range)
     {
         define_range(range, range.length() / 10, range.length() / 100);
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::define_range(const Range<Value_type> &range, 
+    template <class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::define_range(const Range<Value_type> &range, 
         const Value_type &incr_major, const Value_type & incr_minor)
     {
         _range = range;
@@ -46,8 +46,8 @@ namespace cppgui {
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::set_value(const Value_type &val)
+    template <class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::set_value(const Value_type &val)
     {
         assert(val >= _range.from && val <= _range.to);
         
@@ -55,15 +55,15 @@ namespace cppgui {
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    auto _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::value() -> Value_type
+    template <class Class, bool With_layout, Orientation Orientation>
+    auto _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::value() -> Value_type
     {
         return _value;
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::on_value_changed(Value_changed_handler handler)
+    template <class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::on_value_changed(Value_changed_handler handler)
     {
         assert(!_on_value_changed);
 
@@ -71,8 +71,8 @@ namespace cppgui {
     }
 
     template<class Config, typename ValueType>
-    template<class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::init()
+    template<class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::init()
     {
         Widget_t::init();
 
@@ -84,23 +84,23 @@ namespace cppgui {
     }
 
     template<class Config, typename ValueType>
-    template<class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::compute_view_from_data()
+    template<class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::compute_view_from_data()
     {
         update_knob_pos();
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::change_range(const Range<Value_type> &range)
+    template <class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::change_range(const Range<Value_type> &range)
     {
         define_range(range);
         update_knob_pos();
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::change_range(const Range<Value_type> &range, 
+    template <class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::change_range(const Range<Value_type> &range, 
         const Value_type & incr_major, const Value_type & incr_minor)
     {
         define_range(range, incr_major, incr_minor);
@@ -108,8 +108,8 @@ namespace cppgui {
     }
 
     template<class Config, typename ValueType>
-    template<class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::render(Canvas_t *canvas, const Point &offset)
+    template<class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::render(Canvas_t *canvas, const Point &offset)
     {
         // TODO: PLACEHOLDER
         //this->fill_rect(canvas, this->rectangle(), offset, Canvas_t::rgba_to_native({0.8f, 0, 0.7f, 1}));
@@ -132,8 +132,8 @@ namespace cppgui {
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::mouse_button(const Point& pos, int button, Key_state state, Count clicks)
+    template <class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::mouse_button(const Point& pos, int button, Key_state state, Count clicks)
     {
         if (button == 1)
         {
@@ -166,8 +166,8 @@ namespace cppgui {
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::mouse_motion(const Point& pos)
+    template <class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::mouse_motion(const Point& pos)
     {
         if (this->hovered())
         {
@@ -192,8 +192,8 @@ namespace cppgui {
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::mouse_wheel(const Vector &dist)
+    template <class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::mouse_wheel(const Vector &dist)
     {
         //change_value( _value + this->forward_position(dist) * _incr_minor );
         change_value( _value + dist.y * _incr_minor ); // TODO: support horizontal wheel ? (? does that exist ?)
@@ -201,8 +201,8 @@ namespace cppgui {
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::key_down(const Keycode & key)
+    template <class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::key_down(const Keycode & key)
     {
         if      (Keyboard::is_page_up  (key)) increase_major();
         else if (Keyboard::is_page_down(key)) decrease_major();
@@ -213,8 +213,8 @@ namespace cppgui {
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::mouse_exit()
+    template <class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::mouse_exit()
     {
         if (_knob_hovered)
         {
@@ -226,47 +226,47 @@ namespace cppgui {
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    auto _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::knob_rectangle() const -> Rectangle
+    template <class Class, bool With_layout, Orientation Orientation>
+    auto _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::knob_rectangle() const -> Rectangle
     {
         return _knob_rect + _slide_rect.vector_from_first_axis_start(_knob_pos);
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::decrease_major()
+    template <class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::decrease_major()
     {
         //change_value( _value + _incr_major );
         change_value( _value - _incr_major );
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::increase_major()
+    template <class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::increase_major()
     {
         //change_value( _value - _incr_major );
         change_value( _value + _incr_major );
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::decrease_minor()
+    template <class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::decrease_minor()
     {
         //change_value( _value + _incr_minor );
         change_value( _value - _incr_minor );
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::increase_minor()
+    template <class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::increase_minor()
     {
         //change_value( _value - _incr_minor );
         change_value( _value + _incr_minor );
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::start_knob_drag(const Point &pos)
+    template <class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::start_knob_drag(const Point &pos)
     {
         assert(!_dragging_knob);
         _dragging_knob = true;
@@ -275,16 +275,16 @@ namespace cppgui {
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::end_knob_drag()
+    template <class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::end_knob_drag()
     {
         assert(_dragging_knob);
         _dragging_knob = false;
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::drag_knob(const Point &pos)
+    template <class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::drag_knob(const Point &pos)
     {
         auto delta = Oriented_point<bottom_up>{pos}.first_axis_position() - _knob_drag_start_pos;
 
@@ -293,8 +293,8 @@ namespace cppgui {
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::change_value(const Value_type &value)
+    template <class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::change_value(const Value_type &value)
     {
         if      (value < _range.from) _value = _range.from;
         else if (value > _range.to  ) _value = _range.to;
@@ -306,15 +306,15 @@ namespace cppgui {
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::notify_value_change()
+    template <class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::notify_value_change()
     {
         if (_on_value_changed) _on_value_changed(_value);
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    void _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::update_knob_pos()
+    template <class Class, bool With_layout, Orientation Orientation>
+    void _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::update_knob_pos()
     {
         _knob_pos = static_cast<Position>( (_value - _range.from) * _slide_rect.length() / _range.length() );
 
@@ -322,8 +322,8 @@ namespace cppgui {
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    auto _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::track_portion_after_knob() const -> Rectangle
+    template <class Class, bool With_layout, Orientation Orientation>
+    auto _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::track_portion_after_knob() const -> Rectangle
     {
         if (_knob_pos > 0)
         {
@@ -336,8 +336,8 @@ namespace cppgui {
     }
 
     template <class Config, typename ValueType>
-    template <class Class, bool With_layout, class GeometryAccessor>
-    auto _slider<Config, ValueType>::Base<Class, With_layout, GeometryAccessor>::track_portion_before_knob() const -> Rectangle
+    template <class Class, bool With_layout, Orientation Orientation>
+    auto _slider<Config, ValueType>::Base<Class, With_layout, Orientation>::track_portion_before_knob() const -> Rectangle
     {
         if (_knob_pos < _slide_rect.length())
         {
@@ -390,10 +390,6 @@ namespace cppgui {
         p()->_slide_rect = rect.define_relative_rectangle( knob_size.h / 2, rect.length() - knob_size.h,
             (rect.width() - p()->slide_width()) / 2, p()->slide_width() );
 
-        //Oriented_rectangle<bottom_up> knob_rect;
-        //knob_rect.define_first_edge ( 0,  knob_size.h );
-        //knob_rect.define_second_edge( (ext.second_axis_length() - knob_size.w) / 2, knob_size.w );
-        //p()->_knob_rect = knob_rect;
         p()->_knob_rect = Oriented_rectangle<bottom_up>{ 
             Oriented_point  <bottom_up>{ 0, (ext.width() - knob_size.w) / 2 }, 
             Oriented_extents<bottom_up>{ knob_size.h, knob_size.w } 
