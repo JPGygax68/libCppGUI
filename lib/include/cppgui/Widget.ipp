@@ -263,6 +263,14 @@ namespace cppgui {
         this->invalidate();
     }
 
+    template <class Config, bool With_layout>
+    auto Widget<Config, With_layout>::absolute_position() -> Point
+    {
+        assert( container() ); // must not query before inserted into widget tree
+
+        return container()->container_absolute_position() + this->position();
+    }
+
     template<class Config, bool With_layout>
     void Widget<Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
     {

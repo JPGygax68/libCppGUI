@@ -75,6 +75,7 @@ namespace cppgui {
 
         // TODO: request mechanism ?
         bool has_focus() override { return true; } // TODO: return window activation state ?
+        auto container_absolute_position() -> Point override;
         bool container_has_focus() override { return true; } // TODO: only return true if owning window is active ?
 
         //void set_focus_to(Widget_t *);

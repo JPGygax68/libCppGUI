@@ -245,6 +245,12 @@ namespace cppgui {
         }
     }
 
+    template <class Config, bool With_layout>
+    auto Root_widget_base<Config, With_layout>::container_absolute_position() -> Point
+    {
+        return this->position();
+    }
+
     template<class Config, bool WithLayout>
     inline void Root_widget_base<Config, WithLayout>::render(Canvas_t *cv, const Point &offs)
     {

@@ -43,18 +43,22 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Label<Config, With_layout>::init()
     {
-        _font.translate( root_widget()->canvas() );
+        _font.translate( this->root_widget()->canvas() );
     }
 
     template<class Config, bool WithLayout>
     inline void Label<Config, WithLayout>::render(Canvas_t *cnv, const Point &offs)
     {
-        fill(cnv, offs, rgba_to_native(background_color())); 
+        fill(cnv, offs, this->rgba_to_native(background_color())); 
 
-        auto pos = offs + position();
-        cnv->render_text(_font.get(), pos.x + _text_origin.x, pos.y + _text_origin.y, _text.data(), _text.size());
+        auto pos = offs + this->position();
 
-        if (has_focus())
+        if (!_text.empty())
+        {
+            cnv->render_text(_font.get(), pos.x + _text_origin.x, pos.y + _text_origin.y, _text.data(), _text.size());
+        }
+
+        if (this->has_focus())
         {
             // TODO: make this into a method of Box<>
             auto r = _text_rect + Extents{ 3, 2 };
@@ -73,17 +77,28 @@ namespace cppgui {
     template<class Config, class Parent>
     void Label__Layouter<Config, true, Parent>::init_layout()
     {
-        assert(!p()->text().empty());
+        //assert(!p()->text().empty());
 
-        this->_bounding_box = p()->font()->compute_text_extents(0, p()->text().data(), p()->text().size() );
+        if (!p()->text().empty())
+        {
+            this->_bounding_box = p()->font()->compute_text_extents(0, p()->text().data(), p()->text().size() );
+        }
+        else {
+            this->_bounding_box = {};
+        }
     }
 
     template<class Config, class Parent>
     auto Label__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
     {
-        assert(!p()->text().empty());
+        //assert(!p()->text().empty());
 
-        return p()->add_boxing({ _bounding_box.width(), _bounding_box.height() });
+        if (!p()->text().empty())
+        {
+            return p()->add_boxing({ _bounding_box.width(), _bounding_box.height() });
+        }
+
+        return {};
     }
 
     template<class Config, class Parent>

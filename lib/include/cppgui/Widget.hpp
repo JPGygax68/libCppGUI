@@ -215,6 +215,10 @@ namespace cppgui {
         virtual void mouse_enter();
         virtual void mouse_exit ();
 
+        // Queries
+
+        virtual auto absolute_position() -> Point;
+
         // Run-time manipulations
 
         void change_visible(bool visible = true);

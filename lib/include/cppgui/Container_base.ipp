@@ -238,6 +238,12 @@ namespace cppgui {
         render_children(cv, offs + this->position());
     }
 
+    template <class Config, bool With_layout>
+    auto Container_base<Config, With_layout>::container_absolute_position() -> Point
+    {
+        return this->container()->container_absolute_position() + this->position();
+    }
+
     // Container_updater aspect -----------------------------------------------
 
     template<class Config, bool With_layout, class Parent>
