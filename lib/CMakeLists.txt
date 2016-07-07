@@ -160,6 +160,7 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Box_model.hpp
     include/cppgui/Container_layouter.hpp           include/cppgui/Container_layouter.ipp
     include/cppgui/Widget.hpp                       include/cppgui/Widget.ipp
+    include/cppgui/Custom_widget.hpp                include/cppgui/Custom_widget.ipp
     include/cppgui/Button.hpp                       include/cppgui/Button.ipp
     include/cppgui/Glyph_button.hpp                 include/cppgui/Glyph_button.ipp
     include/cppgui/Label.hpp                        include/cppgui/Label.ipp

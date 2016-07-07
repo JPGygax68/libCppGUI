@@ -276,16 +276,6 @@ namespace cppgui {
         The default implementation uses a pointer to parent to pass up redraw
         requests until they reach the root widget, which "handles" the request
         by passing it along to callback function.
-
-        Because there is chance that a different implementation may not need
-        to follow that route (e.g. by calling render() directly), the pointer
-        to container may not be needed, so it is a member of this aspect
-        implementation rather than of Widget<> itself.
-
-        TODO: THIS IS PROVISIONAL. If it turns out, during further development, 
-        that a pointer to container is needed for reasons that are not dependent
-        on the Updater (or any other) aspect family, that pointer, and the
-        methods associated with it, should be moved to the Widget<> stem class.
      */
     template<class Config, bool With_layout> class Abstract_container;
     template<class Config, bool With_layout, class Parent> class Default_container_updater;
@@ -310,9 +300,9 @@ namespace cppgui {
     struct Widget__Layouter<Config, true, Parent>: public Parent
     {
         /** It is up to the implementation to guarantee that any internal state/data
-        needed for layouting (including computing/returning the get_minimal_size())
-        is kept up to date.
-        */
+            needed for layouting (including computing/returning the get_minimal_size())
+            is kept up to date.
+         */
 
         // Layouter aspect contract
 

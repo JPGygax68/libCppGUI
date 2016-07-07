@@ -131,8 +131,10 @@ namespace cppgui {
         this->fill_rect(canvas, _knob_rect, pos + _slide_rect.longitude_to_vector(_knob_pos), thclr);
 
         // Debug
+        #ifdef _DEBUG
         this->fill_rect(canvas, track_portion_before_knob(), pos, Canvas_t::rgba_to_native({1, 0, 0, 0.5f}));
         this->fill_rect(canvas, track_portion_after_knob() , pos, Canvas_t::rgba_to_native({0, 1, 0, 0.5f}));
+        #endif
     }
 
     template <class Config, Orientation Orientation, typename ValueType>
