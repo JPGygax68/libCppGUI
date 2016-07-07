@@ -359,15 +359,15 @@ namespace cppgui {
     void Vertical_scrollbar<Config, With_layout>::move_by_page(int pages)
     {
         auto delta = this->shown_range() * pages;
-        auto new_pos = this->current_position() + delta;
-        this->update_thumb_position( this->current_position() + delta );
+        //auto new_pos = this->current_thumb_position() + delta;
+        this->update_thumb_position( this->current_value_from_thumb_position() + delta );
         notify_position_change();
     }
 
     template<class Config, bool With_layout>
     void Vertical_scrollbar<Config, With_layout>::move_by_elements(int elements)
     {
-        this->update_thumb_position(this->current_position() + elements * 10); // TODO: make step configurable
+        this->update_thumb_position(this->current_value_from_thumb_position() + elements * 10); // TODO: make step configurable
         notify_position_change();
         this->invalidate();
     }
@@ -377,7 +377,7 @@ namespace cppgui {
     {
         auto delta = full_range() * frac.num / frac.den;
         if (delta == 0) delta = frac.num * frac.den < 0 ? -1 : 1;
-        auto thumb_pos = this->current_position();
+        auto thumb_pos = this->current_value_from_thumb_position();
         auto new_pos = (thumb_pos.num + delta * thumb_pos.den) / thumb_pos.den;
         this->update_thumb_position( new_pos );
         notify_position_change();
@@ -386,7 +386,7 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void cppgui::Vertical_scrollbar<Config, With_layout>::notify_position_change()
     {
-        if (_on_pos_chng) _on_pos_chng(this->current_position());
+        if (_on_pos_chng) _on_pos_chng(this->current_value_from_thumb_position());
     }
 
 } // ns cppgui

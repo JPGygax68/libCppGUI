@@ -13,6 +13,7 @@
 #include <cppgui/sdl/Window.ipp>
 #include <cppgui/GUI_window.ipp>
 #include <cppgui/Container.ipp>
+#include <cppgui/Slider.ipp>
 
 CPPGUI_SDL_INSTANTIATE_WINDOW(Test_window)
 CPPGUI_INSTANTIATE_GUI_WINDOW(Test_window, GUI_config, cppgui::sdl::Window<Test_window>, cppgui::sdl::OpenGL_adapter)

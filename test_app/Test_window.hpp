@@ -13,7 +13,7 @@ using namespace gl;
 #include <cppgui/Default_widgets.hpp>
 #include <cppgui/GUI_window.hpp>
 #include <cppgui/Container_base.hpp>
-#include <cppgui/Vertical_slider.hpp>
+#include <cppgui/Slider.hpp>
 
 #include <cppgui/sdl/Window.hpp>
 #include <cppgui/sdl/Default_configuration.hpp>
