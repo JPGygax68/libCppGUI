@@ -4,14 +4,14 @@
 
 #include <cppgui/sdl/Application.hpp>
 
-#include "./Test_window.hpp"
+#include "./Main_window.hpp"
 
 int main(int /*argc*/, char * /*argv*/[])
 {
     try
     {
-        auto win = std::make_unique<Test_window>();
-        cppgui::sdl::Application<Test_window> app;
+        auto win = std::make_unique<Main_window>();
+        cppgui::sdl::Application<Main_window> app;
 
         app.run();
 

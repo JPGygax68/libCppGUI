@@ -29,13 +29,13 @@ struct GUI_config: cppgui::sdl::Default_configuration<GUI_config, Renderer, true
 
 //using Text_input_dialog_t = typename Text_input_dialog<GUI_configuration, true>;
 
-class Test_window: public cppgui::GUI_window<Test_window, GUI_config, cppgui::sdl::Window<Test_window>, cppgui::sdl::OpenGL_adapter>
+class Main_window: public cppgui::GUI_window<Main_window, GUI_config, cppgui::sdl::Window<Main_window>, cppgui::sdl::OpenGL_adapter>
 {
 public:
-    using Parent_t = typename cppgui::GUI_window<Test_window, GUI_config, cppgui::sdl::Window<Test_window>, cppgui::sdl::OpenGL_adapter>;
+    using Parent_t = typename cppgui::GUI_window<Main_window, GUI_config, cppgui::sdl::Window<Main_window>, cppgui::sdl::OpenGL_adapter>;
     //CPPGUI_DEFINE_WIDGET_TYPES(GUI_configuration, true);
 
-    Test_window();
+    Main_window();
 
     auto root_widget() { return &_root_widget; }
 
