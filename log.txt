@@ -1,3 +1,45 @@
+2016-07-08
+==========
+
+A new challenge is appearing on the horizon, in the form of an expressed need (desire ?) by a customer to be able to design user interfaces manually - as opposed to programmatically, as I was hoping I could convince him would be good enough for the time being.
+
+This desire is "inconvenient", because a) writing a designer application would be a lot of work under the best of conditions, and b) the whole architecture does not feel very structurally stable at the moment, increasing the risk of having to rewrite big parts of such an application in the not-so-distant future.
+
+One very specific problem mandates careful assessment right now: the fact that I have tried to make as many parameters as possible "build-time" by defining them as parameters of the class templates. This approach, of course, is almost diametrically opposed to any attempts at run-time configuration.
+
+The problem stands out most prominently with the box model. I had planned on creating many templated implementations of that concept, practically all of which taking template parameters for border width and color, margins, and inner padding. I have already created a few implementations that were using the same values for all four cardinal directions, and was planning on adding implementations that could have direction-specific values. I had also vaguely planned to create implementations that could be parameterized at run-time.
+
+However, I see no practical way to make a designer create template instances with varying parameters at run time, short of invoking a build chain to generate code on-the-fly and then linking it dynamically. While such an approach would be interesting and might have applications more interesting still, I do not have it at my disposal right now.
+
+[Thinking about this further, coming up with a minimal such system might not be quite as difficult as it sounds. CMake could be used as a convience to handle platform specifics. However, this leaves open the question of how to (dynamically) link such code with the designer application. Because the designer app cannot instantiate the templates, it would need to access widgets via an abstraction layer.
+All in all, this idea should not yet be discarded entirely, as it may yield long-term benefits.]
+
+The only alternative I can see right now is to take a step backwards and to move customization back into the runtime domain. In order not to completely loose the ability to optimize at build time, I would need to come up with a reusable pattern that allows parameters to be interchangeably build or run time.
+
+This would mean that for each customizable template, a boolean template parameter should be added that determines whether or not customization will be build or run time.
+
+When run time customization is specified, template specialization will inject the necessary properties for the values to be set programmatically.
+
+I'm not too sure what to do if compile-time customization is chosen. So far, I've implemented all customization via template parameters, but I'm not sure that is the best or even the correct way of doing things.
+
+Thinking aloud here... what about doing the same thing as for run time customization, but with constexpr getters only (no setters) ? This would require the code to be universal, as optimizations via specialization would no longer be available.
+
+How would user code that customizes a widget (or aspect thereof) actually look like ? CRTP could be used to access the getters, so that injection could be written as simple getters in the derived class (with defaults provided in the class/aspect itself).
+
+The question remains how a widget customized at run-time should be "solidified" into a compile-time customized version when the UI code is being generated - and whether it is worthwhile supporting this at all.
+
+It would involve generating a derived class for each combination of parameters that are being used in a given UI. This certainly seems possible. It would involve using the properties metadata - which is needed anyway for the benefit of the designer app - to generate a getter for each property.
+
+Another question is how exactly to implement properties. I think the key here is to make use of the already existing "aspect" mechanism, which ensures that all parts of a class (or at least, all parts that can have properties) share a single line of inheritance (multiple inheritance is restricted to injecting property-less facilities).
+
+`Widget<>` or `Abstract_widget<>` defines a static constexpr method `metadata()`, which returns a data structure of type `Metadata`. `Metadata` would be composable, making it possible for any derived class or aspect to override the inherited implementation of `metadata()` with its own, which calls the inherited one and adds its own metadata to the result.
+
+Such metadata should include: the name of the class or aspect, and a list of property descriptors. Each property descriptor should include: the name of the property; its type (string, boolean, float, or enumeration).
+
+One question remains open: how to work with widgets or aspects that can be customized with data types, one example being `Slider<>`, which could benefit from taking the type of its value as a parameter, which would allow it to support integer, floating point, and even rational numbers with the same code base. I think the only practical way to support this is to hardcode all sensible choices into the designer application, which implies that any widget class has at most one such template parameter.
+
+
+
 2016-06-30
 ==========
 
