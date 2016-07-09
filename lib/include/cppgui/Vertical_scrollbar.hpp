@@ -21,6 +21,7 @@
 #include "./Glyph_button.hpp"
 #include "./Resource.hpp"
 //#include "./Drag_controller.hpp"
+#include "./Box_model.hpp"
 
 namespace cppgui {
 
@@ -46,7 +47,12 @@ namespace cppgui {
 
     // Forward declarations
 
-    template <class Impl, class Config, bool With_layout, class Parent> struct Vertical_scrollbar__Layouter;
+    template <class Config, bool With_layout> 
+    struct Vertical_scrollbar__Layouter
+    {
+        template<class Impl, class Parent>
+        struct Aspect: Parent {};
+    };
 
     // Base class ===================================================
 
@@ -79,12 +85,11 @@ namespace cppgui {
             position, under the control of the consumer.
      */
 
-    template<class Impl, class Config, bool With_layout>
+    template<class Impl, class Config, bool With_layout, Box_model_definition BMDef>
     class Vertical_scrollbar_base: public 
-        Vertical_scrollbar__Layouter<Impl, Config, With_layout, 
-            Box<Config, With_layout, 
-                Simple_box_model<
-                    Container_base<Config, With_layout> > > >
+        Vertical_scrollbar__Layouter<Config, With_layout>::template Aspect <Impl,
+        Box_model<Config, With_layout, BMDef>::template Aspect< Impl,
+        Container_base<Config, With_layout> > >
     {
     public:
         using Widget_t = typename Widget<Config, With_layout>;
@@ -125,8 +130,7 @@ namespace cppgui {
             // Recomputes and updates the thumb position according to the specified value.
 
     protected:
-        template<class Parent> using Button_box_model = Fixed_padding_box_model<5, Parent>; // TODO: get constant from somewhere
-        using Glyph_button_t = Glyph_button<Config, With_layout, Button_box_model>;
+        using Glyph_button_t = Glyph_button<Config, With_layout, BMDef>;
         using Color_resource = typename Widget_t::Color_resource;
 
         //void move_thumb_to(Position);
@@ -153,22 +157,26 @@ namespace cppgui {
 
     // Layouter aspect
 
-    template <class Impl, class Config, class Parent>
-    struct Vertical_scrollbar__Layouter<Impl, Config, true, Parent>: public Parent 
+    template <class Config>
+    struct Vertical_scrollbar__Layouter<Config, true>
     {
-        // Layouter contract
+        template<class Class, class Parent>
+        struct Aspect: Parent 
+        {
+            // Layouter contract
 
-        //void init_layout() override;
-        auto get_minimal_size() -> Extents override;
-        void layout() override;
+            //void init_layout() override;
+            auto get_minimal_size() -> Extents override;
+            void layout() override;
 
-        // Extra capabilities coming with layouting
-        // TODO
+            // Extra capabilities coming with layouting
+            // TODO
 
-    protected:
-        class Vertical_scrollbar_base_t: public Vertical_scrollbar_base<Impl, Config, true> { friend struct Vertical_scrollbar__Layouter; };
+        protected:
+            class Vertical_scrollbar_base_t: public Class { friend struct Aspect; };
 
-        auto p() { return static_cast<Vertical_scrollbar_base_t*>(static_cast<Vertical_scrollbar_base<Impl, Config, true>*>(this)); }
+            auto p() { return static_cast<Vertical_scrollbar_base_t*>(this); }
+        };
     };
 
     // Customizable specialization ==================================
@@ -176,16 +184,16 @@ namespace cppgui {
     /* Use this specialization when you need to control navigation directly, with the scrollbar widget acting as both input (arrows, thumb dragging, keyboard) and output (thumb position), but not as the direct controller of the interaction.
      */
 
-    template<class Config, bool With_layout>
-    class Custom_vertical_scrollbar:
-        public Vertical_scrollbar_base<
-            Custom_vertical_scrollbar<Config, With_layout>, Config, With_layout>
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    class Custom_vertical_scrollbar: public 
+        Vertical_scrollbar_base<
+        Custom_vertical_scrollbar<Config, With_layout, BMDef>, Config, With_layout, BMDef> 
     {
     public:
         void on_navigation(Navigation_handler);
 
     protected:
-        friend class Vertical_scrollbar_base<Custom_vertical_scrollbar, Config, With_layout>;
+        friend class Vertical_scrollbar_base<Custom_vertical_scrollbar, Config, With_layout, BMDef>;
 
         void move_by_page(int delta);
         void move_by_elements(int delta);
@@ -200,8 +208,9 @@ namespace cppgui {
     /* Use this specialization when there is direct and linear correspondance between the thumb's position inside the track and the position of the target viewable area inside the viewing window (however those are defined).
      */
 
-    template<class Config, bool With_layout>
-    class Vertical_scrollbar: public Vertical_scrollbar_base<Vertical_scrollbar<Config, With_layout>, Config, With_layout>
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    class Vertical_scrollbar: public 
+        Vertical_scrollbar_base<  Vertical_scrollbar<Config, With_layout, BMDef>, Config, With_layout, BMDef>
     {
     public:
         using Position_change_handler = std::function<void(Position)>;

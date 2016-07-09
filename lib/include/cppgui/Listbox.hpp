@@ -18,6 +18,7 @@
 */
 
 #include "./Scrollbox.hpp"
+#include "./Box_model.hpp"
 
 namespace cppgui {
 
@@ -25,22 +26,27 @@ namespace cppgui {
 
     // Forward declarations
 
-    template<class Config, bool With_layout, class Parent> struct Listbox__Layouter;
+    template<class Config, bool With_layout>
+    struct Listbox__Layouter
+    {
+        template<class Class, class Parent>
+        struct Aspect: Parent {};
+    };
 
-    template<class Config, bool With_layout> class List_pane_base;
+    template<class Config, bool With_layout, Box_model_definition BMDef> class List_pane_base;
 
     /** The Listbox 
      */
-    template<class Config, bool With_layout>
-    class Listbox: 
-        public Listbox__Layouter<Config, With_layout,
-            Scrollbox<Config, With_layout, List_pane_base<Config, With_layout> > >
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    class Listbox: public 
+        Listbox__Layouter<Config, With_layout>::template Aspect< Listbox<Config, With_layout, BMDef>,
+        Scrollbox<Config, With_layout, List_pane_base<Config, With_layout, BMDef>, BMDef> >
     {
     public:
         using Widget_t = Widget<Config, With_layout>;
         using Container_base_t = Container_base<Config, With_layout>;
         //using Canvas_t = typename Canvas<typename Config::Renderer>;
-        using List_pane_t = List_pane_base<Config, With_layout>;
+        using List_pane_t = List_pane_base<Config, With_layout, BMDef>;
         using Layoutable_widget_t = Widget<Config, true>; // THIS IS SPECIAL - only layoutable widgets can be added at runtime
 
         Listbox();
@@ -56,7 +62,7 @@ namespace cppgui {
         void update_scrollbar_position();
 
     protected:
-        using Vertical_scrollbar_t = Custom_vertical_scrollbar<Config, With_layout>; // NOTE: this may the wrong variant - use Standalone ?
+        using Vertical_scrollbar_t = Custom_vertical_scrollbar<Config, With_layout, BMDef>; // NOTE: this may the wrong variant - use Standalone ?
 
         List_pane_t         _content_pane;
     };
@@ -65,33 +71,42 @@ namespace cppgui {
 
     // TODO: is it really needed, or is the Scrollbox layouter sufficient ?
 
-    template<class Config, class Parent>
-    struct Listbox__Layouter<Config, true, Parent>: public Parent 
+    template<class Config>
+    struct Listbox__Layouter<Config, true>
     {
-        using Scrollbox_t = Scrollbox<Config, true, List_pane_base<Config, true>>;
+        template<class Class, class Parent>
+        struct Aspect: Parent
+        {
+            //using Scrollbox_t = Scrollbox<Config, true, List_pane_base<Config, true, BMDef>, BMDef>;
 
-        void layout() override;
+            void layout() override;
 
-        auto get_preferred_size() -> Extents;
+            auto get_preferred_size() -> Extents;
 
-    protected:
-        struct Listbox_t: public Listbox<Config, true> { friend struct Listbox__Layouter; };
-        auto p() { return static_cast<Listbox_t*>(static_cast<Listbox<Config, true>*>(this)); }
+        protected:
+            struct Listbox_t: Class { friend struct Aspect; };
+            auto p() { return static_cast<Listbox_t*>(this); }
+        };
     };
 
     // List_pane ====================================================
 
-    template <class Config, bool With_layout, class Parent> struct List_pane__Layouter;
+    template <class Config, bool With_layout>
+    struct List_pane__Layouter
+    {
+        template<class Class, class Parent>
+        struct Aspect {};
+    };
 
-    template<class Config, bool With_layout>
-    class List_pane_base: 
-        public List_pane__Layouter<Config, With_layout, 
-            Scrollable_pane<Config, With_layout> >
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    class List_pane_base: public 
+        List_pane__Layouter<Config, With_layout>::template Aspect< List_pane_base<Config, With_layout, BMDef>, 
+        Scrollable_pane<Config, With_layout> >
     {
     public:
         using Widget_t = Widget<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
-        using Listbox_t = Listbox<Config, With_layout>;
+        using Listbox_t = Listbox<Config, With_layout, BMDef>;
         using Scrollable_pane_t = Scrollable_pane<Config, With_layout>;
         using Parent_t = Scrollable_pane_t;
         using Parent_class = Scrollable_pane<Config, With_layout>;
@@ -112,19 +127,19 @@ namespace cppgui {
         friend class Listbox_t;
         using Mapped_separator_t = Mapped_separator<typename Config::Renderer::native_color>;
 
-        auto listbox() { return static_cast<Listbox_t*>(container()); }
+        auto listbox() { return static_cast<Listbox_t*>(this->container()); }
 
         void compute_visible_item_range();
         bool child_fully_after_top    (Widget_t *child, Position_delta offset = 0);
         bool child_fully_before_bottom(Widget_t *child, Position_delta offset = 0);
-        auto first_visible_child() { return children()[_first_visible_item]; }
-        auto last_visible_child () { return children()[_last_visible_item]; }
+        auto first_visible_child() { return this->children()[_first_visible_item]; }
+        auto last_visible_child () { return this->children()[_last_visible_item]; }
         void scroll_down(Count items = 1);
         void scroll_up  (Count items = 1);
         void scroll_by_items(int delta);
         void scroll_by_pages(int delta);
         auto visible_items() const { return _last_visible_item - _first_visible_item + 1;  }
-        auto hidden_items() { return visible_items() < (int) children().size() ? (int) (children().size()) - visible_items() : 0; }
+        auto hidden_items() { return visible_items() < (int) this->children().size() ? (int) (this->children().size()) - visible_items() : 0; }
 
         Mapped_separator_t  _separator {};
 
@@ -135,28 +150,32 @@ namespace cppgui {
 
     // List_pane Layouter aspect
 
-    template<class Config, class Parent>
-    struct List_pane__Layouter<Config, true, Parent>: public Parent
+    template<class Config>
+    struct List_pane__Layouter<Config, true>
     {
-        void set_item_padding(const Extents &);
+        template<class Class, class Parent>
+        struct Aspect: Parent
+        {
+            void set_item_padding(const Extents &);
 
-        auto get_minimal_size() -> Extents override;
+            auto get_minimal_size() -> Extents override;
 
-        void compute_and_set_extents(const Extents &container_extents);
+            void compute_and_set_extents(const Extents &container_extents);
 
-        void layout() override;
+            void layout() override;
 
-    protected:
-        struct List_pane_t: public List_pane_base<Config, true> { friend struct List_pane__Layouter; };
-        auto p() { return static_cast<List_pane_t*>(static_cast<List_pane_base<Config, true>*>(this)); }
+        protected:
+            struct List_pane_t: public Class { friend struct Aspect; };
+            auto p() { return static_cast<List_pane_t*>(this); }
 
-        Extents _item_padding {};
+            Extents _item_padding {};
+        };
     };
 
     // Concrete class 
 
-    template<class Config, bool With_layout>
-    class List_pane: public List_pane_base<Config, With_layout>
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    class List_pane: public List_pane_base<Config, With_layout, BMDef>
     {
     };
 

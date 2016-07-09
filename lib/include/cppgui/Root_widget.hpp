@@ -23,6 +23,7 @@
 #include "./Widget.hpp"
 #include "./Container_base.hpp"
 #include "./Container_layouter.hpp"
+#include "./Box_model.hpp"
 
 namespace cppgui {
 
@@ -183,12 +184,11 @@ namespace cppgui {
 
     // Root_widget ------------------------------------------------------------
 
-    template<class Config, bool With_layout, template<class> class BoxModel, class Layouter>
+    template<class Config, bool With_layout, Box_model_definition BMDef, class Layouter>
     class Root_widget: public 
-        Layouter::template Aspect< Root_widget<Config, With_layout, BoxModel, Layouter>,
-        Box<Config, With_layout,
-        BoxModel<
-        Root_widget_base<Config, With_layout> > > >
+        Layouter::template Aspect< Root_widget<Config, With_layout, BMDef, Layouter>,
+        Box_model<Config, With_layout, BMDef>::template Aspect<Root_widget<Config, With_layout, BMDef, Layouter>,
+        Root_widget_base<Config, With_layout> > >
     {};
 
 } // ns cppgui

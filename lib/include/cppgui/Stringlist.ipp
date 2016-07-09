@@ -25,8 +25,8 @@
 namespace cppgui {
 
     template<class Config>
-    template<bool With_layout, int BorderWidth>
-    _stringlist<Config>::Base<With_layout, BorderWidth>::Base()
+    template<bool With_layout, Box_model_definition BMDef>
+    _stringlist<Config>::Base<With_layout, BMDef>::Base()
     {
         add_child(&_vert_sbar);
 
@@ -58,31 +58,31 @@ namespace cppgui {
     }
 
     template <class Config>
-    template <bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::on_item_selected(Item_selected_handler handler)
+    template <bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::on_item_selected(Item_selected_handler handler)
     {
         assert(!_on_item_selected);
         _on_item_selected = handler;
     }
 
     template <class Config>
-    template <bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::on_item_activated(Item_activated_handler handler)
+    template <bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::on_item_activated(Item_activated_handler handler)
     {
         assert(!_on_item_activated);
         _on_item_activated = handler;
     }
 
     template<class Config>
-    template<bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::set_font(const Rasterized_font * font)
+    template<bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::set_font(const Rasterized_font * font)
     {
         _font.assign( font );
     }
 
     template<class Config>
-    template<bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::init()
+    template<bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::init()
     {
         _font.translate( this->root_widget()->canvas() );
 
@@ -90,8 +90,8 @@ namespace cppgui {
     }
 
     template<class Config>
-    template<bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::compute_view_from_data()
+    template<bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::compute_view_from_data()
     {
         compute_content_rectangle();
 
@@ -101,22 +101,22 @@ namespace cppgui {
     }
 
     template<class Config>
-    template<bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::add_item(const std::string & text)
+    template<bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::add_item(const std::string & text)
     {
         add_item( utf8_to_utf32(text) );
     }
 
     template<class Config>
-    template<bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::add_item(const std::u32string & text)
+    template<bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::add_item(const std::u32string & text)
     {
         _items.push_back( text );
     }
 
     template<class Config>
-    template<bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::render(Canvas_t *canvas, const Point & offset)
+    template<bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::render(Canvas_t *canvas, const Point & offset)
     {
         Point pos = offset + this->position();
 
@@ -187,8 +187,8 @@ namespace cppgui {
     }
 
     template <class Config>
-    template <bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::mouse_motion(const Point& pos)
+    template <bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::mouse_motion(const Point& pos)
     {
         auto item = item_at_pos(pos);
         if (item != _hovered_item)
@@ -201,8 +201,8 @@ namespace cppgui {
     }
 
     template <class Config>
-    template <bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
+    template <bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
     {
         if (button == 1 && state == Key_state::pressed && clicks == 1)
         {
@@ -233,15 +233,15 @@ namespace cppgui {
     }
 
     template <class Config>
-    template <bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::mouse_wheel(const Vector& delta)
+    template <bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::mouse_wheel(const Vector& delta)
     {
         _vert_sbar.mouse_wheel(delta);
     }
 
     template <class Config>
-    template <bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::mouse_exit()
+    template <bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::mouse_exit()
     {
         _hovered_item = -1;
 
@@ -249,8 +249,8 @@ namespace cppgui {
     }
 
     template <class Config>
-    template <bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::key_down(const Keycode& key)
+    template <bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::key_down(const Keycode& key)
     {
         if      (Keyboard::is_down     (key)) select_next           ();
         else if (Keyboard::is_up       (key)) select_previous       ();
@@ -262,26 +262,26 @@ namespace cppgui {
     }
 
     template<class Config>
-    template<bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::compute_content_rectangle()
+    template<bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::compute_content_rectangle()
     {
         Length sb_width = _vert_sbar.extents().w + _sbar_separator.width;
 
         _content_rect = Rectangle{ this->extents() } - 
-            Margins{ this->get_border_width(0), this->get_border_width(1) + sb_width, 
-                this->get_border_width(2), this->get_border_width(3) };
+            Margins{ this->border_width(0), this->border_width(1) + sb_width, 
+                this->border_width(2), this->border_width(3) };
     }
 
     template<class Config>
-    template<bool With_layout, int BorderWidth>
-    auto _stringlist<Config>::Base<With_layout, BorderWidth>::item_height() const
+    template<bool With_layout, Box_model_definition BMDef>
+    auto _stringlist<Config>::Base<With_layout, BMDef>::item_height() const
     {
         return static_cast<Length>(_item_padding[0] + _ascent - _descent + _item_padding[2]);
     }
 
     template <class Config>
-    template <bool With_layout, int BorderWidth>
-    inline auto _stringlist<Config>::Base<With_layout, BorderWidth>::fully_visible_item_count() const -> Count
+    template <bool With_layout, Box_model_definition BMDef>
+    inline auto _stringlist<Config>::Base<With_layout, BMDef>::fully_visible_item_count() const -> Count
     {
         auto h_rect = _content_rect.height(), h_item = item_height() + _item_separator.width;
         auto n = h_rect / h_item, r = h_rect % h_item;
@@ -290,8 +290,8 @@ namespace cppgui {
     }
 
     template <class Config>
-    template <bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::move_by_elements(int delta)
+    template <bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::move_by_elements(int delta)
     {
         if (delta > 0)
         {
@@ -321,8 +321,8 @@ namespace cppgui {
     }
 
     template <class Config>
-    template <bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::move_by_pages(int delta)
+    template <bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::move_by_pages(int delta)
     {
         if (delta > 0)
         {
@@ -356,8 +356,8 @@ namespace cppgui {
     }
 
     template <class Config>
-    template <bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::move_by_fraction(const Fraction<int>& delta)
+    template <bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::move_by_fraction(const Fraction<int>& delta)
     {
         if (delta.den == 0) return;
 
@@ -398,15 +398,15 @@ namespace cppgui {
     }
 
     template <class Config>
-    template <bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::update_scrollbar_position()
+    template <bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::update_scrollbar_position()
     {
         _vert_sbar.update_thumb_position(_first_vis_item);
     }
 
     template <class Config>
-    template <bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::select_next()
+    template <bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::select_next()
     {
         if (_selected_item < static_cast<Index>(_items.size() -1))
         {
@@ -423,8 +423,8 @@ namespace cppgui {
     }
 
     template <class Config>
-    template <bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::select_previous()
+    template <bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::select_previous()
     {
         if (_selected_item > 0)
         {
@@ -441,8 +441,8 @@ namespace cppgui {
     }
 
     template <class Config>
-    template <bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::page_down()
+    template <bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::page_down()
     {
         Index item = _selected_item < 0 ? fully_visible_item_count() - 1 : _selected_item + fully_visible_item_count() - 1;
         if (item >= static_cast<Index>(_items.size())) item = static_cast<Index>(_items.size() -1);
@@ -462,8 +462,8 @@ namespace cppgui {
     }
 
     template <class Config>
-    template <bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::page_up()
+    template <bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::page_up()
     {
         if (_selected_item >= 0)
         {
@@ -485,8 +485,8 @@ namespace cppgui {
     }
 
     template <class Config>
-    template <bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::activate_selected_item()
+    template <bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::activate_selected_item()
     {
         if (_selected_item >= 0)
         {
@@ -495,15 +495,15 @@ namespace cppgui {
     }
 
     template <class Config>
-    template <bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::raise_item_activated(Index index, const std::u32string& item)
+    template <bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::raise_item_activated(Index index, const std::u32string& item)
     {
         if (_on_item_activated) _on_item_activated(index, item);
     }
 
     template <class Config>
-    template <bool With_layout, int BorderWidth>
-    auto _stringlist<Config>::Base<With_layout, BorderWidth>::item_at_pos(const Point& pos) -> Index
+    template <bool With_layout, Box_model_definition BMDef>
+    auto _stringlist<Config>::Base<With_layout, BMDef>::item_at_pos(const Point& pos) -> Index
     {
         if (!_content_rect.contains(pos)) return -1;
 
@@ -523,8 +523,8 @@ namespace cppgui {
     }
 
     template <class Config>
-    template <bool With_layout, int BorderWidth>
-    void _stringlist<Config>::Base<With_layout, BorderWidth>::select_item(Index index)
+    template <bool With_layout, Box_model_definition BMDef>
+    void _stringlist<Config>::Base<With_layout, BMDef>::select_item(Index index)
     {
         _selected_item = index;
         if (_on_item_selected && index >= 0) _on_item_selected(index, _items[index]);
@@ -532,28 +532,28 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template<class Config>
-    template<class Class, class Parent>
-    void _stringlist<Config>::Layouter<Class, true, Parent>::init_layout()
+    template <class Config>
+    template <class Class, class Parent>
+    void String_list__Layouter<Config, true>::Aspect<Class, Parent>::init_layout()
     {
         this->compute_text_extents();
 
         Parent::init_layout();
     }
 
-    template<class Config>
-    template<class Class, class Parent>
-    auto _stringlist<Config>::Layouter<Class, true, Parent>::get_minimal_size() -> Extents
+    template <class Config>
+    template <class Class, class Parent>
+    auto String_list__Layouter<Config, true>::Aspect<Class, Parent>::get_minimal_size() -> Extents
     {
         return { 100, 100 }; // TODO
     }
 
-    template<class Config>
-    template<class Class, class Parent>
-    void _stringlist<Config>::Layouter<Class, true, Parent>::layout()
+    template <class Config>
+    template <class Class, class Parent>
+    void String_list__Layouter<Config, true>::Aspect<Class, Parent>::layout()
     {
         // Preparations
-        auto i_rect = this->inner_rectangle( p()->extents() );
+        auto i_rect = this->content_rectangle();
         auto vertsb_minsz = p()->_vert_sbar.get_minimal_size();
 
         // Vertical scrollbar
@@ -565,9 +565,9 @@ namespace cppgui {
         //Parent::layout();
     }
 
-    template<class Config>
-    template<class Class, class Parent>
-    void _stringlist<Config>::Layouter<Class, true, Parent>::compute_text_extents()
+    template <class Config>
+    template <class Class, class Parent>
+    void String_list__Layouter<Config, true>::Aspect<Class, Parent>::compute_text_extents()
     {
         if (p()->_font.source())
         {

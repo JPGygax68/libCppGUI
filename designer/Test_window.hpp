@@ -19,23 +19,19 @@ using namespace gl;
 #include <cppgui/sdl/Default_configuration.hpp>
 #include <cppgui/sdl/OpenGL_adapter.hpp>
 
-//#include "./Text_input_dialog.hpp"
-
 using Renderer = typename gpc::gui::gl::renderer<true>;
 struct GUI_config: cppgui::sdl::Default_configuration<GUI_config, Renderer, true> {
 
     using Default_font = typename cppgui::Default_font<16>;
 };
 
-//using Text_input_dialog_t = typename Text_input_dialog<GUI_configuration, true>;
-
-class Main_window: public cppgui::GUI_window<Main_window, GUI_config, cppgui::sdl::Window<Main_window>, cppgui::sdl::OpenGL_adapter>
+class Test_window: public cppgui::GUI_window<Test_window, GUI_config, cppgui::sdl::Window<Test_window>, cppgui::sdl::OpenGL_adapter>
 {
 public:
-    using Parent_t = typename cppgui::GUI_window<Main_window, GUI_config, cppgui::sdl::Window<Main_window>, cppgui::sdl::OpenGL_adapter>;
+    using Parent_t = typename cppgui::GUI_window<Test_window, GUI_config, cppgui::sdl::Window<Test_window>, cppgui::sdl::OpenGL_adapter>;
     //CPPGUI_DEFINE_WIDGET_TYPES(GUI_configuration, true);
 
-    Main_window();
+    Test_window();
 
     auto root_widget() { return &_root_widget; }
 
@@ -87,7 +83,6 @@ private:
     cppgui::Textbox<GUI_config, true>                   _textbox;
     cppgui::Checkbox<GUI_config, true>                  _checkbox;
     cppgui::Label<GUI_config, true>                     _menu_header;
-    //Text_input_dialog<GUI_configuration, true>                 _input_dlg;
     cppgui::Vertical_scrollbar<GUI_config, true>        _vert_scrollbar;   
     cppgui::Textbox<GUI_config, true>                   _scrollbar_pos;
     cppgui::List_pane_base<GUI_config, true>            _sb_pane;
@@ -95,8 +90,4 @@ private:
     std::vector<cppgui::Button<GUI_config, true>>       _lb_buttons;
     cppgui::Stringlist<GUI_config, true>                _stringlist;
     Slider_with_display                                 _slider1, _slider2, _slider3;
-
-    //cppgui::Container<GUI_config, true, cppgui::Fixed_border_and_padding<1, 3>::Box_model>  _menu;
-    //Vertical_slider             _vslider1, _vslider2, _vslider3;
-    //cppgui::Container<GUI_config, true, cppgui::Fixed_border_and_padding<1, 3>::Box_model>   _container1, _container2;
 };

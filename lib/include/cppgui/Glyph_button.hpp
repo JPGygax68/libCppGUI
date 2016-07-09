@@ -21,7 +21,6 @@
 
 #include "./Widget.hpp"
 #include "./Box_model.hpp"
-#include "./Box.hpp"
 
 namespace cppgui {
 
@@ -29,34 +28,29 @@ namespace cppgui {
 
     struct Icon_glyph;
 
-    template <class Class, bool With_layout, class Parent> struct Glyph_button__Layouter;
+    template<class Config, bool With_layout> 
+    struct Glyph_button__Layouter
+    {
+        template<class Class, class Parent>
+        struct Aspect: Parent {};
+    };
 
     // Internal stuff
 
     template<class Config>
     struct _glyph_button
     {
-        template<class Parent>
-        using Default_box_model = Fixed_border_and_padding_box_model<1, 3, Parent>; // TODO: take DPI into account
+        //template<class Parent>
+        //using Default_box_model = Fixed_border_and_padding_box_model<1, 3, Parent>; // TODO: take DPI into account
     };
 
     // Glyph_button declaration 
 
-    #ifdef NOT_DEFINED
-
-    #define CPPGUI_INSTANTIATE_GLYPH_BUTTON(Config, With_layout, ...) \
-        template cppgui::Glyph_button<Config, With_layout, __VA_ARGS__>; \
-        template cppgui::Glyph_button__Layouter<cppgui::Glyph_button<Config, With_layout, __VA_ARGS__>, With_layout, \
-            cppgui::Box<Config, With_layout, \
-                __VA_ARGS__< cppgui::Widget<Config, With_layout> > > >;
-
-    #endif
-
-    template<class Config, bool With_layout, template<class> class BoxModel = _glyph_button<Config>::Default_box_model >
+    template<class Config, bool With_layout, Box_model_definition BMDef>
     class Glyph_button: public 
-        Glyph_button__Layouter<Glyph_button<Config, With_layout, BoxModel>, With_layout,
-            Box<Config, With_layout, 
-                BoxModel< Widget<Config, With_layout> > > >
+        Glyph_button__Layouter<Config, With_layout>::template Aspect< Glyph_button<Config, With_layout, BMDef>, 
+        Box_model<Config, With_layout, BMDef>::template Aspect< Glyph_button<Config, With_layout, BMDef>,
+        Widget<Config, With_layout> > >
     {
     public:
         using Widget_t = Widget<Config, With_layout>;
@@ -98,29 +92,32 @@ namespace cppgui {
 
     // Layouter aspect
 
-    template <class Class, class Parent>
-    struct Glyph_button__Layouter<Class, true, Parent>: Parent
+    template<class Config>
+    struct Glyph_button__Layouter<Config, true>
     {
-        // Glyph_button__Layouter() { _padding = this->button_padding(); }
+        template<class Class, class Parent>
+        struct Aspect: Parent
+        {
+            // Glyph_button__Layouter() { _padding = this->button_padding(); }
 
-        void init_layout() override;
-        auto get_minimal_size() -> Extents override;
-        void layout() override;
+            void init_layout() override;
+            auto get_minimal_size() -> Extents override;
+            void layout() override;
 
-        // TODO:
-        // void change_glyph();
+            // TODO:
+            // void change_glyph();
 
-    private:
-        struct Main: public Class { friend struct Glyph_button__Layouter; };
-        auto p() { return static_cast<Main*>(this); }
+        private:
+            struct Main: public Class { friend struct Glyph_button__Layouter; };
+            auto p() { return static_cast<Main*>(this); }
 
-        void compute_sizes();
+            void compute_sizes();
 
-        Text_bounding_box           _glyph_bounds;
-        Text_bounding_box           _label_bounds;
-        Length                      _glyph_min_edge;
-        Length                      _spacing; // spacing between label and glyph
+            Text_bounding_box           _glyph_bounds;
+            Text_bounding_box           _label_bounds;
+            Length                      _glyph_min_edge;
+            Length                      _spacing; // spacing between label and glyph
+        };
     };
-
 
 } // ns cppui

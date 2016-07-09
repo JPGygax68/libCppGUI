@@ -28,26 +28,26 @@
 
 namespace cppgui {
 
-    template<class Config, bool WithLayout>
-    inline void Label<Config, WithLayout>::set_font(const Rasterized_font *font)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Label<Config, With_layout, BMDef>::set_font(const Rasterized_font *font)
     {
         _font.assign(font);
     }
 
-    template<class Config, bool WithLayout>
-    inline void Label<Config, WithLayout>::set_text(const std::u32string &text)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Label<Config, With_layout, BMDef>::set_text(const std::u32string &text)
     {
         _text = text;
     }
 
-    template<class Config, bool With_layout>
-    void Label<Config, With_layout>::init()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Label<Config, With_layout, BMDef>::init()
     {
         _font.translate( this->root_widget()->canvas() );
     }
 
-    template<class Config, bool WithLayout>
-    inline void Label<Config, WithLayout>::render(Canvas_t *cnv, const Point &offs)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Label<Config, With_layout, BMDef>::render(Canvas_t *cnv, const Point &offs)
     {
         fill(cnv, offs, this->rgba_to_native(background_color())); 
 
@@ -68,14 +68,9 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template<class Config, class Parent>
-    Label__Layouter<Config, true, Parent>::Label__Layouter()
-    {
-        // set_padding( default_padding() );
-    }
-
-    template<class Config, class Parent>
-    void Label__Layouter<Config, true, Parent>::init_layout()
+    template <class Config>
+    template <class Class, class Parent>
+    void Label__Layouter<Config, true>::Aspect<Class, Parent>::init_layout()
     {
         //assert(!p()->text().empty());
 
@@ -88,8 +83,9 @@ namespace cppgui {
         }
     }
 
-    template<class Config, class Parent>
-    auto Label__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
+    template <class Config>
+    template <class Class, class Parent>
+    auto Label__Layouter<Config, true>::Aspect<Class, Parent>::get_minimal_size() -> Extents
     {
         //assert(!p()->text().empty());
 
@@ -101,8 +97,9 @@ namespace cppgui {
         return {};
     }
 
-    template<class Config, class Parent>
-    void Label__Layouter<Config, true, Parent>::layout()
+    template <class Config>
+    template <class Class, class Parent>
+    void Label__Layouter<Config, true>::Aspect<Class, Parent>::layout()
     {
         // _layout.compute_layout( p()->extents(), Padding{} ); // TODO _padding);
 

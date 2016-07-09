@@ -5,7 +5,7 @@
 #include <cppgui/Default_font.hpp>
 #include <cppgui/unicode.hpp>
 
-#include "./Main_window.hpp"
+#include "./Test_window.hpp"
 
 // Explicit template instantiations for libCppGUI
 
@@ -15,8 +15,8 @@
 #include <cppgui/Container.ipp>
 #include <cppgui/Slider.ipp>
 
-CPPGUI_SDL_INSTANTIATE_WINDOW(Main_window)
-CPPGUI_INSTANTIATE_GUI_WINDOW(Main_window, GUI_config, cppgui::sdl::Window<Main_window>, cppgui::sdl::OpenGL_adapter)
+CPPGUI_SDL_INSTANTIATE_WINDOW(Test_window)
+CPPGUI_INSTANTIATE_GUI_WINDOW(Test_window, GUI_config, cppgui::sdl::Window<Test_window>, cppgui::sdl::OpenGL_adapter)
 
 //#include "./Text_input_dialog.ipp"
 //template Text_input_dialog<GUI_config, true>;
@@ -26,7 +26,7 @@ static cppgui::Rasterized_font *glyph_font;     // TODO: move this to a reusable
 
 // Class implementation  --------------------------------------------
 
-Main_window::Main_window(): Parent_t("Test window")
+Test_window::Test_window(): Parent_t("Test window")
 {
     using Default_font = GUI_config::Default_font;
     using namespace std::string_literals;
@@ -244,7 +244,7 @@ Main_window::Main_window(): Parent_t("Test window")
     this->init_window(); // will initialize the GUI and must therefore come last here
 }
 
-Main_window::Slider_with_display::Slider_with_display()
+Test_window::Slider_with_display::Slider_with_display()
 {
     _slider.on_value_changed([this](const Value_type &value)
     {
@@ -267,18 +267,18 @@ Main_window::Slider_with_display::Slider_with_display()
     //layout_manager()->set_spacing(3);
 }
 
-void Main_window::Slider_with_display::set_font(const cppgui::Rasterized_font *font)
+void Test_window::Slider_with_display::set_font(const cppgui::Rasterized_font *font)
 {
     _textbox.set_font(font);
 }
 
-void Main_window::Slider_with_display::set_value(Value_type value)
+void Test_window::Slider_with_display::set_value(Value_type value)
 {
     _textbox.set_text( std::to_string(value) );
     _slider.set_value(value);
 }
 
-void Main_window::Slider_with_display::compute_view_from_data()
+void Test_window::Slider_with_display::compute_view_from_data()
 {
     Parent_t::compute_view_from_data();
 

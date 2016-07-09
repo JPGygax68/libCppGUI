@@ -96,7 +96,7 @@ namespace cppgui
     template <class Class, class Parent>
     void Horizontal_box<Config, true>::Aspect<Class, Parent>::layout()
     {
-        auto rect = this->get_inner_rectangle();
+        auto rect = this->content_rectangle(); // this->get_inner_rectangle();
 
         if (_left && _left->widget)
         {
@@ -206,7 +206,7 @@ namespace cppgui
                 This is another reason why this layouter is not suited for precise positioning.
          */
 
-        auto rect = p()->get_inner_rectangle();
+        auto rect = p()->content_rectangle();
 
         // Total of all "weights"
         auto total_weight = this->sum_of_weights();

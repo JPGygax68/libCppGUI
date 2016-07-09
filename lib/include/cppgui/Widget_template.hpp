@@ -18,7 +18,7 @@
 */
 
 #include "./Widget.hpp"
-#include "Box.hpp"
+//#include "Box.hpp"
 
 namespace cppgui {
 

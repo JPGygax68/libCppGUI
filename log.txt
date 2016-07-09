@@ -1,6 +1,25 @@
 2016-07-08
 ==========
 
+21:44
+-----
+
+The first step towards making libCppGUI capable of working with a future designer app consists in simplifying the box model along the lines I've outlied earlier today.
+
+This means:
+
+- A box model template that is parameterized with, on top of the standard parameters Config and With_layout, a boolean that indicates whether the box model will be "dynamic" or "static" (those parameters go to the outer struct, i.e. the aspect "wrapper"); and the aspect template parameters according to the updated standard, which uses a CRTP `Class` parameter on top of the `Parent` parameter used for aspect chaining.
+
+- Two specializations, one for dynamic, one for static configuration.
+  - These two specializations could (should?) inherit from a common that provides common functionality, such as rendering.
+
+- A layouter aspect that can be injected into the box model template. That one does not need the dynamic/static parameter, as it will simply work with whatever the box model main aspect provides.
+
+Also, the `Box` intermediary class, which used to provide box-related functionality based on the data provided by the `Box_model` implementations, should no longer be required, as by definition, the new `Box_model` will work with standardized box model properties.
+
+
+--------
+
 A new challenge is appearing on the horizon, in the form of an expressed need (desire ?) by a customer to be able to design user interfaces manually - as opposed to programmatically, as I was hoping I could convince him would be good enough for the time being.
 
 This desire is "inconvenient", because a) writing a designer application would be a lot of work under the best of conditions, and b) the whole architecture does not feel very structurally stable at the moment, increasing the risk of having to rewrite big parts of such an application in the not-so-distant future.
@@ -37,7 +56,6 @@ Another question is how exactly to implement properties. I think the key here is
 Such metadata should include: the name of the class or aspect, and a list of property descriptors. Each property descriptor should include: the name of the property; its type (string, boolean, float, or enumeration).
 
 One question remains open: how to work with widgets or aspects that can be customized with data types, one example being `Slider<>`, which could benefit from taking the type of its value as a parameter, which would allow it to support integer, floating point, and even rational numbers with the same code base. I think the only practical way to support this is to hardcode all sensible choices into the designer application, which implies that any widget class has at most one such template parameter.
-
 
 
 2016-06-30

@@ -2,10 +2,10 @@
  *  in libCppGUI.
  */
 
-#include "./Main_window.hpp"
+#include "./Test_window.hpp"
 
 #include <cppgui/sdl/Application.ipp>
-template class cppgui::sdl::Application<Main_window>;
+template class cppgui::sdl::Application<Test_window>;
 
 //#include <cppgui/Default_widgets.ipp>
 #include <cppgui/Default_font.ipp>
