@@ -28,6 +28,8 @@ namespace cppgui {
     template<bool With_layout, Box_model_definition BMDef>
     _stringlist<Config>::Base<With_layout, BMDef>::Base()
     {
+        //this->set_padding(0);
+
         add_child(&_vert_sbar);
 
         _vert_sbar.on_navigation([ this ](Navigation_unit unit, const Fraction<int> &delta) {
@@ -267,9 +269,13 @@ namespace cppgui {
     {
         Length sb_width = _vert_sbar.extents().w + _sbar_separator.width;
 
+        /*
         _content_rect = Rectangle{ this->extents() } - 
             Margins{ this->border_width(0), this->border_width(1) + sb_width, 
                 this->border_width(2), this->border_width(3) };
+         */
+        _content_rect = this->content_rectangle();
+        _content_rect.ext.w -= sb_width;
     }
 
     template<class Config>
@@ -281,7 +287,7 @@ namespace cppgui {
 
     template <class Config>
     template <bool With_layout, Box_model_definition BMDef>
-    inline auto _stringlist<Config>::Base<With_layout, BMDef>::fully_visible_item_count() const -> Count
+    auto _stringlist<Config>::Base<With_layout, BMDef>::fully_visible_item_count() const -> Count
     {
         auto h_rect = _content_rect.height(), h_item = item_height() + _item_separator.width;
         auto n = h_rect / h_item, r = h_rect % h_item;

@@ -89,11 +89,11 @@ namespace cppgui {
     class Vertical_scrollbar_base: public 
         Vertical_scrollbar__Layouter<Config, With_layout>::template Aspect <Impl,
         Box_model<Config, With_layout, BMDef>::template Aspect< Impl,
-        Container_base<Config, With_layout> > >
+        Container_base<Impl, Config, With_layout> > >
     {
     public:
-        using Widget_t = typename Widget<Config, With_layout>;
-        using Container_base_t = typename Container_base<Config, With_layout>;
+        using Widget_t = Widget<Config, With_layout>;
+        using Container_base_t = Container_base<Impl, Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
 
         using Native_color = typename Widget_t::Native_color;

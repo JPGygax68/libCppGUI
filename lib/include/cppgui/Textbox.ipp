@@ -32,6 +32,7 @@ namespace cppgui {
     Textbox<Config, With_layout, BMDef>::Textbox():
         _size( 10 ) // TODO: use static method for default
     {
+        this->set_padding(2);
     }
 
     template <class Config, bool With_layout, Box_model_definition BMDef>
@@ -225,35 +226,35 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout, Box_model_definition BMDef>
-    inline void Textbox<Config, With_layout, BMDef>::render(Canvas_t *r, const Point &offs)
+    void Textbox<Config, With_layout, BMDef>::render(Canvas_t *canvas, const Point &offs)
     {
-        fill(r, offs, rgba_to_native({ 1, 1, 1, 1 })); // TODO: (VERY MUCH) PROVISIONAL, GET REAL COLOR!
+        this->fill(canvas, offs, this->rgba_to_native({ 1, 1, 1, 1 })); // TODO: (VERY MUCH) PROVISIONAL, GET REAL COLOR!
 
-        auto pos = offs + position();
+        auto pos = offs + this->position();
 
-        r->set_clipping_rect(pos.x + _inner_rect.pos.x, pos.y + _inner_rect.pos.y, _inner_rect.ext.w, _inner_rect.ext.h);
+        canvas->set_clipping_rect(pos.x + _inner_rect.pos.x, pos.y + _inner_rect.pos.y, _inner_rect.ext.w, _inner_rect.ext.h);
 
         // Selection background
         auto bg_clr = selected_text_background_color();
 
-        r->fill_rect(pos.x + _txpos.x + _scroll_offs + _sel_start_pixel_pos, pos.y + _txpos.y - _ascent, 
-            _sel_end_pixel_pos - _sel_start_pixel_pos, _ascent - _descent, rgba_to_native(bg_clr));
+        canvas->fill_rect(pos.x + _txpos.x + _scroll_offs + _sel_start_pixel_pos, pos.y + _txpos.y - _ascent, 
+            _sel_end_pixel_pos - _sel_start_pixel_pos, _ascent - _descent, this->rgba_to_native(bg_clr));
 
         // Text
         if (!_text.empty() && _first_vis_char_idx < _text.size())
         {
-            r->render_text(_font.get(), pos.x + _txpos.x, pos.y + _txpos.y, 
+            canvas->render_text(_font.get(), pos.x + _txpos.x, pos.y + _txpos.y, 
                 _text.data() + _first_vis_char_idx, _text.size() - _first_vis_char_idx, _inner_rect.ext.w);
         }
 
         // Caret
-        if (has_focus())
+        if (this->has_focus())
         {
-            r->fill_rect(pos.x + _txpos.x + _scroll_offs + _caret_pixel_pos, pos.y + _txpos.y - _ascent, 
-                1, _ascent - _descent, rgba_to_native(caret_color())); // TODO: width from stylesheet
+            canvas->fill_rect(pos.x + _txpos.x + _scroll_offs + _caret_pixel_pos, pos.y + _txpos.y - _ascent, 
+                1, _ascent - _descent, this->rgba_to_native(caret_color())); // TODO: width from stylesheet
         }
 
-        r->cancel_clipping();
+        canvas->cancel_clipping();
     }
 
     template<class Config, bool With_layout, Box_model_definition BMDef>

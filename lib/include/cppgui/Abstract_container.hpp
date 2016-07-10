@@ -97,24 +97,31 @@ namespace cppgui {
         Widget_t *_focused_child = nullptr;
     };
 
-    template <class Config, bool With_layout> class Container_base;
+    template <class Impl, class Config, bool With_layout> class Container_base;
 
     // Container_updater aspect -------------------------------------
 
     // IMPORTANT! This is *different* from the "Updater" aspect, which belongs to Widgets!
 
-    template <class Config, bool With_layout, class Parent>
-    struct Default_Abstract_container_Container_updater: public Parent 
+    template<class Config, bool With_layout>
+    struct Default_Abstract_container_Container_updater
     {
-        using Widget_t = Widget<Config, With_layout>;
-        class Container_base_t: public Container_base<Config, With_layout> { friend struct Default_Abstract_container_Container_updater; };
-        using Root_widget_t = Root_widget_base<Config, With_layout>;
+        template<class Impl, class Parent>
+        struct Aspect
+        {
+            using Widget_t = Widget<Config, With_layout>;
+            using Root_widget_t = Root_widget_base<Config, With_layout>;
 
-        auto p() { return static_cast<Container_base_t*>(static_cast<Container_base<Config, With_layout>*>(this)); }
+            virtual ~Aspect() {}
 
-        virtual void child_invalidated(Widget_t *) = 0;
+            virtual void child_invalidated(Widget_t *) = 0;
 
-        virtual auto container_root_widget() -> Root_widget_t * = 0;
+            virtual auto container_root_widget() -> Root_widget_t * = 0;
+
+        protected:
+            class Container_t: public Impl { friend struct Aspect; };
+            auto p() { return static_cast<Container_t*>(this); }
+        };
     };
 
     // Layouter aspect ----------------------------------------------

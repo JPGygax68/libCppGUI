@@ -45,12 +45,17 @@ private:
 
     class Slider_with_display: public 
         cppgui::Container<GUI_config, true, cppgui::Box_model_definition::run_time,
-            cppgui::Single_column_flow_layout<GUI_config, true>>
+        cppgui::Single_column_flow_layout<GUI_config, true>>
     {
     public:
         using Value_type = cppgui::Vertical_slider<GUI_config, true>::Value_type;
         using Parent_t = cppgui::Container<GUI_config, true, cppgui::Box_model_definition::run_time,
             cppgui::Single_column_flow_layout<GUI_config, true> >;
+
+        constexpr static auto default_margin(int /*dir*/)
+        {
+            return 2;
+        }
 
         Slider_with_display();
 
@@ -59,10 +64,8 @@ private:
 
         void compute_view_from_data() override;
 
-
         auto& textbox() { return _textbox; }
         auto& slider () { return _slider; }
-
 
     private:
         cppgui::Textbox<GUI_config, true, cppgui::Box_model_definition::run_time>   _textbox;
@@ -99,8 +102,4 @@ private:
     std::vector<cppgui::Button<GUI_config, true, cppgui::Box_model_definition::run_time>>       _lb_buttons;
     cppgui::Stringlist<GUI_config, true, cppgui::Box_model_definition::run_time>                _stringlist;
     Slider_with_display                                                                         _slider1, _slider2, _slider3;
-
-    //cppgui::Container<GUI_config, true, cppgui::Fixed_border_and_padding<1, 3>::Box_model>  _menu;
-    //Vertical_slider             _vslider1, _vslider2, _vslider3;
-    //cppgui::Container<GUI_config, true, cppgui::Fixed_border_and_padding<1, 3>::Box_model>   _container1, _container2;
 };

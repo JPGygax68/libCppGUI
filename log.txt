@@ -1,3 +1,18 @@
+2016-07-09
+==========
+
+23:35
+-----
+
+I completed the first phase of replacing the box model concept, and the test app compiles once again and produces decent visuals. Some work however remains to be done:
+
+1) The current implementations of the box model concept do not yet separate out the layouting functionality into separate (sub-) aspects.
+
+2) For the runtime variant, there is currently no way to define default values.
+
+    [I have begun working on this, but didn't finish yet. One thing that needs to be done is to apply the CRTP pattern to `Container_base` (and probably to all `..base` classes), so that `Box_model` get access to overloaded default values defined as constexpr members of the implementation class. 
+    One variant of this would be to turn `container_base` into a standardized aspect. ]
+
 2016-07-08
 ==========
 

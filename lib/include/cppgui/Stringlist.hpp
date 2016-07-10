@@ -46,13 +46,13 @@ namespace cppgui {
         class Base: public 
             String_list__Layouter<Config, With_layout>::template Aspect< Base<With_layout, BMDef>,
             Box_model<Config, With_layout, BMDef>::template Aspect< Base<With_layout, BMDef>,
-            Container_base<Config, With_layout> > >
+            Container_base<Base<With_layout, BMDef>, Config, With_layout> > >
         {
         public:
             using Widget_t = Widget<Config, With_layout>;
-            using Parent_t = Container_base<Config, With_layout>;
+            using Container_base_t = Container_base<Base, Config, With_layout>;
+            using Parent_t = Container_base_t;
             using Canvas_t = typename Widget_t::Canvas_t;
-            using Container_base_t = Container_base<Config, With_layout>;
             using Keyboard = typename Config::Keyboard;
             using Keycode = typename Keyboard::Keycode;
 
@@ -79,6 +79,10 @@ namespace cppgui {
             void mouse_wheel(const Vector &) override;
             void mouse_exit() override;
             void key_down(const Keycode &) override;
+
+            // Box_model aspect
+
+            constexpr static auto default_padding() { return 0; }
 
         protected:
             using Vertical_scrollbar_t = Custom_vertical_scrollbar<Config, With_layout, BMDef>;

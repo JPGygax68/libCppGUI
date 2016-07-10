@@ -44,10 +44,10 @@ namespace cppgui {
     class Scrollbox: public 
         Scrollbox__Layouter<Config, With_layout>::template Aspect< Scrollbox<Config, With_layout, Pane, BMDef>,
         Box_model<Config, With_layout, BMDef>::template Aspect< Scrollbox<Config, With_layout, Pane, BMDef>,
-        Container_base<Config, With_layout> > >
+        Container_base<Scrollbox<Config, With_layout, Pane, BMDef>, Config, With_layout> > >
     {
     public:
-        using Container_t = Container_base<Config, With_layout>;
+        using Container_t = Container_base<Scrollbox, Config, With_layout>;
         using Parent_t = Container_t;
         using Canvas_t = typename Canvas<typename Config::Renderer>;
         using Scrollable_pane_t = Pane; // Scrollable_pane<Config, With_layout>;
@@ -118,7 +118,8 @@ namespace cppgui {
     // Base class
 
     template<class Config, bool With_layout>
-    class Scrollable_pane_base: public Container_base<Config, With_layout>
+    class Scrollable_pane_base: public 
+        Container_base<Scrollable_pane_base<Config, With_layout>, Config, With_layout>
     {
     public:
         //using Navigation_handler = Custom_vertical_scrollbar<Config, With_layout>;

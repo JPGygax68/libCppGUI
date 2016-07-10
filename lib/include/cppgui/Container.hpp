@@ -20,19 +20,10 @@ namespace cppgui
         template<class Class, class Parent> 
         struct Layouter<Class, true, Parent>: Parent
         {
-            using Container_base_t = Container_base<Config, true>;
+            using Container_base_t = Container_base<Class, Config, true>;
 
             auto get_minimal_size() -> Extents override;
             void layout() override;
-
-            template<class ManagerType> auto set_layout_manager() -> ManagerType *
-            {
-                _manager.reset( new ManagerType{} ); 
-                //_manager->set_padding(this->_padding); // TODO: should padding really be a member of Container ?
-
-                return static_cast<ManagerType*>( _manager.get() ); // as a convenience
-            };
-            auto layout_manager() { return _manager.get(); }
 
             auto compute_minimal_size() -> Extents;
             void layout_children(const Extents &);
@@ -50,7 +41,7 @@ namespace cppgui
     class Container: public 
         Layouter::template Aspect< Container<Config, With_layout, BMDef, Layouter>,
         Box_model<Config, With_layout, BMDef>::template Aspect< Container<Config, With_layout, BMDef, Layouter>,
-        Container_base<Config, With_layout> > >
+        Container_base<Container<Config, With_layout, BMDef, Layouter>, Config, With_layout> > >
     {};
 
 } // ns cppgui

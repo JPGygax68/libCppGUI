@@ -24,9 +24,72 @@
 namespace cppgui
 {
     
-    #ifndef NOT_DEFINED
-
     enum class Box_model_definition { build_time, run_time };
+
+    #ifdef NOT_DEFINED
+
+    template<bool PerDirection>
+    struct _Box_model_initializer 
+    {
+        template<class Impl, class Parent>
+        struct Aspect {};
+    };
+
+    template<>
+    struct _Box_model_initializer<false>
+    {
+        template<class Impl, class Parent>
+        struct Aspect
+        {
+            Aspect()
+            {
+                p()->set_margin      ( p()->default_margin      () );
+                p()->set_border_width( p()->default_border_width() );
+                p()->set_padding     ( p()->default_margin      () );
+
+                p()->set_border_color( p()->default_border_color() );
+            }
+
+            auto p() { return static_cast<Impl*>(this); }
+        };
+    };
+
+    template<>
+    struct _Box_model_initializer<true>
+    {
+        template<class Impl, class Parent>
+        struct Aspect
+        {
+            Aspect()
+            {
+                p()->set_margin      ( 0, p()->default_margin      (0) );
+                p()->set_border_width( 0, p()->default_border_width(0) );
+                p()->set_padding     ( 0, p()->default_margin      (0) );
+                p()->set_border_color( 0, p()->default_border_color(0) );
+
+                p()->set_margin      ( 1, p()->default_margin      (1) );
+                p()->set_border_width( 1, p()->default_border_width(1) );
+                p()->set_padding     ( 1, p()->default_margin      (1) );
+                p()->set_border_color( 1, p()->default_border_color(1) );
+
+                p()->set_margin      ( 2, p()->default_margin      (2) );
+                p()->set_border_width( 2, p()->default_border_width(2) );
+                p()->set_padding     ( 2, p()->default_margin      (2) );
+                p()->set_border_color( 2, p()->default_border_color(2) );
+
+                p()->set_margin      ( 3, p()->default_margin      (3) );
+                p()->set_border_width( 3, p()->default_border_width(3) );
+                p()->set_padding     ( 3, p()->default_margin      (3) );
+                p()->set_border_color( 3, p()->default_border_color(3) );
+            }
+
+            auto p() { return static_cast<Impl*>(this); }
+
+            auto p() { return static_cast<Impl*>(this); }
+        };
+    };
+
+    #endif
 
     // Base class, providing common functionality
 
@@ -36,9 +99,6 @@ namespace cppgui
         template<class Impl, class Parent>
         struct Aspect: Parent
         {
-            //constexpr bool has_border () const { return p()->border_width() > 0; };
-            //constexpr bool has_padding() const { return p()->padding     () > 0; };
-
             constexpr auto box_rectangle() const -> Rectangle
             {
                 return {
@@ -68,7 +128,7 @@ namespace cppgui
             }
 
             // TODO: this belongs into the Layouter aspect
-            auto position_text_element(const Text_bounding_box &bbox, Alignment minor_align, Alignment major_align) -> Point
+            auto position_text_element(const Text_bounding_box &bbox, Alignment minor_align, Alignment major_align) const -> Point
             {
                 auto r = this->content_rectangle(); // this->extents() );
                 Point pos;
@@ -106,6 +166,12 @@ namespace cppgui
                 return pos;
             }
 
+            auto border_color(int /*dir*/)
+            {
+                // TODO: return value that takes enabled(), hovered(), focused() properties into account
+                return Color{ 0, 0, 0, 1 }; // TODO: styling!
+            }
+
         protected:
             struct Implementation: Impl { friend struct Aspect; };
             auto p() { return static_cast<Implementation*>(this); }
@@ -140,16 +206,10 @@ namespace cppgui
         template<class Impl, class Parent>
         struct Aspect: Box_model_base<Config, With_layout>::template Aspect<Impl, Parent>
         {
-            // Default values, override in implementation
-            static constexpr auto margin      (int border) { return 0; }
-            static constexpr auto border_width(int border) { return 0; }
-            static constexpr auto padding     (int border) { return 0; }
-
-            auto border_color(int border)
-            {
-                // TODO: return value that takes enabled(), hovered(), focused() properties into account
-                return Color{ 0, 0, 0, 1 };
-            }
+            // All setters are no-ops in the build-time implementation
+            static void set_margin      (int dir, Width /*w*/) {}
+            static void set_border_width(int dir, Width /*w*/) {}
+            static void set_padding     (int dir, Width /*w*/) {}
         };
     };
 
@@ -164,15 +224,43 @@ namespace cppgui
         template<class Impl, class Parent>
         struct Aspect: Box_model_base<Config, With_layout>::template Aspect<Impl, Parent>
         {
-            auto margin      (int /*border*/) const { return _margin; }
-            auto border_width(int /*border*/) const { return _border_width; }
-            auto padding     (int /*border*/) const { return _padding; }
+            // Default values, override in implementations
+            static constexpr auto default_margin      (int /*dir*/) { return 0; }
+            static constexpr auto default_border_width(int /*dir*/) { return 0; }
+            static constexpr auto default_padding     (int /*dir*/) { return 0; }
 
-            auto border_color(int /*border*/)
+            Aspect()
             {
-                // TODO: adapt to enabled(), hovered(), focused()
-                return _border_color;
+                // The following will all be no-ops in case of build-time box model definition
+
+                p()->set_margin      ( 0, p()->default_margin      (0) );
+                p()->set_border_width( 0, p()->default_border_width(0) );
+                p()->set_padding     ( 0, p()->default_margin      (0) );
+
+                p()->set_margin      ( 1, p()->default_margin      (1) );
+                p()->set_border_width( 1, p()->default_border_width(1) );
+                p()->set_padding     ( 1, p()->default_margin      (1) );
+
+                p()->set_margin      ( 2, p()->default_margin      (2) );
+                p()->set_border_width( 2, p()->default_border_width(2) );
+                p()->set_padding     ( 2, p()->default_margin      (2) );
+
+                p()->set_margin      ( 3, p()->default_margin      (3) );
+                p()->set_border_width( 3, p()->default_border_width(3) );
+                p()->set_padding     ( 3, p()->default_margin      (3) );
             }
+
+            void set_margin      (int /*dir*/, Width w) { _margin = w; }
+            void set_border_width(int /*dir*/, Width w) { _border_width = w; }
+            void set_padding     (int /*dir*/, Width w) { _padding = w; }
+
+            void set_margin      (Width w) { _margin = w; }
+            void set_border_width(Width w) { _border_width = w; }
+            void set_padding     (Width w) { _padding = w; }
+
+            auto margin      (int /*dir*/) const { return _margin; }
+            auto border_width(int /*dir*/) const { return _border_width; }
+            auto padding     (int /*dir*/) const { return _padding; }
 
             auto add_boxing(const Extents &ext) -> Extents
             {
@@ -208,100 +296,10 @@ namespace cppgui
         private:
             auto p() { return static_cast<Impl*>(this); }
 
-            Length      _margin = 0;
-            Length      _border_width = 0;
-            Color       _border_color = { 0, 0, 0, 1 };
-            Length      _padding = 0;
+            Width       _margin = 0;
+            Width       _border_width = 1;
+            Width       _padding = 2;
         };
     };
-
-    #else
-
-    template<class Impl, class Parent>
-    struct Box_model: Parent
-    {
-        static constexpr bool has_border () { return false; };
-        static constexpr bool has_padding() { return false; };
-
-        // static constexpr auto inner_rectangle(const Extents &ext) { return ext; }
-
-        constexpr auto inner_rectangle(const Extents &ext) const -> Rectangle
-        {
-            return { 
-                { p()->get_distance(3), p()->get_distance(0) }, 
-                { ext.w - p()->get_distance(3) - p()->get_distance(1), ext.h - p()->get_distance(0) - p()->get_distance(2) } 
-            };
-        }
-
-        static constexpr auto border_rectangle(const Extents &ext) -> Rectangle
-        {
-            // TODO: margins!
-            return { { 0, 0 }, ext };
-        }
-
-        constexpr auto get_margin(int /*border*/) const { return 0; }
-
-        constexpr auto get_border_width(int /*border*/) const { return 0; }
-        
-        // TODO: indirect via protected method (does not need default values for parameters) ?
-        constexpr auto get_border_color(int border, bool enabled = true, bool hovered = false, bool focused = false) const { return Color{ 0, 0, 0, 1}; }
-        
-        constexpr auto get_padding(int /*border*/) const { return 0; }
-        
-        constexpr auto get_distance(int border) const { return p()->get_margin(border) + p()->get_border_width(border) + p()->get_padding(border); }
-
-    private:
-        auto p() { return static_cast<Impl*>(this); }
-        auto p() const { return static_cast<const Impl*>(this); }
-    };
-    
-    template<class Parent>
-    struct Simple_box_model: Box_model<Simple_box_model<Parent>, Parent>
-    {
-        //static constexpr auto inner_rectangle(const Extents &ext) { return { Extents{ 0, 0 }, ext }; }
-        //static constexpr auto get_border_width(int border) { return 0; }
-        //static constexpr auto get_padding(int border) { return 0; }
-    };
-
-    /** This box model has no border, no margin and only a fixed-width padding.
-     */
-    template<Width Width, class Parent>
-    struct Fixed_padding_box_model: Box_model<Fixed_padding_box_model<Width, Parent>, Parent>
-    {
-        static constexpr bool has_padding() { return true; }
-
-        static constexpr auto get_padding(int /*border*/) { return Width; }
-    };
-
-    template<Width BorderWidth, Width PaddingWidth, class Parent>
-    struct Fixed_border_and_padding_box_model: 
-        Box_model<Fixed_border_and_padding_box_model<BorderWidth, PaddingWidth, Parent>, 
-            Parent>
-    {
-        static constexpr bool has_border () { return true; }
-        static constexpr bool has_padding() { return true; }
-
-        static constexpr auto get_border_width(int /*border*/) { return BorderWidth; }
-
-        auto get_border_color(int /*border*/, bool /*enabled*/ = true, bool hovered = false, bool /*focused*/ = false) const
-        {
-            if (hovered)
-                return Color{ 0, 0, 0.5f, 1};
-            else
-                return Color{ 0, 0, 0, 1};
-        }
-
-        static constexpr auto get_padding(int /*border*/) { return PaddingWidth; }
-    };
-
-    // Wrappers that give access to standardized templates (taking Parent for parameter = "aspects")
-
-    template<Width BorderWidth, Width PaddingWidth>
-    struct Fixed_border_and_padding
-    {
-        template<class Parent> using Box_model = Fixed_border_and_padding_box_model<BorderWidth, PaddingWidth, Parent>;
-    };
-
-    #endif
 
 } // ns cppgui

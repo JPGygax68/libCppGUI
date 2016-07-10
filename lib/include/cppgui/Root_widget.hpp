@@ -36,11 +36,11 @@ namespace cppgui {
     // TODO: confer the ability to render a background ?
 
     template <class Config, bool With_layout>
-    class Root_widget_base: 
-        public Root_widget_base__Layouter<Config, With_layout, 
-            typename Config::template Root_widget__Container_updater<
-                typename Config::template Root_widget__Updater< 
-                    Container_base<Config, With_layout> > > >
+    class Root_widget_base: public 
+        Root_widget_base__Layouter<Config, With_layout, 
+        typename Config::template Root_widget__Container_updater<
+        typename Config::template Root_widget__Updater< 
+        Container_base<Root_widget_base<Config, With_layout>, Config, With_layout> > > >
     {
     public:
         //using Renderer = typename GUIConfig::Renderer;
@@ -49,7 +49,7 @@ namespace cppgui {
         using Abstract_widget_t = typename Abstract_widget<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
         //using Abstract_container_t = Abstract_container<Config, With_layout>;
-        using Container_base_t = Container_base<Config, With_layout>;
+        using Container_base_t = Container_base<Root_widget_base, Config, With_layout>;
         //using Font_mapper = typename Config::Font_mapper;
         using Font_handle = typename Canvas_t::Font_handle;
         using Cursor_handle = typename Config::Mouse::Cursor_handle;
@@ -138,11 +138,11 @@ namespace cppgui {
 
     // Default implementation for Container_updater aspect
 
-    template <class Config, bool With_layout, class Parent>
+    template <class Impl, class Config, bool With_layout, class Parent>
     struct Default__Root_widget__Container_updater: public Parent
     {
         using Widget_t = Widget<Config, With_layout>;
-        using Container_base_t = Container_base<Config, With_layout>;
+        using Container_base_t = Container_base<Impl, Config, With_layout>;
         using Root_widget_t = Root_widget_base<Config, With_layout>;
 
         // Container_updater contract
@@ -158,7 +158,7 @@ namespace cppgui {
         void unlock() { if (_must_update) p()->invalidate(); }
 
     private:
-        auto p() { return static_cast<Root_widget_t*>(static_cast<Root_widget_base<Config, With_layout>*>(this)); }
+        auto p() { return static_cast<Impl*>(this); }
 
         bool                _must_update;
     };

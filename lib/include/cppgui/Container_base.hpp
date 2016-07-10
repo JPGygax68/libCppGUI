@@ -25,14 +25,14 @@ namespace cppgui {
 
     // Forward declaration
 
-    template <class Config, bool With_layout> class Container_base;
+    template<class Impl, class Config, bool With_layout> class Container_base;
 
     // Internal (templated) pseudo-namespace 
 
     template<class Config>
     struct _container_base
     {
-        template <bool With_layout, class Parent> struct Layouter;
+        template <class Impl, bool With_layout, class Parent> struct Layouter;
 
         // Base class -----------------------------------------------
 
@@ -45,17 +45,17 @@ namespace cppgui {
 
         // Dummy implementation
 
-        template<class Parent>
-        struct Layouter<false, Parent>: Parent
+        template<class Impl, class Parent>
+        struct Layouter<Impl, false, Parent>: Parent
         {            
         };
 
         // Real implementation
 
-        template<class Parent>
-        struct Layouter<true, Parent>: Parent
+        template<class Impl, class Parent>
+        struct Layouter<Impl, true, Parent>: Parent
         {
-            using Widget_t = typename Widget<Config, true>;
+            using Widget_t = Widget<Config, true>;
 
             // Contract
 
@@ -69,9 +69,8 @@ namespace cppgui {
             void drop_child  (Widget_t *);
 
         private:
-            class Container_base_t: public Container_base<Config, true> { friend struct Layouter; };
+            class Container_base_t: public Impl { friend struct Layouter; };
             auto p() { return static_cast<Container_base_t*>(this); }
-
         };
     };
 
@@ -81,11 +80,11 @@ namespace cppgui {
         Abstract_container with those of Widget.
      */
 
-    template <class Config, bool With_layout>
+    template <class Impl, class Config, bool With_layout>
     class Container_base: public
         Config::template Container_base__Container_updater<
-            _container_base<Config>::template Layouter<With_layout,
-                _container_base<Config>::template _Base<With_layout> > >
+        _container_base<Config>::template Layouter<With_layout,
+        _container_base<Config>::template _Base<With_layout> > >
     {
     public:
         using Renderer = typename Config::Renderer;
@@ -137,17 +136,21 @@ namespace cppgui {
 
     // Container_base_updater aspect
 
-    template <class Config, bool With_layout, class Parent>
+    // TODO: normalized form (nested) ?
+
+    template <class Impl, class Config, bool With_layout, class Parent>
     struct Default__Container_base__Container_updater: Parent 
     {
-        class Container_base_t: public Container_base<Config, true> { friend struct Default__Container_base__Container_updater; };
         using Widget_t = Widget<Config, true>;
-
-        auto p() { return static_cast<Container_base_t*>(static_cast<Container_base<Config, true>*>(this)); }
 
         void child_invalidated(Widget_t *) override;
 
         auto container_root_widget() { return p()->root_widget(); }
+
+    protected:
+        class Container_base_t: public Impl { friend struct Default__Container_base__Container_updater; };
+        auto p() { return static_cast<Container_base_t*>(this); }
+
     };
 
 } // ns cppgui

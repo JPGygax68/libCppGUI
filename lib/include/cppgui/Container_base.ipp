@@ -27,8 +27,8 @@ namespace cppgui {
 
     // Main class ---------------------------------------------------
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::init()
+    template<class Impl, class Config, bool With_layout>
+    void Container_base<Impl, Config, With_layout>::init()
     {
         this->init_child_resources();
 
@@ -36,15 +36,15 @@ namespace cppgui {
     }
 
     template <class Config, bool With_layout>
-    void Container_base<Config, With_layout>::compute_view_from_data()
+    void Container_base<Impl, Config, With_layout>::compute_view_from_data()
     {
         this->compute_child_views();
 
         this->Widget_t::compute_view_from_data();
     }
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::switch_focused_child(Widget_t *child)
+    template<class Impl, class Config, bool With_layout>
+    void Container_base<Impl, Config, With_layout>::switch_focused_child(Widget_t *child)
     {
         // Inform former focused child, update focused_child property
         Abstract_container_t::switch_focused_child(child);
@@ -54,8 +54,8 @@ namespace cppgui {
         this->pass_up_and_notify_focus();
     }
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::gained_focus()
+    template<class Impl, class Config, bool With_layout>
+    void Container_base<Impl, Config, With_layout>::gained_focus()
     {
         if (this->_focused_child)
         {
@@ -65,8 +65,8 @@ namespace cppgui {
         Widget_t::gained_focus();
     }
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::loosing_focus()
+    template<class Impl, class Config, bool With_layout>
+    void Container_base<Impl, Config, With_layout>::loosing_focus()
     {
         Widget_t::loosing_focus();
 
@@ -77,13 +77,13 @@ namespace cppgui {
     }
 
     template <class Config, bool With_layout>
-    void Container_base<Config, With_layout>::mouse_motion(const Point &pos)
+    void Container_base<Impl, Config, With_layout>::mouse_motion(const Point &pos)
     {
         this->container_mouse_motion(pos);
     }
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
+    template<class Impl, class Config, bool With_layout>
+    void Container_base<Impl, Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
     {
         // TODO: call Widget_t::mouse_button() if container_mouse_button() did nothing
         this->container_mouse_button(pos, button, state, clicks);
@@ -91,20 +91,20 @@ namespace cppgui {
         Parent_t::mouse_button(pos, button, state, clicks);
     }
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::mouse_wheel(const Vector &dist)
+    template<class Impl, class Config, bool With_layout>
+    void Container_base<Impl, Config, With_layout>::mouse_wheel(const Vector &dist)
     {
         this->container_mouse_wheel(dist);
     }
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::text_input(const char32_t *text, size_t size)
+    template<class Impl, class Config, bool With_layout>
+    void Container_base<Impl, Config, With_layout>::text_input(const char32_t *text, size_t size)
     {
         this->container_text_input(text, size);
     }
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::key_down(const Keycode &key)
+    template<class Impl, class Config, bool With_layout>
+    void Container_base<Impl, Config, With_layout>::key_down(const Keycode &key)
     {
         // If a child has focused, pass it on to that child, otherwise fall back to
         // Widget default behaviour (i.e. try to handle locally, then bubble back up)
@@ -118,8 +118,8 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    bool Container_base<Config, With_layout>::handle_key_down(const Keycode &key)
+    template<class Impl, class Config, bool With_layout>
+    bool Container_base<Impl, Config, With_layout>::handle_key_down(const Keycode &key)
     {
         if (Config::Keyboard::is_tab(key))
         {
@@ -131,8 +131,8 @@ namespace cppgui {
         return container_key_down(key);
     }
 
-    template<class Config, bool With_layout>
-    bool Container_base<Config, With_layout>::cycle_focus_forward()
+    template<class Impl, class Config, bool With_layout>
+    bool Container_base<Impl, Config, With_layout>::cycle_focus_forward()
     {
         assert(this->has_focus());
 
@@ -168,8 +168,8 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    bool Container_base<Config, With_layout>::cycle_focus_backward()
+    template<class Impl, class Config, bool With_layout>
+    bool Container_base<Impl, Config, With_layout>::cycle_focus_backward()
     {
         assert(this->has_focus());
 
@@ -213,16 +213,16 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::mouse_exit()
+    template<class Impl, class Config, bool With_layout>
+    void Container_base<Impl, Config, With_layout>::mouse_exit()
     {
         this->container_mouse_exit();
 
         Widget_t::mouse_exit();
     }
 
-    template<class Config, bool With_layout>
-    void Container_base<Config, With_layout>::child_key_down(const Keycode & key)
+    template<class Impl, class Config, bool With_layout>
+    void Container_base<Impl, Config, With_layout>::child_key_down(const Keycode & key)
     {
         if (!handle_key_down(key))
         {
@@ -230,24 +230,24 @@ namespace cppgui {
         }
     }
 
-    template <class Config, bool With_layout>
-    void Container_base<Config, With_layout>::render(Canvas_t *cv, const Point &offs)
+    template<class Impl, class Config, bool With_layout>
+    void Container_base<Impl, Config, With_layout>::render(Canvas_t *cv, const Point &offs)
     {
         fill(cv, offs, this->background_color());
 
         render_children(cv, offs + this->position());
     }
 
-    template <class Config, bool With_layout>
-    auto Container_base<Config, With_layout>::container_absolute_position() -> Point
+    template<class Impl, class Config, bool With_layout>
+    auto Container_base<Impl, Config, With_layout>::container_absolute_position() -> Point
     {
         return this->container()->container_absolute_position() + this->position();
     }
 
     // Container_updater aspect -----------------------------------------------
 
-    template<class Config, bool With_layout, class Parent>
-    void Default__Container_base__Container_updater<Config, With_layout, Parent>::child_invalidated(Widget_t *)
+    template <class Impl, class Config, bool With_layout, class Parent>
+    void Default__Container_base__Container_updater<Impl, Config, With_layout, Parent>::child_invalidated(Widget_t *)
     {
         p()->container()->child_invalidated(p());
     }
@@ -255,15 +255,15 @@ namespace cppgui {
     // Layouter aspect --------------------------------------------------------
 
     template <class Config>
-    template <class Parent>
-    void _container_base<Config>::Layouter<true, Parent>::init_layout()
+    template <class Impl, class Parent>
+    void _container_base<Config>::Layouter<Impl, true, Parent>::init_layout()
     {
         p()->init_children_layout();
     }
 
     template <class Config>
-    template <class Parent>
-    void _container_base<Config>::Layouter<true, Parent>::layout()
+    template <class Impl, class Parent>
+    void _container_base<Config>::Layouter<Impl, true, Parent>::layout()
     {
         for (auto child : p()->children())
         {
@@ -272,8 +272,8 @@ namespace cppgui {
     }
 
     template <class Config>
-    template <class Parent>
-    void _container_base<Config>::Layouter<true, Parent>::insert_child(Widget_t *child)
+    template <class Impl, class Parent>
+    void _container_base<Config>::Layouter<Impl, true, Parent>::insert_child(Widget_t *child)
     {
         p()->add_child(child);
 
@@ -281,8 +281,8 @@ namespace cppgui {
     }
 
     template <class Config>
-    template <class Parent>
-    void _container_base<Config>::Layouter<true, Parent>::drop_child(Widget_t *child)
+    template <class Impl, class Parent>
+    void _container_base<Config>::Layouter<Impl, true, Parent>::drop_child(Widget_t *child)
     {
         if (this->contains_widget( this->root_widget()->mouse_holder() ))
         {
