@@ -48,7 +48,7 @@ namespace cppgui {
         using Button_t             = Button<Config, With_layout, BMDef>;
         using Glyph_button_t       = Glyph_button<Config, With_layout, BMDef>;
         using Checkbox_t           = Checkbox<Config, With_layout, BMDef>;
-        using Container_base_t     = Container_base<Config, With_layout>;
+        //using Container_base_t     = Container_base<Config, With_layout>;
         //using Container_t          = Container<Config, With_layout, BMDef, TODO: layouter>;
         using Vertical_scrollbar_t = Vertical_scrollbar<Config, With_layout, BMDef>;
         using Listbox_t            = Listbox<Config, With_layout, BMDef>;
