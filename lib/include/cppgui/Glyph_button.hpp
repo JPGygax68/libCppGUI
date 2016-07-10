@@ -59,6 +59,8 @@ namespace cppgui {
         using Pushed_handler = typename Widget_t::Pushed_handler;
         using Font_resource = typename Widget_t::Font_resource;
 
+        static constexpr auto default_padding(int /*dir*/) { return 2; }
+
         void on_pushed(Pushed_handler);
 
         void set_font(const Rasterized_font *font) { _label_font = font; }

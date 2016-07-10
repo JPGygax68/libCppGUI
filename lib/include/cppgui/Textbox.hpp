@@ -52,6 +52,8 @@ namespace cppgui {
         using Font_resource = typename Widget_t::Font_resource;
         using Done_handler  = std::function<void(const std::u32string&)>;
 
+        static constexpr auto default_padding(int /*dir*/) { return 2; }
+
         Textbox();
 
         // TODO: on_blur() ? on_text_changed() ?

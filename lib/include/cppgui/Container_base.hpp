@@ -92,7 +92,7 @@ namespace cppgui {
         using Widget_t = Widget<Config, With_layout>;
         using Parent_t = Widget_t;
         using Canvas_t = typename Widget_t::Canvas_t;
-        using Abstract_container_t = typename Abstract_container<Config, With_layout>;
+        using Abstract_container_t = Abstract_container<Config, With_layout>;
         using Keyboard = typename Config::Keyboard;
         using Keycode = typename Keyboard::Keycode;
 
