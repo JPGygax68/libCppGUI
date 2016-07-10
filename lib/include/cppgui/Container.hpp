@@ -46,10 +46,10 @@ namespace cppgui
 
     // Public class -------------------------------------------------
 
-    template<class Config, bool With_layout, Box_model_definition BMDef, class Layouter>
+    template<class Class, class Config, bool With_layout, Box_model_definition BMDef, class Layouter>
     class Container: public 
-        Layouter::template Aspect< Container<Config, With_layout, BMDef, Layouter>,
-        Box_model<Config, With_layout, BMDef>::template Aspect< Container<Config, With_layout, BMDef, Layouter>,
+        Layouter::template Aspect< Class,
+        Box_model<Config, With_layout, BMDef>::template Aspect< Class,
         Container_base<Config, With_layout> > >
     {};
 

@@ -42,18 +42,15 @@ public:
 private:
     
     class Slider_with_display: public 
-        cppgui::Container<GUI_config, true, cppgui::Box_model_definition::run_time,
+        cppgui::Container<Slider_with_display, GUI_config, true, cppgui::Box_model_definition::run_time,
         cppgui::Single_column_flow_layout<GUI_config, true>>
     {
     public:
         using Value_type = cppgui::Vertical_slider<GUI_config, true>::Value_type;
-        using Parent_t = cppgui::Container<GUI_config, true, cppgui::Box_model_definition::run_time,
+        using Parent_t = cppgui::Container<Slider_with_display, GUI_config, true, cppgui::Box_model_definition::run_time,
             cppgui::Single_column_flow_layout<GUI_config, true> >;
 
-        constexpr static auto default_padding(int /*dir*/)
-        {
-            return 2;
-        }
+        constexpr static auto default_padding(int /*dir*/) { return 2; }
 
         Slider_with_display();
 
@@ -71,7 +68,8 @@ private:
     };
 
     template<class Layout>
-    using Panel = cppgui::Container<GUI_config, true, cppgui::Box_model_definition::run_time, Layout>;
+    class Panel: public cppgui::Container<Panel<Layout>, GUI_config, true, cppgui::Box_model_definition::run_time, Layout> {};
+
     using Single_line_layout = cppgui::Single_row_flow_layout<GUI_config, true>;
     using Horizontal_box_layout = cppgui::Horizontal_box<GUI_config, true>;
 
