@@ -68,7 +68,14 @@ private:
     };
 
     template<class Layout>
-    class Panel: public cppgui::Container<Panel<Layout>, GUI_config, true, cppgui::Box_model_definition::run_time, Layout> {};
+    class Left_panel: public cppgui::Container<Left_panel<Layout>, GUI_config, true, cppgui::Box_model_definition::run_time, Layout> {};
+
+    template<class Layout>
+    class Right_panel: public cppgui::Container<Right_panel<Layout>, GUI_config, true, cppgui::Box_model_definition::run_time, Layout>
+    {
+    protected:
+        constexpr static auto default_padding(int /*dir*/) { return 2; }
+    };
 
     using Single_line_layout = cppgui::Single_row_flow_layout<GUI_config, true>;
     using Horizontal_box_layout = cppgui::Horizontal_box<GUI_config, true>;
@@ -76,12 +83,12 @@ private:
     using Root_widget_t = cppgui::Root_widget<GUI_config, true, cppgui::Box_model_definition::run_time, 
         cppgui::Horizontal_box<GUI_config, true>>;
     
-    Root_widget_t                                                                   _root_widget;
+    Root_widget_t                                                                               _root_widget;
 
-    Panel<Horizontal_box_layout>                                                    _left_panel;
-    Panel<Single_line_layout>                                                       _right_panel;
+    Left_panel<Horizontal_box_layout>                                                           _left_panel;
+    Right_panel<Single_line_layout>                                                             _right_panel;
 
-    cppgui::Listbox<GUI_config, true, cppgui::Box_model_definition::run_time>       _listbox;
+    cppgui::Listbox<GUI_config, true, cppgui::Box_model_definition::run_time>                   _listbox;
 
     cppgui::Label<GUI_config, true, cppgui::Box_model_definition::run_time>                     _label;
     cppgui::Button<GUI_config, true, cppgui::Box_model_definition::run_time>                    _button;

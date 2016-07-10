@@ -20,6 +20,9 @@
 #include "./Listbox.hpp"
 
 #include "./Scrollbox.ipp"
+#include "./Box_model.ipp"
+
+#pragma warning(disable: 4505)
 
 namespace cppgui {
 

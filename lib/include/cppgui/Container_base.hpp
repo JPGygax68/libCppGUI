@@ -19,7 +19,7 @@
 
 #include "./Widget.hpp"
 #include "./Abstract_container.hpp"
-//#include "./Box.hpp"
+#include "./Box_model.hpp"
 
 namespace cppgui {
 

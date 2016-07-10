@@ -52,6 +52,8 @@ Main_window::Main_window(): Parent_t("Main window")
     _left_panel.set_left(&_stringlist, {1, 1});
     _left_panel.set_background_color({0.8f, 0.8f, 0.8f, 1});
 
+    // Center panel
+
     // Right panel
 
     _right_panel.set_id("RIGHT PANEL");
@@ -74,8 +76,9 @@ Main_window::Main_window(): Parent_t("Main window")
     // Root widget
 
     _root_widget.set_background_color({ 0, 0.6f, 0.2f, 1 });
-    _root_widget.set_left (&_left_panel , {1, 4});
-    _root_widget.set_right(&_right_panel, {1, 4});
+    _root_widget.set_left  (&_left_panel , {1, 4});
+    _root_widget.set_center(&_center_panel);
+    _root_widget.set_right (&_right_panel, {1, 4});
 
     _root_widget.on_invalidated([this]() { invalidate(); });
 

@@ -18,9 +18,11 @@
 #include "./unicode.hpp"
 #include "./Stringlist.hpp"
 
-#include "./Box.ipp"
+#include "./Box_model.ipp"
 #include "./Container_base.ipp"
 #include "./Vertical_scrollbar.ipp"
+
+#pragma warning(disable: 4505)
 
 namespace cppgui {
 

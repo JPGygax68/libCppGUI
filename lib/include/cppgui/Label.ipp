@@ -24,7 +24,9 @@
 #include "./Label.hpp"
 
 #include "./Widget.ipp"
-#include "./Box.ipp"
+#include "./Box_model.ipp"
+
+#pragma warning(disable: 4505)
 
 namespace cppgui {
 

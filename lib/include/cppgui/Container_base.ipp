@@ -17,11 +17,14 @@
     limitations under the License.
 */
 
+#pragma warning(disable: 4505)
+
 #include <algorithm>
 
 #include "./Container_base.hpp"
 
 #include "./Abstract_container.ipp"
+#include "./Box_model.ipp"
 
 namespace cppgui {
 

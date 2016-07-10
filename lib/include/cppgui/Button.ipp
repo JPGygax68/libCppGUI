@@ -19,7 +19,7 @@ limitations under the License.
 #include "./Button.hpp"
 
 #include "./Widget.ipp"
-#include "./Box.ipp"
+#include "./Box_model.ipp"
 
 namespace cppgui {
 

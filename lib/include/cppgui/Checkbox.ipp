@@ -1,3 +1,5 @@
+#pragma once
+
 /*  libCppGUI - A GUI library for C++11/14
     
     Copyright 2016 Hans-Peter Gygax
@@ -15,6 +17,8 @@
     limitations under the License.
 */
 
+#pragma warning(disable: 4505)
+
 #include <cassert>
 #include <memory>
 
@@ -24,6 +28,8 @@
 #include "./Icon_resources.hpp"
 
 #include "./Checkbox.hpp"
+
+#include "./Box_model.ipp"
 
 namespace cppgui {
 
@@ -46,21 +52,21 @@ namespace cppgui {
     template<class Config, bool With_layout, Box_model_definition BMDef>
     void Checkbox<Config, With_layout, BMDef>::init()
     {
-        _label_font.translate( root_widget()->canvas() );
-        _glyph_font.translate( root_widget()->canvas() );
+        _label_font.translate( this->root_widget()->canvas() );
+        _glyph_font.translate( this->root_widget()->canvas() );
     }
 
     template<class Config, bool With_layout, Box_model_definition BMDef>
     void Checkbox<Config, With_layout, BMDef>::render(Canvas_t *cv, const Point & offs)
     {
-        auto pos = offs + position();
+        auto pos = offs + this->position();
 
         fill(cv, offs, {1, 1, 0.5f, 1});
 
         cv->render_text(_label_font.get(), pos.x + _label_pos.x, pos.y + _label_pos.y, _label.data(), _label.size());
 
-        fill_rect(cv, _box_rect, pos, paper_color());
-        draw_borders(cv, _box_rect, pos, stroke_width(), stroke_color());
+        fill_rect(cv, _box_rect, pos, this->paper_color());
+        draw_borders(cv, _box_rect, pos, this->stroke_width(), this->stroke_color());
 
         if (_checked)
         {
@@ -75,7 +81,7 @@ namespace cppgui {
         {
             _checked = ! _checked;
             if (_state_change_handler) _state_change_handler(_checked);
-            invalidate();
+            this->invalidate();
         }
         else {
             Widget_t::mouse_click(pos, button, count);
@@ -110,8 +116,8 @@ namespace cppgui {
     {
         // TODO: supporting aligning on a baseline ?
 
-        auto baseline = std::max(_label_bounds.y_max, _em_bounds.y_max + stroke_width() + padding() );
-        auto h = static_cast<Length>(baseline + std::max(- _label_bounds.y_min, - _em_bounds.y_min + stroke_width() + padding()));
+        auto baseline = std::max(_label_bounds.y_max, _em_bounds.y_max + this->stroke_width() + padding() );
+        auto h = static_cast<Length>(baseline + std::max(- _label_bounds.y_min, - _em_bounds.y_min + this->stroke_width() + padding()));
         baseline += static_cast<Position>((p()->extents().h - h) / 2);
 
         p()->_label_pos = { 0,  baseline };
@@ -125,7 +131,7 @@ namespace cppgui {
             baseline + p()->_tick_descr.origin_delta.y
         };
         p()->_box_rect = { 
-            x, baseline - _em_bounds.y_max - padding() - stroke_width(),
+            x, baseline - _em_bounds.y_max - padding() - this->stroke_width(),
             _box_edge, _box_edge
         };
     }

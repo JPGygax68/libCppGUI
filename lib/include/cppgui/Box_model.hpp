@@ -99,72 +99,12 @@ namespace cppgui
         template<class Impl, class Parent>
         struct Aspect: Parent
         {
-            constexpr auto box_rectangle() const -> Rectangle
-            {
-                return {
-                    {
-                        p()->box_inset(3), 
-                        p()->box_inset(0)
-                    }, 
-                    { 
-                        this->extents().w - p()->box_inset(3) - p()->box_inset(1), 
-                        this->extents().h - p()->box_inset(0) - p()->box_inset(2) 
-                    } 
-                };
-            }
+            constexpr auto box_rectangle() const -> Rectangle;
 
-            constexpr auto content_rectangle() const -> Rectangle
-            {
-                return {
-                    {
-                        p()->content_inset(3), 
-                        p()->content_inset(0)
-                    }, 
-                    { 
-                        this->extents().w - p()->content_inset(3) - p()->content_inset(1), 
-                        this->extents().h - p()->content_inset(0) - p()->content_inset(2) 
-                    } 
-                };
-            }
+            constexpr auto content_rectangle() const -> Rectangle;
 
             // TODO: this belongs into the Layouter aspect
-            auto position_text_element(const Text_bounding_box &bbox, Alignment minor_align, Alignment major_align) const -> Point
-            {
-                auto r = this->content_rectangle(); // this->extents() );
-                Point pos;
-
-                if (minor_align == Alignment::cultural_minor_start)
-                {
-                    pos.x = r.pos.x;
-                }
-                else if (minor_align == Alignment::cultural_minor_middle)
-                {
-                    pos.x = r.left() + (r.ext.w - bbox.width()) / 2;
-                }
-                else if (minor_align == Alignment::cultural_minor_end)
-                {
-                    pos.x = r.right() - bbox.width();
-                }
-
-                if (major_align == Alignment::cultural_major_start)
-                {
-                    pos.y = r.top() + bbox.y_max;
-                }
-                else if (major_align == Alignment::cultural_major_middle)
-                {
-                    pos.y = r.top() + (r.ext.h - bbox.height()) / 2 + bbox.y_max;
-                }
-                else if (major_align == Alignment::cultural_major_end)
-                {
-                    pos.y = r.bottom() + bbox.y_min;
-                }
-                else
-                {
-                    assert(false); return {};
-                }
-
-                return pos;
-            }
+            auto position_text_element(const Text_bounding_box & bbox, Alignment minor_align, Alignment major_align) const -> Point;
 
             auto border_color(int /*dir*/)
             {
@@ -229,26 +169,7 @@ namespace cppgui
             static constexpr auto default_border_width(int /*dir*/) { return 0; }
             static constexpr auto default_padding     (int /*dir*/) { return 0; }
 
-            Aspect()
-            {
-                // The following will all be no-ops in case of build-time box model definition
-
-                p()->set_margin      ( 0, p()->default_margin      (0) );
-                p()->set_border_width( 0, p()->default_border_width(0) );
-                p()->set_padding     ( 0, p()->default_padding     (0) );
-
-                p()->set_margin      ( 1, p()->default_margin      (1) );
-                p()->set_border_width( 1, p()->default_border_width(1) );
-                p()->set_padding     ( 1, p()->default_padding     (1) );
-
-                p()->set_margin      ( 2, p()->default_margin      (2) );
-                p()->set_border_width( 2, p()->default_border_width(2) );
-                p()->set_padding     ( 2, p()->default_padding     (2) );
-
-                p()->set_margin      ( 3, p()->default_margin      (3) );
-                p()->set_border_width( 3, p()->default_border_width(3) );
-                p()->set_padding     ( 3, p()->default_padding     (3) );
-            }
+            Aspect();
 
             void set_margin      (int /*dir*/, Width w) { _margin = w; }
             void set_border_width(int /*dir*/, Width w) { _border_width = w; }
@@ -262,39 +183,13 @@ namespace cppgui
             auto border_width(int /*dir*/) const { return _border_width; }
             auto padding     (int /*dir*/) const { return _padding; }
 
-            auto add_boxing(const Extents &ext) -> Extents
-            {
-                return { 
-                    ext.w + this->content_inset(3) + this->content_inset(1),
-                    ext.h + this->content_inset(0) + this->content_inset(2)
-                };
-            }
+            auto add_boxing(const Extents & ext) -> Extents;
 
-            void draw_border(Canvas_t *canvas,  const Point &offset)
-            {
-                auto rect = this->box_rectangle();
-                Width w;
-
-                //bool ena = true; // this->enabled(); // TODO: implement enabled() in Widget<> !!
-                //bool hov = this->hovered();
-                //bool foc = this->has_focus();
-
-                w = p()->border_width(0);
-                this->fill_rect(canvas, { rect.pos + Point{w, 0}, {rect.ext.w - w, w} }, offset, 
-                    Canvas_t::rgba_to_native( p()->border_color(0) ) );
-                w = p()->border_width(1);
-                this->fill_rect(canvas, { rect.pos + Point{rect.ext.w - w, 0}, {w, rect.ext.h} }, offset, 
-                    Canvas_t::rgba_to_native( p()->border_color(1) ) );
-                w = p()->border_width(2);
-                this->fill_rect(canvas, { rect.pos + Point{0, rect.ext.h - w}, {rect.ext.w - w, w} }, offset, 
-                    Canvas_t::rgba_to_native( p()->border_color(2) ) );
-                w = p()->border_width(3);
-                this->fill_rect(canvas, { rect.pos, {w, rect.ext.h} }, offset, 
-                    Canvas_t::rgba_to_native( p()->border_color(2) ) );
-            }
+            void draw_border(Canvas_t * canvas, const Point & offset);
 
         private:
-            auto p() { return static_cast<Impl*>(this); }
+            class Implementation_t: public Impl { friend struct Aspect; };
+            auto p() { return static_cast<Implementation_t*>(this); }
 
             Width       _margin = 0;
             Width       _border_width = 1;

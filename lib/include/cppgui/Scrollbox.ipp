@@ -20,8 +20,10 @@
 #include "./Scrollbox.hpp"
 
 #include "./Widget.ipp"
-#include "./Box.ipp"
+#include "./Box_model.ipp"
 #include "./Vertical_scrollbar.ipp"
+
+#pragma warning(disable: 4505)
 
 namespace cppgui {
 

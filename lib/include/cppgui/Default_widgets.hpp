@@ -17,7 +17,6 @@
     limitations under the License.
 */
 
-//#include <cppgui/Box.hpp>
 #include <cppgui/Root_widget.hpp>
 #include <cppgui/Label.hpp>
 #include <cppgui/Textbox.hpp>

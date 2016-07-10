@@ -24,6 +24,9 @@
 #include "./Vertical_scrollbar.hpp"
 #include "./Container_base.ipp"
 #include "./Glyph_button.ipp"
+#include "./Box_model.ipp"
+
+#pragma warning(disable: 4505)
 
 namespace cppgui {
 
