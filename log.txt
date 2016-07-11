@@ -1,3 +1,29 @@
+2016-07-11
+==========
+
+It is possible I may not be able to do significant work on libCppGUI in the near future, so I'd like to consolidate a few thoughts on the next steps here before switching to another task.
+
+I now have code that allows using run time- and build time-configured Box Model implementations interchangeably. (I an unfinished state: the layouting functionality still needs to be broken out and made into an aspect).
+
+It occurred to me that a similar principle could and should be applied to container layouting. The case is however a little different: whereas the Box Model concept only needs a single run-time and a single build-time implementation (for now), container layouting needs several implementations (possibily an ever-growing number) that all should be available at both build and run time.
+
+Is is possible to abstract away the difference between build-time and run-time implementations ? I was thinking along the lines accessing aspects via a pointer that could be either `this` or something else [requiring a friend declaration]. However this would probably not be simple and straighforward - more thinking is required.
+
+.. thinking done (hopefully). Here are the main points:
+
+- All access to the Container Layouter aspect of a class is newly done via a `container_layouter()` accessor method.
+
+- The Container Layouter implementation is injected into the class template as a "typename" template parameter "Layouter" that is a wrapper struct for a normalized aspect (avoids the over-verbose "template" template parameters, along with other benefits)
+
+- One of these implementations is called `Container_layouter_delegator` (maybe some shorter form can be found); its implementation of `container_layouter()` returns a pointer. The `container_layouter()` methods of all other implementations simply return `this`.
+
+- With the `Container_layouter_delegator`, the pointer returned by `container_layouter()` returns an instance of a Container Layouter aspect that has been made "autonomous": instead of accessing the main class via a statically cast `this` pointer, it actually stores a real pointer to the main class and uses that instead. [This difference can be injected via a base class template with two specializations; that base class belongs into `util.hpp` or a similar support module.]
+
+- "Autonomized" Container Layouters must manually inherit from the Container_base Layouter aspect (since they do not otherwise ultimately inherit from Container_base<>).
+
+- Container<> is the template where the Container layouter is injected - Container_base<> only propagates the layouting methods to children.
+
+
 2016-07-09
 ==========
 
