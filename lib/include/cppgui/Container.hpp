@@ -25,15 +25,6 @@ namespace cppgui
             auto get_minimal_size() -> Extents override;
             void layout() override;
 
-            template<class ManagerType> auto set_layout_manager() -> ManagerType *
-            {
-                _manager.reset( new ManagerType{} ); 
-                //_manager->set_padding(this->_padding); // TODO: should padding really be a member of Container ?
-
-                return static_cast<ManagerType*>( _manager.get() ); // as a convenience
-            };
-            auto layout_manager() { return _manager.get(); }
-
             auto compute_minimal_size() -> Extents;
             void layout_children(const Extents &);
 

@@ -49,10 +49,11 @@ Main_window::Main_window(): Parent_t("Main window")
     _stringlist.on_item_activated([](cppgui::Index index, const std::u32string &item) {
         std::cout << "Item #" << index << " activated: " << cppgui::utf32_to_utf8(item) << std::endl;
     });
-    _left_panel.set_left(&_stringlist, {1, 1});
-    _left_panel.set_background_color({0.8f, 0.8f, 0.8f, 1});
+    _left_panel.set_left(&_stringlist, { 1, 1 });
+    _left_panel.set_background_color({ 0.8f, 0.8f, 0.8f, 1 });
 
     // Center panel
+    _center_panel.set_background_color({ 0.9f, 0.9f, 0.9f, 1 });
 
     // Right panel
 

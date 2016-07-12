@@ -27,15 +27,24 @@ namespace cppgui
     // Container_layouter_base --------------------------------------
 
     template <class Class, class ElementRef, class Config, class Parent>
-    void Container_layouter_base<Class, ElementRef, Config, Parent>::_add_element(ElementRef *elem)
+    void _Container_layouter_base<Class, ElementRef, Config, Parent>::_add_element(ElementRef *elem)
     {
         _elements.push_back( std::unique_ptr<ElementRef>{ elem } );
     }
 
     template <class Class, class ElementRef, class Config, class Parent>
-    auto Container_layouter_base<Class, ElementRef, Config, Parent>::sum_of_weights() -> float
+    auto _Container_layouter_base<Class, ElementRef, Config, Parent>::sum_of_weights() -> float
     {
         return std::accumulate(std::begin(_elements), std::end(_elements), 0.0f, [](float sum, auto& elem) { return sum + elem->weight; });
+    }
+
+    template <class Impl, class Parent>
+    template <class Layouter>
+    void Delegating_layouter::Aspect<Impl, Parent>::create_layouter()
+    {
+        _layouter.reset( new Layouter() );
+
+        _layouter->set_main( this );
     }
 
     template <class Config>
@@ -98,19 +107,29 @@ namespace cppgui
     {
         auto rect = this->content_rectangle(); // this->get_inner_rectangle();
 
+        Position x1 = 0, x2 = rect.ext.w;
+
         if (_left && _left->widget)
         {
             _left->widget->set_position(rect.pos);
-            _left->widget->set_extents ({ rect.ext.w * _left->size, rect.ext.h });
+            auto w = rect.ext.w * _left->size;
+            _left->widget->set_extents ({ w, rect.ext.h });
+            x1 += w;
         }
 
         if (_right && _right->widget)
         {
-            _right->widget->set_extents ({ rect.ext.w * _right->size, rect.ext.h });
-            _right->widget->set_position({ rect.right() - _right->widget->extents().w, rect.pos.y });
+            auto w = rect.ext.w * _right->size;
+            _right->widget->set_extents ({ w, rect.ext.h });
+            _right->widget->set_position({ rect.right() - w, rect.pos.y });
+            x2 -= w;
         }
 
-        // TODO: center (if any)
+        if (_center && _center->widget)
+        {
+            _center->widget->set_position({ x1, 0 });
+            _center->widget->set_extents ({ x2, rect.ext.h });
+        }
 
         Parent::layout();
     }

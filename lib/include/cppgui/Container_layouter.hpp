@@ -41,7 +41,7 @@ namespace cppgui
     /** Base class for common functionality.
      */
     template<class Class, class ElementRef, class Config, class Parent>
-    class Container_layouter_base: public Parent
+    class _Container_layouter_base: public Parent
     {
     protected:
 
@@ -55,47 +55,61 @@ namespace cppgui
         std::vector<std::unique_ptr<ElementRef>> _elements;
     };
 
-    /** The following template generates a base class for Container_layouter implementations to
-        inherit from.
-        Its main purpose is to abstract away the difference between "compiled-in" and "detached"
-        container layouters. (Since container layouters are aspects, I hope to later generalize 
-        this abstraction and make it potentially available to all types of aspects.)
+    /** A base class template for "detached" container layouters.
      */
 
-    template<class Config, Aspect_injection Locality>
-    struct Container_layouter_base
+    template<class Main>
+    struct Detached_layouter_base
     {
-        template<class Impl, class Parent>
-        struct Aspect;
+        class Main_t: public Main { friend struct Detached_layouter_base; };
+
+        void set_main(Main_t *main) { _p  = static_cast<Main_t*>(p); }
+
+    protected:
+        auto p() { return _p; }
+
+    private:
+        Main_t *_p;
     };
 
-    template<class Config>
-    struct Container_layouter_base<Config, Aspect_injection::by_inheritance>
+    /** A "delegating" implementation of the Container_layouter concept.
+     */
+    struct Delegating_layouter
     {
         template<class Impl, class Parent>
         struct Aspect: Parent
         {
+            template<class Layouter> void create_layouter();
+
+            void init_layout() override { layouter()->layouter_init_layout(); }
+            auto get_minimal_size() -> Extents override { return layouter()->layouter_get_minimal_size(); }
+            void layout() override { layouter()->layouter_layout(); }
+
+            // TODO: insert_child() + drop_child() ?
+
         protected:
-            class Implementation_t: public Impl { friend class Aspect; };
-            auto p() { return static_cast<Implementation_t*>(this); }
+            class Detached_layouter_base_t: public Detached_layouter_base<Impl> { friend struct Aspect; };
+            auto layouter() { return _layouter; }
+
+        private:
+            std::unique_ptr<Detached_layouter_base_t>   _layouter;
         };
     };
 
-    template<class Config>
-    struct Container_layouter_base<Config, Aspect_injection::detached>
+    template<class Impl, class Parent>
+    struct Non_delegating_layouter_base: Parent
     {
-        template<class Impl, class Parent>
-        struct Aspect: _container_base<Config>::template Layouter<Impl, Nil_struct>
-        {
-            explicit Aspect(Impl *main): _p{ static_cast<Implementation_t*>(p) } {}
+        static void set_main(Impl *) {} // Do nothing, will obtain access via this pointer
 
-        protected:
-            class Implementation_t: public Impl { friend class Aspect; };
-            auto p() { return _p; }
+        /** Note: in contrast to Delegating_layouter
+         */
+        void init_layout() override { p()->layouter_init_layout(); }
+        auto get_minimal_size() -> Extents override { return p()->layouter_get_minimal_size(); }
+        void layout() override { p()->layouter_layout(); }
 
-        private:
-            Implementation_t *_p;
-        };
+    protected:
+        class Implementation_t: public Impl { friend struct Aspect; };
+        auto p() { return static_cast<Implementation_t*>(this); }
     };
 
     /*  Unordered_layouter:
@@ -114,7 +128,7 @@ namespace cppgui
     struct Unordered_layouter<Config, true>
     {
         template<class Class, class Parent>
-        struct Aspect: Parent
+        struct Aspect: Non_delegating_layouter_base<Class, Parent>
         {
             //virtual void init_layout();
             auto get_minimal_size() -> Extents override { return {0, 0}; }
@@ -191,7 +205,7 @@ namespace cppgui
         };
 
         template<class Class, class Parent>
-        struct Aspect: public Container_layouter_base<Aspect<Class, Parent>, Element_ref, Config, Parent>, Accessor
+        struct Aspect: public _Container_layouter_base<Aspect<Class, Parent>, Element_ref, Config, Parent>, Accessor
         {
             void set_spacing(Length);
 
