@@ -41,6 +41,13 @@ namespace cppgui {
     using Index             = int; // Index is signed so that -1 can be used to report "invalid" or "not found"
     using Count             = unsigned int;
 
+    enum class Aspect_injection
+    {
+        undefined,
+        by_inheritance,     // the aspect is injected into the main class as a parent class, via inheritance
+        detached            // the aspect is made into a distinct class which accesses the main class via pointer
+    };
+
     // TODO: move Fraction<> to its own module
 
     template<typename T = unsigned int>

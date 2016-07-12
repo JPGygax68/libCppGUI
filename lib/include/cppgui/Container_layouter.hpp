@@ -20,21 +20,11 @@
 #include <memory>
 
 #include "./basic_types.hpp"
+#include "./Container.hpp"
 #include "./Widget.hpp"
 
 namespace cppgui
 {
-    /*  Like normal widget layouters, of which they are specializations, container layouters are "aspects", 
-        i.e. class templates intended to be chained via inheritance.
-
-        However, unlike widget layouters, they are not specific to a specific widget class and can be 
-        injected into any widget ultimately derived from Container_base<>; also, they are "wrapped": the outer 
-        template takes the configuration parameters (at minimum the "Config" and "With_layout" parameters, 
-        but they can have more), and an inner, normalized one that always takes the same two parameters 
-        "Class" and "Parent". "Parent" is used for chaining, like with all aspect templates, while "Class" 
-        is the exact widget type that the container layouter will work upon.
-     */
-
     template<class Config>
     struct Element_ref_base
     {
@@ -63,6 +53,49 @@ namespace cppgui
 
     private:
         std::vector<std::unique_ptr<ElementRef>> _elements;
+    };
+
+    /** The following template generates a base class for Container_layouter implementations to
+        inherit from.
+        Its main purpose is to abstract away the difference between "compiled-in" and "detached"
+        container layouters. (Since container layouters are aspects, I hope to later generalize 
+        this abstraction and make it potentially available to all types of aspects.)
+     */
+
+    template<class Config, Aspect_injection Locality>
+    struct Container_layouter_base
+    {
+        template<class Impl, class Parent>
+        struct Aspect;
+    };
+
+    template<class Config>
+    struct Container_layouter_base<Config, Aspect_injection::by_inheritance>
+    {
+        template<class Impl, class Parent>
+        struct Aspect: Parent
+        {
+        protected:
+            class Implementation_t: public Impl { friend class Aspect; };
+            auto p() { return static_cast<Implementation_t*>(this); }
+        };
+    };
+
+    template<class Config>
+    struct Container_layouter_base<Config, Aspect_injection::detached>
+    {
+        template<class Impl, class Parent>
+        struct Aspect: _container_base<Config>::template Layouter<Impl, Nil_struct>
+        {
+            explicit Aspect(Impl *main): _p{ static_cast<Implementation_t*>(p) } {}
+
+        protected:
+            class Implementation_t: public Impl { friend class Aspect; };
+            auto p() { return _p; }
+
+        private:
+            Implementation_t *_p;
+        };
     };
 
     /*  Unordered_layouter:
