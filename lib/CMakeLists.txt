@@ -150,6 +150,8 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/geometry.hpp
     include/cppgui/unicode.hpp
 
+    include/cppgui/Rectangle.hpp
+
     #include/cppgui/Text_element.hpp                 include/cppgui/Text_element.ipp
     #include/cppgui/Drag_controller.hpp              include/Drag_controller.ipp
 
@@ -216,3 +218,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC libGPCGUIRenderer)
 # For consumers
 
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
+
+# Testing
+
+add_executable(test_rectangle tests/rectangle.cpp)
+target_link_libraries(test_rectangle PRIVATE libCppGUI)

@@ -138,7 +138,7 @@ namespace cppgui {
         canvas->push_clipping_rect( _content_rect + pos );
 
         // Item rectangle
-        Rectangle r_item { _content_rect };
+        auto r_item { _content_rect };
         r_item.ext.h = item_height();
 
         // Separator rectangle

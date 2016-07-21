@@ -33,6 +33,25 @@ namespace cppgui {
 
     // 2D ----------------------------
 
+    enum Axis
+    {
+        // Note: using "horizontal" and "vertical" rather than "x" and "y"
+        horizontal,
+        vertical
+    };
+
+    enum Horizontal_direction
+    {
+        right,
+        left
+    };
+
+    enum Vertical_direction
+    {
+        up,
+        down
+    };
+
     enum Orientation
     {
         none,
@@ -41,6 +60,18 @@ namespace cppgui {
         right_to_left,
         top_down
     };
+
+    template<Orientation Or> struct Axis_for_orientation;
+    template<> struct Axis_for_orientation<left_to_right> { static constexpr Axis value = horizontal; };
+    template<> struct Axis_for_orientation<right_to_left> { static constexpr Axis value = horizontal; };
+    template<> struct Axis_for_orientation<top_down     > { static constexpr Axis value = vertical  ; };
+    template<> struct Axis_for_orientation<bottom_up    > { static constexpr Axis value = vertical  ; };
+
+    template<Orientation Or> struct Axis_reversed;
+    template<> struct Axis_reversed<left_to_right> { static constexpr bool value = false; };
+    template<> struct Axis_reversed<right_to_left> { static constexpr bool value = true ; };
+    template<> struct Axis_reversed<top_down     > { static constexpr bool value = false; }; // top-down arbitrarily defined as "standard"
+    template<> struct Axis_reversed<bottom_up    > { static constexpr bool value = true ; };
 
     struct Extents;
 
@@ -332,6 +363,8 @@ namespace cppgui {
 
     };
 
+    #ifdef OBSOLETE_CODE
+
     template<class Impl>
     struct Geometry_accessor_base
     {
@@ -399,9 +432,39 @@ namespace cppgui {
         constexpr static auto sideways_width(T &ext) -> enable_member_ref_for_class_t<T, Extents, Length> & { return ext.w; }
     };
 
+    #endif
+
     // Oriented positions
 
-    using Longitude = Position;
+    template <bool Reverse> struct Oriented_position;
+
+    template <> 
+    struct Oriented_position<false>
+    {
+        explicit Oriented_position(Position p): _p{ p } {}
+
+        operator Position () const { return _p; }
+
+        auto& operator + (Position d) { _p += d; return *this; }
+        auto& operator - (Position d) { _p -= d; return *this; }
+
+        Position _p;
+    };
+
+    template <> 
+    struct Oriented_position<true>
+    {
+        explicit Oriented_position(Position p): _p{ p } {}
+
+        operator Position () const { return _p; }
+
+        auto& operator + (Position d) { _p -= d; return *this; }
+        auto& operator - (Position d) { _p += d; return *this; }
+
+        Position _p;
+    };
+
+
     using Latitude = Position;
 
     // Oriented point
@@ -413,6 +476,7 @@ namespace cppgui {
     template<>
     struct Oriented_point<left_to_right>: Point
     {
+        Oriented_point() = default;
         explicit Oriented_point(Position p1, Position p2 = 0): Point{ p1, p2 } {}
         explicit Oriented_point(const Point &pt): Point{ pt } {}
 
@@ -427,6 +491,7 @@ namespace cppgui {
     template<>
     struct Oriented_point<bottom_up>: Point
     {
+        Oriented_point() = default;
         explicit Oriented_point(Position p1, Position p2 = 0): Point{ p2, p1 } {}
         explicit Oriented_point(const Point &from): Point{ from } {}
         explicit Oriented_point(Point &&from): Point{ from } {}
@@ -477,6 +542,8 @@ namespace cppgui {
 
     // Oriented rectangles
 
+    #ifdef NOT_DEFINED
+
     template<class Impl, Orientation Orientation>
     struct Oriented_rectangle_base: Rectangle
     {
@@ -489,6 +556,8 @@ namespace cppgui {
             this->position() = pos;
             this->extents () = ext;
         }
+
+        explicit Oriented_rectangle_base(const Rectangle &from): Rectangle{ from } {}
 
         void set(Position p1, Position p2, Length l, Width w)
         {
@@ -517,10 +586,13 @@ namespace cppgui {
 
         using Oriented_rectangle_base::Oriented_rectangle_base;
 
-        auto longitude() const -> Position { return this->pos.x; }
-        auto length   () const -> Length   { return this->ext.w; }
-        auto latitude () const -> Position { return this->pos.y; }
-        auto width    () const -> Length   { return this->ext.h; }
+        auto longitude() const { return this->pos.x; }
+        auto length   () const { return this->ext.w; }
+        auto latitude () const { return this->pos.y; }
+        auto width    () const { return this->ext.h; }
+
+        void set_lon_seg(Position p, Length l) { this->pos.x = p, this->ext.w = l; }
+        void set_lat_seg(Position p, Width  w) { this->pos.y = p, this->ext.h = w; }
 
         // TODO: get rid of the following two
         auto first_axis_end    () const -> Position { return this->pos.x + this->ext.w; }
@@ -569,8 +641,8 @@ namespace cppgui {
             return res;
         }
 
-        void define_first_edge (Position p, Length l) { this->pos.y = p - l, this->ext.h = l; }
-        void define_second_edge(Position p, Length l) { this->pos.x = p, this->ext.w = l; }
+        void set_lon_seg(Position p, Length l) { this->pos.y = p - l, this->ext.h = l; }
+        void set_lat_seg(Position p, Width  w) { this->pos.x = p, this->ext.w = w; }
 
         auto longitude() const -> Position { return this->pos.y + this->ext.h; }
         auto length   () const -> Length   { return this->ext.h; }
@@ -593,6 +665,8 @@ namespace cppgui {
 
         void set_first_axis_center(Position p) { this->pos.y = p - this->ext.h / 2; }
     };
+
+    #endif
 
 } // ns cppgui
 

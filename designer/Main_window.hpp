@@ -38,11 +38,12 @@ public:
 private:
     
     class Slider_with_display: public cppgui::Container<Slider_with_display, GUI_config, true, 
-        cppgui::Box_model_definition::run_time, cppgui::Single_column_flow_layout<GUI_config, true>>
+        cppgui::Box_model_definition::run_time, 
+        cppgui::Single_column_flow_layout<GUI_config, true, cppgui::Aspect_injection::by_inheritance> >
     {
     public:
         using Value_type = cppgui::Vertical_slider<GUI_config, true>::Value_type;
-        using Parent_t = cppgui::Container<Slider_with_display, GUI_config, true, cppgui::Box_model_definition::run_time, 
+        using Parent_t = Container<Slider_with_display, GUI_config, true, cppgui::Box_model_definition::run_time, 
             cppgui::Single_column_flow_layout<GUI_config, true>>;
 
         static constexpr auto default_padding(int /*dir*/) { return 2; }
@@ -64,8 +65,8 @@ private:
         cppgui::Vertical_slider<GUI_config, true>                                   _slider;
     };
 
-    using Single_line_layout = cppgui::Single_row_flow_layout<GUI_config, true>;
-    using Horizontal_box_layout = cppgui::Horizontal_box<GUI_config, true>;
+    using Single_line_layout = cppgui::Single_row_flow_layout<GUI_config, true, cppgui::Aspect_injection::by_inheritance>;
+    using Horizontal_box_layout = cppgui::Horizontal_box<GUI_config, true, cppgui::Aspect_injection::by_inheritance>;
 
     template<class Impl, class Layout>
     class Panel_base: public cppgui::Container<Impl, GUI_config, true, cppgui::Box_model_definition::run_time, Layout> { };
@@ -79,11 +80,19 @@ private:
 
     class Right_panel: public Panel_base<Right_panel, Single_line_layout> {};
 
-    cppgui::Root_widget<GUI_config, true, cppgui::Box_model_definition::run_time, cppgui::Horizontal_box<GUI_config, true>> _root_widget;
+    class Root_container: public 
+        cppgui::Container<Root_container, GUI_config, true, cppgui::Box_model_definition::run_time, cppgui::Delegating_layouter> {};
+
+    cppgui::Root_widget<GUI_config, true, cppgui::Box_model_definition::run_time, 
+        cppgui::Horizontal_box<GUI_config, true, cppgui::Aspect_injection::by_inheritance>> _root_widget;
 
     Left_panel                                                                              _left_panel;
     Center_panel                                                                            _center_panel;
     Right_panel                                                                             _right_panel;
+
+    std::unique_ptr<Root_container>                                                         _root_container;
+
+    // EXPERIMENTAL STUFF
 
     cppgui::Listbox<GUI_config, true, cppgui::Box_model_definition::run_time>               _listbox;
 

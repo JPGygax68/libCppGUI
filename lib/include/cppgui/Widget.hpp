@@ -78,6 +78,7 @@ namespace cppgui {
 
         auto& rectangle() { return _rect; }
         auto& rectangle() const { return _rect; }
+        void set_rectangle(const Rectangle &);
         auto& position() { return _rect.pos; }
         auto& position() const { return _rect.pos; }
         auto& extents() { return _rect.ext; }
@@ -297,7 +298,7 @@ namespace cppgui {
     /** TODO: rename to reflect the fact that this is abstract ?
      */
     template <class Config, class Parent> 
-    struct Widget__Layouter<Config, true, Parent>: public Parent
+    struct Widget__Layouter<Config, true, Parent>: Parent
     {
         /** It is up to the implementation to guarantee that any internal state/data
             needed for layouting (including computing/returning the get_minimal_size())
@@ -314,7 +315,7 @@ namespace cppgui {
         //void set_padding(Width);
         //void set_padding(const std::initializer_list<Width> &);
 
-        void set_rectangle(const Point &nw, const Point &se);
+        //void set_rectangle(const Point &nw, const Point &se);
         void set_rectangle_nw(const Point &, const Extents &);
         void set_rectangle_ne(const Point &, const Extents &);
         void set_rectangle_se(const Point &, const Extents &);

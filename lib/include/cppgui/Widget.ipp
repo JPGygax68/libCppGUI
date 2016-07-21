@@ -30,6 +30,12 @@ namespace cppgui {
     // Abstract_widget<> --------------------------------------------
 
     template <class Config, bool With_layout>
+    void Abstract_widget<Config, With_layout>::set_rectangle(const Rectangle &r)
+    {
+        _rect = r;
+    }
+
+    template <class Config, bool With_layout>
     void Abstract_widget<Config, With_layout>::set_position(const Point &pos)
     {
         _rect.pos = pos;
@@ -378,12 +384,14 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
+    /*
     template<class Config, class Parent>
     void Widget__Layouter<Config, true, Parent>::set_rectangle(const Point &nw, const Point &se)
     {
         p()->set_position(nw);
         p()->set_extents(Extents::between_points(nw, se));
     }
+    */
 
     template<class Config, class Parent>
     void Widget__Layouter<Config, true, Parent>::set_rectangle_nw(const Point &pos, const Extents &ext)

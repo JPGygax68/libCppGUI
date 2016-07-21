@@ -1,3 +1,74 @@
+2016-07-15
+==========
+
+(Continuing on "oriented geometry")
+
+It becomes clear now that the original Rectangle structure should be replaced throughout the whole library by a templated version that takes axis direction into account (at least the Y direction, but I see little harm in supporting the same parameter to the X axis as well).
+
+And so, we get the following possible combinations (disregarding the flipped X axis option):
+
+   | Y axis              | Rectangle orientation | Starting point | Ending point   | 
+-- | ------              | --------------------- | -------------- | ------------   |
+ 1 | top-down (standard) | left-to-right         | x              | x + length     |
+ 2 |                     | right-to-left         | x + length     | x              |
+ 3 |                     | top-down              | y              | y + length     |
+ 4 |                     | bottom-up             | y + length     | y              |
+ 5 | bottom-up           | left-to-right         | x              | x + length     |
+ 6 |                     | right-to-left         | x + length     | x              |
+ 7 |                     | top-down              | y + length     | y              |
+ 8 |                     | bottom-up             | y              | y + length     |
+
+ 
+What we see here is that all that is really needed is two types of segments: segments that follow the direction of the axis (1, 3, 5, 8), and segments that go against the axis (2, 4, 6, 7). Thus, the parameters on the Oriented_segment<> data type (which may not be needed as such) would simply be "along the axis" vs "against the axis".
+
+However, orientation as defined thus far is not just along/against the axis, but also which axis we're working with. In order to obtain a truly adaptive Oriented_rectangle<> template, we need to parameterize it with the "direction" [better term?] of both axes:
+
+template<bool BackwardX, bool BackwardY>
+struct Rectangle { ... };
+
+[to be continued...]
+
+2016-07-13
+==========
+
+It is necessary at this point get clarity on how to handle geometry in libCppGUI.
+
+So far, the coordinate system has been assumed to be: X axis pointing to the right, Y axis pointing downward, with the origin being located in the top-left corner. While there is no immediate need to change that, we need to know what this is going to look like in the future; too much time has already been lost trying to make things work without sufficient planning.
+
+Several different things need to be considered when handling geometry:
+
+1) The coordinate system. As pointed out above, only one is being supported right now, but it should be made configurable in the future. (Most probably, the direction of the Y axis - and maybe of the X axis as well - will be reported by Renderer implementations as constexpr data; thus, data types that need to know about that can be parameterized with the standard Config parameter.)
+
+2) Cultural orientations. No such orientations have been defined yet (other than as experimental values), and when they are, they will most probably be defined as simple aliases for geographical orientations. It should be noted that these aliases will likely be more numerous that just "<culture>-major" and "<culture>-minor"; it is possible that other cultures use different orientations for different purposes.
+
+3) Layouting orientation. This is the problem I've been trying to address with Oriented_point<>, Oriented_extents<>, and Oriented_rectangle<>, but layouting orientation probably cannot be handled completely independently of the other two factors.
+  
+Layouting orientation determines the order in which layout elements are placed inside a container. It can be used to generalize a layout algorithm in such a way that it works for all four cardinal orientations (top-down, left-to-right, bottom-up, right-to-left).
+
+What is needed, therefore, are standardized methods/functions that can be used to divide up the rectangular space available in a container (the "content rectangle") without having to know which way that container is oriented, or what coordinate system is being used.
+
+The current implementations of the Oriented...<> classes are well on their way to fulfilling the former requirement, but not the latter.
+
+(continuing the next night...)
+
+Working with an axis that happens to be "pointing the wrong way" becomes possible when 
+  a) axis orientation 
+  b) intended orientation
+  c) starting position and 
+  d) length 
+are all handled together. In C++, this can be achieved elegantly using the template-assisted strong typing system.
+
+It is only while writing this that I now realize that defining a type Oriented_rectangle<> was perhaps not a very useful step, since the layouting code I wrote thus far does not handle more than one dimension. (But actually, even a "grid" type layout, which does work on both dimensions, probably won't be needing such a rectangle type - though it might still turn out to be useful.)
+
+The concept that really helps here is that of "oriented segments", typed with the orientation (left-to-right, top-down, etc.) and the "axis sign" (for lack of a better term; what I mean is whether the coordinate in- or decreases along the intended orientation).
+
+Thus, a segment defined by a starting point of 5 and a length of 10 can actually define a whole a lot of different segments: vertical and downward, vertical and upward, horizontal and left-to-right, horizontal and right-to-left.
+
+Most importantly, each direction can be the result of going either along or against the corresponding axis: if the Y axis grows downward and the intended direction is top-down, the segment would start 5 units from the top and end at position 15. But with the Y axis oriented the same way and bottom-up as the intended direction, the segment would again start at y = 5, but go *up* and thus end at -5!
+
+
+
+
 2016-07-11
 ==========
 
