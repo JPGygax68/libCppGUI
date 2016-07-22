@@ -26,6 +26,18 @@ namespace cppgui {
 
     // 1D ----------------------------
 
+    enum Horizontal_direction
+    {
+        right,
+        left
+    };
+
+    enum Vertical_direction
+    {
+        up,
+        down
+    };
+
     using Position = int;
     using Position_delta = Position;
     using Length = int;
@@ -38,18 +50,6 @@ namespace cppgui {
         // Note: using "horizontal" and "vertical" rather than "x" and "y"
         horizontal,
         vertical
-    };
-
-    enum Horizontal_direction
-    {
-        right,
-        left
-    };
-
-    enum Vertical_direction
-    {
-        up,
-        down
     };
 
     enum Orientation
@@ -72,6 +72,32 @@ namespace cppgui {
     template<> struct Axis_reversed<right_to_left> { static constexpr bool value = true ; };
     template<> struct Axis_reversed<top_down     > { static constexpr bool value = false; }; // top-down arbitrarily defined as "standard"
     template<> struct Axis_reversed<bottom_up    > { static constexpr bool value = true ; };
+
+    struct _oriented_position_base
+    {
+        explicit _oriented_position_base(Position p_): p{ p_ } {}
+
+        operator Position () const { return p; }
+
+    protected:
+        Position p;
+    };
+
+    template<bool AxisReversed> struct Oriented_position;
+
+    template<> struct Oriented_position<false>: _oriented_position_base {
+
+        explicit Oriented_position(Position p_): _oriented_position_base(p_) {}
+
+        auto operator + (Position_delta d) { return p + d; }
+    };
+
+    template<> struct Oriented_position<true>: _oriented_position_base {
+
+        explicit Oriented_position(Position p_): _oriented_position_base(p_) {}
+
+        auto operator + (Position_delta d) { return p - d; }
+    };
 
     struct Extents;
 

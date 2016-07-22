@@ -219,7 +219,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC libGPCGUIRenderer)
 
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
 
+#--------------------------------------------------------------------
 # Testing
 
-add_executable(test_rectangle tests/rectangle.cpp)
-target_link_libraries(test_rectangle PRIVATE libCppGUI)
+add_executable(test_geometry tests/geometry.cpp)
+target_link_libraries(test_geometry PRIVATE libCppGUI)

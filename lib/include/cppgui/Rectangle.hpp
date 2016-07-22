@@ -39,7 +39,7 @@ namespace cppgui
     {
         void set_longitude_segment(Position p, Length l)
         {
-            static_cast<Impl*>(this)->longitude() = p + l;
+            static_cast<Impl*>(this)->longitude() = p - l;
             static_cast<Impl*>(this)->length   () = l;
         }
     };
@@ -56,6 +56,7 @@ namespace cppgui
         }
     };
 
+    /*
     template<class Impl> 
     struct _Latitude_accessor<Impl, true>
     {
@@ -65,11 +66,17 @@ namespace cppgui
             static_cast<Impl*>(this)->width   () = w;
         }
     };
+    */
 
     template<Axis LongitudeAxis, bool LonRev> 
-    struct Oriented_rectangle_base: Rectangle,
+    struct Oriented_rectangle_base: Axis_aligned_rectangle<LongitudeAxis>,
         _Longitude_accessor< Oriented_rectangle_base<LongitudeAxis, LonRev>, LonRev>
     {
+        void set_latitude_segment(Position p, Width w)
+        {
+            this->latitude() = p;
+            this->width   () = w;
+        }
     };
 
     template<class Config, typename = void>
