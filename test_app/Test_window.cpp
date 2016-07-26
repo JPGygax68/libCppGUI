@@ -206,7 +206,7 @@ Test_window::Test_window(): Parent_t("Test window")
         std::cout << "Item #" << index << " activated: " << cppgui::utf32_to_utf8(item) << std::endl;
     });
     _left_panel.set_left(&_stringlist, {1, 1});
-    _left_panel.set_background_color({0.8f, 0.8f, 0.8f, 1});
+    //_left_panel.set_background_color({0.8f, 0.8f, 0.8f, 1});
 
     // Right panel
 
@@ -229,7 +229,7 @@ Test_window::Test_window(): Parent_t("Test window")
 
     // Root widget
 
-    _root_widget.set_background_color({ 0, 0.6f, 0.2f, 1 });
+    //_root_widget.set_background_color({ 0, 0.6f, 0.2f, 1 });
     _root_widget.set_left (&_left_panel , {1, 4});
     _root_widget.set_right(&_right_panel, {1, 4});
 
