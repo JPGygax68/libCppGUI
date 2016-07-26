@@ -30,6 +30,8 @@ add_subdirectory(external/libGPCGUIGLRenderer/lib)
 add_subdirectory(lib)
 add_subdirectory(sdl)
 
+add_subdirectory(tests)
+
 add_subdirectory(test_app)
 
 add_subdirectory(designer)

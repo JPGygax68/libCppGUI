@@ -40,8 +40,8 @@ namespace cppgui
     template<class Class, class Config, bool With_layout, Box_model_definition BMDef, class Layouter>
     class Container: public 
         Layouter::template Aspect< Class,
-        Box_model<Config, With_layout, BMDef>::template Aspect< Class,
-        Container_base<Config, With_layout> > >
+            Box_model<Config, With_layout, BMDef>::template Aspect< Class,
+                Container_base<Config, With_layout> > >
     {};
 
 } // ns cppgui

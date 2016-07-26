@@ -67,26 +67,25 @@ private:
         cppgui::Vertical_slider<GUI_config, true>                                   _slider;
     };
 
-    template<class Layout>
-    class Left_panel: public cppgui::Container<Left_panel<Layout>, GUI_config, true, cppgui::Box_model_definition::run_time, Layout> {};
+    class Left_panel: public cppgui::Container< Left_panel, GUI_config, true, 
+        cppgui::Box_model_definition::run_time, 
+        cppgui::Horizontal_box<GUI_config, true, cppgui::Aspect_injection::by_inheritance> 
+    > {};
 
-    template<class Layout>
-    class Right_panel: public cppgui::Container<Right_panel<Layout>, GUI_config, true, cppgui::Box_model_definition::run_time, Layout>
-    {
+    class Right_panel: public cppgui::Container< Right_panel, GUI_config, true, 
+        cppgui::Box_model_definition::run_time, cppgui::Single_row_flow_layout<GUI_config, true>
+    > {
     protected:
         constexpr static auto default_padding(int /*dir*/) { return 2; }
     };
 
-    using Single_line_layout = cppgui::Single_row_flow_layout<GUI_config, true>;
-    using Horizontal_box_layout = cppgui::Horizontal_box<GUI_config, true>;
-
     using Root_widget_t = cppgui::Root_widget<GUI_config, true, cppgui::Box_model_definition::run_time, 
-        cppgui::Horizontal_box<GUI_config, true>>;
+        cppgui::Horizontal_box<GUI_config, true, cppgui::Aspect_injection::by_inheritance> >;
     
     Root_widget_t                                                                               _root_widget;
 
-    Left_panel<Horizontal_box_layout>                                                           _left_panel;
-    Right_panel<Single_line_layout>                                                             _right_panel;
+    Left_panel                                                                                  _left_panel;
+    Right_panel                                                                                 _right_panel;
 
     cppgui::Listbox<GUI_config, true, cppgui::Box_model_definition::run_time>                   _listbox;
 

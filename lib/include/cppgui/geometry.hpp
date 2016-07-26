@@ -482,9 +482,11 @@ namespace cppgui {
     {
         using Rectangle::Rectangle;
 
+        explicit Oriented_rectangle_base(const Rectangle &from): Rectangle{ from } {}
+
         explicit Oriented_rectangle_base(const Oriented_extents<Orientation> &ext = {}) { this->extents() = ext; }
 
-        Oriented_rectangle_base(const Oriented_point<Orientation> &pos, const Oriented_extents<Orientation> &ext)
+        explicit Oriented_rectangle_base(const Oriented_point<Orientation> &pos, const Oriented_extents<Orientation> &ext)
         {
             this->position() = pos;
             this->extents () = ext;

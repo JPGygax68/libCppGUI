@@ -24,74 +24,74 @@
 
 namespace cppgui
 {
-    // Container_layouter_base --------------------------------------
+    template <class Main, class Parent>
+    template <class Layouter>
+    void Delegating_layouter::Aspect<Main, Parent>::create_layouter()
+    {
+        //auto ptr = new typename Layouter::template Aspect<Main, Parent>{};
+        //_layouter.reset( static_cast<Detached_layouter_base_t*>(ptr) );
+        _layouter.reset( new typename Layouter::template Aspect<Main, Parent>{} );
 
-    template <class Class, class ElementRef, class Config, class Parent>
-    void _Container_layouter_base<Class, ElementRef, Config, Parent>::_add_element(ElementRef *elem)
+        _layouter->set_main( static_cast<Main*>(this) );
+    }
+
+    template <class Class, class ElementRef, class Config, class Parent, Aspect_injection Injection>
+    void Container_layouter_base<Class, ElementRef, Config, Parent, Injection>::_add_element(ElementRef *elem)
     {
         _elements.push_back( std::unique_ptr<ElementRef>{ elem } );
     }
 
-    template <class Class, class ElementRef, class Config, class Parent>
-    auto _Container_layouter_base<Class, ElementRef, Config, Parent>::sum_of_weights() -> float
+    template <class Class, class ElementRef, class Config, class Parent, Aspect_injection Injection>
+    auto Container_layouter_base<Class, ElementRef, Config, Parent, Injection>::sum_of_weights() -> float
     {
         return std::accumulate(std::begin(_elements), std::end(_elements), 0.0f, [](float sum, auto& elem) { return sum + elem->weight; });
     }
 
-    template <class Impl, class Parent>
-    template <class Layouter>
-    void Delegating_layouter::Aspect<Impl, Parent>::create_layouter()
-    {
-        _layouter.reset( new Layouter() );
-
-        _layouter->set_main( this );
-    }
-
-    template <class Config>
+    template <class Config, Aspect_injection Injection>
     template <class Class, class Parent>
-    void Horizontal_box<Config, true>::Aspect<Class, Parent>::set_left(Widget<Config, true> *child, const Fraction<Length> &width)
+    void Horizontal_box<Config, true, Injection>::Aspect<Class, Parent>::set_left(Widget<Config, true> *child, const Fraction<Length> &width)
     {
         assert(!_left);
 
         _left = std::make_unique<Element_ref>(child, width);
     }
 
-    template <class Config>
+    template <class Config, Aspect_injection Injection>
     template <class Class, class Parent>
-    void Horizontal_box<Config, true>::Aspect<Class, Parent>::set_center(Widget<Config, true> *child)
+    void Horizontal_box<Config, true, Injection>::Aspect<Class, Parent>::set_center(Widget<Config, true> *child)
     {
         assert(!_center);
 
         _center = std::make_unique<Element_ref>(child);
     }
 
-    template <class Config>
+    template <class Config, Aspect_injection Injection>
     template <class Class, class Parent>
-    void Horizontal_box<Config, true>::Aspect<Class, Parent>::set_right(Widget<Config, true> *child, const Fraction<Length> & width)
+    void Horizontal_box<Config, true, Injection>::Aspect<Class, Parent>::set_right(Widget<Config, true> *child, const Fraction<Length> & width)
     {
         assert(!_right);
 
         _right = std::make_unique<Element_ref>(child, width);
     }
 
-    template <class Config>
+    template <class Config, Aspect_injection Injection>
     template <class Class, class Parent>
-    void Horizontal_box<Config, true>::Aspect<Class, Parent>::init_layout()
+    void Horizontal_box<Config, true, Injection>::Aspect<Class, Parent>::init_layout()
     {
         if (_left   && _left  ->widget) p()->add_child( _left  ->widget );
         if (_center && _center->widget) p()->add_child( _center->widget );
         if (_right  && _right ->widget) p()->add_child( _right ->widget );
 
-        Parent::init_layout();
+        Parent_t::init_layout();
     }
 
-    template <class Config>
+    template <class Config, Aspect_injection Injection>
     template <class Class, class Parent>
-    auto Horizontal_box<Config, true>::Aspect<Class, Parent>::get_minimal_size() -> Extents
+    auto Horizontal_box<Config, true, Injection>::Aspect<Class, Parent>::get_minimal_size() -> Extents
     {
         Extents total;
 
-        for (auto child: p()->children())
+        for (auto child: this->p()->children())
         {
             auto size = child->extents();
             total.w += size.w;
@@ -101,11 +101,11 @@ namespace cppgui
         return total;
     }
 
-    template <class Config>
+    template <class Config, Aspect_injection Injection>
     template <class Class, class Parent>
-    void Horizontal_box<Config, true>::Aspect<Class, Parent>::layout()
+    void Horizontal_box<Config, true, Injection>::Aspect<Class, Parent>::layout()
     {
-        auto rect = this->content_rectangle(); // this->get_inner_rectangle();
+        auto rect = this->p()->content_rectangle(); // this->get_inner_rectangle();
 
         Position x1 = 0, x2 = rect.ext.w;
 
@@ -128,24 +128,24 @@ namespace cppgui
         if (_center && _center->widget)
         {
             _center->widget->set_position({ x1, 0 });
-            _center->widget->set_extents ({ x2, rect.ext.h });
+            _center->widget->set_extents ({ x2 - x1, rect.ext.h });
         }
 
-        Parent::layout();
+        Parent_t::layout();
     }
 
     // Single_beam_flow_layout ------------------------------------------------
 
-    template <class Config, class Accessor>
+    template <class Config, Orientation Orientation, Aspect_injection Injection>
     template <class Class, class Parent>
-    void Single_beam_flow_layout<Config, true, Accessor>::Aspect<Class, Parent>::set_spacing(Length spacing)
+    void Single_beam_flow_layout<Config, true, Orientation, Injection>::Aspect<Class, Parent>::set_spacing(Length spacing)
     {
         _spacing = spacing;
     }
 
-    template <class Config, class Accessor>
+    template <class Config, Orientation Orientation, Aspect_injection Injection>
     template <class Class, class Parent>
-    auto Single_beam_flow_layout<Config, true, Accessor>::Aspect<Class, Parent>::add_element(Widget<Config, true> * widget, float weight) 
+    auto Single_beam_flow_layout<Config, true, Orientation, Injection>::Aspect<Class, Parent>::add_element(Widget<Config, true> * widget, float weight) 
         -> Class &
     {
         this->_add_element( new Element_ref{widget, weight} );
@@ -153,9 +153,9 @@ namespace cppgui
         return * p();
     }
 
-    template <class Config, class Accessor>
+    template <class Config, Orientation Orientation, Aspect_injection Injection>
     template <class Class, class Parent>
-    auto Single_beam_flow_layout<Config, true, Accessor>::Aspect<Class, Parent>::add_spacer(float weight) -> Class &
+    auto Single_beam_flow_layout<Config, true, Orientation, Injection>::Aspect<Class, Parent>::add_spacer(float weight) -> Class &
     {
         assert(this->elements().empty() || this->elements().back()->widget); // predecessor must not be spacer
 
@@ -164,9 +164,9 @@ namespace cppgui
         return * p();
     }
 
-    template <class Config, class Accessor>
+    template <class Config, Orientation Orientation, Aspect_injection Injection>
     template <class Class, class Parent>
-    void Single_beam_flow_layout<Config, true, Accessor>::Aspect<Class, Parent>::init_layout()
+    void Single_beam_flow_layout<Config, true, Orientation, Injection>::Aspect<Class, Parent>::init_layout()
     {
         for (auto& elem: this->elements())
         {
@@ -176,11 +176,11 @@ namespace cppgui
         Parent::init_layout();
     }
 
-    template <class Config, class Accessor>
+    template <class Config, Orientation Orientation, Aspect_injection Injection>
     template <class Class, class Parent>
-    auto Single_beam_flow_layout<Config, true, Accessor>::Aspect<Class, Parent>::get_minimal_size() -> Extents
+    auto Single_beam_flow_layout<Config, true, Orientation, Injection>::Aspect<Class, Parent>::get_minimal_size() -> Extents
     {
-        Extents total;
+        Oriented_extents<Orientation> total;
 
         Widget_t *prev_widget = nullptr;
 
@@ -191,11 +191,11 @@ namespace cppgui
             // Widget element ?
             if (elem->widget && elem->widget->visible())
             {
-                if (prev_widget) this->forward_length(total) += _spacing;
+                if (prev_widget) total.length() += _spacing;
 
-                auto size = elem->widget->get_minimal_size();
-                this->sideways_width(total) = std::max(this->sideways_width(total), this->sideways_width(size));
-                this->forward_length(total) += std::max(this->forward_length(size), elem->_min_length);
+                Oriented_extents<Orientation> size{ elem->widget->get_minimal_size() };
+                total.width() = std::max(total.width(), size.width());
+                total.length() += std::max(size.length(), elem->_min_length);
 
                 prev_widget = elem->widget;
             }
@@ -210,9 +210,9 @@ namespace cppgui
         return this->add_boxing( total );
     }
 
-    template <class Config, class Accessor>
+    template <class Config, Orientation Orientation, Aspect_injection Injection>
     template <class Class, class Parent>
-    void Single_beam_flow_layout<Config, true, Accessor>::Aspect<Class, Parent>::layout()
+    void Single_beam_flow_layout<Config, true, Orientation, Injection>::Aspect<Class, Parent>::layout()
     {
         /** Note: the algorithm used here gives each element its minimum height, plus a portion of
                 any available extra height, attributed according to its relative "weight".
@@ -225,19 +225,20 @@ namespace cppgui
                 This is another reason why this layouter is not suited for precise positioning.
          */
 
-        auto rect = p()->content_rectangle();
+        Oriented_rectangle<Orientation> rect{ this->p()->content_rectangle() };
 
         // Total of all "weights"
         auto total_weight = this->sum_of_weights();
         //std::accumulate(std::begin(_elements), std::end(_elements), 0.0f, [](float sum, auto& elem) { return sum + elem->weight; });
 
         // Calculate extra height to distribute among
-        auto realsz = p()->extents(), minsz = get_minimal_size();
-        auto extra_length = this->forward_length(realsz) - this->forward_length(minsz);
+        Oriented_extents<Orientation> realsz{ this->p()->extents() }, minsz{ get_minimal_size() };
+        auto extra_length = realsz.length() - minsz.length();
 
         // Assign position and size to all widgets
 
         Widget_t *prev_widget = nullptr;
+        Position lon = rect.longitude();
 
         for (auto i = 0U; i < this->elements().size(); ++i)
         {
@@ -247,29 +248,31 @@ namespace cppgui
 
             if (elem->widget && elem->widget->visible())
             {
-                if (prev_widget) this->forward_position(rect.pos) += _spacing;
+                if (prev_widget) lon += _spacing;
 
-                auto size = elem->widget->get_minimal_size();
+                Oriented_extents<Orientation> size{ elem->widget->get_minimal_size() };
 
-                Length l = this->forward_length(size) + extra_portion;
+                auto l = size.length() + extra_portion;
 
-                elem->widget->set_position(rect.pos);
-                this->sideways_width(elem->widget->extents()) = this->sideways_width(rect.ext);
-                this->forward_length(elem->widget->extents()) = l;
+                Oriented_rectangle<Orientation> r;
+                r.set_lon_seg( lon, l );
+                r.set_lat_seg( rect.latitude(), rect.extents().width() );
 
-                this->forward_position(rect.pos) += l;
+                elem->widget->set_rectangle( r );
+
+                lon += l;
 
                 prev_widget = elem->widget;
             }
             else
             {
-                this->forward_position(rect.pos) += extra_portion;
+                lon += extra_portion;
 
                 prev_widget = nullptr;
             }
         }
 
-        Parent::layout();
+        Parent_t::layout();
     }
 
 } // ns cppgui
