@@ -44,6 +44,23 @@ namespace cppgui {
 
     template <class Renderer> class Canvas;
 
+    // Utilities required for working with widgets
+
+    // Compile-time predicate: finds out whether the renderer uses bottom-up vertical coordinates:
+    //  _vertical_axis_bottom_up<Config>::value
+
+    template<class Config, typename = void>
+    struct _vertical_axis_bottom_up
+    {
+        static constexpr bool value = false;
+    };
+
+    template<class Config> 
+    struct _vertical_axis_bottom_up<Config, std::enable_if_t<std::is_same<const bool, decltype(Config::Renderer::y_axis_bottom_up)>::value>>
+    {
+        static constexpr bool value = Config::Renderer::y_axis_bottom_up;
+    };
+
     /** Abstract_widget: functionality common to both Root_widget and Widget, i.e. not including the ability
         to function as an element in a container.
      */
@@ -111,6 +128,9 @@ namespace cppgui {
         virtual bool handle_key_down(const Keycode &) { return false; }
 
     protected:
+
+        // Static information
+        static constexpr bool y_axis_up = _vertical_axis_bottom_up<Config>::value;
 
         // Rendering conveniences
 

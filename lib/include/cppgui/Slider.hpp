@@ -104,8 +104,9 @@ namespace cppgui {
             Range<Value_type>               _range;
             Value_type                      _incr_major, _incr_minor;
 
-            Oriented_rectangle<Orientation> _slide_rect;
-            Oriented_rectangle<Orientation> _knob_rect;
+            //Oriented_rectangle<Orientation> _slide_rect;
+            Rectangle                       _slide_rect;
+            Rectangle                       _knob_rect;
 
             Value_type                      _value;
             Position                        _knob_pos;

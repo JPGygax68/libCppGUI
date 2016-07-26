@@ -79,18 +79,6 @@ namespace cppgui
         }
     };
 
-    template<class Config, typename = void>
-    struct _vertical_axis_bottom_up
-    {
-        static constexpr bool value = false;
-    };
-
-    template<class Config> 
-    struct _vertical_axis_bottom_up<Config, std::enable_if_t<std::is_same<const bool, decltype(Config::Renderer::y_axis_bottom_up)>::value>>
-    {
-        static constexpr bool value = Config::Renderer::y_axis_bottom_up;
-    };
-
     template<class Config, Orientation Orient> 
     struct Longitude_axis_reversed
     {

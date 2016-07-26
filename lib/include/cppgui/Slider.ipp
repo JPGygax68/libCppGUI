@@ -128,7 +128,8 @@ namespace cppgui {
 
         // Thumb
         auto thclr = _knob_hovered ? Canvas_t::rgba_to_native({ 1, 1, 1, 1 }) : Canvas_t::rgba_to_native({ 0.7f, 0.7f, 0.7f, 1 });
-        this->fill_rect(canvas, _knob_rect, pos + _slide_rect.longitude_to_vector(_knob_pos), thclr);
+        //this->fill_rect(canvas, _knob_rect, pos + _slide_rect.longitude_to_vector(_knob_pos), thclr);
+        this->fill_rect(canvas, _knob_rect, pos.translate<Orientation, this->y_axis_up>(_knob_pos), thclr);
 
         // Debug
         #ifdef _DEBUG
@@ -235,7 +236,11 @@ namespace cppgui {
     template <class Class, bool With_layout>
     auto _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::knob_rectangle() const -> Rectangle
     {
-        return _knob_rect + _slide_rect.longitude_to_vector(_knob_pos);
+        auto rect = _knob_rect;
+        auto longitude = rect.longitude<Orientation, this->y_axis_up>() + _knob_pos;
+        rect.move_longitudinal_segment_to<Orientation, this->y_axis_up>( longitude );
+
+        return rect;
     }
 
     template <class Config, Orientation Orientation, typename ValueType>
@@ -296,7 +301,7 @@ namespace cppgui {
         //std::cerr << "delta = " << delta << std::endl;
 
         //change_value( _knob_drag_start_value + delta * _range.length() / _slide_rect.height() );
-        change_value( _knob_drag_start_value + delta * _range.length() / _slide_rect.length() );
+        change_value( _knob_drag_start_value + delta * _range.length() / _slide_rect.length<Orientation>() );
     }
 
     template <class Config, Orientation Orientation, typename ValueType>
@@ -323,7 +328,7 @@ namespace cppgui {
     template <class Class, bool With_layout>
     void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::update_knob_pos()
     {
-        _knob_pos = static_cast<Position>( (_value - _range.from) * _slide_rect.length() / _range.length() );
+        _knob_pos = static_cast<Position>( (_value - _range.from) * _slide_rect.length<Orientation>() / _range.length() );
 
         this->invalidate();
     }
@@ -334,7 +339,12 @@ namespace cppgui {
     {
         auto res = _slide_rect;
 
-        res.move_longitude_start_by( _knob_pos + knob_size().h / 2 );
+        //res.move_longitude_start_by( _knob_pos + knob_size().h / 2 );
+        //res.move_longitude_start_by( _knob_pos + knob_size().h / 2 );
+
+        Oriented_position< Axis_reversed<Orientation, this->y_axis_up>::value > pos { _knob_pos };
+
+        res.change_longitude_start_to<Orientation, this->y_axis_up>( pos + knob_size().h / 2 );
 
         return res;
     }
@@ -379,6 +389,23 @@ namespace cppgui {
     template<class Class, class Parent>
     void _slider<Config, Orientation, ValueType>::Layouter<Class, true, Parent>::layout()
     {
+        static constexpr auto main_axis = Axis_for_orientation<Orientation>::value;
+
+        Rectangle rect { p()->extents() };
+        auto length  = rect.ext.length <main_axis>();
+        auto breadth = rect.ext.breadth<main_axis>();
+
+        auto knob_length = p()->knob_size().h;  // "length" along movement axis (usually less than "width")
+        auto knob_width  = p()->knob_size().w;  // "width": usually greater than "length"
+
+        p()->_slide_rect.set_longitudinal_segment<Orientation, this->y_axis_up>( knob_length / 2, length - knob_length / 2);
+        p()->_slide_rect.set_latitudinal_segment <Orientation, this->y_axis_up>( (breadth - p()->slide_width()) / 2, p()->slide_width() );
+
+        p()->_knob_rect.set_longitudinal_segment<Orientation, this->y_axis_up>( - knob_length / 2, knob_length );
+        p()->_knob_rect.set_latitudinal_segment <Orientation, this->y_axis_up>( (breadth - knob_width) / 2, rect.ext.breadth<main_axis>() );
+
+        #ifdef REPLACED_CODE
+
         Oriented_rectangle<Orientation> rect{ p()->extents() };
         Oriented_extents<Orientation> knob_size{ p()->knob_size() };
 
@@ -389,6 +416,8 @@ namespace cppgui {
             Oriented_point  <Orientation>{ 0, (rect.extents().width() - knob_size.w) / 2 }, 
             Oriented_extents<Orientation>{ knob_size.h, knob_size.w } 
         };
+
+        #endif
     }
 
 } // ns cppgui

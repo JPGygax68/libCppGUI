@@ -23,13 +23,6 @@ int main(int /*argc*/, char * /*argv*/[])
 {
     using namespace cppgui;
 
-    /*
-    Oriented_rectangle<Config1, left_to_right> rect;
-
-    std::cout << "Default value for Config::Renderer::y_axis_bottom_up : " << _vertical_axis_bottom_up<Config1>::value << std::endl;
-    std::cout << "Explicit value for Config::Renderer::y_axis_bottom_up: " << _vertical_axis_bottom_up<Config2>::value << std::endl;
-    */
-
     std::cout << "Oriented_rectangle: left-to-right" << std::endl;
 
     Oriented_rectangle<Config1, left_to_right> r1;

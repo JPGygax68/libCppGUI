@@ -225,20 +225,25 @@ namespace cppgui
                 This is another reason why this layouter is not suited for precise positioning.
          */
 
-        Oriented_rectangle<Orientation> rect{ this->p()->content_rectangle() };
+        static const auto lon_axis = Axis_for_orientation<Orientation>::value;
+        static const auto lat_axis = Axis_other<lon_axis>::value;
+        static const bool y_up = this->y_axis_up; // _vertical_axis_bottom_up<Config>::value;
+
+        auto rect = this->p()->content_rectangle();
+        auto orig = rect.template longitude<Orientation, this->y_axis_up>();
 
         // Total of all "weights"
         auto total_weight = this->sum_of_weights();
         //std::accumulate(std::begin(_elements), std::end(_elements), 0.0f, [](float sum, auto& elem) { return sum + elem->weight; });
 
         // Calculate extra height to distribute among
-        Oriented_extents<Orientation> realsz{ this->p()->extents() }, minsz{ get_minimal_size() };
-        auto extra_length = realsz.length() - minsz.length();
+        auto extra_length = this->p()->extents().template length<lon_axis>();
+        auto minsz { get_minimal_size() };
 
         // Assign position and size to all widgets
 
         Widget_t *prev_widget = nullptr;
-        Position lon = rect.longitude();
+        auto p = rect.template longitude<Orientation, this->y_axis_up>();
 
         for (auto i = 0U; i < this->elements().size(); ++i)
         {
@@ -248,25 +253,26 @@ namespace cppgui
 
             if (elem->widget && elem->widget->visible())
             {
-                if (prev_widget) lon += _spacing;
+                if (prev_widget) p += _spacing;
 
-                Oriented_extents<Orientation> size{ elem->widget->get_minimal_size() };
+                auto size{ elem->widget->get_minimal_size() };
 
-                auto l = size.length() + extra_portion;
+                auto l = size.template length<lon_axis>() + extra_portion;
 
-                Oriented_rectangle<Orientation> r;
-                r.set_lon_seg( lon, l );
-                r.set_lat_seg( rect.latitude(), rect.extents().width() );
+                Rectangle r;
+                r.set_longitudinal_segment<Orientation, y_up>( orig + p, l );
+                //r.set_lat_seg( rect.latitude(), rect.extents().width() );
+                r.copy_latitudinal_vector<Orientation, y_up>( rect );
 
                 elem->widget->set_rectangle( r );
 
-                lon += l;
+                p += l;
 
                 prev_widget = elem->widget;
             }
             else
             {
-                lon += extra_portion;
+                p += extra_portion;
 
                 prev_widget = nullptr;
             }
