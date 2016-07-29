@@ -11,15 +11,15 @@ static void test_Oriented_position()
 
     // TODO: because of a supposed Visual C++ 2015 bug, Oriented_position<> cannot be fully checked with static_assert().
 
-    static_assert( Oriented_position<false>{ 5 } == 5, "Oriented_position<false>: construct from Position" );
+    static_assert( Directed_position<false>{ 5 } == 5, "Oriented_position<false>: construct from Position" );
     //static_assert( Oriented_position<false>{ 5 } + 10 == 15, "Oriented_position<false>: ctor + operator +" );
     // .. we do this instead
     std::cout << "  Oriented_position<Reversed = false>::operator +: ... ";
-    if (Oriented_position<false>{ 5 } + 10 != 15) throw std::runtime_error("Oriented_position<false>::operator + failure");
+    if (Directed_position<false>{ 5 } + 10 != 15) throw std::runtime_error("Oriented_position<false>::operator + failure");
     std::cout << "OK" << std::endl;
 
     std::cout << "  Oriented_position<Reversed = true>::operator +: ... ";
-    if (Oriented_position<true>{ 5 } + 10 != -5) throw std::runtime_error("Oriented_position<true>::operator + failure");
+    if (Directed_position<true>{ 5 } + 10 != -5) throw std::runtime_error("Oriented_position<true>::operator + failure");
     std::cout << "OK" << std::endl;
 
     std::cout << std::endl;
@@ -158,6 +158,10 @@ static void test_Oriented_rectangle()
             throw std::runtime_error(instance + "::longitude(): wrong value");
         if (rect.longitude() + rect.length() != 40) 
             throw std::runtime_error(instance + ": longitude() and length() do not add up correctly");
+        if (rect.latitude() != 5) 
+            throw std::runtime_error(instance + "::latitude(): wrong value");
+        if (rect.latitude() + rect.breadth() != 23) 
+            throw std::runtime_error(instance + ": latitude() and breadth() do not add up correctly");
     }
 
     {
@@ -169,9 +173,27 @@ static void test_Oriented_rectangle()
             throw std::runtime_error(instance + "::longitude(): wrong value");
         if (rect.longitude() + rect.length() != rect.pos.x) 
             throw std::runtime_error(instance + ": longitude() and length() do not add up correctly");
+        if (rect.latitude() != 5) 
+            throw std::runtime_error(instance + "::latitude(): wrong value");
+        if (rect.latitude() + rect.breadth() != 23) 
+            throw std::runtime_error(instance + ": latitude() and breadth() do not add up correctly");
     }
 
-    //rect.set_longitudinal_segment( 10, 20 );
+    {   
+        std::string instance = " Oriented_rectangle<left_to_right, bottom_up, false>";
+
+        constexpr static Oriented_rectangle<left_to_right, bottom_up, false> rect { 10, 5, 30, 18 };
+        //static_assert(rect.longitude() == 10, "Oriented_rectangle<left_to_right, top_down, false>::longitude(): wrong value");
+        if (rect.longitude() != 10) 
+            throw std::runtime_error(instance + "::longitude(): wrong value");
+        if (rect.longitude() + rect.length() != 40) 
+            throw std::runtime_error(instance + ": longitude() and length() do not add up correctly");
+        if (rect.latitude() != 23) 
+            throw std::runtime_error(instance + "::latitude(): wrong value");
+        if (rect.latitude() + rect.breadth() != 5) 
+            throw std::runtime_error(instance + ": latitude() and breadth() do not add up correctly");
+    }
+
 }
 
 int main(int /*argc*/, char ** /*argv*/)
