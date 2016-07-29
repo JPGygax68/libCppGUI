@@ -149,10 +149,26 @@ static void test_Oriented_rectangle()
     test_Oriented_rectangle_instance<bottom_up, right_to_left, false>();
     test_Oriented_rectangle_instance<bottom_up, right_to_left, true >();
 
-    {
+    {   
+        std::string instance = " Oriented_rectangle<left_to_right, top_down, false>";
+
         constexpr static Oriented_rectangle<left_to_right, top_down, false> rect { 10, 5, 30, 18 };
         //static_assert(rect.longitude() == 10, "Oriented_rectangle<left_to_right, top_down, false>::longitude(): wrong value");
-        if (rect.longitude() != 10) throw std::runtime_error("Oriented_rectangle<left_to_right, top_down, false>::longitude(): wrong value");
+        if (rect.longitude() != 10) 
+            throw std::runtime_error(instance + "::longitude(): wrong value");
+        if (rect.longitude() + rect.length() != 40) 
+            throw std::runtime_error(instance + ": longitude() and length() do not add up correctly");
+    }
+
+    {
+        std::string instance = " Oriented_rectangle<right_to_left, top_down, false>";
+
+        constexpr static Oriented_rectangle<right_to_left, top_down, false> rect { 10, 5, 30, 18 };
+        //static_assert(rect.longitude() == 10, "Oriented_rectangle<left_to_right, top_down, false>::longitude(): wrong value");
+        if (rect.longitude() != 40) 
+            throw std::runtime_error(instance + "::longitude(): wrong value");
+        if (rect.longitude() + rect.length() != rect.pos.x) 
+            throw std::runtime_error(instance + ": longitude() and length() do not add up correctly");
     }
 
     //rect.set_longitudinal_segment( 10, 20 );
