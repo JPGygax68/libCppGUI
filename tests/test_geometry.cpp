@@ -152,6 +152,7 @@ static void test_Oriented_rectangle()
     {
         constexpr static Oriented_rectangle<left_to_right, top_down, false> rect { 10, 5, 30, 18 };
         //static_assert(rect.longitude() == 10, "Oriented_rectangle<left_to_right, top_down, false>::longitude(): wrong value");
+        if (rect.longitude() != 10) throw std::runtime_error("Oriented_rectangle<left_to_right, top_down, false>::longitude(): wrong value");
     }
 
     //rect.set_longitudinal_segment( 10, 20 );
