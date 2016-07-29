@@ -93,6 +93,22 @@ static void test_Oriented_point()
 
 }
 
+static void test_Oriented_extents()
+{
+    using namespace std::literals::string_literals;
+
+    std::cout << "Oriented_extents<>" << std::endl << std::endl;
+
+    {
+        Oriented_extents<left_to_right, top_down, false> ext;
+        ext.length() = 5;
+        ext.length() += 10;
+        if (ext.length() != 15) throw std::runtime_error("Oriented_extents<left_to_right, top_down, false>: length not adding correctly");
+        ext.breadth() = 7;
+        ext.breadth() += 10;
+        if (ext.breadth() != 17) throw std::runtime_error("Oriented_extents<left_to_right, top_down, false>: breadth not adding correctly");
+    }
+}
 
 template<Orientation LonOrient, Orientation LatOrient, bool YAxisBottomUp>
 static void test_Oriented_rectangle_instance()
@@ -116,15 +132,26 @@ static void test_Oriented_rectangle()
     //    << YAxisBottomUp << ">" << std::endl << std::endl;
     std::cout << "Oriented_rectangle<>" << std::endl << std::endl;
 
+    test_Oriented_rectangle_instance<left_to_right, top_down , false>();
+    test_Oriented_rectangle_instance<left_to_right, top_down , true >();
+    test_Oriented_rectangle_instance<right_to_left, top_down , false>();
+    test_Oriented_rectangle_instance<right_to_left, top_down , true >();
+    test_Oriented_rectangle_instance<left_to_right, bottom_up, false>();
+    test_Oriented_rectangle_instance<left_to_right, bottom_up, true >();
+    test_Oriented_rectangle_instance<right_to_left, bottom_up, false>();
+    test_Oriented_rectangle_instance<right_to_left, bottom_up, true >();
+    test_Oriented_rectangle_instance<top_down , left_to_right, false>();
+    test_Oriented_rectangle_instance<top_down , left_to_right, true >();
+    test_Oriented_rectangle_instance<top_down , right_to_left, false>();
+    test_Oriented_rectangle_instance<top_down , right_to_left, true >();
+    test_Oriented_rectangle_instance<bottom_up, left_to_right, false>();
+    test_Oriented_rectangle_instance<bottom_up, left_to_right, true >();
+    test_Oriented_rectangle_instance<bottom_up, right_to_left, false>();
+    test_Oriented_rectangle_instance<bottom_up, right_to_left, true >();
+
     {
-        test_Oriented_rectangle_instance<left_to_right, top_down , false>();
-        test_Oriented_rectangle_instance<left_to_right, top_down , true >();
-        test_Oriented_rectangle_instance<right_to_left, top_down , false>();
-        test_Oriented_rectangle_instance<right_to_left, top_down , true >();
-        test_Oriented_rectangle_instance<left_to_right, bottom_up, false>();
-        test_Oriented_rectangle_instance<left_to_right, bottom_up, true >();
-        test_Oriented_rectangle_instance<right_to_left, bottom_up, false>();
-        test_Oriented_rectangle_instance<right_to_left, bottom_up, true >();
+        constexpr static Oriented_rectangle<left_to_right, top_down, false> rect { 10, 5, 30, 18 };
+        //static_assert(rect.longitude() == 10, "Oriented_rectangle<left_to_right, top_down, false>::longitude(): wrong value");
     }
 
     //rect.set_longitudinal_segment( 10, 20 );
