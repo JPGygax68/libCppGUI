@@ -9,7 +9,7 @@ static void test_Oriented_position()
 {
     std::cout << "Oriented_position<> (both variants)" << std::endl << std::endl;
 
-    // TODO: because of a supposed Visual C++ 2014 bug, Oriented_position<> cannot be fully check with static_assert().
+    // TODO: because of a supposed Visual C++ 2015 bug, Oriented_position<> cannot be fully checked with static_assert().
 
     static_assert( Oriented_position<false>{ 5 } == 5, "Oriented_position<false>: construct from Position" );
     //static_assert( Oriented_position<false>{ 5 } + 10 == 15, "Oriented_position<false>: ctor + operator +" );
@@ -25,13 +25,11 @@ static void test_Oriented_position()
     std::cout << std::endl;
 }
 
-//template<Orientation Longitudinal, Orientation Latitudinal, bool YAxisBottomUp>
 static void test_Oriented_point()
 {
     using namespace std::literals::string_literals;
 
     std::cout << "Oriented_point<>" << std::endl << std::endl;
-    // "Longitudinal = " << Longitudinal << ", Latitudinal = " << Latitudinal << ", YAxisBottomUp = " << YAxisBottomUp << ">" << std::endl << std::endl;
 
     {
         Oriented_point<left_to_right, top_down, false> pt;
@@ -93,23 +91,41 @@ static void test_Oriented_point()
         if (pt.latitude() != 17) throw std::runtime_error("Oriented_point<right_to_left, bottom_up, true>: latitude not adding correctly");
     }
 
-    {
-        Oriented_point<right_to_left, bottom_up, false> pt;
-        pt.longitude() = 5;
-        pt.longitude() += 10;
-        if (pt.longitude() != -5) throw std::runtime_error("Oriented_point<right_to_left...>: longitude not adding correctly");
-    }
-
 }
 
 
-template<Orientation Longitudinal, Orientation Latitudinal, bool YAxisBottomUp>
+template<Orientation LonOrient, Orientation LatOrient, bool YAxisBottomUp>
+static void test_Oriented_rectangle_instance()
+{
+    static constexpr Oriented_rectangle<LonOrient, LatOrient, YAxisBottomUp> c_rect { 10, 15, 30, 20 };
+    static auto rect { c_rect };
+
+    // TODO: Visual Studio 2015 bug: cannot make this constexpr
+    static auto pt = c_rect.position();
+    static_assert( std::is_same<Oriented_point<LonOrient, LatOrient, YAxisBottomUp>, decltype(pt)>::value, "wrong type");
+    auto& pt2 = c_rect.position();
+    static_assert( std::is_same<const Oriented_point<LonOrient, LatOrient, YAxisBottomUp> &, decltype(pt2)>::value, "wrong type");
+    auto& pt3 = rect.position();
+    static_assert( std::is_same<Oriented_point<LonOrient, LatOrient, YAxisBottomUp> &, decltype(pt3)>::value, "wrong type");
+}
+
+//template<Orientation Longitudinal, Orientation Latitudinal, bool YAxisBottomUp>
 static void test_Oriented_rectangle()
 {
-    std::cout << "Oriented_rectangle<Longitudinal = " << Longitudinal << ", Latitudinal = " << Latitudinal << ", YAxisBottomUp = " 
-        << YAxisBottomUp << ">" << std::endl << std::endl;
+    //std::cout << "Oriented_rectangle<Longitudinal = " << Longitudinal << ", Latitudinal = " << Latitudinal << ", YAxisBottomUp = " 
+    //    << YAxisBottomUp << ">" << std::endl << std::endl;
+    std::cout << "Oriented_rectangle<>" << std::endl << std::endl;
 
-    Oriented_rectangle<Longitudinal, Latitudinal, YAxisBottomUp> rect;
+    {
+        test_Oriented_rectangle_instance<left_to_right, top_down , false>();
+        test_Oriented_rectangle_instance<left_to_right, top_down , true >();
+        test_Oriented_rectangle_instance<right_to_left, top_down , false>();
+        test_Oriented_rectangle_instance<right_to_left, top_down , true >();
+        test_Oriented_rectangle_instance<left_to_right, bottom_up, false>();
+        test_Oriented_rectangle_instance<left_to_right, bottom_up, true >();
+        test_Oriented_rectangle_instance<right_to_left, bottom_up, false>();
+        test_Oriented_rectangle_instance<right_to_left, bottom_up, true >();
+    }
 
     //rect.set_longitudinal_segment( 10, 20 );
 }
@@ -126,7 +142,7 @@ int main(int /*argc*/, char ** /*argv*/)
     //test_Oriented_point<left_to_right, bottom_up, false>();
     test_Oriented_point();
 
-    test_Oriented_rectangle<left_to_right, bottom_up, false>();
+    test_Oriented_rectangle();
 
     std::cout << "Press RETURN to terminate" << std::endl;
     char ch; std::cin >> std::noskipws >> ch;

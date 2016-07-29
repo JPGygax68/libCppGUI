@@ -46,6 +46,9 @@ namespace cppgui {
 
     struct Point {
 
+        constexpr Point(): x{0}, y{0} {}
+        constexpr Point(Position x_, Position y_): x{x_}, y{y_} {}
+
         Position x, y;
 
         auto operator + (const Point &delta) const { return Point{ x + delta.x, y + delta.y }; }
@@ -69,10 +72,10 @@ namespace cppgui {
 
         Length w, h;
 
-        Extents(): w { 0 }, h { 0 } {}
-        Extents(Length w_, Length h_): w { w_ }, h { h_ } {}
-        Extents(const Extents &from): w { from.w }, h { from.h } {}
-        Extents(Extents &&) = default;
+        constexpr Extents(): w { 0 }, h { 0 } {}
+        constexpr Extents(Length w_, Length h_): w { w_ }, h { h_ } {}
+        constexpr Extents(const Extents &from): w { from.w }, h { from.h } {}
+        constexpr Extents(Extents &&) = default;
 
         auto operator = (const Extents &) -> Extents & = default;
         auto operator = (Extents &&) -> Extents & = default;
@@ -143,12 +146,12 @@ namespace cppgui {
         Point pos;
         Extents  ext;
 
-        Rectangle(): pos {}, ext {} {}
-        Rectangle(const Point &pos_, const Extents &ext_): pos {pos_}, ext { ext_ } {}
-        Rectangle(const Extents &ext_): pos {}, ext {ext_} {}
-        Rectangle(const Rectangle &) = default;
-        Rectangle(Rectangle &&) = default;
-        Rectangle(Position x, Position y, Length w, Length h): pos { x, y}, ext { w, h } {}
+        constexpr Rectangle(): pos {}, ext {} {}
+        constexpr Rectangle(const Point &pos_, const Extents &ext_): pos {pos_}, ext { ext_ } {}
+        constexpr Rectangle(const Extents &ext_): pos {}, ext {ext_} {}
+        constexpr Rectangle(const Rectangle &) = default;
+        constexpr Rectangle(Rectangle &&) = default;
+        constexpr Rectangle(Position x, Position y, Length w, Length h): pos { x, y}, ext { w, h } {}
 
         auto operator = (const Rectangle &) -> Rectangle & = default;
         auto operator = (Rectangle &&) -> Rectangle & = default;
