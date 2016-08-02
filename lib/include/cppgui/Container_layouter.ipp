@@ -180,7 +180,9 @@ namespace cppgui
     template <class Class, class Parent>
     auto Single_beam_flow_layout<Config, true, Orientation, Injection>::Aspect<Class, Parent>::get_minimal_size() -> Extents
     {
-        Oriented_extents<Orientation> total;
+        using Oriented_extents_t = Oriented_extents<Orientation, Default_latitudinal_orientation<Orientation>::value, Parent::y_axis_up>;
+        
+        Oriented_extents_t total;
 
         Widget_t *prev_widget = nullptr;
 
@@ -193,9 +195,9 @@ namespace cppgui
             {
                 if (prev_widget) total.length() += _spacing;
 
-                Oriented_extents<Orientation> size{ elem->widget->get_minimal_size() };
-                total.width() = std::max(total.width(), size.width());
-                total.length() += std::max(size.length(), elem->_min_length);
+                Oriented_extents_t size{ elem->widget->get_minimal_size() };
+                total.breadth() = std::max(total.breadth(), size.breadth());
+                total.length () += std::max( static_cast<Length>(size.length()), elem->_min_length );
 
                 prev_widget = elem->widget;
             }
@@ -225,20 +227,23 @@ namespace cppgui
                 This is another reason why this layouter is not suited for precise positioning.
          */
 
-        Oriented_rectangle<Orientation> rect{ this->p()->content_rectangle() };
+        using Oriented_rectangle_t = Oriented_rectangle<Orientation, Default_latitudinal_orientation<Orientation>::value, Parent::y_axis_up>;
+        using Oriented_extents_t   = Oriented_extents  <Orientation, Default_latitudinal_orientation<Orientation>::value, Parent::y_axis_up>;
+
+        Oriented_rectangle_t rect{ this->p()->content_rectangle() };
 
         // Total of all "weights"
         auto total_weight = this->sum_of_weights();
         //std::accumulate(std::begin(_elements), std::end(_elements), 0.0f, [](float sum, auto& elem) { return sum + elem->weight; });
 
         // Calculate extra height to distribute among
-        Oriented_extents<Orientation> realsz{ this->p()->extents() }, minsz{ get_minimal_size() };
+        Oriented_extents_t realsz{ this->p()->extents() }, minsz{ get_minimal_size() };
         auto extra_length = realsz.length() - minsz.length();
 
         // Assign position and size to all widgets
 
         Widget_t *prev_widget = nullptr;
-        Position lon = rect.longitude();
+        Directed_position< Axis_reversed<Orientation, Parent::y_axis_up>::value > lon = rect.longitude();
 
         for (auto i = 0U; i < this->elements().size(); ++i)
         {
@@ -250,13 +255,13 @@ namespace cppgui
             {
                 if (prev_widget) lon += _spacing;
 
-                Oriented_extents<Orientation> size{ elem->widget->get_minimal_size() };
+                Oriented_extents_t size{ elem->widget->get_minimal_size() };
 
                 auto l = size.length() + extra_portion;
 
-                Oriented_rectangle<Orientation> r;
-                r.set_lon_seg( lon, l );
-                r.set_lat_seg( rect.latitude(), rect.extents().width() );
+                Oriented_rectangle_t r;
+                r.set_longitudinal_segment( lon, l );
+                r.set_latitudinal_segment( rect.latitude(), rect.extents().breadth() );
 
                 elem->widget->set_rectangle( r );
 

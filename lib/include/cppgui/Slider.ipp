@@ -128,7 +128,10 @@ namespace cppgui {
 
         // Thumb
         auto thclr = _knob_hovered ? Canvas_t::rgba_to_native({ 1, 1, 1, 1 }) : Canvas_t::rgba_to_native({ 0.7f, 0.7f, 0.7f, 1 });
-        this->fill_rect(canvas, _knob_rect, pos + _slide_rect.longitude_to_vector(_knob_pos), thclr);
+        //auto r = _knob_rect;
+        //r.set_longitudinal_segment( r.longitude() + _knob_pos, r.length() );
+        //this->fill_rect(canvas, r, pos, thclr);
+        this->fill_rect(canvas, knob_rectangle(), pos, thclr);
 
         // Debug
         #ifdef _DEBUG
@@ -235,7 +238,9 @@ namespace cppgui {
     template <class Class, bool With_layout>
     auto _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::knob_rectangle() const -> Rectangle
     {
-        return _knob_rect + _slide_rect.longitude_to_vector(_knob_pos);
+        auto r = _knob_rect;
+        r.set_longitudinal_segment( r.longitude() + _knob_pos, r.length() );
+        return r;
     }
 
     template <class Config, Orientation Orientation, typename ValueType>
@@ -274,9 +279,11 @@ namespace cppgui {
     template <class Class, bool With_layout>
     void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::start_knob_drag(const Point &pos)
     {
+        using Point_t = Oriented_point<Orientation, Default_latitudinal_orientation<Orientation>::value, Widget_t::y_axis_up>;
+
         assert(!_dragging_knob);
         _dragging_knob = true;
-        _knob_drag_start_pos = Oriented_point<Orientation>{pos}.longitude();
+        _knob_drag_start_pos = Point_t{pos}.longitude();
         _knob_drag_start_value = _value;
     }
 
@@ -292,7 +299,9 @@ namespace cppgui {
     template <class Class, bool With_layout>
     void _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::drag_knob(const Point &pos)
     {
-        auto delta = Oriented_point<Orientation>{ pos }.longitude_diff( _knob_drag_start_pos );
+        using Point_t = Oriented_point<Orientation, Default_latitudinal_orientation<Orientation>::value, Widget_t::y_axis_up>;
+
+        auto delta = Point_t{ pos }.longitude() - _knob_drag_start_pos; // TODO: sign correct ?
         //std::cerr << "delta = " << delta << std::endl;
 
         //change_value( _knob_drag_start_value + delta * _range.length() / _slide_rect.height() );
@@ -367,10 +376,12 @@ namespace cppgui {
     template<class Class, class Parent>
     auto _slider<Config, Orientation, ValueType>::Layouter<Class, true, Parent>::get_minimal_size() -> Extents
     {
-        Oriented_extents<Orientation> size; // TODO: adapt to template parameter
+        using Extents_t = Oriented_extents<Orientation, Default_latitudinal_orientation<Orientation>::value, Widget_t::y_axis_up>;
+
+        Extents_t size;
 
         size.length () = 5 * p()->knob_size().h; // TODO: less arbitrary definition ?
-        size.width() = p()->knob_size().w;      
+        size.breadth() = p()->knob_size().w;      
 
         return size;
     }
@@ -379,15 +390,19 @@ namespace cppgui {
     template<class Class, class Parent>
     void _slider<Config, Orientation, ValueType>::Layouter<Class, true, Parent>::layout()
     {
-        Oriented_rectangle<Orientation> rect{ p()->extents() };
-        Oriented_extents<Orientation> knob_size{ p()->knob_size() };
+        using Rectangle_t = Oriented_rectangle<Orientation, Default_latitudinal_orientation<Orientation>::value, Widget_t::y_axis_up>;
+        using Extents_t   = Oriented_extents  <Orientation, Default_latitudinal_orientation<Orientation>::value, Widget_t::y_axis_up>;
 
-        p()->_slide_rect = rect.define_relative_rectangle( knob_size.h / 2, rect.length() - knob_size.h,
-            (rect.width() - p()->slide_width()) / 2, p()->slide_width() );
 
-        p()->_knob_rect = Oriented_rectangle<Orientation>{ 
-            Oriented_point  <Orientation>{ 0, (rect.extents().width() - knob_size.w) / 2 }, 
-            Oriented_extents<Orientation>{ knob_size.h, knob_size.w } 
+        Rectangle_t rect{ p()->extents() };
+        Extents_t knob_size{ p()->knob_size() };
+
+        p()->_slide_rect.set_longitudinal_segment( knob_size.h / 2, rect.length() - knob_size.h );
+        p()->_slide_rect.set_latitudinal_segment ( (rect.extents().breadth() - p()->slide_width()) / 2, p()->slide_width() );
+
+        p()->_knob_rect = Rectangle_t { 
+            0, (rect.extents().w - knob_size.w) / 2, 
+            knob_size.h, knob_size.w 
         };
     }
 

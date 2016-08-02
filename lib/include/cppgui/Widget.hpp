@@ -34,6 +34,23 @@ namespace cppgui {
 
     struct Nil_struct {}; // to end aspect chains
 
+    // Utilities required for working with widgets
+
+    // Compile-time predicate: finds out whether the renderer uses bottom-up vertical coordinates:
+    //  _vertical_axis_bottom_up<Config>::value
+
+    template<class Config, typename = void>
+    struct _vertical_axis_bottom_up
+    {
+        static constexpr bool value = false;
+    };
+
+    template<class Config> 
+    struct _vertical_axis_bottom_up<Config, std::enable_if_t<std::is_same<const bool, decltype(Config::Renderer::y_axis_bottom_up)>::value>>
+    {
+        static constexpr bool value = Config::Renderer::y_axis_bottom_up;
+    };
+
     // Forward declarations 
 
     template <class Config, bool With_layout> class Root_widget_base;
@@ -51,6 +68,7 @@ namespace cppgui {
     class Abstract_widget
     {
     public:
+
         virtual ~Abstract_widget()
         {
         }
@@ -84,6 +102,7 @@ namespace cppgui {
         auto& extents() const { return _rect.ext; }
         void set_position(const Point &);
         void set_extents(const Extents &);
+        void set_rectangle(const Rectangle &);
 
         /** The init() entry point is where a widget "connects" to its backends (the most important of
             which being the canvas).
@@ -110,6 +129,9 @@ namespace cppgui {
         virtual bool handle_key_down(const Keycode &) { return false; }
 
     protected:
+
+        // Static information
+        static constexpr bool y_axis_up = _vertical_axis_bottom_up<Config>::value;
 
         // Rendering conveniences
 
@@ -314,6 +336,7 @@ namespace cppgui {
         //void set_padding(Width);
         //void set_padding(const std::initializer_list<Width> &);
 
+        void set_rectangle(const Rectangle &);
         void set_rectangle(const Point &nw, const Point &se);
         void set_rectangle_nw(const Point &, const Extents &);
         void set_rectangle_ne(const Point &, const Extents &);

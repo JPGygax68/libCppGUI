@@ -41,6 +41,12 @@ namespace cppgui {
         _rect.ext = ext;
     }
 
+    template <class Config, bool With_layout>
+    void Abstract_widget<Config, With_layout>::set_rectangle(const Rectangle &r)
+    {
+        _rect = r;
+    }
+
     /*
     template<class Config, bool With_layout>
     void Abstract_widget<Config, With_layout>::mouse_click(const Point &, int button, int count)

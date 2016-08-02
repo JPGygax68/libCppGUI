@@ -115,6 +115,8 @@ static void test_Oriented_rectangle_instance()
 {
     static constexpr Oriented_rectangle<LonOrient, LatOrient, YAxisBottomUp> c_rect { 10, 15, 30, 20 };
     static auto rect { c_rect };
+    static constexpr Oriented_rectangle<LonOrient, LatOrient, YAxisBottomUp> c_rect2;
+    static constexpr Oriented_rectangle<LonOrient, LatOrient, YAxisBottomUp> c_rect3 { Rectangle{ 10, 15, 30, 20 } };
 
     // TODO: Visual Studio 2015 bug: cannot make this constexpr
     static auto pt = c_rect.position();
@@ -162,6 +164,29 @@ static void test_Oriented_rectangle()
             throw std::runtime_error(instance + "::latitude(): wrong value");
         if (rect.latitude() + rect.breadth() != 23) 
             throw std::runtime_error(instance + ": latitude() and breadth() do not add up correctly");
+
+        Oriented_rectangle<left_to_right, top_down, false> r2 { 10, 5, 30, 18 };
+        r2.change_start_of_longitudinal_segment( 15 );
+        if (r2.length() != 25) 
+            throw std::runtime_error(instance + ": length() wrong after change_start_of_longitudinal_segment()");
+        if (r2.longitude() != 15) 
+            throw std::runtime_error(instance + ": longitude() wrong after change_start_of_longitudinal_segment()");
+        r2.change_end_of_longitudinal_segment( 20 );
+        if (r2.length() != 5) 
+            throw std::runtime_error(instance + ": length() wrong after change_end_of_longitudinal_segment()");
+        if (r2.longitude() != 15) 
+            throw std::runtime_error(instance + ": longitude() wrong after change_end_of_longitudinal_segment()");
+
+        r2.change_start_of_latitudinal_segment( 10 ); // + 5
+        if (r2.breadth() != 13) 
+            throw std::runtime_error(instance + ": breadth() wrong after change_start_of_latitudinal_segment()");
+        if (r2.latitude() != 10) 
+            throw std::runtime_error(instance + ": latitude() wrong after change_start_of_latitudinal_segment()");
+        r2.change_end_of_latitudinal_segment( 30 );
+        if (r2.breadth() != 20) 
+            throw std::runtime_error(instance + ": breadth() wrong after change_end_of_latitudinal_segment()");
+        if (r2.latitude() != 10) 
+            throw std::runtime_error(instance + ": latitude() wrong after change_end_of_latitudinal_segment()");
     }
 
     {
@@ -179,10 +204,71 @@ static void test_Oriented_rectangle()
             throw std::runtime_error(instance + ": latitude() and breadth() do not add up correctly");
     }
 
+    {
+        std::string instance = " Oriented_rectangle<right_to_left, bottom_up, true>";
+            // behaves the same as top_down with top-down Y axis
+
+        constexpr static Oriented_rectangle<right_to_left, top_down, false> rect { 10, 5, 30, 18 };
+        //static_assert(rect.longitude() == 10, "Oriented_rectangle<left_to_right, top_down, false>::longitude(): wrong value");
+        if (rect.longitude() != 40) 
+            throw std::runtime_error(instance + "::longitude(): wrong value");
+        if (rect.longitude() + rect.length() != rect.pos.x) 
+            throw std::runtime_error(instance + ": longitude() and length() do not add up correctly");
+        if (rect.latitude() != 5) 
+            throw std::runtime_error(instance + "::latitude(): wrong value");
+        if (rect.latitude() + rect.breadth() != 23) 
+            throw std::runtime_error(instance + ": latitude() and breadth() do not add up correctly");
+
+        Oriented_rectangle<right_to_left, top_down, false> r2 { 10, 5, 30, 18 };
+        r2.change_start_of_longitudinal_segment( 35 );
+        if (r2.length() != 25) 
+            throw std::runtime_error(instance + ": length() wrong after change_start_of_longitudinal_segment()");
+        if (r2.longitude() != 35) 
+            throw std::runtime_error(instance + ": longitude() wrong after change_start_of_longitudinal_segment()");
+        if (r2.pos.x != 10) 
+            throw std::runtime_error(instance + ": pos.x wrong after change_start_of_longitudinal_segment()");
+        r2.change_end_of_longitudinal_segment( 5 );
+        if (r2.length() != 30) 
+            throw std::runtime_error(instance + ": length() wrong after change_end_of_longitudinal_segment()");
+        if (r2.longitude() != 35) 
+            throw std::runtime_error(instance + ": longitude() wrong after change_end_of_longitudinal_segment()");
+        if (r2.pos.x != 5) 
+            throw std::runtime_error(instance + ": pos.x wrong after change_end_of_longitudinal_segment()");
+    }
+
     {   
         std::string instance = " Oriented_rectangle<left_to_right, bottom_up, false>";
 
         constexpr static Oriented_rectangle<left_to_right, bottom_up, false> rect { 10, 5, 30, 18 };
+        //static_assert(rect.longitude() == 10, "Oriented_rectangle<left_to_right, top_down, false>::longitude(): wrong value");
+        if (rect.longitude() != 10) 
+            throw std::runtime_error(instance + "::longitude(): wrong value");
+        if (rect.longitude() + rect.length() != 40) 
+            throw std::runtime_error(instance + ": longitude() and length() do not add up correctly");
+        if (rect.latitude() != 23) 
+            throw std::runtime_error(instance + "::latitude(): wrong value");
+        if (rect.latitude() + rect.breadth() != 5) 
+            throw std::runtime_error(instance + ": latitude() and breadth() do not add up correctly");
+
+        Oriented_rectangle<left_to_right, bottom_up, false> r2 { 10, 5, 30, 18 };
+
+        r2.change_start_of_latitudinal_segment( 25 );
+        if (r2.breadth() != 20) 
+            throw std::runtime_error(instance + ": breadth() wrong after change_start_of_latitudinal_segment()");
+        if (r2.latitude() != 25) 
+            throw std::runtime_error(instance + ": latitude() wrong after change_start_of_latitudinal_segment()");
+        r2.change_end_of_latitudinal_segment( 0 );
+        if (r2.breadth() != 25) 
+            throw std::runtime_error(instance + ": breadth() wrong after change_end_of_latitudinal_segment()");
+        if (r2.latitude() != 25) 
+            throw std::runtime_error(instance + ": latitude() wrong after change_end_of_latitudinal_segment()");
+    }
+
+    {   
+        std::string instance = " Oriented_rectangle<left_to_right, top_down, true>";
+            // behaves the same as top_down with bottom-up Y axis
+
+        constexpr static Oriented_rectangle<left_to_right, top_down, true> rect { 10, 5, 30, 18 };
         //static_assert(rect.longitude() == 10, "Oriented_rectangle<left_to_right, top_down, false>::longitude(): wrong value");
         if (rect.longitude() != 10) 
             throw std::runtime_error(instance + "::longitude(): wrong value");

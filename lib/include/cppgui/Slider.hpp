@@ -75,6 +75,9 @@ namespace cppgui {
 
         protected:
 
+            using Longitudinal_position_t = Directed_position< Axis_reversed<Orientation, Widget_t::y_axis_up>::value >;
+            using Oriented_rectangle_t = Oriented_rectangle<Orientation, Default_latitudinal_orientation<Orientation>::value, Widget_t::y_axis_up>;
+
             static constexpr auto slide_width() -> Width   { return 10; }
             static constexpr auto knob_size  () -> Extents { return { 30, 16 }; }
 
@@ -104,15 +107,15 @@ namespace cppgui {
             Range<Value_type>               _range;
             Value_type                      _incr_major, _incr_minor;
 
-            Oriented_rectangle<Orientation> _slide_rect;
-            Oriented_rectangle<Orientation> _knob_rect;
+            Oriented_rectangle_t            _slide_rect;
+            Oriented_rectangle_t            _knob_rect;
 
             Value_type                      _value;
-            Position                        _knob_pos;
+            Position_delta                  _knob_pos;
 
             bool                            _knob_hovered = false;
             bool                            _dragging_knob = false;
-            Position                        _knob_drag_start_pos;
+            Position_delta                  _knob_drag_start_pos;
             Value_type                      _knob_drag_start_value;
         };
 
@@ -147,12 +150,14 @@ namespace cppgui {
 
     template<class Config, bool With_layout, typename ValueType = float>
     class Horizontal_slider:
-        public _slider<Config, left_to_right, ValueType>::template Base<Horizontal_slider<Config, With_layout, ValueType>, With_layout> 
-    { };
+        public _slider<Config, left_to_right, ValueType>::template Base<Horizontal_slider<Config, With_layout, ValueType>, With_layout>
+    {
+    };
 
     template<class Config, bool With_layout, typename ValueType = float>
     class Vertical_slider:
-        public _slider<Config, bottom_up, ValueType>::template Base<Vertical_slider<Config, With_layout, ValueType>, With_layout> 
-    { };
+        public _slider<Config, bottom_up, ValueType>::template Base<Vertical_slider<Config, With_layout, ValueType>, With_layout>
+    {
+    };
 
 } // ns cppgui
