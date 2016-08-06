@@ -176,6 +176,11 @@ static void test_Oriented_rectangle()
             throw std::runtime_error(instance + ": length() wrong after change_end_of_longitudinal_segment()");
         if (r2.longitude() != 15) 
             throw std::runtime_error(instance + ": longitude() wrong after change_end_of_longitudinal_segment()");
+        r2.change_length( 30 );
+        if (r2.length() != 30) 
+            throw std::runtime_error(instance + ": length() wrong after change_length()");
+        if (r2.longitude() != 15) 
+            throw std::runtime_error(instance + ": longitude() wrong after change_length()");
 
         r2.change_start_of_latitudinal_segment( 10 ); // + 5
         if (r2.breadth() != 13) 
@@ -198,6 +203,24 @@ static void test_Oriented_rectangle()
             throw std::runtime_error(instance + "::longitude(): wrong value");
         if (rect.longitude() + rect.length() != rect.pos.x) 
             throw std::runtime_error(instance + ": longitude() and length() do not add up correctly");
+
+        Oriented_rectangle<right_to_left, top_down, false> r2 { 10, 5, 30, 18 };
+        r2.change_start_of_longitudinal_segment( 35 );
+        if (r2.length() != 25) 
+            throw std::runtime_error(instance + ": length() wrong after change_start_of_longitudinal_segment()");
+        if (r2.longitude() != 35) 
+            throw std::runtime_error(instance + ": longitude() wrong after change_start_of_longitudinal_segment()");
+        r2.change_end_of_longitudinal_segment( 15 );
+        if (r2.length() != 20) 
+            throw std::runtime_error(instance + ": length() wrong after change_end_of_longitudinal_segment()");
+        if (r2.longitude() != 35) 
+            throw std::runtime_error(instance + ": longitude() wrong after change_end_of_longitudinal_segment()");
+        r2.change_length( 40 );
+        if (r2.length() != 40) 
+            throw std::runtime_error(instance + ": length() wrong after change_length()");
+        if (r2.longitude() != 35) 
+            throw std::runtime_error(instance + ": longitude() wrong after change_length()");
+
         if (rect.latitude() != 5) 
             throw std::runtime_error(instance + "::latitude(): wrong value");
         if (rect.latitude() + rect.breadth() != 23) 

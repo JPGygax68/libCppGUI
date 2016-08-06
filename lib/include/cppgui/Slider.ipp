@@ -343,7 +343,8 @@ namespace cppgui {
     {
         auto res = _slide_rect;
 
-        res.move_longitude_start_by( _knob_pos + knob_size().h / 2 );
+        //res.move_longitude_start_by( _knob_pos + knob_size().h / 2 );
+        res.change_start_of_longitudinal_segment( res.longitude() + _knob_pos + knob_size().h / 2 );
 
         return res;
     }
@@ -354,7 +355,7 @@ namespace cppgui {
     {
         auto res = _slide_rect;
 
-        res.set_length( _knob_pos - knob_size().h / 2 );
+        res.change_length( res.length() + _knob_pos - knob_size().h / 2 );
 
         return res;
     }

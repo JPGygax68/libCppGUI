@@ -100,9 +100,9 @@ namespace cppgui {
         auto& position() const { return _rect.pos; }
         auto& extents() { return _rect.ext; }
         auto& extents() const { return _rect.ext; }
-        void set_position(const Point &);
-        void set_extents(const Extents &);
-        void set_rectangle(const Rectangle &);
+        void set_position(const Point &pt) { _rect.pos = pt; };
+        void set_extents(const Extents &ext) { _rect.ext = ext; }
+        void set_rectangle(const Rectangle &r) { _rect = r; }
 
         /** The init() entry point is where a widget "connects" to its backends (the most important of
             which being the canvas).
@@ -319,7 +319,7 @@ namespace cppgui {
     /** TODO: rename to reflect the fact that this is abstract ?
      */
     template <class Config, class Parent> 
-    struct Widget__Layouter<Config, true, Parent>: public Parent
+    struct Widget__Layouter<Config, true, Parent>: Parent
     {
         /** It is up to the implementation to guarantee that any internal state/data
             needed for layouting (including computing/returning the get_minimal_size())
@@ -336,8 +336,8 @@ namespace cppgui {
         //void set_padding(Width);
         //void set_padding(const std::initializer_list<Width> &);
 
-        void set_rectangle(const Rectangle &);
-        void set_rectangle(const Point &nw, const Point &se);
+        //void set_rectangle(const Rectangle &);
+        void set_rectangle_between(const Point &nw, const Point &se);
         void set_rectangle_nw(const Point &, const Extents &);
         void set_rectangle_ne(const Point &, const Extents &);
         void set_rectangle_se(const Point &, const Extents &);

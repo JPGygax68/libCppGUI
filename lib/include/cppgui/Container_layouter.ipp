@@ -20,6 +20,8 @@
 #include <cassert>
 #include <numeric>
 
+#include "./oriented_geometry.hpp"
+
 #include "./Container_layouter.hpp"
 
 namespace cppgui

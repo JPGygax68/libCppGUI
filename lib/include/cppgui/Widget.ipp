@@ -29,35 +29,6 @@ namespace cppgui {
 
     // Abstract_widget<> --------------------------------------------
 
-    template <class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::set_position(const Point &pos)
-    {
-        _rect.pos = pos;
-    }
-
-    template <class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::set_extents(const Extents &ext)
-    {
-        _rect.ext = ext;
-    }
-
-    template <class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::set_rectangle(const Rectangle &r)
-    {
-        _rect = r;
-    }
-
-    /*
-    template<class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::mouse_click(const Point &, int button, int count)
-    {
-        if (button == 1 && count == 1)
-        {
-            // TODO
-        }
-    }
-    */
-
     template<class Config, bool With_layout>
     auto Abstract_widget<Config, With_layout>::rgba_to_native(const Color &color) -> Native_color
     {
@@ -385,7 +356,7 @@ namespace cppgui {
     // Layouter aspect ----------------------------------------------
 
     template<class Config, class Parent>
-    void Widget__Layouter<Config, true, Parent>::set_rectangle(const Point &nw, const Point &se)
+    void Widget__Layouter<Config, true, Parent>::set_rectangle_between(const Point &nw, const Point &se)
     {
         p()->set_position(nw);
         p()->set_extents(Extents::between_points(nw, se));
