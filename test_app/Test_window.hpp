@@ -62,6 +62,11 @@ private:
         auto& textbox() { return _textbox; }
         auto& slider () { return _slider; }
 
+        void layout() override
+        {
+            Parent_t::layout();
+        }
+
     private:
         cppgui::Textbox<GUI_config, true, cppgui::Box_model_definition::run_time>   _textbox;
         cppgui::Vertical_slider<GUI_config, true>                                   _slider;

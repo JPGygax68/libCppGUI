@@ -238,8 +238,9 @@ namespace cppgui {
     template <class Class, bool With_layout>
     auto _slider<Config, Orientation, ValueType>::Base<Class, With_layout>::knob_rectangle() const -> Rectangle
     {
+        Oriented_rectangle_t rect { this->rectangle() };
         auto r = _knob_rect;
-        r.set_longitudinal_segment( r.longitude() + _knob_pos, r.length() );
+        r.set_longitude( rect.length().start() + _knob_pos - _knob_rect.length() / 2);
         return r;
     }
 
@@ -301,6 +302,7 @@ namespace cppgui {
     {
         using Point_t = Oriented_point<Orientation, Default_latitudinal_orientation<Orientation>::value, Widget_t::y_axis_up>;
 
+        auto lon = Point_t{ pos }.longitude();
         auto delta = Point_t{ pos }.longitude() - _knob_drag_start_pos; // TODO: sign correct ?
         //std::cerr << "delta = " << delta << std::endl;
 
@@ -343,7 +345,8 @@ namespace cppgui {
     {
         auto res = _slide_rect;
 
-        //res.move_longitude_start_by( _knob_pos + knob_size().h / 2 );
+        //res.change_start_of_longitudinal_segment( res.longitude() + _knob_pos + knob_size().h / 2 );
+
         res.change_start_of_longitudinal_segment( res.longitude() + _knob_pos + knob_size().h / 2 );
 
         return res;
@@ -394,12 +397,11 @@ namespace cppgui {
         using Rectangle_t = Oriented_rectangle<Orientation, Default_latitudinal_orientation<Orientation>::value, Widget_t::y_axis_up>;
         using Extents_t   = Oriented_extents  <Orientation, Default_latitudinal_orientation<Orientation>::value, Widget_t::y_axis_up>;
 
-
         Rectangle_t rect{ p()->extents() };
         Extents_t knob_size{ p()->knob_size() };
 
-        p()->_slide_rect.set_longitudinal_segment( knob_size.h / 2, rect.length() - knob_size.h );
-        p()->_slide_rect.set_latitudinal_segment ( (rect.extents().breadth() - p()->slide_width()) / 2, p()->slide_width() );
+        p()->_slide_rect.set_longitudinal_segment( rect.longitude() + knob_size.h / 2, rect.length() - knob_size.h );
+        p()->_slide_rect.set_latitudinal_segment ( rect.latitude() + (rect.extents().breadth() - p()->slide_width()) / 2, p()->slide_width() );
 
         p()->_knob_rect = Rectangle_t { 
             0, (rect.extents().w - knob_size.w) / 2, 

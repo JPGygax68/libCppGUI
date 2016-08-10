@@ -199,7 +199,9 @@ namespace cppgui
 
                 Oriented_extents_t size{ elem->widget->get_minimal_size() };
                 total.breadth() = std::max(total.breadth(), size.breadth());
-                total.length () += std::max( static_cast<Length>(size.length()), elem->_min_length );
+                auto l = std::max( static_cast<Length>(size.length()), elem->_min_length );
+                if (l <= 0) __debugbreak();
+                total.length () += l;
 
                 prev_widget = elem->widget;
             }

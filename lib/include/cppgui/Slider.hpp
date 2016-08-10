@@ -115,7 +115,7 @@ namespace cppgui {
 
             bool                            _knob_hovered = false;
             bool                            _dragging_knob = false;
-            Position_delta                  _knob_drag_start_pos;
+            Longitudinal_position_t         _knob_drag_start_pos;
             Value_type                      _knob_drag_start_value;
         };
 

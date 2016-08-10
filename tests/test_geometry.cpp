@@ -5,21 +5,27 @@
 
 using namespace cppgui;
 
-static void test_Oriented_position()
+static void test_Directed_position()
 {
-    std::cout << "Oriented_position<> (both variants)" << std::endl << std::endl;
+    std::cout << "Directed_position<> (both variants)" << std::endl << std::endl;
 
-    // TODO: because of a supposed Visual C++ 2015 bug, Oriented_position<> cannot be fully checked with static_assert().
+    // TODO: because of a supposed Visual C++ 2015 bug, Directed_position<> cannot be fully checked with static_assert().
 
-    static_assert( Directed_position<false>{ 5 } == 5, "Oriented_position<false>: construct from Position" );
-    //static_assert( Oriented_position<false>{ 5 } + 10 == 15, "Oriented_position<false>: ctor + operator +" );
+    static_assert( Directed_position<false>{ 5 } == 5, "Directed_position<false>: construct from Position" );
+    //static_assert( Directed_position<false>{ 5 } + 10 == 15, "Directed_position<false>: ctor + operator +" );
     // .. we do this instead
-    std::cout << "  Oriented_position<Reversed = false>::operator +: ... ";
-    if (Directed_position<false>{ 5 } + 10 != 15) throw std::runtime_error("Oriented_position<false>::operator + failure");
+    std::cout << "  Directed_position<Reversed = false>::operator + integer: ... ";
+    if (Directed_position<false>{ 5 } + 10 != 15) throw std::runtime_error("Directed_position<false>::operator + failure");
     std::cout << "OK" << std::endl;
 
-    std::cout << "  Oriented_position<Reversed = true>::operator +: ... ";
-    if (Directed_position<true>{ 5 } + 10 != -5) throw std::runtime_error("Oriented_position<true>::operator + failure");
+    std::cout << "  Directed_position<Reversed = false>::operator - Directed_position<Reversed = false>: ... ";
+    if (Directed_position<false>{ 5 } + Directed_position<false>{10} != 15) 
+        throw std::runtime_error("Directed_position<false>::operator + Directed_position<false> failure");
+    std::cout << "OK" << std::endl;
+
+    std::cout << "  Directed_position<Reversed = true>::operator +: ... ";
+    if (Directed_position<true>{ 5 } - Directed_position<true>{ 10 } != 5) 
+        throw std::runtime_error("Directed_position<true>::operator + failure");
     std::cout << "OK" << std::endl;
 
     std::cout << std::endl;
@@ -312,7 +318,7 @@ int main(int /*argc*/, char ** /*argv*/)
     static_assert( Axis_for_orientation<top_down     >::value == vertical  , "Axis_for_orientation<top_down     >::value == vertical  " );
     static_assert( Axis_for_orientation<bottom_up    >::value == vertical  , "Axis_for_orientation<bottom_up    >::value == vertical  " );
 
-    test_Oriented_position();
+    test_Directed_position();
 
     //test_Oriented_point<left_to_right, bottom_up, false>();
     test_Oriented_point();
