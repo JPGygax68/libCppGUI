@@ -240,7 +240,7 @@ namespace cppgui {
     {
         Oriented_rectangle_t rect { this->rectangle() };
         auto r = _knob_rect;
-        r.set_longitude( rect.length().start() + _knob_pos - _knob_rect.length() / 2);
+        r.set_longitude( _slide_rect.longitude() + _knob_pos - knob_size().h / 2 );
         return r;
     }
 
@@ -345,8 +345,6 @@ namespace cppgui {
     {
         auto res = _slide_rect;
 
-        //res.change_start_of_longitudinal_segment( res.longitude() + _knob_pos + knob_size().h / 2 );
-
         res.change_start_of_longitudinal_segment( res.longitude() + _knob_pos + knob_size().h / 2 );
 
         return res;
@@ -358,7 +356,7 @@ namespace cppgui {
     {
         auto res = _slide_rect;
 
-        res.change_length( res.length() + _knob_pos - knob_size().h / 2 );
+        res.change_end_of_longitudinal_segment( res.longitude() + _knob_pos - knob_size().h / 2 );
 
         return res;
     }
@@ -403,10 +401,12 @@ namespace cppgui {
         p()->_slide_rect.set_longitudinal_segment( rect.longitude() + knob_size.h / 2, rect.length() - knob_size.h );
         p()->_slide_rect.set_latitudinal_segment ( rect.latitude() + (rect.extents().breadth() - p()->slide_width()) / 2, p()->slide_width() );
 
-        p()->_knob_rect = Rectangle_t { 
+        /* p()->_knob_rect = Rectangle_t { 
             0, (rect.extents().w - knob_size.w) / 2, 
             knob_size.h, knob_size.w 
-        };
+        }; */
+        p()->_knob_rect.set_longitudinal_segment( rect.longitude() - knob_size.h / 2, knob_size.h );
+        p()->_knob_rect.set_latitudinal_segment ( rect.latitude () + (rect.breadth() - knob_size.w) / 2, knob_size.w );
     }
 
 } // ns cppgui
