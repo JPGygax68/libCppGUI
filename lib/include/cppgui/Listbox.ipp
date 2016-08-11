@@ -128,7 +128,8 @@ namespace cppgui {
     void Listbox<Config, With_layout, BMDef>::update_scrollbar_position()
         // Bring the position of the scrollbar in sync with the current vertical offset of the content pane
     {
-        this->vertical_scrollbar().update_position( - (_content_pane.position().y - this->content_rectangle().pos.y) );
+        //this->vertical_scrollbar().update_position( - (_content_pane.position().y - this->content_rectangle().pos.y) );
+        this->vertical_scrollbar().update_thumb_position( - (_content_pane.position().y - this->content_rectangle().pos.y) );
     }
 
     // Layouter aspect ----------------------------------------------

@@ -66,7 +66,7 @@ namespace cppgui {
 
         auto pos = offs + this->position();
 
-        draw_border(canvas, pos);
+        this->draw_border(canvas, pos);
 
         canvas->render_text(_font.get(), pos.x + _label_origin.x, pos.y + _label_origin.y, _label.data(), _label.size());
 

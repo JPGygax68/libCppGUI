@@ -34,6 +34,7 @@
 #include <cppgui/Slider.hpp>
 #include <cppgui/Icon_resources.hpp>
 #include <cppgui/Canvas.hpp>
+#include <cppgui/Container_layouter.hpp>
 
 namespace cppgui {
 
@@ -48,12 +49,17 @@ namespace cppgui {
         using Glyph_button_t       = Glyph_button<Config, With_layout, BMDef>;
         using Checkbox_t           = Checkbox<Config, With_layout, BMDef>;
         //using Container_base_t     = Container_base<Config, With_layout>;
-        //using Container_t          = Container<Config, With_layout, BMDef, TODO: layouter>;
+
         using Vertical_scrollbar_t = Vertical_scrollbar<Config, With_layout, BMDef>;
         using Listbox_t            = Listbox<Config, With_layout, BMDef>;
         using Stringlist_t         = Stringlist<Config, With_layout, BMDef>;
         //using Horizontal_slider_t  = Horizontal_slider<Config, With_layout>; // TODO
         using Vertical_slider_t    = Vertical_slider<Config, With_layout>;
+
+        // Templated types
+
+        template<class Layouter> 
+        class Container: public cppgui::Container<Container<Layouter>, Config, With_layout, BMDef, Layouter> {};
     };
 
 } // ns cppgui

@@ -82,6 +82,41 @@ namespace cppgui
 
     template <class Config, bool With_layout>
     template <class Impl, class Parent>
+    auto Box_model_base<Config, With_layout>::Aspect<Impl, Parent>::add_boxing(const Extents & ext) -> Extents
+    {
+        return {
+            ext.w + this->content_inset(3) + this->content_inset(1),
+            ext.h + this->content_inset(0) + this->content_inset(2)
+        };
+    }
+
+    template <class Config, bool With_layout>
+    template <class Impl, class Parent>
+    void Box_model_base<Config, With_layout>::Aspect<Impl, Parent>::draw_border(Canvas_t * canvas, const Point & offset)
+    {
+        auto rect = this->box_rectangle();
+        Width w;
+
+        //bool ena = true; // this->enabled(); // TODO: implement enabled() in Widget<> !!
+        //bool hov = this->hovered();
+        //bool foc = this->has_focus();
+
+        w = p()->border_width(0);
+        this->fill_rect(canvas, {rect.pos + Point{w, 0}, {rect.ext.w - w, w}}, offset,
+            Canvas_t::rgba_to_native(p()->border_color(0)));
+        w = p()->border_width(1);
+        this->fill_rect(canvas, {rect.pos + Point{rect.ext.w - w, 0}, {w, rect.ext.h}}, offset,
+            Canvas_t::rgba_to_native(p()->border_color(1)));
+        w = p()->border_width(2);
+        this->fill_rect(canvas, {rect.pos + Point{0, rect.ext.h - w}, {rect.ext.w - w, w}}, offset,
+            Canvas_t::rgba_to_native(p()->border_color(2)));
+        w = p()->border_width(3);
+        this->fill_rect(canvas, {rect.pos, {w, rect.ext.h}}, offset,
+            Canvas_t::rgba_to_native(p()->border_color(2)));
+    }
+
+    template <class Config, bool With_layout>
+    template <class Impl, class Parent>
     Box_model<Config, With_layout, Box_model_definition::run_time>::Aspect<Impl, Parent>::Aspect()
     {
         // The following will all be no-ops in case of build-time box model definition
@@ -103,38 +138,4 @@ namespace cppgui
         p()->set_padding(3, p()->default_padding(3));
     }
 
-    template <class Config, bool With_layout>
-    template <class Impl, class Parent>
-    auto Box_model<Config, With_layout, Box_model_definition::run_time>::Aspect<Impl, Parent>::add_boxing(const Extents & ext) -> Extents
-    {
-        return {
-            ext.w + this->content_inset(3) + this->content_inset(1),
-            ext.h + this->content_inset(0) + this->content_inset(2)
-        };
-    }
-
-    template <class Config, bool With_layout>
-    template <class Impl, class Parent>
-    void Box_model<Config, With_layout, Box_model_definition::run_time>::Aspect<Impl, Parent>::draw_border(Canvas_t * canvas, const Point & offset)
-    {
-        auto rect = this->box_rectangle();
-        Width w;
-
-        //bool ena = true; // this->enabled(); // TODO: implement enabled() in Widget<> !!
-        //bool hov = this->hovered();
-        //bool foc = this->has_focus();
-
-        w = p()->border_width(0);
-        this->fill_rect(canvas, {rect.pos + Point{w, 0}, {rect.ext.w - w, w}}, offset,
-                        Canvas_t::rgba_to_native(p()->border_color(0)));
-        w = p()->border_width(1);
-        this->fill_rect(canvas, {rect.pos + Point{rect.ext.w - w, 0}, {w, rect.ext.h}}, offset,
-                        Canvas_t::rgba_to_native(p()->border_color(1)));
-        w = p()->border_width(2);
-        this->fill_rect(canvas, {rect.pos + Point{0, rect.ext.h - w}, {rect.ext.w - w, w}}, offset,
-                        Canvas_t::rgba_to_native(p()->border_color(2)));
-        w = p()->border_width(3);
-        this->fill_rect(canvas, {rect.pos, {w, rect.ext.h}}, offset,
-                        Canvas_t::rgba_to_native(p()->border_color(2)));
-    }
 } // ns cppgui

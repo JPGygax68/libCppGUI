@@ -46,8 +46,8 @@ namespace cppgui {
     template<class Config, bool With_layout, Box_model_definition BMDef>
     class Button: public 
         Button__Layouter<Config, With_layout>::template Aspect< Button<Config, With_layout, BMDef>,
-        Box_model<Config, With_layout, BMDef>::template Aspect< Button<Config, With_layout, BMDef>,
-        Widget<Config, With_layout> > >
+            Box_model<Config, With_layout, BMDef>::template Aspect< Button<Config, With_layout, BMDef>,
+                Widget<Config, With_layout> > >
     {
     public:
         using Renderer = typename Config::Renderer;

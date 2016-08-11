@@ -99,6 +99,9 @@ namespace cppgui
         template<class Impl, class Parent>
         struct Aspect: Parent
         {
+            using Widget_t = Widget<Config, With_layout>;
+            using Canvas_t = typename Widget_t::Canvas_t;
+
             constexpr auto box_rectangle() const -> Rectangle;
 
             constexpr auto content_rectangle() const -> Rectangle;
@@ -111,6 +114,10 @@ namespace cppgui
                 // TODO: return value that takes enabled(), hovered(), focused() properties into account
                 return Color{ 0, 0, 0, 1 }; // TODO: styling!
             }
+
+            auto add_boxing(const Extents & ext) -> Extents;
+
+            void draw_border(Canvas_t * canvas, const Point & offset);
 
         protected:
             struct Implementation: Impl { friend struct Aspect; };
@@ -150,6 +157,11 @@ namespace cppgui
             static void set_margin      (int dir, Width /*w*/) {}
             static void set_border_width(int dir, Width /*w*/) {}
             static void set_padding     (int dir, Width /*w*/) {}
+
+            // The derived class must provide values via CRTP-injected read-only properties
+            // static auto margin      (int /*dir*/) const { return ... };
+            // static auto border_width(int /*dir*/) const { return ... };
+            // static auto padding     (int /*dir*/) const { return ... };
         };
     };
 
@@ -182,10 +194,6 @@ namespace cppgui
             auto margin      (int /*dir*/) const { return _margin; }
             auto border_width(int /*dir*/) const { return _border_width; }
             auto padding     (int /*dir*/) const { return _padding; }
-
-            auto add_boxing(const Extents & ext) -> Extents;
-
-            void draw_border(Canvas_t * canvas, const Point & offset);
 
         private:
             class Implementation_t: public Impl { friend struct Aspect; };

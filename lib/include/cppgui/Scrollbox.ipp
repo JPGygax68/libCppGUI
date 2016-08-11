@@ -105,9 +105,9 @@ namespace cppgui {
 
         canvas->cancel_clipping();
 
-        draw_border(canvas, offset); //, _border.width, _border.color);
+        this->draw_border(canvas, offset); //, _border.width, _border.color);
 
-        fill_rect(canvas, { _vert_sep_pos, this->border_width(0), _separator.width, 
+        this->fill_rect(canvas, { _vert_sep_pos, this->border_width(0), _separator.width, 
             this->extents().h - this->border_width(3) - this->border_width(1) }, 
             r.pos, canvas->rgba_to_native(_separator.color) );
     }
