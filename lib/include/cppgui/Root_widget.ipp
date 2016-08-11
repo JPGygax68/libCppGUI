@@ -21,6 +21,9 @@
 
 #include "./Widget.ipp"
 #include "./Container_base.ipp"
+#include "./Container_layouter.ipp"
+
+#pragma warning(disable: 4505)
 
 namespace cppgui {
 
@@ -42,7 +45,7 @@ namespace cppgui {
     */
 
     template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::set_canvas(Canvas_t *cv)
+    void Root_widget_base<Config, With_layout>::set_canvas(Canvas_t *cv)
     {
         _canvas = cv;
 
@@ -51,7 +54,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::init()
+    void Root_widget_base<Config, With_layout>::init()
     {
         this->init_child_resources();
 
@@ -59,7 +62,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::cleanup()
+    void Root_widget_base<Config, With_layout>::cleanup()
     {
         //TODO: cleanup_children_resources();
 
@@ -68,7 +71,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::compute_view_from_data()
+    void Root_widget_base<Config, With_layout>::compute_view_from_data()
     {
         this->compute_child_views();
 
@@ -86,7 +89,7 @@ namespace cppgui {
     */
 
     template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::push_cursor(Cursor_handle cursor)
+    void Root_widget_base<Config, With_layout>::push_cursor(Cursor_handle cursor)
     {
         _cursor_stack.push( Config::Mouse::get_current_cursor() );
 
@@ -94,7 +97,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::pop_cursor()
+    void Root_widget_base<Config, With_layout>::pop_cursor()
     {
         // All cursors but the top one must be freed after use
         if (_cursor_stack.size() > 1)
@@ -108,7 +111,7 @@ namespace cppgui {
     }
 
     template<class Config, bool WithLayout>
-    void Root_widget<Config, WithLayout>::mouse_motion(const Point &pos)
+    void Root_widget_base<Config, WithLayout>::mouse_motion(const Point &pos)
     {
         this->lock();
 
@@ -126,7 +129,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
+    void Root_widget_base<Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
     {
         this->lock();
 
@@ -161,7 +164,7 @@ namespace cppgui {
     */
 
     template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::mouse_wheel(const Vector &dir)
+    void Root_widget_base<Config, With_layout>::mouse_wheel(const Vector &dir)
     {
         this->lock();
         this->container_mouse_wheel(dir);
@@ -169,7 +172,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::text_input(const char32_t *text, size_t size)
+    void Root_widget_base<Config, With_layout>::text_input(const char32_t *text, size_t size)
     {
         if (this->focused_child())
         {
@@ -180,7 +183,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::key_down(const Keycode &key)
+    void Root_widget_base<Config, With_layout>::key_down(const Keycode &key)
     {
         this->lock();
 
@@ -197,13 +200,22 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::render()
+    void Root_widget_base<Config, With_layout>::render()
     {
         render(_canvas, {0, 0});
     }
 
+    template <class Config, bool With_layout>
+    void Root_widget_base<Config, With_layout>::child_key_down(const Keycode &key)
+    {
+        if (!handle_key_down(key))
+        {
+            std::cerr << "Root_widget_base::child_key_down(): could not handle key event" << std::endl;
+        }
+    }
+
     template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::capture_mouse(Widget_t *holder)
+    void Root_widget_base<Config, With_layout>::capture_mouse(Widget_t *holder)
     {
         // assert(!_mouse_holder);
 
@@ -224,7 +236,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::release_mouse()
+    void Root_widget_base<Config, With_layout>::release_mouse()
     {
         if (_mouse_holder)
         {
@@ -233,8 +245,14 @@ namespace cppgui {
         }
     }
 
+    template <class Config, bool With_layout>
+    auto Root_widget_base<Config, With_layout>::container_absolute_position() -> Point
+    {
+        return this->position();
+    }
+
     template<class Config, bool WithLayout>
-    inline void Root_widget<Config, WithLayout>::render(Canvas_t *cv, const Point &offs)
+    inline void Root_widget_base<Config, WithLayout>::render(Canvas_t *cv, const Point &offs)
     {
         auto pos = offs + this->position();
 
@@ -259,20 +277,24 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
+    /*
+
     template<class Config, class Parent>
-    void Root_widget__Layouter<Config, true, Parent>::init_layout()
+    void Root_widget_base__Layouter<Config, true, Parent>::init_layout()
     {
         p()->init_children_layout();
     }
 
     template<class Config, class Parent>
-    void Root_widget__Layouter<Config, true, Parent>::layout()
+    void Root_widget_base__Layouter<Config, true, Parent>::layout()
     {
         Container_base_t::layout();
     }
 
+    */
+
     template<class Config, class Parent>
-    void Root_widget__Layouter<Config, true, Parent>::insert_child(Widget_t *child)
+    void Root_widget_base__Layouter<Config, true, Parent>::insert_child(Widget_t *child)
     {
         p()->add_child(child);
 
@@ -284,7 +306,7 @@ namespace cppgui {
     }
 
     template<class Config, class Parent>
-    void Root_widget__Layouter<Config, true, Parent>::drop_child(Widget_t *child)
+    void Root_widget_base__Layouter<Config, true, Parent>::drop_child(Widget_t *child)
     {
         if (p()->contains_widget( p()->mouse_holder() ))
         {

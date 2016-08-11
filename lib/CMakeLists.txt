@@ -148,6 +148,7 @@ add_library( ${PROJECT_NAME} STATIC
 
     include/cppgui/basic_types.hpp
     include/cppgui/geometry.hpp
+    include/cppgui/oriented_geometry.hpp
     include/cppgui/unicode.hpp
 
     #include/cppgui/Text_element.hpp                 include/cppgui/Text_element.ipp
@@ -157,14 +158,16 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Widget_template.hpp              include/cppgui/Widget_template.ipp
 
     include/cppgui/Canvas.hpp                       include/cppgui/Canvas.ipp
-    include/cppgui/Box_model.hpp
+    include/cppgui/Box_model.hpp                    include/cppgui/Box_model.ipp
+    include/cppgui/Container_layouter.hpp           include/cppgui/Container_layouter.ipp
     include/cppgui/Widget.hpp                       include/cppgui/Widget.ipp
+    include/cppgui/Custom_widget.hpp                include/cppgui/Custom_widget.ipp
     include/cppgui/Button.hpp                       include/cppgui/Button.ipp
     include/cppgui/Glyph_button.hpp                 include/cppgui/Glyph_button.ipp
     include/cppgui/Label.hpp                        include/cppgui/Label.ipp
     include/cppgui/Textbox.hpp                      include/cppgui/Textbox.ipp
     include/cppgui/Checkbox.hpp                     include/cppgui/Checkbox.ipp
-    include/cppgui/Box.hpp                          include/cppgui/Box.ipp
+    #include/cppgui/Box.hpp                          include/cppgui/Box.ipp
     include/cppgui/Abstract_container.hpp           include/cppgui/Abstract_container.ipp
     include/cppgui/layout_managers.hpp              include/cppgui/layout_managers.ipp
     include/cppgui/Container_base.hpp               include/cppgui/Container_base.ipp
@@ -177,7 +180,7 @@ add_library( ${PROJECT_NAME} STATIC
     #include/cppgui/List_pane.hpp                    include/cppgui/List_pane.ipp
     include/cppgui/Listbox.hpp                      include/cppgui/Listbox.ipp
     include/cppgui/Stringlist.hpp                   include/cppgui/Stringlist.ipp
-    include/cppgui/Vertical_slider.hpp              include/cppgui/Vertical_slider.ipp
+    include/cppgui/Slider.hpp                       include/cppgui/Slider.ipp
 
     include/cppgui/Icon_resources.hpp               # all constexpr -> inline -> no .ipp file
 

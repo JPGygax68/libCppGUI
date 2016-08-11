@@ -18,44 +18,40 @@
 */
 
 #include "./Widget.hpp"
-#include "./Box.hpp"
 
 namespace cppgui {
 
     // Forward declarations 
 
-    template <class Class, bool With_layout, class Parent>
-    struct Textbox__Layouter: public Parent
+    template<class Config, bool With_layout>
+    struct Textbox__Layouter
     {
-        void font_changed() { static_assert(false, "Concept: Textbox__Layouter::font_changed(): must never be used"); }
-        auto get_minimal_size() -> Extents { static_assert(false, "Concept: Textbox__Layouter::get_minimal_size(): must never be used"); return {}; }
-        void layout() override { static_assert(false, "Concept: Textbox__Layouter::layout(): must never be used"); }
+        template <class Class, class Parent>
+        struct Aspect: Parent
+        {
+        };
     };
 
     // Main class 
 
     // TODO: do not stretch vertically to fill all available space, instead display a strip with border and padding to fit the font size
 
-    #define CPPGUI_INSTANTIATE_TEXTBOX(Config, With_layout) \
-        template cppgui::Textbox<Config, With_layout>; \
-        template cppgui::Textbox__Layouter<cppgui::Textbox<Config, With_layout>, With_layout, \
-            cppgui::Box<Config, With_layout, \
-                cppgui::Fixed_padding_box_model< 3, cppgui::Widget<Config, With_layout> > > >;
-
-    template <class Config, bool With_layout>
+    template<class Config, bool With_layout, Box_model_definition BMDef>
     class Textbox: public 
-        Textbox__Layouter<cppgui::Textbox<Config, With_layout>, With_layout, 
-            Box<Config, With_layout, 
-                Fixed_padding_box_model< 3, Widget<Config, With_layout> > > >
+        Textbox__Layouter<Config, With_layout>::template Aspect<Textbox<Config, With_layout, BMDef>,
+        Box_model<Config, With_layout, BMDef>::template Aspect<Textbox<Config, With_layout, BMDef>,
+        Widget<Config, With_layout> > >
     {
     public:
         using Widget_t      = Widget<Config, With_layout>;
-        using Textbox_t     = Textbox<Config, With_layout>;
+        using Textbox_t     = Textbox<Config, With_layout, BMDef>;
         using Renderer      = typename Config::Renderer;
         using Keycode       = typename Config::Keyboard::Keycode;
         using Canvas_t      = typename Widget_t::Canvas_t;
         using Font_resource = typename Widget_t::Font_resource;
         using Done_handler  = std::function<void(const std::u32string&)>;
+
+        static constexpr auto default_padding(int /*dir*/) { return 2; }
 
         Textbox();
 
@@ -140,29 +136,26 @@ namespace cppgui {
 
     // Layouting aspect ---------------------------------------------
 
-    template <class Class, class Parent>
-    struct Textbox__Layouter<Class, false, Parent>: public Parent
+    template<class Config>
+    struct Textbox__Layouter<Config, true>
     {
-    };
+        template <class Class, class Parent>
+        struct Aspect: Parent
+        {
+            class Textbox_t: public Class { friend struct Aspect; };
+            auto p() { return static_cast<Textbox_t*>(this); }
 
-    template <class Class, class Parent>
-    struct Textbox__Layouter<Class, true, Parent>: Parent
-    {
-        class Textbox_t: public Class { friend struct Textbox__Layouter; };
-        auto p() { return static_cast<Textbox_t*>(this); }
+            void change_font(const Rasterized_font *);
 
-        Textbox__Layouter();
+            void compute_text_extents();
 
-        void change_font(const Rasterized_font *);
+            void init_layout() override;
+            auto get_minimal_size() -> Extents override;
+            void layout() override;
 
-        void compute_text_extents();
-
-        void init_layout() override;
-        auto get_minimal_size() -> Extents override;
-        void layout() override;
-
-        // "Stylesheet"
-        static constexpr auto default_padding() -> Padding { return { 3, 3, 3, 3 }; }
+            // "Stylesheet"
+            static constexpr auto default_padding() -> Padding { return { 3, 3, 3, 3 }; }
+        };
     };
 
 } // ns cppgui

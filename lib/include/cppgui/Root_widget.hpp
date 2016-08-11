@@ -22,20 +22,24 @@
 
 #include "./Widget.hpp"
 #include "./Container_base.hpp"
+#include "./Container_layouter.hpp"
+#include "./Box_model.hpp"
+
+#pragma warning(disable: 4505)
 
 namespace cppgui {
 
     extern int dummy;
 
-    template <class Config, bool With_layout, class Parent> struct Root_widget__Layouter;
+    // Root_widget_base -------------------------------------------------------
 
-    // Root widget
+    template <class Config, bool With_layout, class Parent> struct Root_widget_base__Layouter;
 
     // TODO: confer the ability to render a background ?
 
     template <class Config, bool With_layout>
-    class Root_widget: 
-        public Root_widget__Layouter<Config, With_layout, 
+    class Root_widget_base: 
+        public Root_widget_base__Layouter<Config, With_layout, 
             typename Config::template Root_widget__Container_updater<
                 typename Config::template Root_widget__Updater< 
                     Container_base<Config, With_layout> > > >
@@ -57,6 +61,11 @@ namespace cppgui {
         using Container_base_t::add_child;
         using Container_base_t::remove_child;
 
+        Root_widget_base()
+        {
+            this->set_id("Root_widget_base");
+        }
+
         void set_background_color(const Color &color) { _bkgnd_clr = color; }
 
         void set_canvas(Canvas_t *);
@@ -69,6 +78,7 @@ namespace cppgui {
 
         // TODO: request mechanism ?
         bool has_focus() override { return true; } // TODO: return window activation state ?
+        auto container_absolute_position() -> Point override;
         bool container_has_focus() override { return true; } // TODO: only return true if owning window is active ?
 
         //void set_focus_to(Widget_t *);
@@ -88,7 +98,7 @@ namespace cppgui {
 
         void render();
 
-        void child_key_down(const Keycode &) override {}
+        void child_key_down(const Keycode &) override;
 
         void capture_mouse(Widget_t *);
         void release_mouse();
@@ -114,7 +124,7 @@ namespace cppgui {
     {
         using Abstract_container_t = Abstract_container<Config, With_layout>;
         using Invalidated_handler = std::function<void()>;
-        using Root_widget_t = Root_widget<Config, With_layout>;
+        using Root_widget_t = Root_widget_base<Config, With_layout>;
 
         auto root_widget() { return p(); }
 
@@ -123,7 +133,7 @@ namespace cppgui {
         void on_invalidated(Invalidated_handler handler) { _on_invalidated = handler; }
 
     private:
-        auto p() -> Root_widget_t * { return static_cast<Root_widget_t*>(static_cast<Root_widget<Config, true>*>(this)); }
+        auto p() -> Root_widget_t * { return static_cast<Root_widget_t*>(static_cast<Root_widget_base<Config, true>*>(this)); }
 
         Invalidated_handler _on_invalidated;
     };
@@ -135,7 +145,7 @@ namespace cppgui {
     {
         using Widget_t = Widget<Config, With_layout>;
         using Container_base_t = Container_base<Config, With_layout>;
-        using Root_widget_t = Root_widget<Config, With_layout>;
+        using Root_widget_t = Root_widget_base<Config, With_layout>;
 
         // Container_updater contract
 
@@ -150,7 +160,7 @@ namespace cppgui {
         void unlock() { if (_must_update) p()->invalidate(); }
 
     private:
-        auto p() { return static_cast<Root_widget_t*>(static_cast<Root_widget<Config, With_layout>*>(this)); }
+        auto p() { return static_cast<Root_widget_t*>(static_cast<Root_widget_base<Config, With_layout>*>(this)); }
 
         bool                _must_update;
     };
@@ -158,21 +168,30 @@ namespace cppgui {
     // Layouting aspect
 
     template <class Config, class Parent> 
-    struct Root_widget__Layouter<Config, true, Parent>: public Parent 
+    struct Root_widget_base__Layouter<Config, true, Parent>: public Parent 
     {
-        class Root_widget_t: public Root_widget<Config, true> { friend struct Root_widget__Layouter; };
+        class Root_widget_t: public Root_widget_base<Config, true> { friend struct Root_widget_base__Layouter; };
 
         using Widget_t = Widget<Config, true>;
 
         auto p() { return static_cast<Root_widget_t*>(this); }
 
-        virtual void init_layout();
-        virtual auto get_minimal_size() -> Extents { return {0, 0}; }
-        virtual void layout();
+        //virtual void init_layout();
+        auto get_minimal_size() -> Extents override { return {0, 0}; }
+        //virtual void layout();
 
         void insert_child(Widget_t *);
         void drop_child(Widget_t *);
     };
+
+    // Root_widget ------------------------------------------------------------
+
+    template<class Config, bool With_layout, Box_model_definition BMDef, class Layouter>
+    class Root_widget: public 
+        Layouter::template Aspect< Root_widget<Config, With_layout, BMDef, Layouter>,
+        Box_model<Config, With_layout, BMDef>::template Aspect<Root_widget<Config, With_layout, BMDef, Layouter>,
+        Root_widget_base<Config, With_layout> > >
+    {};
 
 } // ns cppgui
 

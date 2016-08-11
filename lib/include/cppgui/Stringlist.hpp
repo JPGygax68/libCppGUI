@@ -19,18 +19,22 @@
 
 #include <vector>
 
-#include "./Box.hpp"
 #include "./Container_base.hpp"
 #include "./Vertical_scrollbar.hpp"
+#include "./Box_model.hpp"
 
 namespace cppgui {
 
+    // Forward declarations
+
+    template<class Config, bool With_layout> struct String_list__Layouter
+    {
+        template<class Class, class Parent>
+        struct Aspect {};
+    };
+
     template<class Config>
     struct _stringlist {
-
-        // Forward declarations
-
-        template<class Class, bool With_layout, class Parent> struct Layouter;
 
         // Default settings
 
@@ -38,19 +42,11 @@ namespace cppgui {
 
         // Main class declaration ---------------------------------------
 
-        //#define _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Config, With_layout, /*BoxModel*/...) \
-        //    template cppgui::_stringlist<Config>::Base<With_layout, __VA_ARGS__>; \
-        //    template cppgui::_stringlist<Config>::Layouter<With_layout, __VA_ARGS__, \
-        //        cppgui::Box<Config, With_layout, \
-        //            __VA_ARGS__< \
-        //                cppgui::Container_base<Config, With_layout> > > >;
-
-        template<bool With_layout, int BorderWidth>
+        template<bool With_layout, Box_model_definition BMDef>
         class Base: public 
-            Layouter<Base<With_layout, BorderWidth>, With_layout, 
-                Box<Config, With_layout, 
-                    Fixed_border_and_padding_box_model<BorderWidth, 0,
-                        Container_base<Config, With_layout> > > >
+            String_list__Layouter<Config, With_layout>::template Aspect< Base<With_layout, BMDef>,
+            Box_model<Config, With_layout, BMDef>::template Aspect< Base<With_layout, BMDef>,
+            Container_base<Config, With_layout> > >
         {
         public:
             using Widget_t = Widget<Config, With_layout>;
@@ -85,7 +81,7 @@ namespace cppgui {
             void key_down(const Keycode &) override;
 
         protected:
-            using Vertical_scrollbar_t = Custom_vertical_scrollbar<Config, With_layout>;
+            using Vertical_scrollbar_t = Custom_vertical_scrollbar<Config, With_layout, BMDef>;
             using Font_resource = typename Widget_t::Font_resource;
             using Native_color = typename Canvas_t::Native_color;
 
@@ -131,16 +127,15 @@ namespace cppgui {
             Index                       _hovered_item = -1;
         };
 
-        // Layouter aspect ------------------------------------------
+    }; // pseudo-ns _stringlist
 
-        /** Dummy template specialization for when With_layout = false.
-        */
-        template<class Class, class Parent> struct Layouter<Class, false, Parent>: public Parent {};
+    // Layouter aspect ------------------------------------------
 
-        /** "Real" layouter specialization that will be selected when With_layout = true.
-        */
+    template<class Config>
+    struct String_list__Layouter<Config, true>
+    {
         template<class Class, class Parent>
-        struct Layouter<Class, true, Parent>: Parent
+        struct Aspect: Parent
         {
             void init_layout() override;
 
@@ -149,23 +144,16 @@ namespace cppgui {
             void layout() override;
 
         protected:
-            class Stringlist_t: public Class  { friend struct Layouter; };
-
+            class Stringlist_t: public Class { friend struct Aspect; };
             auto p() { return static_cast<Stringlist_t *>(this); }
 
             void compute_text_extents();
         };
-
-    }; // pseudo-ns _stringlist
+    };
 
     // Specializations ----------------------------------------------
 
-    //#define CPPGUI_INSTANTIATE_STRINGLIST(Config, With_layout, /*BoxModel*/...) \
-    //    template cppgui::Stringlist<Config, With_layout, __VA_ARGS__>; \
-    //    template cppgui::_stringlist<Config>; \
-    //    _CPPGUI_INSTANTIATE_STRINGLIST_BASE(Config, With_layout, __VA_ARGS__)
-
-    template<class Config, bool With_layout, int BorderWidth = _stringlist<Config>::default_border_width>
-    class Stringlist: public _stringlist<Config>::template Base<With_layout, BorderWidth> { };
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    class Stringlist: public _stringlist<Config>::template Base<With_layout, BMDef> { };
 
 } // ns cppgui

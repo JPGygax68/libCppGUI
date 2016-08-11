@@ -3,7 +3,7 @@
 #include "./Container.hpp"
 
 #include "./Container_base.ipp"
-#include "./Box.ipp"
+#include "./Box_model.ipp"
 
 namespace cppgui
 {

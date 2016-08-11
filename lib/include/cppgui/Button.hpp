@@ -21,39 +21,33 @@
 
 #include "./Widget.hpp"
 #include "./Box_model.hpp"
-#include "./Box.hpp"
 
 namespace cppgui {
 
-    template<class Class, class Config, bool With_layout, class Parent> struct Button__Layouter;
+    template<class Config, bool With_layout> 
+    struct Button__Layouter
+    {
+        template<class Class, class Parent>
+        struct Aspect: Parent {};
+    };
 
     // Internal stuff
 
     template<class Config>
     struct _button
     {
-        template<class Parent>
-        using Default_box_model = Fixed_border_and_padding_box_model<1, 3, Parent>; // TODO: take DPI into account
+        //template<class Parent>
+        //using Default_box_model = Fixed_border_and_padding_box_model<1, 3, Parent>; // TODO: take DPI into account
     };
-
-    #ifdef NOT_DEFINED
-
-    #define CPPGUI_INSTANTIATE_BUTTON(Config, With_layout, ...) \
-        template cppgui::Button<Config, With_layout, __VA_ARGS__>; \
-        template cppgui::Button__Layouter<Config, With_layout, __VA_ARGS__, \
-            cppgui::Box<Config, With_layout, \
-                __VA_ARGS__< cppgui::Widget<Config, With_layout> > > >;
-    
-    #endif
 
     /** TODO: how to support changing label (and later on, icon) at runtime without mixing
             in the layouting aspect ?
      */
-    template <class Config, bool With_layout, template<class> class BoxModel = _button<Config>::Default_box_model>
+    template<class Config, bool With_layout, Box_model_definition BMDef>
     class Button: public 
-        Button__Layouter<Button<Config, With_layout, BoxModel>, Config, With_layout,
-            Box<Config, With_layout, 
-                BoxModel< Widget<Config, With_layout> > > >
+        Button__Layouter<Config, With_layout>::template Aspect< Button<Config, With_layout, BMDef>,
+        Box_model<Config, With_layout, BMDef>::template Aspect< Button<Config, With_layout, BMDef>,
+        Widget<Config, With_layout> > >
     {
     public:
         using Renderer = typename Config::Renderer;
@@ -93,51 +87,43 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    // Dummy implementation (no layouting)
-
-    template <class Class, class Config, class Parent>
-    struct Button__Layouter<Class, Config, false, Parent>: public Parent
+    template<class Config>
+    struct Button__Layouter<Config, true>
     {
-        void layout() {} // called from init
-        void font_changed() {}
-        void text_changed() {}
-    };
+        template<class Class, class Parent>
+        struct Aspect: Parent 
+        {
+            // Button__Layouter() { _padding = this->button_padding(); }
 
-    // Real implementation
+            // Layouter contract
 
-    template <class Class, class Config, class Parent>
-    struct Button__Layouter<Class, Config, true, Parent>: public Parent
-    {
-        // Button__Layouter() { _padding = this->button_padding(); }
+            void init_layout() override;
+            auto get_minimal_size() -> Extents override;
+            void layout() override;
 
-        // Layouter contract
+            // Extra capabilities coming with layouting
+            // TODO
+            // void change_font(const Rasterized_font *);
+            // void change_label(const std::u32string &);
 
-        void init_layout() override;
-        auto get_minimal_size() -> Extents override;
-        void layout() override;
+            // Extra properties
+            //auto minimal_padding() -> int; // THIS *INCLUDES* THE BORDER WIDTH (unlike the CSS box model!)
 
-        // Extra capabilities coming with layouting
-        // TODO
-        // void change_font(const Rasterized_font *);
-        // void change_label(const std::u32string &);
+            // Interface with main class (Button)
 
-        // Extra properties
-        //auto minimal_padding() -> int; // THIS *INCLUDES* THE BORDER WIDTH (unlike the CSS box model!)
+            void font_changed();
+            void text_changed();
 
-        // Interface with main class (Button)
+        protected:
+            class Button_t: public Class { friend struct Button__Layouter; };
 
-        void font_changed();
-        void text_changed();
+            auto p() { return static_cast<Button_t*>(this); }
+            void compute_bounding_box();
 
-    protected:
-        class Button_t: public Class { friend struct Button__Layouter; };
-
-        auto p() { return static_cast<Button_t*>(this); }
-        void compute_bounding_box();
-
-        Alignment               _minor_align = Alignment::cultural_minor_middle;
-        Alignment               _major_align = Alignment::cultural_major_middle;
-        Text_bounding_box       _bounding_box;
+            Alignment               _minor_align = Alignment::cultural_minor_middle;
+            Alignment               _major_align = Alignment::cultural_major_middle;
+            Text_bounding_box       _bounding_box;
+        };
     };
 
 } // ns cppgui

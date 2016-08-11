@@ -57,12 +57,12 @@ namespace cppgui {
     {
     public:
         using Canvas_t = typename Canvas<typename GUIConfig::Renderer>;
-        using Root_widget = cppgui::Root_widget<GUIConfig, true>;
+        using Root_widget = cppgui::Root_widget_base<GUIConfig, true>;
         using Keycode = typename GUIConfig::Keyboard::Keycode;
 
         GUI_window(const char *title, int w = 800, int h = 600); // TODO: better defaults
 
-        auto root_widget() { return &_root_widget; }
+        //auto root_widget() { return &_root_widget; } // NEW: must be provided by implementation
 
     protected: // Customization hooks
 
@@ -93,7 +93,7 @@ namespace cppgui {
         auto p() { return static_cast<Impl_t*>(this); }
 
         Canvas_t                   *_canvas;        // TODO: use unique_ptr<>
-        Root_widget                 _root_widget;
+        //Root_widget                 _root_widget; // NEW: must be provided by implementation
         //bool                        _init_done = false;
     };
 

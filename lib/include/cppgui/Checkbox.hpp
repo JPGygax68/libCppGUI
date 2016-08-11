@@ -19,7 +19,7 @@
 
 #include <functional>
 
-#include "./Box.hpp"
+#include "./Box_model.hpp"
 #include "./Widget.hpp"
 #include "./Icon_resources.hpp"
 
@@ -30,24 +30,20 @@ namespace gpc { namespace fonts {
 
 namespace cppgui {
 
-    template <class Config, bool With_layout, class Parent> struct Checkbox__Layouter;
-
     struct Font_icon_descr;
 
-
-    #define CPPGUI_INSTANTIATE_CHECKBOX(Config, With_layout) \
-        template cppgui::Checkbox<Config, With_layout>; \
-        template cppgui::Checkbox__Layouter<Config, With_layout, \
-            cppgui::Box<Config, With_layout, \
-                cppgui::Simple_box_model< \
-                    cppgui::Widget<Config, With_layout> > > >;
-
     template <class Config, bool With_layout>
+    struct Checkbox__Layouter
+    {
+        template<class Class, class Parent>
+        struct Aspect: Parent {};
+    };
+
+    template <class Config, bool With_layout, Box_model_definition BMDef>
     class Checkbox: public 
-        Checkbox__Layouter<Config, With_layout, 
-            Box<Config, With_layout,
-                Simple_box_model<
-                    Widget<Config, With_layout> > > >
+        Checkbox__Layouter<Config, With_layout>::template Aspect<Checkbox<Config, With_layout, BMDef>, 
+        Box_model<Config, With_layout, BMDef>::template Aspect<Checkbox<Config, With_layout, BMDef>,
+        Widget<Config, With_layout> > >
     {
     public:
         using Widget_t      = Widget<Config, With_layout>;
@@ -89,32 +85,36 @@ namespace cppgui {
         bool                    _checked;
     };
 
-    template <class Config, class Parent>
-    struct Checkbox__Layouter<Config, true, Parent>: Parent 
+    template <class Config>
+    struct Checkbox__Layouter<Config, true>
     {
-        void init_layout() override;
-        auto get_minimal_size() -> Extents override;
-        void layout() override;
+        template<class Class, class Parent>
+        struct Aspect: Parent 
+        {
+            void init_layout() override;
+            auto get_minimal_size() -> Extents override;
+            void layout() override;
 
-        auto padding() { return 2; }
+            auto padding() { return 2; }
 
-        // TODO:
-        // void change_font();
-        // void change_glyph_font();
+            // TODO:
+            // void change_font();
+            // void change_glyph_font();
 
-    private:
-        class Checkbox_t: public Checkbox<Config, true> { friend struct Checkbox__Layouter; };
-        auto p() { return static_cast<Checkbox_t*>(static_cast<Checkbox<Config, true>*>(this)); }
+        private:
+            class Checkbox_t: public Class { friend struct Aspect; };
+            auto p() { return static_cast<Checkbox_t*>(this); }
             
-        void compute_em_bounds();
-        void compute_label_size();
-        void get_tick_metrics();
+            void compute_em_bounds();
+            void compute_label_size();
+            void get_tick_metrics();
 
-        Text_bounding_box       _em_bounds;
-        Text_bounding_box       _tick_bounds;
-        Extents                 _tick_extents;
-        Length                  _box_edge;
-        Text_bounding_box       _label_bounds;
+            Text_bounding_box       _em_bounds;
+            Text_bounding_box       _tick_bounds;
+            Extents                 _tick_extents;
+            Length                  _box_edge;
+            Text_bounding_box       _label_bounds;
+        };
     };
 
 } // ns cppgui

@@ -30,7 +30,6 @@ namespace cppgui {
     GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::GUI_window(const char *title, int w, int h):
         WindowBaseT(title, w, h)
     {
-        _root_widget.on_invalidated([this]() { this->invalidate(); });
     }
 
     /** Caution! the following is called from the constructor of the concrete class derived from
@@ -46,9 +45,11 @@ namespace cppgui {
         _canvas = new Canvas_t {}; // TODO: support passing window as parameter
         _canvas->init();
 
-        _root_widget.set_canvas(_canvas);
+        p()->root_widget()->on_invalidated([this]() { this->invalidate(); });
 
-        _root_widget.init();
+        p()->root_widget()->set_canvas(_canvas);
+
+        p()->root_widget()->init();
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
@@ -81,7 +82,7 @@ namespace cppgui {
         p()->draw_background();
 
         _canvas->enter_context();
-        _root_widget.render();
+        p()->root_widget()->render();
         _canvas->leave_context();
         
         this->present();
@@ -90,17 +91,17 @@ namespace cppgui {
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
     void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::size_changed(int w, int h)
     {
-        _root_widget.set_extents({ w, h });
+        p()->root_widget()->set_extents({ w, h });
         _canvas->define_viewport(0, 0, w, h);
-        _root_widget.layout();
+        p()->root_widget()->layout();
         //init_gui();
-        _root_widget.compute_view_from_data();
+        p()->root_widget()->compute_view_from_data();
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
     void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::mouse_motion(int x, int y)
     {
-        _root_widget.mouse_motion({x, y});
+        p()->root_widget()->mouse_motion({x, y});
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
@@ -111,25 +112,25 @@ namespace cppgui {
             _root_widget.mouse_click({ x, y, }, button, count);
         } */
 
-        _root_widget.mouse_button({ x, y }, button, dir == down ? cppgui::pressed : cppgui::released, static_cast<Count>(count));
+        p()->root_widget()->mouse_button({ x, y }, button, dir == down ? cppgui::pressed : cppgui::released, static_cast<Count>(count));
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
     void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::mouse_wheel(int x, int y)
     {
-        _root_widget.mouse_wheel({x, y});
+        p()->root_widget()->mouse_wheel({x, y});
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
     void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::text_input(const char32_t *text, size_t size)
     {
-        _root_widget.text_input(text, size);
+        p()->root_widget()->text_input(text, size);
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>
     void GUI_window<Impl, GUIConfig, WindowBaseT, RendererAdapter>::key_down(const Keycode &key)
     {
-        _root_widget.key_down(key);
+        p()->root_widget()->key_down(key);
     }
 
     template<class Impl, class GUIConfig, class WindowBaseT, template <class> class  RendererAdapter>

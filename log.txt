@@ -1,3 +1,181 @@
+2016-07-15
+==========
+
+(Continuing on "oriented geometry")
+
+It becomes clear now that the original Rectangle structure should be replaced throughout the whole library by a templated version that takes axis direction into account (at least the Y direction, but I see little harm in supporting the same parameter to the X axis as well).
+
+And so, we get the following possible combinations (disregarding the flipped X axis option):
+
+   | Y axis              | Rectangle orientation | Starting point | Ending point   | 
+-- | ------              | --------------------- | -------------- | ------------   |
+ 1 | top-down (standard) | left-to-right         | x              | x + length     |
+ 2 |                     | right-to-left         | x + length     | x              |
+ 3 |                     | top-down              | y              | y + length     |
+ 4 |                     | bottom-up             | y + length     | y              |
+ 5 | bottom-up           | left-to-right         | x              | x + length     |
+ 6 |                     | right-to-left         | x + length     | x              |
+ 7 |                     | top-down              | y + length     | y              |
+ 8 |                     | bottom-up             | y              | y + length     |
+
+ 
+What we see here is that all that is really needed is two types of segments: segments that follow the direction of the axis (1, 3, 5, 8), and segments that go against the axis (2, 4, 6, 7). Thus, the parameters on the Oriented_segment<> data type (which may not be needed as such) would simply be "along the axis" vs "against the axis".
+
+However, orientation as defined thus far is not just along/against the axis, but also which axis we're working with. In order to obtain a truly adaptive Oriented_rectangle<> template, we need to parameterize it with the "direction" [better term?] of both axes:
+
+template<bool BackwardX, bool BackwardY>
+struct Rectangle { ... };
+
+[to be continued...]
+
+2016-07-13
+==========
+
+It is necessary at this point get clarity on how to handle geometry in libCppGUI.
+
+So far, the coordinate system has been assumed to be: X axis pointing to the right, Y axis pointing downward, with the origin being located in the top-left corner. While there is no immediate need to change that, we need to know what this is going to look like in the future; too much time has already been lost trying to make things work without sufficient planning.
+
+Several different things need to be considered when handling geometry:
+
+1) The coordinate system. As pointed out above, only one is being supported right now, but it should be made configurable in the future. (Most probably, the direction of the Y axis - and maybe of the X axis as well - will be reported by Renderer implementations as constexpr data; thus, data types that need to know about that can be parameterized with the standard Config parameter.)
+
+2) Cultural orientations. No such orientations have been defined yet (other than as experimental values), and when they are, they will most probably be defined as simple aliases for geographical orientations. It should be noted that these aliases will likely be more numerous that just "<culture>-major" and "<culture>-minor"; it is possible that other cultures use different orientations for different purposes.
+
+3) Layouting orientation. This is the problem I've been trying to address with Oriented_point<>, Oriented_extents<>, and Oriented_rectangle<>, but layouting orientation probably cannot be handled completely independently of the other two factors.
+  
+Layouting orientation determines the order in which layout elements are placed inside a container. It can be used to generalize a layout algorithm in such a way that it works for all four cardinal orientations (top-down, left-to-right, bottom-up, right-to-left).
+
+What is needed, therefore, are standardized methods/functions that can be used to divide up the rectangular space available in a container (the "content rectangle") without having to know which way that container is oriented, or what coordinate system is being used.
+
+The current implementations of the Oriented...<> classes are well on their way to fulfilling the former requirement, but not the latter.
+
+(continuing the next night...)
+
+Working with an axis that happens to be "pointing the wrong way" becomes possible when 
+  a) axis orientation 
+  b) intended orientation
+  c) starting position and 
+  d) length 
+are all handled together. In C++, this can be achieved elegantly using the template-assisted strong typing system.
+
+It is only while writing this that I now realize that defining a type Oriented_rectangle<> was perhaps not a very useful step, since the layouting code I wrote thus far does not handle more than one dimension. (But actually, even a "grid" type layout, which does work on both dimensions, probably won't be needing such a rectangle type - though it might still turn out to be useful.)
+
+The concept that really helps here is that of "oriented segments", typed with the orientation (left-to-right, top-down, etc.) and the "axis sign" (for lack of a better term; what I mean is whether the coordinate in- or decreases along the intended orientation).
+
+Thus, a segment defined by a starting point of 5 and a length of 10 can actually define a whole a lot of different segments: vertical and downward, vertical and upward, horizontal and left-to-right, horizontal and right-to-left.
+
+Most importantly, each direction can be the result of going either along or against the corresponding axis: if the Y axis grows downward and the intended direction is top-down, the segment would start 5 units from the top and end at position 15. But with the Y axis oriented the same way and bottom-up as the intended direction, the segment would again start at y = 5, but go *up* and thus end at -5!
+
+
+
+
+2016-07-11
+==========
+
+It is possible I may not be able to do significant work on libCppGUI in the near future, so I'd like to consolidate a few thoughts on the next steps here before switching to another task.
+
+I now have code that allows using run time- and build time-configured Box Model implementations interchangeably. (I an unfinished state: the layouting functionality still needs to be broken out and made into an aspect).
+
+It occurred to me that a similar principle could and should be applied to container layouting. The case is however a little different: whereas the Box Model concept only needs a single run-time and a single build-time implementation (for now), container layouting needs several implementations (possibily an ever-growing number) that all should be available at both build and run time.
+
+Is is possible to abstract away the difference between build-time and run-time implementations ? I was thinking along the lines accessing aspects via a pointer that could be either `this` or something else [requiring a friend declaration]. However this would probably not be simple and straighforward - more thinking is required.
+
+.. thinking done (hopefully). Here are the main points:
+
+- All access to the Container Layouter aspect of a class is newly done via a `container_layouter()` accessor method.
+
+- The Container Layouter implementation is injected into the class template as a "typename" template parameter "Layouter" that is a wrapper struct for a normalized aspect (avoids the over-verbose "template" template parameters, along with other benefits)
+
+- One of these implementations is called `Container_layouter_delegator` (maybe some shorter form can be found); its implementation of `container_layouter()` returns a pointer. The `container_layouter()` methods of all other implementations simply return `this`.
+
+- With the `Container_layouter_delegator`, the pointer returned by `container_layouter()` returns an instance of a Container Layouter aspect that has been made "autonomous": instead of accessing the main class via a statically cast `this` pointer, it actually stores a real pointer to the main class and uses that instead. [This difference can be injected via a base class template with two specializations; that base class belongs into `util.hpp` or a similar support module.]
+
+- "Autonomized" Container Layouters must manually inherit from the Container_base Layouter aspect (since they do not otherwise ultimately inherit from Container_base<>).
+
+- Container<> is the template where the Container layouter is injected - Container_base<> only propagates the layouting methods to children.
+
+
+2016-07-09
+==========
+
+23:35
+-----
+
+I completed the first phase of replacing the box model concept, and the test app compiles once again and produces decent visuals. Some work however remains to be done:
+
+1) The current implementations of the box model concept do not yet separate out the layouting functionality into separate (sub-) aspects.
+
+2) For the runtime variant, there is currently no way to define default values.
+
+    [I have begun working on this, but didn't finish yet. One thing that needs to be done is to apply the CRTP pattern to `Container_base` (and probably to all `..base` classes), so that `Box_model` get access to overloaded default values defined as constexpr members of the implementation class. 
+    One variant of this would be to turn `container_base` into a standardized aspect. ]
+
+2016-07-08
+==========
+
+21:44
+-----
+
+The first step towards making libCppGUI capable of working with a future designer app consists in simplifying the box model along the lines I've outlied earlier today.
+
+This means:
+
+- A box model template that is parameterized with, on top of the standard parameters Config and With_layout, a boolean that indicates whether the box model will be "dynamic" or "static" (those parameters go to the outer struct, i.e. the aspect "wrapper"); and the aspect template parameters according to the updated standard, which uses a CRTP `Class` parameter on top of the `Parent` parameter used for aspect chaining.
+
+- Two specializations, one for dynamic, one for static configuration.
+  - These two specializations could (should?) inherit from a common that provides common functionality, such as rendering.
+
+- A layouter aspect that can be injected into the box model template. That one does not need the dynamic/static parameter, as it will simply work with whatever the box model main aspect provides.
+
+Also, the `Box` intermediary class, which used to provide box-related functionality based on the data provided by the `Box_model` implementations, should no longer be required, as by definition, the new `Box_model` will work with standardized box model properties.
+
+
+--------
+
+A new challenge is appearing on the horizon, in the form of an expressed need (desire ?) by a customer to be able to design user interfaces manually - as opposed to programmatically, as I was hoping I could convince him would be good enough for the time being.
+
+This desire is "inconvenient", because a) writing a designer application would be a lot of work under the best of conditions, and b) the whole architecture does not feel very structurally stable at the moment, increasing the risk of having to rewrite big parts of such an application in the not-so-distant future.
+
+One very specific problem mandates careful assessment right now: the fact that I have tried to make as many parameters as possible "build-time" by defining them as parameters of the class templates. This approach, of course, is almost diametrically opposed to any attempts at run-time configuration.
+
+The problem stands out most prominently with the box model. I had planned on creating many templated implementations of that concept, practically all of which taking template parameters for border width and color, margins, and inner padding. I have already created a few implementations that were using the same values for all four cardinal directions, and was planning on adding implementations that could have direction-specific values. I had also vaguely planned to create implementations that could be parameterized at run-time.
+
+However, I see no practical way to make a designer create template instances with varying parameters at run time, short of invoking a build chain to generate code on-the-fly and then linking it dynamically. While such an approach would be interesting and might have applications more interesting still, I do not have it at my disposal right now.
+
+[Thinking about this further, coming up with a minimal such system might not be quite as difficult as it sounds. CMake could be used as a convience to handle platform specifics. However, this leaves open the question of how to (dynamically) link such code with the designer application. Because the designer app cannot instantiate the templates, it would need to access widgets via an abstraction layer.
+All in all, this idea should not yet be discarded entirely, as it may yield long-term benefits.]
+
+The only alternative I can see right now is to take a step backwards and to move customization back into the runtime domain. In order not to completely loose the ability to optimize at build time, I would need to come up with a reusable pattern that allows parameters to be interchangeably build or run time.
+
+This would mean that for each customizable template, a boolean template parameter should be added that determines whether or not customization will be build or run time.
+
+When run time customization is specified, template specialization will inject the necessary properties for the values to be set programmatically.
+
+I'm not too sure what to do if compile-time customization is chosen. So far, I've implemented all customization via template parameters, but I'm not sure that is the best or even the correct way of doing things.
+
+Thinking aloud here... what about doing the same thing as for run time customization, but with constexpr getters only (no setters) ? This would require the code to be universal, as optimizations via specialization would no longer be available.
+
+How would user code that customizes a widget (or aspect thereof) actually look like ? CRTP could be used to access the getters, so that injection could be written as simple getters in the derived class (with defaults provided in the class/aspect itself).
+
+The question remains how a widget customized at run-time should be "solidified" into a compile-time customized version when the UI code is being generated - and whether it is worthwhile supporting this at all.
+
+It would involve generating a derived class for each combination of parameters that are being used in a given UI. This certainly seems possible. It would involve using the properties metadata - which is needed anyway for the benefit of the designer app - to generate a getter for each property.
+
+Another question is how exactly to implement properties. I think the key here is to make use of the already existing "aspect" mechanism, which ensures that all parts of a class (or at least, all parts that can have properties) share a single line of inheritance (multiple inheritance is restricted to injecting property-less facilities).
+
+`Widget<>` or `Abstract_widget<>` defines a static constexpr method `metadata()`, which returns a data structure of type `Metadata`. `Metadata` would be composable, making it possible for any derived class or aspect to override the inherited implementation of `metadata()` with its own, which calls the inherited one and adds its own metadata to the result.
+
+Such metadata should include: the name of the class or aspect, and a list of property descriptors. Each property descriptor should include: the name of the property; its type (string, boolean, float, or enumeration).
+
+One question remains open: how to work with widgets or aspects that can be customized with data types, one example being `Slider<>`, which could benefit from taking the type of its value as a parameter, which would allow it to support integer, floating point, and even rational numbers with the same code base. I think the only practical way to support this is to hardcode all sensible choices into the designer application, which implies that any widget class has at most one such template parameter.
+
+
+2016-06-30
+==========
+
+- There is a problem with focus cycling
+
+
 2016-06-11
 ==========
 

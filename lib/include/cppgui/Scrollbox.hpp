@@ -18,14 +18,20 @@
 */
 
 #include "./Widget.hpp"
-#include "./Box.hpp"
+#include "./Box_model.hpp"
 #include "./Vertical_scrollbar.hpp"
 
 namespace cppgui {
 
     // Forward declarations
 
-    template<class Config, bool With_layout, class Pane, class Parent> struct Scrollbox__Layouter;
+    template<class Config, bool With_layout>
+    struct Scrollbox__Layouter
+    {
+        template<class Class, class Parent> 
+        struct Aspect {};
+    };
+
     template<class Config, bool With_layout> class Scrollable_pane;
 
     // Class definition
@@ -34,19 +40,11 @@ namespace cppgui {
 
     // TODO: this is very much incomplete!
 
-    #define CPPGUI_INSTANTIATE_SCROLLBOX(Config, With_layout, PaneType) \
-        template cppgui::Scrollbox<Config, With_layout, PaneType>; \
-        template cppgui::Scrollbox__Layouter<Config, With_layout, \
-            cppgui::Box<Config, With_layout, \
-                cppgui::Simple_box_model< \
-                    cppgui::Widget<Config, With_layout> > > >;
-
-    template<class Config, bool With_layout, class Pane> // = Scrollable_pane<Config, With_layout>>
+    template<class Config, bool With_layout, class Pane, Box_model_definition BMDef>
     class Scrollbox: public 
-        Scrollbox__Layouter<Config, With_layout, Pane,
-            Box<Config, With_layout, 
-                Simple_box_model<
-                    Container_base<Config, With_layout> > > >
+        Scrollbox__Layouter<Config, With_layout>::template Aspect< Scrollbox<Config, With_layout, Pane, BMDef>,
+        Box_model<Config, With_layout, BMDef>::template Aspect< Scrollbox<Config, With_layout, Pane, BMDef>,
+        Container_base<Config, With_layout> > >
     {
     public:
         using Container_t = Container_base<Config, With_layout>;
@@ -79,7 +77,7 @@ namespace cppgui {
         auto content_rectangle() const -> const Rectangle & { return _content_rect; } // to be accessed by Scrollable_pane (or derived)
 
     protected:
-        using Vertical_scrollbar_t = Custom_vertical_scrollbar<Config, With_layout>;
+        using Vertical_scrollbar_t = Custom_vertical_scrollbar<Config, With_layout, BMDef>;
 
         auto pane() { return static_cast<Scrollable_pane_t*>(_content); }
 
@@ -94,17 +92,21 @@ namespace cppgui {
 
     // Layouter aspect
 
-    template<class Config, class Pane, class Parent>
-    struct Scrollbox__Layouter<Config, true, Pane, Parent>: public Parent
+    template<class Config>
+    struct Scrollbox__Layouter<Config, true>
     {
-        struct Scrollbox_t: public Scrollbox<Config, true, Pane> { friend struct Scrollbox__Layouter; };
-        auto p() { return static_cast<Scrollbox_t*>(static_cast<Scrollbox<Config, true, Pane>*>(this)); }
+        template<class Class, class Parent>
+        struct Aspect: Parent
+        {
+            struct Scrollbox_t: Class { friend struct Aspect; };
+            auto p() { return static_cast<Scrollbox_t*>(this); }
 
-        auto get_minimal_size() -> Extents override;
-        void layout() override;
+            auto get_minimal_size() -> Extents override;
+            void layout() override;
 
-    protected:
-        //auto content_rect() -> Rectangle;
+        protected:
+            //auto content_rect() -> Rectangle;
+        };
     };
 
     // Scrollable pane ==============================================

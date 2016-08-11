@@ -20,11 +20,14 @@
 #include "./Listbox.hpp"
 
 #include "./Scrollbox.ipp"
+#include "./Box_model.ipp"
+
+#pragma warning(disable: 4505)
 
 namespace cppgui {
 
-    template<class Config, bool With_layout>
-    Listbox<Config, With_layout>::Listbox()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    Listbox<Config, With_layout, BMDef>::Listbox()
     {
         //_content_pane.set_layout_type(Layout_type::stack); // TODO: will need adapting
         //_content_pane.set_layout_manager<typename layouting<Config>::Stack>();
@@ -32,20 +35,20 @@ namespace cppgui {
         set_content_pane(&_content_pane);
     }
 
-    template<class Config, bool With_layout>
-    void Listbox<Config, With_layout>::add_item(Layoutable_widget_t *item)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Listbox<Config, With_layout, BMDef>::add_item(Layoutable_widget_t *item)
     {
         _content_pane.add_child(item);
     }
 
-    template<class Config, bool With_layout>
-    auto Listbox<Config, With_layout>::selected_item() -> Index
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    auto Listbox<Config, With_layout, BMDef>::selected_item() -> Index
     {
         return _content_pane.child_index( focused_child() );
     }
 
-    template<class Config, bool With_layout>
-    auto Listbox<Config, With_layout>::item_index(Widget_t *child) -> Index
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    auto Listbox<Config, With_layout, BMDef>::item_index(Widget_t *child) -> Index
     {
         return _content_pane.child_index( child );
     }
@@ -54,8 +57,8 @@ namespace cppgui {
             time, which calculates a position but does not invalidate, and one that will scroll() 
             (with the invalidation that this usually means, depending on the Updater aspect).
      */
-    template<class Config, bool With_layout>
-    void Listbox<Config, With_layout>::ensure_item_in_view(int item_index)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Listbox<Config, With_layout, BMDef>::ensure_item_in_view(int item_index)
     {
         // TODO: make sure this method can only be called in "view loading" state
 
@@ -121,8 +124,8 @@ namespace cppgui {
         #endif
     }
 
-    template<class Config, bool With_layout>
-    void Listbox<Config, With_layout>::update_scrollbar_position()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Listbox<Config, With_layout, BMDef>::update_scrollbar_position()
         // Bring the position of the scrollbar in sync with the current vertical offset of the content pane
     {
         this->vertical_scrollbar().update_position( - (_content_pane.position().y - this->content_rectangle().pos.y) );
@@ -130,16 +133,18 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template<class Config, class Parent>
-    void Listbox__Layouter<Config, true, Parent>::layout()
+    template <class Config>
+    template <class Class, class Parent>
+    void Listbox__Layouter<Config, true>::Aspect<Class, Parent>::layout()
     {
         p()->_content_pane.set_extents( p()->_content_pane.get_minimal_size() );
 
-        Scrollbox_t::layout();
+        Parent::layout();
     }
 
-    template<class Config, class Parent>
-    auto Listbox__Layouter<Config, true, Parent>::get_preferred_size() -> Extents
+    template <class Config>
+    template <class Class, class Parent>
+    auto Listbox__Layouter<Config, true>::Aspect<Class, Parent>::get_preferred_size() -> Extents
     {
         // TODO: borders, padding, separation
 
@@ -154,30 +159,30 @@ namespace cppgui {
 
     // List_pane_base ====================================================
 
-    template<class Config, bool With_layout>
-    void List_pane_base<Config, With_layout>::set_separator(const Separator &sep)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void List_pane_base<Config, With_layout, BMDef>::set_separator(const Separator &sep)
     {
         _separator = { sep.width, Canvas_t::rgba_to_native(sep.color) };
     }
 
-    template<class Config, bool With_layout>
-    void List_pane_base<Config, With_layout>::init()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void List_pane_base<Config, With_layout, BMDef>::init()
     {
         Parent_class::init();
 
         // Future...
     }
 
-    template<class Config, bool With_layout>
-    void List_pane_base<Config, With_layout>::compute_view_from_data()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void List_pane_base<Config, With_layout, BMDef>::compute_view_from_data()
     {
         Parent_class::compute_view_from_data();
 
         compute_visible_item_range();
     }
 
-    template<class Config, bool With_layout>
-    void List_pane_base<Config, With_layout>::render(Canvas_t *canvas, const Point & offset)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void List_pane_base<Config, With_layout, BMDef>::render(Canvas_t *canvas, const Point & offset)
     {
         auto pos = offset + position();
 
@@ -204,8 +209,8 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void List_pane_base<Config, With_layout>::scroll(Navigation_unit unit, Fraction<int> delta)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void List_pane_base<Config, With_layout, BMDef>::scroll(Navigation_unit unit, Fraction<int> delta)
     {
         if (!children().empty())
         {
@@ -237,27 +242,27 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void List_pane_base<Config, With_layout>::compute_visible_item_range()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void List_pane_base<Config, With_layout, BMDef>::compute_visible_item_range()
     {
         _first_visible_item = scan_children_forward(0, [this](auto child) { return child_fully_after_top(child); });
         _last_visible_item  = scan_children_forward(_first_visible_item, [this](auto child) { return !child_fully_before_bottom(child); }) - 1;
     }
 
-    template<class Config, bool With_layout>
-    bool List_pane_base<Config, With_layout>::child_fully_after_top(Widget_t * child, Position_delta offset)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    bool List_pane_base<Config, With_layout, BMDef>::child_fully_after_top(Widget_t * child, Position_delta offset)
     {
         return position().y + offset + child->position().y >= listbox()->content_rectangle().pos.y;
     }
 
-    template<class Config, bool With_layout>
-    bool List_pane_base<Config, With_layout>::child_fully_before_bottom(Widget_t * child, Position_delta offset)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    bool List_pane_base<Config, With_layout, BMDef>::child_fully_before_bottom(Widget_t * child, Position_delta offset)
     {
         return position().y + offset + child->rectangle().bottom() <= listbox()->content_rectangle().bottom();
     }
 
-    template<class Config, bool With_layout>
-    void List_pane_base<Config, With_layout>::scroll_by_items(int delta)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void List_pane_base<Config, With_layout, BMDef>::scroll_by_items(int delta)
     {
         if (delta < 0)
         {
@@ -275,8 +280,8 @@ namespace cppgui {
 
     // TODO: return a boolean to indicate whether scrolling was possible or not ?
 
-    template<class Config, bool With_layout>
-    void List_pane_base<Config, With_layout>::scroll_up(Count items)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void List_pane_base<Config, With_layout, BMDef>::scroll_up(Count items)
         // Note: scrolling UP means shifting the pane DOWN!
     {
         Length dy = 0;
@@ -296,8 +301,8 @@ namespace cppgui {
         //std::cout << "scroll_down() -> _first_visible_item = " << _first_visible_item << ", _last_visible_item = " << _last_visible_item << std::endl;
     }
 
-    template<class Config, bool With_layout>
-    void List_pane_base<Config, With_layout>::scroll_by_pages(int delta)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void List_pane_base<Config, With_layout, BMDef>::scroll_by_pages(int delta)
     {
         int items = (int) children().size() * delta * (int) listbox()->content_rectangle().ext.h / (int) extents().h;
 
@@ -308,8 +313,8 @@ namespace cppgui {
 
     // TODO: return a boolean to indicate whether scrolling was possible or not ?
 
-    template<class Config, bool With_layout>
-    void List_pane_base<Config, With_layout>::scroll_down(Count items)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void List_pane_base<Config, With_layout, BMDef>::scroll_down(Count items)
         // Note: scrolling DOWN means shifting the pane UP!
     {
         Length dy = 0;
@@ -333,14 +338,16 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template<class Config, class Parent>
-    void List_pane__Layouter<Config, true, Parent>::set_item_padding(const Extents &padding)
+    template<class Config>
+    template<class Class, class Parent>
+    void List_pane__Layouter<Config, true>::Aspect<Class, Parent>::set_item_padding(const Extents &padding)
     {
         _item_padding = padding;
     }
 
-    template<class Config, class Parent>
-    auto List_pane__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
+    template <class Config>
+    template <class Class, class Parent>
+    auto List_pane__Layouter<Config, true>::Aspect<Class, Parent>::get_minimal_size() -> Extents
     {
         Length h_tot = 0;
         Width w_min = 0;
@@ -357,14 +364,16 @@ namespace cppgui {
         return { w_min + 2 * _item_padding.w, h_tot };
     }
 
-    template<class Config, class Parent>
-    void List_pane__Layouter<Config, true, Parent>::compute_and_set_extents(const Extents &container_extents)
+    template <class Config>
+    template <class Class, class Parent>
+    void List_pane__Layouter<Config, true>::Aspect<Class, Parent>::compute_and_set_extents(const Extents & container_extents)
     {
         p()->set_extents({ container_extents.w, p()->extents().h });
     }
 
-    template<class Config, class Parent>
-    void List_pane__Layouter<Config, true, Parent>::layout()
+    template <class Config>
+    template <class Class, class Parent>
+    void List_pane__Layouter<Config, true>::Aspect<Class, Parent>::layout()
     {
         auto w = extents().w - 2 * _item_padding.w;
 

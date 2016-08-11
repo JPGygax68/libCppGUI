@@ -29,29 +29,6 @@ namespace cppgui {
 
     // Abstract_widget<> --------------------------------------------
 
-    template <class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::set_position(const Point &pos)
-    {
-        _rect.pos = pos;
-    }
-
-    template <class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::set_extents(const Extents &ext)
-    {
-        _rect.ext = ext;
-    }
-
-    /*
-    template<class Config, bool With_layout>
-    void Abstract_widget<Config, With_layout>::mouse_click(const Point &, int button, int count)
-    {
-        if (button == 1 && count == 1)
-        {
-            // TODO
-        }
-    }
-    */
-
     template<class Config, bool With_layout>
     auto Abstract_widget<Config, With_layout>::rgba_to_native(const Color &color) -> Native_color
     {
@@ -146,7 +123,7 @@ namespace cppgui {
     // Default__Widget__Updater<> aspect ------------------------------
 
     template<class Config, bool With_layout, class Parent>
-    inline void Default__Widget__Updater<Config, With_layout, Parent>::invalidate()
+    void Default__Widget__Updater<Config, With_layout, Parent>::invalidate()
     {
         //auto c = static_cast<Abstract_container<GUIConfig, With_layout>*>(this->container());
         //c->child_invalidated(static_cast<Widget_t*>(this));
@@ -189,7 +166,7 @@ namespace cppgui {
     }
 
     template<class Config, bool With_layout>
-    inline void Widget<Config, With_layout>::added_to_container(Abstract_container_t *cont)
+    void Widget<Config, With_layout>::added_to_container(Abstract_container_t *cont)
     {
         _container = cont;
     }
@@ -213,11 +190,11 @@ namespace cppgui {
         {
             if (_focussable)
             {
-                container()->container_take_focus(this);
+                container()->switch_focused_child(this);
                 gained_focus();
             }
             else {
-                container()->container_take_focus(nullptr);
+                container()->switch_focused_child(nullptr);
             }
         }
     }
@@ -225,14 +202,14 @@ namespace cppgui {
     template<class Config, bool With_layout>
     void Widget<Config, With_layout>::gained_focus()
     {
-        invalidate();
+        this->invalidate();
     }
 
     template<class Config, bool With_layout>
     void Widget<Config, With_layout>::loosing_focus()
     {
         // container()->child_is_loosing_focus(); // TODO ?
-        invalidate();
+        this->invalidate();
     }
 
     template<class Config, bool With_layout>
@@ -263,11 +240,21 @@ namespace cppgui {
         this->invalidate();
     }
 
+    template <class Config, bool With_layout>
+    auto Widget<Config, With_layout>::absolute_position() -> Point
+    {
+        assert( container() ); // must not query before inserted into widget tree
+
+        return container()->container_absolute_position() + this->position();
+    }
+
     template<class Config, bool With_layout>
     void Widget<Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
     {
         if (state == Key_state::pressed)
         {
+            take_focus();
+
             root_widget()->capture_mouse(this);
         }
         else if (state == Key_state::released)
@@ -287,8 +274,6 @@ namespace cppgui {
     template<class Config, bool With_layouting>
     void Widget<Config, With_layouting>::mouse_click(const Point &pos, int button, Count count)
     {
-        take_focus();
-
         if (_click_hndlr) _click_hndlr(pos, button, count);
     }
 
@@ -371,7 +356,7 @@ namespace cppgui {
     // Layouter aspect ----------------------------------------------
 
     template<class Config, class Parent>
-    void Widget__Layouter<Config, true, Parent>::set_rectangle(const Point &nw, const Point &se)
+    void Widget__Layouter<Config, true, Parent>::set_rectangle_between(const Point &nw, const Point &se)
     {
         p()->set_position(nw);
         p()->set_extents(Extents::between_points(nw, se));

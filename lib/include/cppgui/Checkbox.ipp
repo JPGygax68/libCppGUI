@@ -1,3 +1,5 @@
+#pragma once
+
 /*  libCppGUI - A GUI library for C++11/14
     
     Copyright 2016 Hans-Peter Gygax
@@ -15,6 +17,8 @@
     limitations under the License.
 */
 
+#pragma warning(disable: 4505)
+
 #include <cassert>
 #include <memory>
 
@@ -25,42 +29,44 @@
 
 #include "./Checkbox.hpp"
 
+#include "./Box_model.ipp"
+
 namespace cppgui {
 
     static std::unique_ptr<Rasterized_font> glyph_font;
 
-    template<class Config, bool With_layout>
-    void Checkbox<Config, With_layout>::set_tick_glyph(const Rasterized_font *font, const Font_icon_descr &descr)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Checkbox<Config, With_layout, BMDef>::set_tick_glyph(const Rasterized_font *font, const Font_icon_descr &descr)
     {
         _glyph_font.assign( font );
         _tick_descr = descr;
     }
 
-    template<class Config, bool With_layout>
-    void Checkbox<Config, With_layout>::on_state_change(State_change_handler handler)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Checkbox<Config, With_layout, BMDef>::on_state_change(State_change_handler handler)
     {
         assert(!_state_change_handler);
         _state_change_handler = handler;
     }
 
-    template<class Config, bool With_layout>
-    void Checkbox<Config, With_layout>::init()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Checkbox<Config, With_layout, BMDef>::init()
     {
-        _label_font.translate( root_widget()->canvas() );
-        _glyph_font.translate( root_widget()->canvas() );
+        _label_font.translate( this->root_widget()->canvas() );
+        _glyph_font.translate( this->root_widget()->canvas() );
     }
 
-    template<class Config, bool With_layout>
-    void Checkbox<Config, With_layout>::render(Canvas_t *cv, const Point & offs)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Checkbox<Config, With_layout, BMDef>::render(Canvas_t *cv, const Point & offs)
     {
-        auto pos = offs + position();
+        auto pos = offs + this->position();
 
         fill(cv, offs, {1, 1, 0.5f, 1});
 
         cv->render_text(_label_font.get(), pos.x + _label_pos.x, pos.y + _label_pos.y, _label.data(), _label.size());
 
-        fill_rect(cv, _box_rect, pos, paper_color());
-        draw_borders(cv, _box_rect, pos, stroke_width(), stroke_color());
+        fill_rect(cv, _box_rect, pos, this->paper_color());
+        draw_borders(cv, _box_rect, pos, this->stroke_width(), this->stroke_color());
 
         if (_checked)
         {
@@ -68,14 +74,14 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Checkbox<Config, With_layout>::mouse_click(const Point &pos, int button, Count count)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Checkbox<Config, With_layout, BMDef>::mouse_click(const Point &pos, int button, Count count)
     {
         if (_box_rect.contains(pos)) // todo: subtract stroke_width() ?
         {
             _checked = ! _checked;
             if (_state_change_handler) _state_change_handler(_checked);
-            invalidate();
+            this->invalidate();
         }
         else {
             Widget_t::mouse_click(pos, button, count);
@@ -84,41 +90,18 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template <class Config, class Parent>
-    void Checkbox__Layouter<Config, true, Parent>::init_layout()
+    template <class Config>
+    template <class Class, class Parent>
+    void Checkbox__Layouter<Config, true>::Aspect<Class, Parent>::init_layout()
     {
         compute_em_bounds();
         compute_label_size();
         get_tick_metrics();
     }
 
-    template <class Config, class Parent>
-    void Checkbox__Layouter<Config, true, Parent>::compute_em_bounds()
-    {
-        // TODO: adapt for multi-cultural use
-
-        _em_bounds = p()->font().source()->compute_text_extents(0, U"M", 1);
-
-        //_box_edge = _em_bounds.height() + _padding[3] + _padding[1];
-        _box_edge = _em_bounds.height() + 2 * (p()->padding() + p()->stroke_width());
-    }
-
-    template <class Config, class Parent>
-    void Checkbox__Layouter<Config, true, Parent>::compute_label_size()
-    {
-        _label_bounds = p()->font().source()->compute_text_extents(0, p()->_label.data(), p()->_label.size());
-    }
-
-    template <class Config, class Parent>
-    void Checkbox__Layouter<Config, true, Parent>::get_tick_metrics()
-    {
-        _tick_bounds = p()->_glyph_font.source()->compute_text_extents(0, &p()->_tick_descr.code_point, 1);
-
-        _tick_extents = Extents { _tick_bounds.width(), _tick_bounds.height() };
-    }
-
-    template <class Config, class Parent>
-    auto Checkbox__Layouter<Config, true, Parent>::get_minimal_size() -> Extents
+    template <class Config>
+    template <class Class, class Parent>
+    auto Checkbox__Layouter<Config, true>::Aspect<Class, Parent>::get_minimal_size() -> Extents
     {
         // TODO: spacing between label and tick
         return { 
@@ -127,13 +110,14 @@ namespace cppgui {
         };
     }
 
-    template <class Config, class Parent>
-    void Checkbox__Layouter<Config, true, Parent>::layout()
+    template <class Config>
+    template <class Class, class Parent>
+    void Checkbox__Layouter<Config, true>::Aspect<Class, Parent>::layout()
     {
         // TODO: supporting aligning on a baseline ?
 
-        auto baseline = std::max(_label_bounds.y_max, _em_bounds.y_max + stroke_width() + padding() );
-        auto h = static_cast<Length>(baseline + std::max(- _label_bounds.y_min, - _em_bounds.y_min + stroke_width() + padding()));
+        auto baseline = std::max(_label_bounds.y_max, _em_bounds.y_max + this->stroke_width() + padding() );
+        auto h = static_cast<Length>(baseline + std::max(- _label_bounds.y_min, - _em_bounds.y_min + this->stroke_width() + padding()));
         baseline += static_cast<Position>((p()->extents().h - h) / 2);
 
         p()->_label_pos = { 0,  baseline };
@@ -147,9 +131,37 @@ namespace cppgui {
             baseline + p()->_tick_descr.origin_delta.y
         };
         p()->_box_rect = { 
-            x, baseline - _em_bounds.y_max - padding() - stroke_width(),
+            x, baseline - _em_bounds.y_max - padding() - this->stroke_width(),
             _box_edge, _box_edge
         };
+    }
+
+    template <class Config>
+    template <class Class, class Parent>
+    void Checkbox__Layouter<Config, true>::Aspect<Class, Parent>::compute_em_bounds()
+    {
+        // TODO: adapt for multi-cultural use
+
+        _em_bounds = p()->font().source()->compute_text_extents(0, U"M", 1);
+
+        //_box_edge = _em_bounds.height() + _padding[3] + _padding[1];
+        _box_edge = _em_bounds.height() + 2 * (p()->padding() + p()->stroke_width());
+    }
+
+    template <class Config>
+    template <class Class, class Parent>
+    void Checkbox__Layouter<Config, true>::Aspect<Class, Parent>::compute_label_size()
+    {
+        _label_bounds = p()->font().source()->compute_text_extents(0, p()->_label.data(), p()->_label.size());
+    }
+
+    template <class Config>
+    template <class Class, class Parent>
+    void Checkbox__Layouter<Config, true>::Aspect<Class, Parent>::get_tick_metrics()
+    {
+        _tick_bounds = p()->_glyph_font.source()->compute_text_extents(0, &p()->_tick_descr.code_point, 1);
+
+        _tick_extents = Extents { _tick_bounds.width(), _tick_bounds.height() };
     }
 
 } // ns cppgui

@@ -34,9 +34,26 @@ namespace cppgui {
 
     struct Nil_struct {}; // to end aspect chains
 
+    // Utilities required for working with widgets
+
+    // Compile-time predicate: finds out whether the renderer uses bottom-up vertical coordinates:
+    //  _vertical_axis_bottom_up<Config>::value
+
+    template<class Config, typename = void>
+    struct _vertical_axis_bottom_up
+    {
+        static constexpr bool value = false;
+    };
+
+    template<class Config> 
+    struct _vertical_axis_bottom_up<Config, std::enable_if_t<std::is_same<const bool, decltype(Config::Renderer::y_axis_bottom_up)>::value>>
+    {
+        static constexpr bool value = Config::Renderer::y_axis_bottom_up;
+    };
+
     // Forward declarations 
 
-    template <class Config, bool With_layout> class Root_widget;
+    template <class Config, bool With_layout> class Root_widget_base;
     template <class Config, bool With_layout> class Abstract_container;
     /*template <class Config, bool With_layout>*/ class Drag_controller;
 
@@ -51,12 +68,13 @@ namespace cppgui {
     class Abstract_widget
     {
     public:
+
         virtual ~Abstract_widget()
         {
         }
 
         using Abstract_widget_t = Abstract_widget;
-        using Root_widget_t     = Root_widget<Config, With_layout>;
+        using Root_widget_t     = Root_widget_base<Config, With_layout>;
         using Canvas_t          = typename Canvas<typename Config::Renderer>;
         using Native_color      = typename Canvas_t::Native_color;
         using Font_handle       = typename Canvas_t::Font_handle;
@@ -69,14 +87,22 @@ namespace cppgui {
         using Click_handler     = std::function<void(const Point &, int button, Count clicks)>; // TODO: support return value ?
         using Pushed_handler    = std::function<void()>; // for buttons TODO: renamed event to "Push" (as in "a push happened") ?
 
+        void set_id(const char *id)
+        {
+            #ifdef _DEBUG
+            _id = id;
+            #endif
+        }
+
         auto& rectangle() { return _rect; }
         auto& rectangle() const { return _rect; }
         auto& position() { return _rect.pos; }
         auto& position() const { return _rect.pos; }
         auto& extents() { return _rect.ext; }
         auto& extents() const { return _rect.ext; }
-        void set_position(const Point &);
-        void set_extents(const Extents &);
+        void set_position(const Point &pt) { _rect.pos = pt; };
+        void set_extents(const Extents &ext) { _rect.ext = ext; }
+        void set_rectangle(const Rectangle &r) { _rect = r; }
 
         /** The init() entry point is where a widget "connects" to its backends (the most important of
             which being the canvas).
@@ -103,6 +129,9 @@ namespace cppgui {
         virtual bool handle_key_down(const Keycode &) { return false; }
 
     protected:
+
+        // Static information
+        static constexpr bool y_axis_up = _vertical_axis_bottom_up<Config>::value;
 
         // Rendering conveniences
 
@@ -132,6 +161,10 @@ namespace cppgui {
 
     private:
 
+        #ifdef _DEBUG
+        const char  *_id;
+        #endif
+
         Rectangle   _rect = {};
     };
 
@@ -151,7 +184,7 @@ namespace cppgui {
         using Keyboard = typename Config::Keyboard;
         using Keycode = typename Keyboard::Keycode;
         using Abstract_container_t = Abstract_container<Config, With_layout>;
-        using Root_widget_t = Root_widget<Config, With_layout>;
+        using Root_widget_t = Root_widget_base<Config, With_layout>;
         using Click_handler = typename Abstract_widget<Config, With_layout>::Click_handler;
 
         Widget();
@@ -204,6 +237,10 @@ namespace cppgui {
         virtual void mouse_enter();
         virtual void mouse_exit ();
 
+        // Queries
+
+        virtual auto absolute_position() -> Point;
+
         // Run-time manipulations
 
         void change_visible(bool visible = true);
@@ -214,7 +251,7 @@ namespace cppgui {
 
         virtual auto root_widget() -> Root_widget_t * { return _container->container_root_widget(); }
 
-        void pass_up_and_notify_focus(); // default take_focus() action
+        void pass_up_and_notify_focus();
 
         // Graphics system integration
         void shift_horizontally(Position_delta);
@@ -244,7 +281,7 @@ namespace cppgui {
 
     private:
         friend class Drag_controller;
-        friend class Root_widget<Config, With_layout>;
+        friend class Root_widget_base<Config, With_layout>;
 
         Color                   _bkgnd_clr = {0, 0, 0, 0};
         Click_handler           _click_hndlr;
@@ -261,16 +298,6 @@ namespace cppgui {
         The default implementation uses a pointer to parent to pass up redraw
         requests until they reach the root widget, which "handles" the request
         by passing it along to callback function.
-
-        Because there is chance that a different implementation may not need
-        to follow that route (e.g. by calling render() directly), the pointer
-        to container may not be needed, so it is a member of this aspect
-        implementation rather than of Widget<> itself.
-
-        TODO: THIS IS PROVISIONAL. If it turns out, during further development, 
-        that a pointer to container is needed for reasons that are not dependent
-        on the Updater (or any other) aspect family, that pointer, and the
-        methods associated with it, should be moved to the Widget<> stem class.
      */
     template<class Config, bool With_layout> class Abstract_container;
     template<class Config, bool With_layout, class Parent> class Default_container_updater;
@@ -292,12 +319,12 @@ namespace cppgui {
     /** TODO: rename to reflect the fact that this is abstract ?
      */
     template <class Config, class Parent> 
-    struct Widget__Layouter<Config, true, Parent>: public Parent
+    struct Widget__Layouter<Config, true, Parent>: Parent
     {
         /** It is up to the implementation to guarantee that any internal state/data
-        needed for layouting (including computing/returning the get_minimal_size())
-        is kept up to date.
-        */
+            needed for layouting (including computing/returning the get_minimal_size())
+            is kept up to date.
+         */
 
         // Layouter aspect contract
 
@@ -309,7 +336,8 @@ namespace cppgui {
         //void set_padding(Width);
         //void set_padding(const std::initializer_list<Width> &);
 
-        void set_rectangle(const Point &nw, const Point &se);
+        //void set_rectangle(const Rectangle &);
+        void set_rectangle_between(const Point &nw, const Point &se);
         void set_rectangle_nw(const Point &, const Extents &);
         void set_rectangle_ne(const Point &, const Extents &);
         void set_rectangle_se(const Point &, const Extents &);
@@ -325,9 +353,3 @@ namespace cppgui {
     };
 
 } // ns cppgui
-
-#define CPPGUI_INSTANTIATE_WIDGET(Config, With_layout) \
-    template cppgui::Abstract_widget<Config, With_layout>; \
-    template cppgui::Widget<Config, With_layout>; \
-    template cppgui::Widget__Layouter<Config, With_layout, cppgui::Abstract_widget<Config, With_layout>>;
-

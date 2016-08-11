@@ -1,6 +1,7 @@
 #pragma once
 
 #include "./Container_base.hpp"
+#include "./Box_model.hpp"
 
 namespace cppgui
 {
@@ -9,6 +10,8 @@ namespace cppgui
     template<class Config>
     struct _container
     {
+        // TODO: put into two-tiered form
+
         template<class Class, bool With_layout, class Parent> struct Layouter;
 
         template<class Class, class Parent> 
@@ -22,15 +25,6 @@ namespace cppgui
             auto get_minimal_size() -> Extents override;
             void layout() override;
 
-            template<class ManagerType> auto set_layout_manager() -> ManagerType *
-            {
-                _manager.reset( new ManagerType{} ); 
-                //_manager->set_padding(this->_padding); // TODO: should padding really be a member of Container ?
-
-                return static_cast<ManagerType*>( _manager.get() ); // as a convenience
-            };
-            auto layout_manager() { return _manager.get(); }
-
             auto compute_minimal_size() -> Extents;
             void layout_children(const Extents &);
 
@@ -43,14 +37,11 @@ namespace cppgui
 
     // Public class -------------------------------------------------
 
-    template<class Config, bool With_layout, template<class> class BoxModel>
+    template<class Class, class Config, bool With_layout, Box_model_definition BMDef, class Layouter>
     class Container: public 
-        _container<Config>::template Layouter<Container<Config, With_layout, BoxModel>, With_layout,
-            Box<Config, With_layout,
-                BoxModel<
-                    Container_base<Config, With_layout> > > >
-    {
-
-    };
+        Layouter::template Aspect< Class,
+            Box_model<Config, With_layout, BMDef>::template Aspect< Class,
+                Container_base<Config, With_layout> > >
+    {};
 
 } // ns cppgui

@@ -12,7 +12,8 @@
 */
 
 template <class Config, bool With_layout>
-class Text_input_dialog: public cppgui::Container<Config, With_layout, cppgui::Fixed_border_and_padding<1, 4>::Box_model>
+class Text_input_dialog: public 
+    cppgui::Container<Config, With_layout, cppgui::Fixed_border_and_padding<1, 4>::Box_model, cppgui::Horizontal_box<Config, true>>
 {
 public:
     using Parent_t = cppgui::Container_base<Config, With_layout>;

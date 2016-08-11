@@ -19,48 +19,48 @@ limitations under the License.
 #include "./Button.hpp"
 
 #include "./Widget.ipp"
-#include "./Box.ipp"
+#include "./Box_model.ipp"
 
 namespace cppgui {
 
-    template<class Config, bool With_layout, template<class> class BoxModel>
-    Button<Config, With_layout, BoxModel>::Button()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    Button<Config, With_layout, BMDef>::Button()
     {
         // set_border( default_border() ); // TODO: make this stylable
     }
 
-    template<class Config, bool With_layout, template<class> class BoxModel>
-    void Button<Config, With_layout, BoxModel>::on_pushed(Pushed_handler handler)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Button<Config, With_layout, BMDef>::on_pushed(Pushed_handler handler)
     {
         _on_pushed = handler;
     }
 
-    template<class Config, bool With_layout, template<class> class BoxModel>
-    void cppgui::Button<Config, With_layout, BoxModel>::set_font(const Rasterized_font *font)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void cppgui::Button<Config, With_layout, BMDef>::set_font(const Rasterized_font *font)
     {
         _font.assign(font);
     }
 
-    template<class Config, bool With_layout, template<class> class BoxModel>
-    void Button<Config, With_layout, BoxModel>::set_label(const std::u32string &label)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Button<Config, With_layout, BMDef>::set_label(const std::u32string &label)
     {
         _label = label;
     }
 
-    template<class Config, bool With_layout, template<class> class BoxModel>
-    void Button<Config, With_layout, BoxModel>::set_label(const std::string &label)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Button<Config, With_layout, BMDef>::set_label(const std::string &label)
     {
         set_label( utf8_to_utf32(label) );
     }
 
-    template<class Config, bool With_layout, template<class> class BoxModel>
-    void Button<Config, With_layout, BoxModel>::init()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Button<Config, With_layout, BMDef>::init()
     {
         _font.translate( this->root_widget()->canvas() );
     }
 
-    template<class Config, bool With_layout, template<class> class BoxModel>
-    void Button<Config, With_layout, BoxModel>::render(Canvas_t *canvas, const Point &offs)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Button<Config, With_layout, BMDef>::render(Canvas_t *canvas, const Point &offs)
     {
         fill(canvas, offs, Canvas_t::rgba_to_native( this->button_face_color() ));
 
@@ -78,8 +78,8 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout, template<class> class BoxModel>
-    void Button<Config, With_layout, BoxModel>::mouse_click(const Point &pos, int button, Count count)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Button<Config, With_layout, BMDef>::mouse_click(const Point &pos, int button, Count count)
     {
         Widget_t::mouse_click(pos, button, count); // will take focus
 
@@ -95,28 +95,31 @@ namespace cppgui {
 
     // Layouter -----------------------------------------------------
 
-    template<class Class, class Config, class Parent>
-    void Button__Layouter<Class, Config, true, Parent>::init_layout()
+    template <class Config>
+    template <class Class, class Parent>
+    void Button__Layouter<Config, true>::Aspect<Class, Parent>::init_layout()
     {
         // TODO: implement configurable alignment ?
         this->_major_align = Alignment::cultural_major_middle;
         this->_minor_align = Alignment::cultural_minor_middle;
-        
+
         this->compute_bounding_box();
 
         //_layout.set_text_element(p()->font(), p()->_label.data(), p()->_label.size(), & p()->_label_origin, & p()->_label_rect);
     }
 
-    template<class Class, class Config, class Parent>
-    auto Button__Layouter<Class, Config, true, Parent>::get_minimal_size() -> Extents
+    template <class Config>
+    template <class Class, class Parent>
+    auto Button__Layouter<Config, true>::Aspect<Class, Parent>::get_minimal_size() -> Extents
     {
         auto bbox = p()->font()->compute_text_extents(0, p()->_label.data(), p()->_label.size() );
 
         return p()->add_boxing({ bbox.width(), bbox.height() });
     }
 
-    template<class Class, class Config, class Parent>
-    void Button__Layouter<Class, Config, true, Parent>::layout()
+    template <class Config>
+    template <class Class, class Parent>
+    void Button__Layouter<Config, true>::Aspect<Class, Parent>::layout()
     {
         p()->_label_origin = this->position_text_element(this->_bounding_box, this->_minor_align, this->_major_align);
 
@@ -126,24 +129,27 @@ namespace cppgui {
         };
     }
 
-    template<class Class, class Config, class Parent>
-    void Button__Layouter<Class, Config, true, Parent>::font_changed()
+    template <class Config>
+    template <class Class, class Parent>
+    void Button__Layouter<Config, true>::Aspect<Class, Parent>::font_changed()
     {
         this->compute_bounding_box();
         this->layout();
         this->invalidate();
     }
 
-    template<class Class, class Config, class Parent>
-    void Button__Layouter<Class, Config, true, Parent>::text_changed()
+    template <class Config>
+    template <class Class, class Parent>
+    void Button__Layouter<Config, true>::Aspect<Class, Parent>::text_changed()
     {
         this->compute_bounding_box();
         this->layout();
         this->invalidate();
     }
 
-    template<class Class, class Config, class Parent>
-    void Button__Layouter<Class, Config, true, Parent>::compute_bounding_box()
+    template <class Config>
+    template <class Class, class Parent>
+    void Button__Layouter<Config, true>::Aspect<Class, Parent>::compute_bounding_box()
     {
         this->_bounding_box = p()->_font.source()->compute_text_extents(0, p()->_label.data(), p()->_label.size());
     }

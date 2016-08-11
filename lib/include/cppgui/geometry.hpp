@@ -20,6 +20,8 @@
 #include <array>
 #include <cassert>
 
+#include "./utils.hpp"
+
 namespace cppgui {
 
     // 1D ----------------------------
@@ -31,9 +33,21 @@ namespace cppgui {
 
     // 2D ----------------------------
 
+    enum Orientation
+    {
+        none,
+        left_to_right,
+        bottom_up,
+        right_to_left,
+        top_down
+    };
+
     struct Extents;
 
     struct Point {
+
+        constexpr Point(): x{0}, y{0} {}
+        constexpr Point(Position x_, Position y_): x{x_}, y{y_} {}
 
         Position x, y;
 
@@ -41,6 +55,8 @@ namespace cppgui {
         auto operator - (const Point &delta) const { return Point{ x - delta.x, y - delta.y }; }
         auto& operator += (const Point &delta) { x += delta.x, y += delta.y; return *this; }
 
+        auto operator + (const Extents & ext) const -> Point;
+        auto operator - (const Extents & ext) const -> Point;
     };
 
     using Vector = Point;
@@ -56,10 +72,10 @@ namespace cppgui {
 
         Length w, h;
 
-        Extents(): w { 0 }, h { 0 } {}
-        Extents(Length w_, Length h_): w { w_ }, h { h_ } {}
-        Extents(const Extents &from): w { from.w }, h { from.h } {}
-        Extents(Extents &&) = default;
+        constexpr Extents(): w { 0 }, h { 0 } {}
+        constexpr Extents(Length w_, Length h_): w { w_ }, h { h_ } {}
+        constexpr Extents(const Extents &from): w { from.w }, h { from.h } {}
+        constexpr Extents(Extents &&) = default;
 
         auto operator = (const Extents &) -> Extents & = default;
         auto operator = (Extents &&) -> Extents & = default;
@@ -115,14 +131,14 @@ namespace cppgui {
         }
     };
 
-    inline auto operator + (const Point &pos, const Extents &ext) -> Point { 
-
-        return { pos.x + static_cast<Position>(ext.w), pos.y + static_cast<Position>(ext.h) }; 
+    inline auto Point::operator+(const Extents & ext) const -> Point
+    {
+        return {x + ext.w, y + ext.h};
     }
 
-    inline auto operator - (const Point &pos, const Extents &ext) -> Point { 
-
-        return { pos.x - static_cast<Position>(ext.w), pos.y - static_cast<Position>(ext.h) }; 
+    inline auto Point::operator-(const Extents & ext) const -> Point
+    {
+        return {x - ext.w, y - ext.h};
     }
 
     struct Rectangle {
@@ -130,12 +146,12 @@ namespace cppgui {
         Point pos;
         Extents  ext;
 
-        Rectangle(): pos {}, ext {} {}
-        Rectangle(const Point &pos_, const Extents &ext_): pos {pos_}, ext { ext_ } {}
-        Rectangle(const Extents &ext_): pos {}, ext {ext_} {}
-        Rectangle(const Rectangle &) = default;
-        Rectangle(Rectangle &&) = default;
-        Rectangle(Position x, Position y, Length w, Length h): pos { x, y}, ext { w, h } {}
+        constexpr Rectangle(): pos {}, ext {} {}
+        constexpr Rectangle(const Point &pos_, const Extents &ext_): pos {pos_}, ext { ext_ } {}
+        constexpr Rectangle(const Extents &ext_): pos {}, ext {ext_} {}
+        constexpr Rectangle(const Rectangle &) = default;
+        constexpr Rectangle(Rectangle &&) = default;
+        constexpr Rectangle(Position x, Position y, Length w, Length h): pos { x, y}, ext { w, h } {}
 
         auto operator = (const Rectangle &) -> Rectangle & = default;
         auto operator = (Rectangle &&) -> Rectangle & = default;
@@ -144,18 +160,14 @@ namespace cppgui {
 
         /** Access conveniences.
         */
-        ///@{
 
         auto width () const { return ext.w; }
         auto height() const { return ext.h; }
         auto position() -> Point   & { return pos; }
         auto extents () -> Extents & { return ext; }
 
-        ///@}
-
         /** Computation conveniences.
         */
-        ///@{
 
         auto top_left() const 
         { 
@@ -268,11 +280,8 @@ namespace cppgui {
             }; 
         }
 
-        ///@}
-
         /** grow(): make the rectangle bigger
         */
-        //@{
 
         void grow(Width w) 
         { 
@@ -289,12 +298,9 @@ namespace cppgui {
             ext.w += margins[3] + margins[1], ext.h += margins[0] + margins[2];
         }
 
-        ///@}
-
         /** operator + variants: equivalent to grow(..) methods except that they return 
         a new rectangle instance, leaving the original unchanged.
         */
-        ///@{
 
         auto operator + (Length l) const -> Rectangle 
         { 
@@ -314,9 +320,6 @@ namespace cppgui {
                 ext.w + padding[3] + padding[1], ext.h + padding[0] + padding[1]
             }; 
         }
-
-        ///@}
-
     };
 
 } // ns cppgui
@@ -329,4 +332,6 @@ namespace std {
     }
 
 } // ns std
+
+#include "./oriented_geometry.hpp" // TODO: remove this, temporary
 

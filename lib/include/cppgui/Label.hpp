@@ -22,7 +22,7 @@
 #include "./utils.hpp" // TODO: move to Widget.hpp
 
 #include "./Widget.hpp"
-#include "./Box.hpp"
+#include "./Box_model.hpp"
 
 namespace gpc { namespace fonts {
 
@@ -31,24 +31,21 @@ namespace gpc { namespace fonts {
 
 namespace cppgui {
 
-    template <class Config, bool With_layout, class Parent> struct Label__Layouter;
+    template <class Config, bool With_layout>
+    struct Label__Layouter
+    {
+        template<class Class, class Parent> 
+        struct Aspect: Parent {};
+    };
 
     /** Label widget.
      */
 
-    #define CPPGUI_INSTANTIATE_LABEL(Config, With_layout) \
-        template cppgui::Label<Config, With_layout>; \
-        template cppgui::Label__Layouter<Config, With_layout, \
-            cppgui::Box<Config, With_layout, \
-                cppgui::Simple_box_model< \
-                    cppgui::Widget<Config, With_layout> > > >;
-
-    template <class Config, bool With_layout>
+    template <class Config, bool With_layout, Box_model_definition BMDef>
     class Label: public 
-        Label__Layouter<Config, With_layout, 
-            Box<Config, With_layout, 
-                Simple_box_model< 
-                    Widget<Config, With_layout> > > >
+        Label__Layouter<Config, With_layout>::template Aspect<Label<Config, With_layout, BMDef>,
+        Box_model<Config, With_layout, BMDef>::template Aspect<Label<Config, With_layout, BMDef>,
+        Widget<Config, With_layout> > >
     {
     public:
         using Renderer = typename Config::Renderer;
@@ -79,34 +76,36 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template <class Config, class Parent>
-    struct Label__Layouter<Config, true, Parent>: Parent
+    template <class Config>
+    struct Label__Layouter<Config, true>
     {
-        Label__Layouter();
+        template<class Class, class Parent>
+        struct Aspect: Parent
+        {
+            // Layouter aspect contract
 
-        // Layouter aspect contract
+            void init_layout() override;
+            auto get_minimal_size() -> Extents override;
+            void layout() override;
 
-        void init_layout() override;
-        auto get_minimal_size() -> Extents override;
-        void layout() override;
+            // Own methods
 
-        // Own methods
+            void set_minor_alignment(Alignment align) { _minor_alignment = align; }
+            void set_major_alignment(Alignment align) { _major_alignment = align; }
+            // TODO: "change" versions of the above that update layout
 
-        void set_minor_alignment(Alignment align) { _minor_alignment = align; }
-        void set_major_alignment(Alignment align) { _major_alignment = align; }
-        // TODO: "change" versions of the above that update layout
+        private:
+            class Implementation: public Class { friend struct Aspect; };
+            auto p() { return static_cast<Implementation*>(this); }
 
-    private:
-        class Label_t: public Label<Config, true> { friend struct Label__Layouter; };
-        auto p() { return static_cast<Label_t*>(static_cast<Label<Config, true>*>(this)); }
+            // "Stylesheet"
+            //static constexpr auto default_padding() -> Padding { return { 4, 4, 4, 4 }; }
 
-        // "Stylesheet"
-        //static constexpr auto default_padding() -> Padding { return { 4, 4, 4, 4 }; }
-
-        Alignment               _minor_alignment = Alignment::cultural_minor_middle;
-        Alignment               _major_alignment = Alignment::cultural_major_middle;
-        Text_bounding_box       _bounding_box;
-        //Single_element_layout   _layout;
+            Alignment               _minor_alignment = Alignment::cultural_minor_middle;
+            Alignment               _major_alignment = Alignment::cultural_major_middle;
+            Text_bounding_box       _bounding_box;
+            //Single_element_layout   _layout;
+        };
     };
 
 } // ns cppgui

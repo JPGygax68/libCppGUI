@@ -19,7 +19,7 @@
 
 #include "./Widget.hpp"
 #include "./Abstract_container.hpp"
-#include "./Box.hpp"
+#include "./Box_model.hpp"
 
 namespace cppgui {
 
@@ -89,9 +89,10 @@ namespace cppgui {
     {
     public:
         using Renderer = typename Config::Renderer;
-        using Widget_t = typename Widget<Config, With_layout>;
+        using Widget_t = Widget<Config, With_layout>;
+        using Parent_t = Widget_t;
         using Canvas_t = typename Widget_t::Canvas_t;
-        using Abstract_container_t = typename Abstract_container<Config, With_layout>;
+        using Abstract_container_t = Abstract_container<Config, With_layout>;
         using Keyboard = typename Config::Keyboard;
         using Keycode = typename Keyboard::Keycode;
 
@@ -103,9 +104,10 @@ namespace cppgui {
         using Abstract_container_t::remove_child;
         using Abstract_container_t::remove_all_children;
 
+        auto container_absolute_position() -> Point override;
         bool container_has_focus() override { return this->has_focus(); }
 
-        void container_take_focus(Widget_t *) override;
+        void switch_focused_child(Widget_t *child) override;
         void gained_focus() override;
         void loosing_focus() override;
 

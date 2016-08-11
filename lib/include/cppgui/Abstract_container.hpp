@@ -55,7 +55,8 @@ namespace cppgui {
         virtual void child_key_down(const Keycode &) = 0;
 
         virtual bool container_has_focus() = 0;       
-        virtual void container_take_focus(Widget_t *);
+        virtual auto container_absolute_position() -> Point = 0;
+        virtual void switch_focused_child(Widget_t *);
         auto focused_child() -> Widget_t * { return _focused_child; }
 
         auto first_child() -> Widget_t * { assert(!_children.empty()); return _children.front(); }
@@ -107,7 +108,7 @@ namespace cppgui {
     {
         using Widget_t = Widget<Config, With_layout>;
         class Container_base_t: public Container_base<Config, With_layout> { friend struct Default_Abstract_container_Container_updater; };
-        using Root_widget_t = Root_widget<Config, With_layout>;
+        using Root_widget_t = Root_widget_base<Config, With_layout>;
 
         auto p() { return static_cast<Container_base_t*>(static_cast<Container_base<Config, With_layout>*>(this)); }
 

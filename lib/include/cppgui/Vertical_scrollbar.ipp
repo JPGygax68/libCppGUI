@@ -17,15 +17,21 @@
     limitations under the License.
 */
 
-#include "./Vertical_scrollbar.hpp"
+#include <algorithm>
 
+#include "./basic_types.hpp"
+
+#include "./Vertical_scrollbar.hpp"
 #include "./Container_base.ipp"
 #include "./Glyph_button.ipp"
+#include "./Box_model.ipp"
+
+#pragma warning(disable: 4505)
 
 namespace cppgui {
 
-    template<class Impl, class Config, bool With_layout>
-    Vertical_scrollbar_base<Impl, Config, With_layout>::Vertical_scrollbar_base():
+    template<class Impl, class Config, bool With_layout, Box_model_definition BMDef>
+    Vertical_scrollbar_base<Impl, Config, With_layout, BMDef>::Vertical_scrollbar_base():
         // TODO: obtain from static value or stylesheet:
         _slide_bgcol        ({ 0.7f, 0.7f, 0.7f, 1 }), 
         _thumb_color        ({ 0.8f, 0.8f, 0.8f, 1 }),
@@ -50,18 +56,18 @@ namespace cppgui {
         add_child(&_down_btn);
     }
 
-    template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::define_values(Length full, Length fraction)
+    template<class Impl, class Config, bool With_layout, Box_model_definition BMDef>
+    void Vertical_scrollbar_base<Impl, Config, With_layout, BMDef>::define_sizes(Length full, Length fraction)
     {
         // assert(full >= fraction);
         if (full < fraction) full = fraction; // TODO: better way ?
 
         _full_range = full;
-        _fraction = fraction;
+        _shown_range = fraction;
     }
 
-    template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::init()
+    template<class Impl, class Config, bool With_layout, Box_model_definition BMDef>
+    void Vertical_scrollbar_base<Impl, Config, With_layout, BMDef>::init()
     {
         Container_base_t::init();
 
@@ -70,17 +76,17 @@ namespace cppgui {
         _thumb_hovered_color.translate( root_widget()->canvas() );
     }
 
-    template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::compute_view_from_data()
+    template<class Impl, class Config, bool With_layout, Box_model_definition BMDef>
+    void Vertical_scrollbar_base<Impl, Config, With_layout, BMDef>::compute_view_from_data()
     {
-        _thumb_rect.pos = { 2, _sliding_range.from };
+        _thumb_rect.pos = { 2, _track.from };
         // TODO: position from style
 
         recalc_thumb();
     }
 
-    template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::render(Canvas_t *canvas, const Point &offset)
+    template<class Impl, class Config, bool With_layout, Box_model_definition BMDef>
+    void Vertical_scrollbar_base<Impl, Config, With_layout, BMDef>::render(Canvas_t *canvas, const Point &offset)
     {
         // Background
         // TODO: only draw the part not covered by the buttons ?
@@ -95,20 +101,20 @@ namespace cppgui {
 
     // TODO: test!!
 
-    template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::change_values(Length full, Length shown)
+    template<class Impl, class Config, bool With_layout, Box_model_definition BMDef>
+    void Vertical_scrollbar_base<Impl, Config, With_layout, BMDef>::change_sizes(Length full, Length shown)
     {
-        define_values(full, shown);
+        define_sizes(full, shown);
         recalc_thumb();
         this->invalidate();
     }
 
-    template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
+    template<class Impl, class Config, bool With_layout, Box_model_definition BMDef>
+    void Vertical_scrollbar_base<Impl, Config, With_layout, BMDef>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
     {
         if (button == 1 && state == Key_state::pressed)
         {
-            if (pos.y > _sliding_range.from && pos.y < _sliding_range.to)
+            if (pos.y > _track.from && pos.y < _track.to)
             {
                 auto y_rel = pos.y - _thumb_rect.pos.y;
 
@@ -147,8 +153,8 @@ namespace cppgui {
         Container_base_t::mouse_button(pos, button, state, clicks);
     }
 
-    template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::mouse_motion(const Point &pos)
+    template<class Impl, class Config, bool With_layout, Box_model_definition BMDef>
+    void Vertical_scrollbar_base<Impl, Config, With_layout, BMDef>::mouse_motion(const Point &pos)
     {
         // std::cout << "mouse_motion: " << pos.x << ", " << pos.y << std::endl;
 
@@ -168,14 +174,14 @@ namespace cppgui {
             Container_base_t::mouse_motion(pos);
     }
 
-    template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::mouse_wheel(const Vector &delta)
+    template<class Impl, class Config, bool With_layout, Box_model_definition BMDef>
+    void Vertical_scrollbar_base<Impl, Config, With_layout, BMDef>::mouse_wheel(const Vector &delta)
     {
         static_cast<Impl*>(this)->move_by_elements(-delta.y);
     }
 
-    template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::mouse_exit()
+    template<class Impl, class Config, bool With_layout, Box_model_definition BMDef>
+    void Vertical_scrollbar_base<Impl, Config, With_layout, BMDef>::mouse_exit()
     {
         if (_thumb_hovered)
         {
@@ -186,93 +192,96 @@ namespace cppgui {
         Container_base_t::mouse_exit();
     }
 
-    template<class Impl, class Config, bool With_layout>
-    auto Vertical_scrollbar_base<Impl, Config, With_layout>::current_position() -> Fraction<int>
+    template<class Impl, class Config, bool With_layout, Box_model_definition BMDef>
+    auto Vertical_scrollbar_base<Impl, Config, With_layout, BMDef>::current_value_from_thumb_position() -> Fraction<Length>
     {
-        if (_sliding_range.length() > _thumb_rect.ext.h)
+        if (_track.length() > _thumb_rect.ext.h)
         {
             return {
-                (_full_range - _fraction) * (_thumb_rect.pos.y - _sliding_range.from),
-                _sliding_range.length() - _thumb_rect.ext.h
+                (_full_range - _shown_range) * (_thumb_rect.pos.y - _track.from),
+                _track.length() - _thumb_rect.ext.h
             };
         }
         else
             return { 0, 1 };
     }
 
-    template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::update_position(Position pos)
+    template<class Impl, class Config, bool With_layout, Box_model_definition BMDef>
+    void Vertical_scrollbar_base<Impl, Config, With_layout, BMDef>::update_thumb_position(Length value)
     {
-        assert(_full_range >= _fraction);
+        assert(_full_range >= _shown_range);
 
-        if (_full_range > _fraction)
+        if (_full_range > _shown_range)
         {
-            if (pos < 0) pos = 0; else if (pos > _full_range - _fraction) pos = _full_range - _fraction;
+            value = clamp(value, 0, _full_range - _shown_range);
 
-            auto new_pos = _sliding_range.from + (pos * (_sliding_range.length() - _thumb_rect.ext.h) / (_full_range - _fraction));
+            auto new_y = _track.from + (value * (_track.length() - _thumb_rect.ext.h) / (_full_range - _shown_range));
 
             if (_dragging_thumb)
             {
-                _drag_anchor_pos += new_pos - _thumb_rect.pos.y;
+                _drag_anchor_pos += new_y - _thumb_rect.pos.y;
             }
 
-            _thumb_rect.pos.y = new_pos;
+            _thumb_rect.pos.y = new_y;
         }
 
         this->invalidate();
     }
 
-    template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::move_thumb_to(Position new_pos)
+    /*
+    template<class Impl, class Config, bool With_layout, Box_model_definition BMDef>
+    void Vertical_scrollbar_base<Impl, Config, With_layout, BMDef>::move_thumb_to(Position new_pos)
     {
-        new_pos = std::max(new_pos, _sliding_range.from);
-        new_pos = std::min(new_pos, _sliding_range.to - _thumb_rect.ext.h);
+        new_pos = std::max(new_pos, _track.from);
+        new_pos = std::min(new_pos, _track.to - _thumb_rect.ext.h);
 
         _thumb_rect.pos = {2, new_pos};
         
         //notify_position_change();
         this->invalidate();
     }
+    */
 
-    template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::recalc_thumb()
+    template<class Impl, class Config, bool With_layout, Box_model_definition BMDef>
+    void Vertical_scrollbar_base<Impl, Config, With_layout, BMDef>::recalc_thumb()
     {
         _thumb_rect.ext.h = std::max(
-            _full_range == 0 ? 0 : _sliding_range.length() * _fraction / _full_range, 
+            _full_range == 0 ? 0 : _track.length() * _shown_range / _full_range, 
             _thumb_rect.ext.w / 2
         );
 
         clip_thumb_pos();
     }
 
-    template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::clip_thumb_pos()
+    template<class Impl, class Config, bool With_layout, Box_model_definition BMDef>
+    void Vertical_scrollbar_base<Impl, Config, With_layout, BMDef>::clip_thumb_pos()
     {
-        if (_thumb_rect.bottom() > _sliding_range.to)
+        if (_thumb_rect.bottom() > _track.to)
         {
-            _thumb_rect.pos.y = _sliding_range.to - static_cast<Position>(_thumb_rect.ext.h);
+            _thumb_rect.pos.y = _track.to - static_cast<Position>(_thumb_rect.ext.h);
         }
-        else if (_thumb_rect.pos.y < _sliding_range.from)
+        else if (_thumb_rect.pos.y < _track.from)
         {
-            _thumb_rect.pos.y = _sliding_range.from;
+            _thumb_rect.pos.y = _track.from;
         }
     }
 
-    template<class Impl, class Config, bool With_layout>
-    void Vertical_scrollbar_base<Impl, Config, With_layout>::notify_drag_navigation(Position_delta delta)
+    template<class Impl, class Config, bool With_layout, Box_model_definition BMDef>
+    void Vertical_scrollbar_base<Impl, Config, With_layout, BMDef>::notify_drag_navigation(Position_delta delta)
     {
         if (delta != 0)
         {
             //std::cerr << "delta = " << delta << std::endl;
             //static_cast<Impl*>(this)->move_by_fraction(_drag_start_pos, { delta, static_cast<int>(_sliding_range.l - _thumb_rect.ext.h) });
-            static_cast<Impl*>(this)->move_by_fraction({ delta, _sliding_range.length() - _thumb_rect.ext.h });
+            static_cast<Impl*>(this)->move_by_fraction({ delta, _track.length() - _thumb_rect.ext.h });
         }
     }
 
     // Layouter aspect ----------------------------------------------
 
-    template<class Impl, class Config, class Parent>
-    auto Vertical_scrollbar__Layouter<Impl, Config, true, Parent>::get_minimal_size() -> Extents
+    template <class Config>
+    template <class Class, class Parent>
+    auto Vertical_scrollbar__Layouter<Config, true>::Aspect<Class, Parent>::get_minimal_size() -> Extents
     {
         // Width: based on up/down buttons, height: 3 times button height
 
@@ -281,8 +290,9 @@ namespace cppgui {
         return { btn_minsz.w, 3 * btn_minsz.h };
     }
 
-    template<class Impl, class Config, class Parent>
-    void Vertical_scrollbar__Layouter<Impl, Config, true, Parent>::layout()
+    template <class Config>
+    template <class Class, class Parent>
+    void Vertical_scrollbar__Layouter<Config, true>::Aspect<Class, Parent>::layout()
     {
         auto ext = p()->extents();
 
@@ -292,11 +302,11 @@ namespace cppgui {
         p()->_up_btn  .set_rectangle_nw({0, 0           }, { ext.w, minsz_up_btn  .h} );
         p()->_down_btn.set_rectangle_sw({0, ext.bottom()}, { ext.w, minsz_down_btn.h} );
 
-        p()->_sliding_range.define( p()->_up_btn.rectangle().bottom() + 2, p()->_down_btn.rectangle().top() - 2 );
+        p()->_track.define( p()->_up_btn.rectangle().bottom() + 2, p()->_down_btn.rectangle().top() - 2 );
 
         p()->_thumb_rect.pos.x = 2; // TODO: obtain margin from style
         p()->_thumb_rect.ext.w = p()->extents().w - 4; // obtain margin from style
-        //p()->_thumb_rect.ext.h = 20; // TODO: REMOVE, temporary
+                                                       //p()->_thumb_rect.ext.h = 20; // TODO: REMOVE, temporary
 
         p()->_up_btn  .layout();
         p()->_down_btn.layout();
@@ -304,14 +314,14 @@ namespace cppgui {
 
     // Customizable specialization ==================================
 
-    template<class Config, bool With_layout>
-    void Custom_vertical_scrollbar<Config, With_layout>::on_navigation(Navigation_handler handler)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Custom_vertical_scrollbar<Config, With_layout, BMDef>::on_navigation(Navigation_handler handler)
     {
         _nav_handler = handler;
     }
 
-    template<class Config, bool With_layout>
-    void Custom_vertical_scrollbar<Config, With_layout>::move_by_page(int delta)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Custom_vertical_scrollbar<Config, With_layout, BMDef>::move_by_page(int delta)
     {
         // Note: the nav handler must update the position in response
 
@@ -322,8 +332,8 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Custom_vertical_scrollbar<Config, With_layout>::move_by_elements(int delta)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Custom_vertical_scrollbar<Config, With_layout, BMDef>::move_by_elements(int delta)
     {
         if (_nav_handler)
         {
@@ -332,8 +342,8 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Custom_vertical_scrollbar<Config, With_layout>::move_by_fraction(/* Position initial_pos, */ const Fraction<int> &delta)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Custom_vertical_scrollbar<Config, With_layout, BMDef>::move_by_fraction(/* Position initial_pos, */ const Fraction<int> &delta)
     {
         if (_nav_handler)
         {
@@ -344,43 +354,44 @@ namespace cppgui {
 
     // Standalone specialization ====================================
 
-    template<class Config, bool With_layout>
-    void cppgui::Vertical_scrollbar<Config, With_layout>::on_position_change(Position_change_handler handler)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Vertical_scrollbar<Config, With_layout, BMDef>::on_position_change(Position_change_handler handler)
     {
         _on_pos_chng = handler;
     }
 
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::move_by_page(int pages)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Vertical_scrollbar<Config, With_layout, BMDef>::move_by_page(int pages)
     {
-        auto delta = static_cast<cppgui::Position_delta>(fraction()) * pages;
-        update_position(current_position() + delta);
+        auto delta = this->shown_range() * pages;
+        //auto new_pos = this->current_thumb_position() + delta;
+        this->update_thumb_position( this->current_value_from_thumb_position() + delta );
         notify_position_change();
     }
 
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::move_by_elements(int elements)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Vertical_scrollbar<Config, With_layout, BMDef>::move_by_elements(int elements)
     {
-        update_position(current_position() + elements * 10); // TODO: make step configurable
+        this->update_thumb_position(this->current_value_from_thumb_position() + elements * 10); // TODO: make step configurable
         notify_position_change();
-        invalidate();
+        this->invalidate();
     }
 
-    template<class Config, bool With_layout>
-    void Vertical_scrollbar<Config, With_layout>::move_by_fraction(/* Position initial_pos, */ const Fraction<int>& frac)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Vertical_scrollbar<Config, With_layout, BMDef>::move_by_fraction(/* Position initial_pos, */ const Fraction<int>& frac)
     {
         auto delta = full_range() * frac.num / frac.den;
         if (delta == 0) delta = frac.num * frac.den < 0 ? -1 : 1;
-        auto thumb_pos = current_position();
-        auto new_pos = (Position) (thumb_pos.num + delta * (Position) thumb_pos.den) / (Position) thumb_pos.den;
-        update_position( new_pos );
+        auto thumb_pos = this->current_value_from_thumb_position();
+        auto new_pos = (thumb_pos.num + delta * thumb_pos.den) / thumb_pos.den;
+        this->update_thumb_position( new_pos );
         notify_position_change();
     }
 
-    template<class Config, bool With_layout>
-    void cppgui::Vertical_scrollbar<Config, With_layout>::notify_position_change()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void cppgui::Vertical_scrollbar<Config, With_layout, BMDef>::notify_position_change()
     {
-        if (_on_pos_chng) _on_pos_chng(current_position());
+        if (_on_pos_chng) _on_pos_chng(this->current_value_from_thumb_position());
     }
 
 } // ns cppgui

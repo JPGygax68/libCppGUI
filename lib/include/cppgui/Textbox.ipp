@@ -28,22 +28,22 @@
 
 namespace cppgui {
     
-    template <class Config, bool With_layout>
-    Textbox<Config, With_layout>::Textbox():
+    template <class Config, bool With_layout, Box_model_definition BMDef>
+    Textbox<Config, With_layout, BMDef>::Textbox():
         _size( 10 ) // TODO: use static method for default
     {
     }
 
-    template <class Config, bool With_layout>
-    void Textbox<Config, With_layout>::on_done(Done_handler handler)
+    template <class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::on_done(Done_handler handler)
     {
         assert(!_on_done);
 
         _on_done = handler;
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::set_font(const Rasterized_font *font)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::set_font(const Rasterized_font *font)
     {
         /* TODO: move this change_font() in layouter aspect
         if (font != _label_font)
@@ -55,26 +55,26 @@ namespace cppgui {
         _font.assign(font);
     }
 
-    template <class Config, bool With_layout>
-    void Textbox<Config, With_layout>::set_size(Count chars)
+    template <class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::set_size(Count chars)
     {
         _size = chars;
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::set_text(const std::u32string &text)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::set_text(const std::u32string &text)
     {
         _text = text;
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::set_text(const std::string &text)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::set_text(const std::string &text)
     {
         _text = utf8_to_utf32(text);
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::change_text(const std::u32string &text)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::change_text(const std::u32string &text)
     {
         set_text(text);
 
@@ -91,20 +91,20 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::change_text(const std::string &text)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::change_text(const std::string &text)
     {
         change_text( utf8_to_utf32(text) );
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::init()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::init()
     {
         _font.translate( root_widget()->canvas() );
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::compute_view_from_data()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::compute_view_from_data()
     {
         _caret_char_idx = 0;
         _caret_pixel_pos = 0;
@@ -112,8 +112,8 @@ namespace cppgui {
         internal_select_all();
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::mouse_motion(const Point &pos)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::mouse_motion(const Point &pos)
     {
         if (Config::Mouse::is_button_down(1))
         {
@@ -143,8 +143,8 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
     {
         if (state == pressed)
         {
@@ -160,8 +160,8 @@ namespace cppgui {
         Widget_t::mouse_button(pos, button, state, clicks);
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::mouse_click(const Point &, int /*button*/, Count count)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::mouse_click(const Point &, int /*button*/, Count count)
     {
         if (count == 2) // double-click
         {
@@ -189,43 +189,43 @@ namespace cppgui {
     }
     */
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::text_input(const char32_t *text, size_t count)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::text_input(const char32_t *text, size_t count)
     {
         delete_selected(); // TODO: make optional
         insert_characters(text, count);
         invalidate();
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::mouse_enter()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::mouse_enter()
     {
         root_widget()->push_cursor( Config::Mouse::get_ibeam_cursor() );
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::mouse_exit()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::mouse_exit()
     {
         root_widget()->pop_cursor();
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::gained_focus()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::gained_focus()
     {
         // TODO: more...
         this->invalidate();
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::loosing_focus()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::loosing_focus()
     {
         notify_done();
 
         this->invalidate();
     }
 
-    template<class Config, bool With_layout>
-    inline void Textbox<Config, With_layout>::render(Canvas_t *r, const Point &offs)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    inline void Textbox<Config, With_layout, BMDef>::render(Canvas_t *r, const Point &offs)
     {
         fill(r, offs, rgba_to_native({ 1, 1, 1, 1 })); // TODO: (VERY MUCH) PROVISIONAL, GET REAL COLOR!
 
@@ -256,8 +256,8 @@ namespace cppgui {
         r->cancel_clipping();
     }
 
-    template<class Config, bool With_layout>
-    bool Textbox<Config, With_layout>::handle_key_down(const Keycode &key)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    bool Textbox<Config, With_layout, BMDef>::handle_key_down(const Keycode &key)
     {
         if      (Keyboard::is_left     (key)) { move_cursor_left    (Config::Keyboard::is_shift_down()); return true; }
         else if (Keyboard::is_right    (key)) { move_cursor_right   (Config::Keyboard::is_shift_down()); return true; }
@@ -269,8 +269,8 @@ namespace cppgui {
         else return false;
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::move_cursor_left(bool extend_sel)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::move_cursor_left(bool extend_sel)
     {
         if (_caret_char_idx > 0)
         {
@@ -301,8 +301,8 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::move_cursor_right(bool extend_sel)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::move_cursor_right(bool extend_sel)
     {
         if (_caret_char_idx < _text.size())
         {
@@ -333,8 +333,8 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::move_cursor_to_start(bool extend_sel)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::move_cursor_to_start(bool extend_sel)
     {
         if (_caret_char_idx > 0)
         {
@@ -360,8 +360,8 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::move_cursor_to_end(bool extend_sel)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::move_cursor_to_end(bool extend_sel)
     {
         if (_caret_char_idx < _text.size())
         {
@@ -387,8 +387,8 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::insert_characters(const char32_t * text, size_t count)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::insert_characters(const char32_t * text, size_t count)
     {
         _text = _text.substr(0, _caret_char_idx) + std::u32string{ text, count } + _text.substr(_caret_char_idx); // TODO: support selection
 
@@ -403,8 +403,8 @@ namespace cppgui {
         bring_caret_into_view();
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::delete_before_caret()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::delete_before_caret()
     {
         if (have_selection())
         {
@@ -428,8 +428,8 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::delete_after_caret()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::delete_after_caret()
     {
         if (have_selection())
         {
@@ -447,8 +447,8 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::select_all()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::select_all()
     {
         internal_select_all();
 
@@ -459,14 +459,14 @@ namespace cppgui {
         invalidate();
     }
 
-    template <class Config, bool With_layout>
-    void Textbox<Config, With_layout>::done()
+    template <class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::done()
     {
         notify_done();
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::move_caret_to_pointer_position(const Point &pos)
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::move_caret_to_pointer_position(const Point &pos)
     {
         auto char_pos = find_character_at_pointer_position(pos);
 
@@ -477,8 +477,8 @@ namespace cppgui {
         invalidate();
     }
 
-    template<class Config, bool With_layout>
-    auto Textbox<Config, With_layout>::find_character_at_pointer_position(const Point & pos) -> std::pair<size_t, int>
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    auto Textbox<Config, With_layout, BMDef>::find_character_at_pointer_position(const Point & pos) -> std::pair<size_t, int>
     {
         auto inner_pos = convert_position_to_inner(pos);
 
@@ -497,8 +497,8 @@ namespace cppgui {
         return { i, x };
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::bring_caret_into_view()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::bring_caret_into_view()
     {
         while ((_scroll_offs + _caret_pixel_pos) < 0)
         {
@@ -517,32 +517,32 @@ namespace cppgui {
         }
     }
 
-    template <class Config, bool With_layout>
-    void Textbox<Config, With_layout>::notify_done()
+    template <class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::notify_done()
     {
         if (_on_done) _on_done( text() );
     }
 
-    template<class Config, bool With_layout>
-    auto Textbox<Config, With_layout>::selected_text_background_color() -> Color
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    auto Textbox<Config, With_layout, BMDef>::selected_text_background_color() -> Color
     {
         if (this->has_focus())
         {
-            return { 0.4f, 0.7f, 1, 1 };
+            return { 0.5f, 0.8f, 1, 1 };
         }
         else {
             return { 0.8f, 0.8f, 0.8f, 1 };
         }
     }
 
-    template<class Config, bool With_layout>
-    auto Textbox<Config, With_layout>::caret_color() -> Color
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    auto Textbox<Config, With_layout, BMDef>::caret_color() -> Color
     {
         return Color{0, 0, 0, 1};
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::internal_select_all()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::internal_select_all()
     {
         _sel_start_char_idx = 0;
         _sel_end_char_idx   = _text.size();
@@ -560,8 +560,8 @@ namespace cppgui {
         Must be called when _sel_start_char_idx and _sel_end_char_idx have been changed (which
         usually happens together).
      */
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::recalc_selection_strip()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::recalc_selection_strip()
     {
         // TODO: support vertical scripts
 
@@ -589,8 +589,8 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::collapse_selection_to_caret()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::collapse_selection_to_caret()
     {
         _sel_start_char_idx = _sel_end_char_idx = _caret_char_idx;
         _sel_start_pixel_pos = _sel_end_pixel_pos = _caret_pixel_pos;
@@ -598,8 +598,8 @@ namespace cppgui {
         invalidate();
     }
 
-    template<class Config, bool With_layout>
-    void Textbox<Config, With_layout>::delete_selected()
+    template<class Config, bool With_layout, Box_model_definition BMDef>
+    void Textbox<Config, With_layout, BMDef>::delete_selected()
     {
         auto new_text = _text.substr(0, _sel_start_char_idx) + _text.substr(_sel_end_char_idx);
         _caret_char_idx = _sel_start_char_idx;
@@ -611,28 +611,18 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template<class Class, class Parent>
-    Textbox__Layouter<Class, true, Parent>::Textbox__Layouter()
-    {
-        // _padding = default_padding();
-    }
-
-    template<class Class, class Parent>
-    void Textbox__Layouter<Class, true, Parent>::init_layout()
-    {
-        compute_text_extents();
-    }
-
-    template<class Class, class Parent>
-    void Textbox__Layouter<Class, true, Parent>::change_font(const Rasterized_font *font)
+    template <class Config>
+    template <class Class, class Parent>
+    void Textbox__Layouter<Config, true>::Aspect<Class, Parent>::change_font(const Rasterized_font *font)
     {
         p()->_font = font;
         compute_text_extents();
         this->layout();
     }
 
-    template<class Class, class Parent>
-    void Textbox__Layouter<Class, true, Parent>::compute_text_extents()
+    template <class Config>
+    template <class Class, class Parent>
+    void Textbox__Layouter<Config, true>::Aspect<Class, Parent>::compute_text_extents()
     {
         // TODO: free the font handle
 
@@ -647,25 +637,35 @@ namespace cppgui {
         }
     }
 
-    template<class Class, class Parent>
-    auto Textbox__Layouter<Class, true, Parent>::get_minimal_size() -> Extents
+    template <class Config>
+    template <class Class, class Parent>
+    void Textbox__Layouter<Config, true>::Aspect<Class, Parent>::init_layout()
     {
-        // TODO: adjust for border, too
+        compute_text_extents();
+    }
+
+    template <class Config>
+    template <class Class, class Parent>
+    auto Textbox__Layouter<Config, true>::Aspect<Class, Parent>::get_minimal_size() -> Extents
+    {
         return this->add_boxing({ 
             (p()->size() * p()->_mean_char_width), 
             (p()->_ascent - p()->_descent       ) 
         });
     }
 
-    template<class Class, class Parent>
-    void Textbox__Layouter<Class, true, Parent>::layout()
+    template <class Config>
+    template <class Class, class Parent>
+    void Textbox__Layouter<Config, true>::Aspect<Class, Parent>::layout()
     {
         auto ext = p()->extents();
 
-        p()->_inner_rect = {
+        p()->_inner_rect = this->content_rectangle();
+        
+        /*{
             this->get_distance(3), this->get_distance(0),
             ext.w - this->get_distance(3) - this->get_distance(1), ext.h - this->get_distance(0) - this->get_distance(2)
-        };
+        };*/
 
         p()->_txpos = { p()->_inner_rect.pos.x, p()->_inner_rect.pos.y + p()->_ascent };
     }
