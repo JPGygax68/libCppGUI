@@ -17,153 +17,41 @@
     limitations under the License.
 */
 
+#include "./Abstract_widget.hpp"
+
+#ifdef NOT_DEFINED
+
 #include <cassert>
 #include <type_traits>
 #include <initializer_list>
 
-#include <gpc/gui/renderer.hpp> // TODO: other source & namespace
-
-#include "./basic_types.hpp"
 #include "./geometry.hpp"
 
 //#include "./Stylesheet.hpp"
-#include "./Resource.hpp"
 #include "./Full_resource_mapper.hpp"
+
+#endif
 
 namespace cppgui {
 
-    struct Nil_struct {}; // to end aspect chains
-
-    // Forward declarations 
-
-    template <class Config, bool With_layout> class Root_widget_base;
-    template <class Config, bool With_layout> class Abstract_container;
-    /*template <class Config, bool With_layout>*/ class Drag_controller;
-
     enum Key_state { pressed, released }; // TODO: move to basic_types.hpp ?
-
-    template <class Renderer> class Canvas;
-
-    /** Abstract_widget: functionality common to both Root_widget and Widget, i.e. not including the ability
-        to function as an element in a container.
-     */
-    template <class Config, bool With_layout>
-    class Abstract_widget
-    {
-    public:
-        virtual ~Abstract_widget()
-        {
-        }
-
-        using Abstract_widget_t = Abstract_widget;
-        using Root_widget_t     = Root_widget_base<Config, With_layout>;
-        using Canvas_t          = typename Canvas<typename Config::Renderer>;
-        using Native_color      = typename Canvas_t::Native_color;
-        using Font_handle       = typename Canvas_t::Font_handle;
-        using Keyboard          = typename Config::Keyboard;
-        using Keycode           = typename Keyboard::Keycode;
-        // TODO: move the following resource type definitions into a special struct and inherit from that ?
-        using Color_resource    = Resource<const Color &, Native_color, Canvas_t, true>;
-        using Font_resource     = Resource<const Rasterized_font *, Font_handle, Canvas_t, false>;
-
-        using Click_handler     = std::function<void(const Point &, int button, Count clicks)>; // TODO: support return value ?
-        using Pushed_handler    = std::function<void()>; // for buttons TODO: renamed event to "Push" (as in "a push happened") ?
-
-        void set_id(const char *id)
-        {
-            #ifdef _DEBUG
-            _id = id;
-            #endif
-        }
-
-        auto& rectangle() { return _rect; }
-        auto& rectangle() const { return _rect; }
-        auto& position() { return _rect.pos; }
-        auto& position() const { return _rect.pos; }
-        auto& extents() { return _rect.ext; }
-        auto& extents() const { return _rect.ext; }
-        void set_position(const Point &);
-        void set_extents(const Extents &);
-
-        /** The init() entry point is where a widget "connects" to its backends (the most important of
-            which being the canvas).
-         */
-        virtual void init() {}
-
-        /** The update_view_from_data() entry point must be called after init(), and also after 
-            layout() if run-time layouting is enabled.
-         */
-        virtual void compute_view_from_data() {}
-
-        // Input event injection
-
-        virtual void mouse_enter() {}       // TODO: provide "entry point" parameter ?
-        virtual void mouse_exit() {}        // TODO: provide "exit point" parameter ?
-
-        bool disabled() const { return false; } // TODO!!!
-
-        /** Convention: the provided position is an offset to be added to the widget's
-            own coordinates.
-         */
-        virtual void render(Canvas_t *, const Point &offset) = 0;
-
-        virtual bool handle_key_down(const Keycode &) { return false; }
-
-    protected:
-
-        // Rendering conveniences
-
-        // auto rgba_to_native(Canvas_t *, const Color &) -> Native_color;
-        auto rgba_to_native(const Color &) -> Native_color;
-        void fill_rect(Canvas_t *, const Rectangle &rect, const Native_color &);
-        void fill_rect(Canvas_t *, const Rectangle &rect, const Point &offs, const Native_color &);
-        void fill_rect(Canvas_t *, const Point &pos, const Extents &ext, const Native_color &);
-        void fill(Canvas_t *, const Point &offs, const Native_color &);
-        auto convert_position_to_inner(const Point &) -> Point;
-        auto advance_to_glyph_at(const Rasterized_font *, const std::u32string &text, size_t from, size_t to, Point &pos) 
-            -> const Glyph_control_box *;
-        void draw_borders(Canvas_t *, const Point & offs, Width width, const Color &color);
-        void draw_borders(Canvas_t *, const Rectangle &rect, const Point &offs, Width width, const Color &color);
-        void draw_borders(Canvas_t *, const Rectangle &rect, const Point &offs, 
-            Width width, const Color & top, const Color & right, const Color & bottom, const Color & left);
-        // PROVISIONAL
-        //void draw_stippled_inner_rect(Canvas_t *, const Rectangle &, const Point &offs);
-
-        // Experimental & temporary: implement more sophisticated (and flexible!) styling
-        // - May not / should not stay static; make const if possible
-
-        static auto stroke_width() -> int { return 1; }
-        static auto stroke_color() -> Color { return { 0, 0, 0, 1 }; }
-        //static auto padding() -> int { return 5; }
-        static auto paper_color() -> Color { return {1, 1, 1, 1}; }
-
-    private:
-
-        #ifdef _DEBUG
-        const char  *_id;
-        #endif
-
-        Rectangle   _rect = {};
-    };
 
     template <class Config, bool With_layout, class Parent> struct Widget__Layouter;
 
     // Widget 
 
-    template <class Config, bool With_layout>
-    class Widget: 
-        public Config::template Widget_updater< 
-            Widget__Layouter<Config, With_layout,
-                Abstract_widget<Config, With_layout> > >
+    class Widget: public Abstract_widget
     {
     public:
+        #ifdef OBSOLETE
         using Renderer = typename Config::Renderer;
         using Font_handle = typename Renderer::font_handle;
         using Keyboard = typename Config::Keyboard;
         using Keycode = typename Keyboard::Keycode;
-        using Abstract_container_t = Abstract_container<Config, With_layout>;
-        using Root_widget_t = Root_widget_base<Config, With_layout>;
-        using Click_handler = typename Abstract_widget<Config, With_layout>::Click_handler;
+        using Abstract_container_t = Abstract_container<Config>;
+        using Root_widget_t = Root_widget_base<Config>;
+        using Click_handler = typename Abstract_widget<Config>::Click_handler;
+        #endif
 
         Widget();
 

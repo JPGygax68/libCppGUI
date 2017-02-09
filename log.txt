@@ -1,3 +1,18 @@
+2017-02-09
+==========
+
+Quite some development has happened after this point, but that turned out to be a dead end. If this library has any chance of becoming sustainable, it needs to be simplified.
+
+This means disposing of:
+
+1) aspect-oriented (or -inspired) programming: it has proven to lead to code that is too complex to handle
+
+2) keeping the layouting-code optional (via aspects): unworkable for the above reason, though it's conceivable that it might be reintroduced at a later time via conditional compilation
+
+My intention is to start with Widget.hpp and work my way down until the consumer project (LSInstructor) builds and works again. I will keep notes here as necessary.
+
+
+
 2016-07-09
 ==========
 

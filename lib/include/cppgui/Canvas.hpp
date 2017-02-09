@@ -19,11 +19,16 @@
 
 #include <stack>
 
+#include "cppgui_config.hpp"
 #include "./basic_types.hpp"
+
+#include CPPGUI_RENDERER_HEADER
 
 #include "./Full_resource_mapper.hpp" // TODO: replace with auto-selecting Resource_mapper.hpp as soon as ready
 
 namespace cppgui {
+
+    #ifdef OBSOLETE
 
     namespace _canvas {
 
@@ -43,13 +48,12 @@ namespace cppgui {
         };
     }
 
-    #define CPPGUI_INSTANTIATE_CANVAS(Config) \
-        template cppgui::Canvas<Config::Renderer>;
+    #endif 
 
-    template <class Renderer>
     class Canvas: public Renderer /*, public _canvas::Font_mapper<Renderer> */
     {
     public:
+        #ifdef OBSOLETE
         using Native_color      = typename Renderer::native_color;
         using Native_mono       = typename Renderer::native_mono;
         using Font_handle       = typename Renderer::font_handle;
@@ -58,6 +62,8 @@ namespace cppgui {
         using Rgba32            = typename gpc::gui::rgba32;
         using Mono8             = typename gpc::gui::mono8;
         using Font_mapper       = typename _canvas::Font_mapper<Renderer>;
+        #endif
+        using rgba32            = Renderer::rgba32;
 
         struct Image_definition {
             Length          w, h;

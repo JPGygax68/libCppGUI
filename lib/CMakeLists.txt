@@ -140,7 +140,8 @@ source_group("Implementation files" REGULAR_EXPRESSION "(.*)\\.ipp")
 
 add_library( ${PROJECT_NAME} STATIC
 
-    src/dummy.cpp
+    include/cppgui/Abstract_widget.hpp              src/Abstract_widget.cpp
+    include/cppgui/Widget.hpp                       src/Widget.cpp
 
     include/cppgui/utils.hpp
 
@@ -159,7 +160,6 @@ add_library( ${PROJECT_NAME} STATIC
     include/cppgui/Canvas.hpp                       include/cppgui/Canvas.ipp
     include/cppgui/Box_model.hpp                    include/cppgui/Box_model.ipp
     include/cppgui/Container_layouter.hpp           include/cppgui/Container_layouter.ipp
-    include/cppgui/Widget.hpp                       include/cppgui/Widget.ipp
     include/cppgui/Custom_widget.hpp                include/cppgui/Custom_widget.ipp
     include/cppgui/Button.hpp                       include/cppgui/Button.ipp
     include/cppgui/Glyph_button.hpp                 include/cppgui/Glyph_button.ipp
@@ -197,7 +197,23 @@ add_library( ${PROJECT_NAME} STATIC
     ${GENERATED_HEADERS_DIR}/all_icon_fonts.h
 )
 
+# TODO: rename to config.hpp but put in subdir, to conform to standard
+configure_file ("${PROJECT_SOURCE_DIR}/cppgui_config.in.hpp"
+                "${PROJECT_BINARY_DIR}/cppgui_config.hpp" )
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_BINARY_DIR})
+                
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/generated/headers) # for the fonts
+
+#--------------------------------------------------------------------
+# Add drivers as static libs
+#
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${PROJECT_BINARY_DIR}) # for cppgui_config.hpp
+
+# TODO: make configurable
+add_subdirectory(builtin_drivers/renderer_opengl)
+target_link_libraries(${PROJECT_NAME} PUBLIC renderer_opengl)
 
 # libGPCFonts
 
