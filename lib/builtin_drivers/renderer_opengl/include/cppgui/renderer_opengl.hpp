@@ -128,20 +128,6 @@ namespace cppgui {
 
         // TODO: move this back into non-template base class
 
-        static constexpr auto vertex_code() -> std::string {
-
-            return std::string {
-                #include "generated/renderer_opengl/vertex.glsl.h"
-            };
-        }
-
-        static constexpr auto fragment_code() -> std::string {
-
-            return std::string {
-                #include "generated/renderer_opengl/fragment.glsl.h"
-            };
-        }
-
         struct managed_font: gpc::fonts::rasterized_font {
             
             managed_font(const rasterized_font &font_) : gpc::fonts::rasterized_font{ font_ } {}

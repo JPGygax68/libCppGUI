@@ -16,7 +16,7 @@ source_group("Shader files" FILES ${SHADER_FILES})  # for Visual Studio
 # TODO: make this into a CMake module
 
 set(GENERATED_HEADERS_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated_headers")
-target_include_directories(${PROJECT_NAME} PUBLIC ${GENERATED_HEADERS_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE ${GENERATED_HEADERS_DIR})
 
 # Find the GPC Bin2C utility
 if (NOT TARGET gpcbin2c)

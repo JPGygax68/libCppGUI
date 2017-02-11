@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include <array>
 #include <vector>
 
 #include "./gl.h"
@@ -32,7 +32,7 @@ namespace gl {
         assert(loc == location);
     }
     #else
-    inline void checkUniformLocation(const char *name, GLuint index) {}
+    inline void checkUniformLocation(const char * /*name*/, GLuint /*index*/) {}
     #endif
 
     // Uniforms -----------------------------------------------------

@@ -1,5 +1,9 @@
+#include <vector>
+
 #include "./gl.h"
 #include "./gl_wrappers.hpp"
+
+#include "./gl_shaderprogram.hpp"
 
 namespace gl {
 
@@ -53,36 +57,36 @@ namespace gl {
         GL(CompileShader, shader);
         GLint compiled;
         GL(GetShaderiv, shader, GL_COMPILE_STATUS, &compiled);
-        if (!compiled) throw std::runtime_error(std::string("Failed to compile shader:\n") + gpc::gl::getShaderCompilationLog(shader));
+        if (!compiled) throw std::runtime_error(std::string("Failed to compile shader:\n") + gl::getShaderCompilationLog(shader));
         return getShaderCompilationLog(shader);
     }
 
-    inline GLuint buildShaderProgram(const std::string &vertex_code, const std::string &fragment_code) {
+    GLuint buildShaderProgram(const std::string &vertex_code, const std::string &fragment_code) {
 
         GLuint vertex_shader = GL(CreateShader, GL_VERTEX_SHADER);
         GLuint fragment_shader = GL(CreateShader, GL_FRAGMENT_SHADER);
 
-        gpc::gl::compileShader(vertex_shader, vertex_code);
-        gpc::gl::compileShader(fragment_shader, fragment_code);
+        gl::compileShader(vertex_shader, vertex_code);
+        gl::compileShader(fragment_shader, fragment_code);
 
         return buildShaderProgram(vertex_shader, fragment_shader);
     }
 
-    inline void checkShaderCompileStatus(GLuint shader)
+    void checkShaderCompileStatus(GLuint shader)
     {
         GLint status;
         GL(GetShaderiv, shader, GL_COMPILE_STATUS, &status);
         if (!status) throw std::runtime_error("shader compile status is not \"successful\"");
     }
 
-    inline void checkShaderProgramLinkStatus(GLuint program)
+    void checkShaderProgramLinkStatus(GLuint program)
     {
         GLint is_linked = 0;
         GL(GetProgramiv, program, GL_LINK_STATUS, &is_linked);
         if (!is_linked) throw std::runtime_error("shader program has not been linked successfully");
     }
 
-    inline GLuint buildShaderProgram(GLuint vertex_shader, GLuint fragment_shader)
+    GLuint buildShaderProgram(GLuint vertex_shader, GLuint fragment_shader)
     {
         GLuint program = GL(CreateProgram);
 
@@ -108,7 +112,7 @@ namespace gl {
         return program;
     }
 
-    inline auto getProgramInfoLog(GLuint prog) -> std::string
+    auto getProgramInfoLog(GLuint prog) -> std::string
     {
         char buffer[30*120]; 
 

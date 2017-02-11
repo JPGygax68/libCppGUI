@@ -13,10 +13,19 @@
 // TODO: reintroduce a base class with dummy impl
 //#include <gpc/gui/renderer.hpp>
 
-
 #include <cppgui/renderer_opengl.hpp>
 
 namespace cppgui {
+
+    // Constant data --------------------------------------------------
+
+    static const char vertex_code[] = {
+        #include "vertex.glsl.h"
+    };
+
+    static const char fragment_code[] = {
+        #include "fragment.glsl.h"
+    };
 
     // Method implementations -----------------------------------------
 
@@ -40,20 +49,24 @@ namespace cppgui {
         {
             assert(vertex_shader == 0);
             vertex_shader = GL(CreateShader, GL_VERTEX_SHADER);
-            auto code = vertex_code();
-            if (YAxisDown) code = gpc::gl::insertLinesIntoShaderSource(code, "#define Y_AXIS_DOWN");
+            auto code = std::string(vertex_code);
+            #ifdef Y_AXIS_DOWN
+            code = gl::insertLinesIntoShaderSource(code, "#define Y_AXIS_DOWN");
+            #endif
             // TODO: dispense with the error checking and logging in release builds
-            auto log = ::gpc::gl::compileShader(vertex_shader, code);
+            auto log = gl::compileShader(vertex_shader, code);
             if (!log.empty()) std::cerr << "Vertex shader compilation log:" << std::endl << log << std::endl;
         }
         {
             assert(fragment_shader == 0);
             fragment_shader = GL(CreateShader, GL_FRAGMENT_SHADER);
-            auto code = fragment_code();
-            if (YAxisDown) code = gpc::gl::insertLinesIntoShaderSource(code, "#define Y_AXIS_DOWN");
+            auto code = std::string(fragment_code);
+            #ifdef Y_AXIS_DOWN
+            code = gl::insertLinesIntoShaderSource(code, "#define Y_AXIS_DOWN");
+            #endif
             //std::cerr << code << std::endl;
             // TODO: dispense with the error checking and logging in release builds
-            auto log = gpc::gl::compileShader(fragment_shader, code);
+            auto log = gl::compileShader(fragment_shader, code);
             if (!log.empty()) std::cerr << "Fragment shader compilation log:" << std::endl << log << std::endl;
         }
         assert(program == 0);
@@ -82,7 +95,7 @@ namespace cppgui {
         GL(BufferData, GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLushort), indices, GL_STATIC_DRAW);
     }
 
-    void Renderer<YAxisDown>::cleanup()
+    void Renderer::cleanup()
     {
         // TODO: free all resources
     }
@@ -93,8 +106,8 @@ namespace cppgui {
         GL(Viewport, x, y, w, h);
 
         GL(UseProgram, program);
-        ::gpc::gl::setUniform("viewport_w", 0, w);
-        ::gpc::gl::setUniform("viewport_h", 1, h);
+        gl::setUniform("viewport_w", 0, w);
+        gl::setUniform("viewport_h", 1, h);
     }
 
     void Renderer::enter_context()
@@ -111,7 +124,7 @@ namespace cppgui {
         GL(UseProgram, 0);
     }
 
-    void Renderer::clear(const rgba_norm &color)
+    void Renderer::clear(const RGBA &color)
     {
         GL(ClearColor, color.r(), color.g(), color.b(), color.a());
         GL(Clear, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -138,7 +151,7 @@ namespace cppgui {
         GL(BindBuffer, GL_ARRAY_BUFFER, 0);
     }
 
-    auto Renderer::register_rgba32_image(size_t width, size_t height, const rgba32 *pixels) -> image_handle
+    auto Renderer::register_rgba32_image(size_t width, size_t height, const RGBA32 *pixels) -> Image_handle
     {
         auto i = image_textures.size();
         image_textures.resize(i + 1);
@@ -150,7 +163,7 @@ namespace cppgui {
         return image_textures[i];
     }
 
-    void Renderer::release_rgba32_image(image_handle hnd)
+    void Renderer::release_rgba32_image(Image_handle hnd)
     {
         auto i = std::find(std::begin(image_textures), std::end(image_textures), hnd);
         assert(i != std::end(image_textures));
@@ -158,7 +171,7 @@ namespace cppgui {
         *i = 0; // TODO: put into "recycle" list ?
     }
 
-    auto Renderer::register_mono8_image(size_t width, size_t height, const mono8 *pixels) -> image_handle
+    auto Renderer::register_mono8_image(size_t width, size_t height, const Mono8 *pixels) -> Image_handle
     {
         auto i = image_textures.size();
         image_textures.resize(i + 1);
@@ -170,37 +183,37 @@ namespace cppgui {
         return image_textures[i];
     }
 
-    void Renderer::release_mono8_image(image_handle hnd)
+    void Renderer::release_mono8_image(Image_handle hnd)
     {
         release_rgba32_image(hnd); // same resource list
     }
 
-    void Renderer::fill_rect(int x, int y, int w, int h, const rgba_norm &color)
+    void Renderer::fill_rect(int x, int y, int w, int h, const RGBA &color)
     {
         GL(Uniform4fv, 2, 1, color);
-        gpc::gl::setUniform("render_mode", 5, 1);
+        gl::setUniform("render_mode", 5, 1);
 
         draw_rect(x, y, w, h);
     }
 
-    void Renderer::draw_image(int x, int y, int w, int h, image_handle image)
+    void Renderer::draw_image(int x, int y, int w, int h, Image_handle image)
     {
         draw_image(x, y, w, h, image, 0, 0);
     }
 
-    void Renderer::draw_image(int x, int y, int w, int h, image_handle image, int offset_x, int offset_y)
+    void Renderer::draw_image(int x, int y, int w, int h, Image_handle image, int offset_x, int offset_y)
     {
         static const GLfloat black[4] = { 0, 0, 0, 0 };
 
         //GL(ActiveTexture, GL_TEXTURE0);
         GL(BindTexture, GL_TEXTURE_RECTANGLE, image);
-        gpc::gl::setUniform("color", 2, black);
+        gl::setUniform("color", 2, black);
         GLint position[2] = { x, y };
-        gpc::gl::setUniform("sampler", 3, 0);
-        gpc::gl::setUniform("position", 4, position);
+        gl::setUniform("sampler", 3, 0);
+        gl::setUniform("position", 4, position);
         GLint offset[2] = { offset_x, offset_y };
-        gpc::gl::setUniform("offset", 6, offset);
-        gpc::gl::setUniform("render_mode", 5, 2); // 2 = "paste image"
+        gl::setUniform("offset", 6, offset);
+        gl::setUniform("render_mode", 5, 2); // 2 = "paste image"
 
         draw_rect(x, y, w, h);
 
@@ -209,13 +222,13 @@ namespace cppgui {
 
     // TODO: rename to "modulate_greyscale_image()" ?
     void Renderer::modulate_greyscale_image(int x, int y, int w, int h, 
-        image_handle img, const rgba_norm &color, int offset_x, int offset_y)
+        Image_handle img, const RGBA &color, int offset_x, int offset_y)
     {
         _draw_greyscale_image(x, y, w, h, img, color, 0, 0, 0, 1, offset_x, offset_y);
     }
 
     void Renderer::draw_greyscale_image_right_righthand(int x, int y, int length, int width, 
-        image_handle img, const rgba_norm &color, int offset_x, int offset_y)
+        Image_handle img, const RGBA &color, int offset_x, int offset_y)
     {
         _draw_greyscale_image(x, y, length, width, img, color, 
             0, 0, // origin is on top left vertex
@@ -225,7 +238,7 @@ namespace cppgui {
     }
 
     void Renderer::draw_greyscale_image_down_righthand(int x, int y, int length, int width, 
-        image_handle img, const rgba_norm &color, int offset_x, int offset_y)
+        Image_handle img, const RGBA &color, int offset_x, int offset_y)
     {
         _draw_greyscale_image(x - width, y, width, length, img, color, 
             length, 0, // origin is on top right vertex
@@ -235,7 +248,7 @@ namespace cppgui {
     }
 
     void Renderer::draw_greyscale_image_left_righthand(int x, int y, int length, int width, 
-        image_handle img, const rgba_norm &color, int offset_x, int offset_y)
+        Image_handle img, const RGBA &color, int offset_x, int offset_y)
     {
         _draw_greyscale_image(x - length, y - width, length, width, img, color, 
             length, 1, // origin is on bottom right vertex
@@ -245,7 +258,7 @@ namespace cppgui {
     }
 
     void Renderer::draw_greyscale_image_up_righthand(int x, int y, int length, int width, 
-        image_handle img, const rgba_norm &color, int offset_x, int offset_y)
+        Image_handle img, const RGBA &color, int offset_x, int offset_y)
     {
         _draw_greyscale_image(x, y - length, width, length, img, color, 
             0, length, // origin is on bottom left vertex
@@ -254,10 +267,10 @@ namespace cppgui {
             );
     }
 
-    void Renderer::_draw_greyscale_image(int x, int y, int w, int h, image_handle img, const rgba_norm &color, 
+    void Renderer::_draw_greyscale_image(int x, int y, int w, int h, Image_handle img, const RGBA &color, 
         int origin_x, int origin_y, float texrot_sin, float texrot_cos, int offset_x, int offset_y)
     {
-        using namespace gpc::gl;
+        using namespace gl;
 
         auto native_clr = rgba_to_native(color);
 
@@ -284,7 +297,11 @@ namespace cppgui {
         assert(!dbg_clipping_active);
         #endif
 
-        GL(Scissor, x, YAxisDown ? vp_height - (y + h) : y, w, h);
+        #ifdef Y_AXIS_DOWN
+        GL(Scissor, x, vp_height - (y + h), w, h);
+        #else
+        GL(Scissor, x, y, w, h);
+        #endif
         GL(Enable, GL_SCISSOR_TEST);
 
         #ifdef DEBUG
@@ -323,7 +340,7 @@ namespace cppgui {
         // TODO: actual implementation
     }
 
-    void Renderer::set_text_color(const rgba_norm &color)
+    void Renderer::set_text_color(const RGBA &color)
     {
         text_color = color;
     }
@@ -332,7 +349,7 @@ namespace cppgui {
     {
         // TODO: support text that advances in Y direction (and right-to-left)
 
-        using gpc::gl::setUniform;
+        using gl::setUniform;
 
         const auto &mfont = managed_fonts[handle - 1];
 
@@ -405,18 +422,17 @@ namespace cppgui {
             for (const auto &glyph : variant.glyphs) {
 
     #ifndef NOT_DEFINED
-                if (YAxisDown) {
-                    /* top left     */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_min, -glyph.cbox.bounds.y_max });
-                    /* bottom left  */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_min, -glyph.cbox.bounds.y_min });
-                    /* bottom right */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_max, -glyph.cbox.bounds.y_min });
-                    /* top right    */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_max, -glyph.cbox.bounds.y_max });
-                }                                                                
-                else {                                                           
-                    /* bottom left  */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_min,  glyph.cbox.bounds.y_min });
-                    /* bottom right */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_max,  glyph.cbox.bounds.y_min });
-                    /* top right    */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_max,  glyph.cbox.bounds.y_max });
-                    /* top left     */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_min,  glyph.cbox.bounds.y_max });
-                }
+                #ifdef Y_AXIS_DOWN
+                /* top left     */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_min, -glyph.cbox.bounds.y_max });
+                /* bottom left  */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_min, -glyph.cbox.bounds.y_min });
+                /* bottom right */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_max, -glyph.cbox.bounds.y_min });
+                /* top right    */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_max, -glyph.cbox.bounds.y_max });
+                #else
+                /* bottom left  */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_min,  glyph.cbox.bounds.y_min });
+                /* bottom right */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_max,  glyph.cbox.bounds.y_min });
+                /* top right    */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_max,  glyph.cbox.bounds.y_max });
+                /* top left     */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_min,  glyph.cbox.bounds.y_max });
+                #endif
     #else
                 /* bottom left  */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_min,  glyph.cbox.bounds.y_min });
                 /* bottom right */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_max,  glyph.cbox.bounds.y_min });
@@ -448,7 +464,7 @@ namespace cppgui {
 
             // Load the pixels into a texture buffer object
             // TODO: really no flags ?
-            GL(BufferStorage, GL_TEXTURE_BUFFER, variant.pixels.size(), &variant.pixels[0], (BufferStorageMask)0);
+            GL(BufferStorage, GL_TEXTURE_BUFFER, variant.pixels.size(), &variant.pixels[0], 0);
 
             // Bind the texture buffer object as a.. texture
             GL(BindTexture, GL_TEXTURE_BUFFER, textures[i_var]);
