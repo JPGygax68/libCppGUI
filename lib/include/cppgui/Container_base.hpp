@@ -88,6 +88,7 @@ namespace cppgui {
                 _container_base<Config>::template _Base<With_layout> > >
     {
     public:
+        #ifdef OBSOLETE
         using Renderer = typename Config::Renderer;
         using Widget_t = Widget<Config, With_layout>;
         using Parent_t = Widget_t;
@@ -95,6 +96,7 @@ namespace cppgui {
         using Abstract_container_t = Abstract_container<Config, With_layout>;
         using Keyboard = typename Config::Keyboard;
         using Keycode = typename Keyboard::Keycode;
+        #endif
 
         void init() override;
 

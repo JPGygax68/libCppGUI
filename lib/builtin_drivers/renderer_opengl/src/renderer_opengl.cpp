@@ -13,7 +13,7 @@
 // TODO: reintroduce a base class with dummy impl
 //#include <gpc/gui/renderer.hpp>
 
-#include <cppgui/renderer_opengl.hpp>
+#include <cppgui/builtin_drivers/renderer_opengl.hpp>
 
 namespace cppgui {
 
@@ -320,10 +320,10 @@ namespace cppgui {
     }
 
     // TODO: free resources allocated for fonts
-    auto Renderer::register_font(const gpc::fonts::rasterized_font &font) -> font_handle
+    auto Renderer::register_font(const gpc::fonts::rasterized_font &font) -> Font_handle
     {
         // TODO: re-use discarded slots
-        font_handle index = managed_fonts.size();
+        Font_handle index = managed_fonts.size();
 
         managed_fonts.emplace_back(managed_font{ font });
         auto &mf = managed_fonts.back();
@@ -334,7 +334,7 @@ namespace cppgui {
         return index + 1;
     }
 
-    void Renderer::release_font(font_handle /*handle*/)
+    void Renderer::release_font(Font_handle /*handle*/)
     {
         // auto &font = managed_fonts[handle - 1];
         // TODO: actual implementation
@@ -345,7 +345,7 @@ namespace cppgui {
         text_color = color;
     }
 
-    void Renderer::render_text(font_handle handle, int x, int y, const char32_t *text, size_t count, int w_max)
+    void Renderer::render_text(Font_handle handle, int x, int y, const char32_t *text, size_t count, int w_max)
     {
         // TODO: support text that advances in Y direction (and right-to-left)
 

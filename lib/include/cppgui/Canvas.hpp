@@ -28,8 +28,6 @@
 
 namespace cppgui {
 
-    #ifdef OBSOLETE
-
     namespace _canvas {
 
         /** TODO: Auto-select the correct mapper type by querying static properties of Renderer.
@@ -39,16 +37,15 @@ namespace cppgui {
             Font_mapper<Renderer>,
             Renderer,
             const gpc::fonts::rasterized_font *, 
-            typename Renderer::font_handle >
+            typename Renderer::Font_handle 
+        >
         {
-            using Font_handle = typename Renderer::font_handle;
+            using Font_handle = typename Renderer::Font_handle;
 
             auto obtain (Renderer *r, const Rasterized_font *font) { return r->register_font(*font); }
             void release(Renderer *r, Font_handle hnd)             { r->release_font(hnd); }
         };
     }
-
-    #endif 
 
     class Canvas: public Renderer /*, public _canvas::Font_mapper<Renderer> */
     {
@@ -58,16 +55,16 @@ namespace cppgui {
         using Native_mono       = typename Renderer::native_mono;
         using Font_handle       = typename Renderer::font_handle;
         using Image_handle      = typename Renderer::image_handle;
-        using Rgba_norm         = typename gpc::gui::rgba_norm;
+        using RGBA         = typename gpc::gui::rgba_norm;
         using Rgba32            = typename gpc::gui::rgba32;
         using Mono8             = typename gpc::gui::mono8;
-        using Font_mapper       = typename _canvas::Font_mapper<Renderer>;
-        #endif
         using rgba32            = Renderer::rgba32;
+        #endif
+        using Font_mapper       = typename _canvas::Font_mapper<Renderer>;
 
         struct Image_definition {
             Length          w, h;
-            const Rgba32   *pixels;
+            const RGBA32   *pixels;
             // TODO: extra parameters ?
         };
 
@@ -81,11 +78,11 @@ namespace cppgui {
         void init   ();
         void cleanup();
 
-        static constexpr auto adapt_resource(const Rgba_norm &color) { return color; }
+        static constexpr auto adapt_resource(const RGBA &color) { return color; }
         auto adapt_resource(const Rasterized_font *font) -> Font_handle { return _font_mapper.adapt_resource(this, font); }
 
         // TODO: move to Renderer ?
-        void draw_stippled_rectangle_outline(int x, int y, int w, int h, const Rgba_norm &color);
+        void draw_stippled_rectangle_outline(int x, int y, int w, int h, const RGBA &color);
 
         void push_clipping_rect(const Rectangle &);
         void pop_clipping_rect ();

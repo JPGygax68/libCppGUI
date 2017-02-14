@@ -8,7 +8,7 @@
 #include <GL/glew.h>
 //using namespace ::gl;
 
-#include <cppgui/colors.hpp>
+#include <cppgui/basic_types.hpp>
 
 
 namespace cppgui {
@@ -36,9 +36,9 @@ namespace cppgui {
         using offset        = int;
         using length        = int;
         using Image_handle  = GLuint;
-        using font_handle   = GLint;
-        using native_color  = RGBA;
-        using native_mono   = Mono;
+        using Font_handle   = GLint;
+        using Native_color  = RGBA;
+        using Native_mono   = Mono;
 
         // Class methods
 
@@ -104,16 +104,16 @@ namespace cppgui {
 
         void cancel_clipping();
 
-        auto register_font(const rasterized_font &font) -> font_handle;
+        auto register_font(const rasterized_font &font) -> Font_handle;
 
-        void release_font(font_handle reg_font);
+        void release_font(Font_handle reg_font);
         //void release_font(const rasterized_font &);
 
         void set_text_color(const RGBA &color);
 
         // auto get_text_extents(reg_font_t font, const char32_t *text, size_t count) -> text_bbox_t;
 
-        void render_text(font_handle font, int x, int y, const char32_t *text, size_t count, int w_max = 0);
+        void render_text(Font_handle font, int x, int y, const char32_t *text, size_t count, int w_max = 0);
 
         void init();
 

@@ -23,7 +23,9 @@
 
 namespace cppgui
 {
-    
+ 
+    // TODO: configure via preprocessor
+
     enum class Box_model_definition { build_time, run_time };
 
     #ifdef NOT_DEFINED
@@ -158,9 +160,6 @@ namespace cppgui
     template<class Config, bool With_layout>
     struct Box_model<Config, With_layout, Box_model_definition::run_time>
     {
-        using Widget_t = Widget<Config, With_layout>;
-        using Canvas_t = typename Widget_t::Canvas_t;
-
         template<class Impl, class Parent>
         struct Aspect: Box_model_base<Config, With_layout>::template Aspect<Impl, Parent>
         {

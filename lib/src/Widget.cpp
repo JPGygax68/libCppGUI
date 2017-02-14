@@ -20,6 +20,7 @@
 #include <iostream> // TODO: REMOVE!!
 
 #include <cppgui/Widget.hpp>
+#include <cppgui/Abstract_container.hpp>
 #include <cppgui/Container_base.hpp>
 #include <cppgui/Root_widget.hpp>
 
@@ -71,6 +72,9 @@ namespace cppgui {
         pass_up_and_notify_focus();
     }
 
+    auto Widget::root_widget() -> ::cppgui::Root_widget*
+        { return _container->container_root_widget(); }
+
     void Widget::pass_up_and_notify_focus()
     {
         if (!has_focus())
@@ -94,6 +98,21 @@ namespace cppgui {
     void Widget::loosing_focus()
     {
         invalidate();
+    }
+
+    bool Widget::has_focus()
+    {
+        return container()->container_has_focus() && container()->focused_child() == this;
+    }
+
+    bool Widget::is_first_child()
+    {
+        return container()->children().front() == this;
+    }
+
+    bool Widget::is_last_child()
+    {
+        return container()->children().back() == this;
     }
 
     void Widget::key_down(const Keycode &key)

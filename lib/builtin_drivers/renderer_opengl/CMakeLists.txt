@@ -1,7 +1,7 @@
 project(cppgui_renderer_opengl)
 
 add_library(${PROJECT_NAME} STATIC 
-    src/renderer_opengl.cpp 
+    src/renderer_opengl.cpp include/cppgui/builtin_drivers/renderer_opengl.hpp
     src/gl.h
     src/gl_shaderprogram.hpp src/gl_shaderprogram.cpp
 )

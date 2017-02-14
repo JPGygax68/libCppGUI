@@ -36,7 +36,10 @@ namespace cppgui {
 
     enum Key_state { pressed, released }; // TODO: move to basic_types.hpp ?
 
-    template <class Config, bool With_layout, class Parent> struct Widget__Layouter;
+    class Root_widget;
+    class Abstract_container;
+
+    //template <class Config, bool With_layout, class Parent> struct Widget__Layouter;
 
     // Widget 
 
@@ -48,14 +51,14 @@ namespace cppgui {
         using Font_handle = typename Renderer::font_handle;
         using Keyboard = typename Config::Keyboard;
         using Keycode = typename Keyboard::Keycode;
-        using Abstract_container_t = Abstract_container<Config>;
-        using Root_widget_t = Root_widget_base<Config>;
+        using Abstract_container = Abstract_container<Config>;
+        using Root_widget = Root_widget_base<Config>;
         using Click_handler = typename Abstract_widget<Config>::Click_handler;
         #endif
 
         Widget();
 
-        void set_background_color(const Color &);
+        void set_background_color(const RGBA &);
         auto background_color() const;
 
         void on_click(Click_handler);
@@ -68,8 +71,8 @@ namespace cppgui {
         void set_focussable(bool state = true) { _focussable = state; }
         bool focussable() const { return _focussable; } // TODO: replace with can_take_focus() that takes other factors into consideration ?
 
-        void added_to_container(Abstract_container_t *);
-        void removed_from_container(Abstract_container_t *);
+        void added_to_container(Abstract_container *);
+        void removed_from_container(Abstract_container *);
 
         // TODO: should the following be protected ?
         bool hovered() const { return _hovered; }
@@ -80,10 +83,10 @@ namespace cppgui {
          */
         virtual void gained_focus();
         virtual void loosing_focus();
-        virtual bool has_focus() { return container()->container_has_focus() && container()->focused_child() == this; }
+        virtual bool has_focus();
 
-        bool is_first_child() { return container()->children().front() == this; }
-        bool is_last_child () { return container()->children().back () == this; }
+        bool is_first_child();
+        bool is_last_child();
 
         // Input event injection
 
@@ -113,9 +116,9 @@ namespace cppgui {
 
     protected:
 
-        auto container() const { return _container; }
+        auto container() const -> Abstract_container * { return _container; }
 
-        virtual auto root_widget() -> Root_widget_t * { return _container->container_root_widget(); }
+        virtual auto root_widget() -> Root_widget*;
 
         void pass_up_and_notify_focus();
 
@@ -127,72 +130,35 @@ namespace cppgui {
 
         // Static styles
         // TODO: move to "stylesheet"
-        static constexpr auto default_dialog_background_color() -> Color     { return {0.6f, 0.6f, 0.6f, 1}; }
-        static constexpr auto widget_background_color        () -> Color     { return { 1, 1, 1, 1 }; }
+        static constexpr auto default_dialog_background_color() -> RGBA     { return {0.6f, 0.6f, 0.6f, 1}; }
+        static constexpr auto widget_background_color        () -> RGBA     { return { 1, 1, 1, 1 }; }
         static constexpr auto interior_separator             () -> Separator { return { 1, { 0.2f, 0.2f, 0.2f, 1 } }; }
         static constexpr auto grid_separator                 () -> Separator { return { 1, { 0.4f, 0.4f, 0.4f, 1 } }; }
-        static constexpr auto item_background_color          () -> Color     { return { 0.7f, 0.7f, 0.7f, 1 }; }
-        static constexpr auto selected_item_background_color () -> Color     { return { 0.9f, 0.9f, 0.9f, 1 }; }
-        static constexpr auto hovered_item_background_color  () -> Color     { return { 0.8f, 0.8f, 0.8f, 1 }; }
+        static constexpr auto item_background_color          () -> RGBA     { return { 0.7f, 0.7f, 0.7f, 1 }; }
+        static constexpr auto selected_item_background_color () -> RGBA     { return { 0.9f, 0.9f, 0.9f, 1 }; }
+        static constexpr auto hovered_item_background_color  () -> RGBA     { return { 0.8f, 0.8f, 0.8f, 1 }; }
 
         // Styling
         // TODO: move to new class Abstract_button<> ?
-        auto button_face_color() -> Color;
-        auto button_border_color() -> Color;
+        auto button_face_color() -> RGBA;
+        auto button_border_color() -> RGBA;
         auto button_border_width() -> int;
 
-        Abstract_container_t   *_container = nullptr;
+        Abstract_container   *_container = nullptr;
 
         //Rectangle               _inner_rect;
 
-    private:
-        friend class Drag_controller;
-        friend class Root_widget_base<Config, With_layout>;
-
-        Color                   _bkgnd_clr = {0, 0, 0, 0};
-        Click_handler           _click_hndlr;
-        bool                    _visible = true;
-        bool                    _focussable = true;
-        bool                    _hovered = false;
-    };
-
-    // Default implementations for Updating_aspect
-
-    /** The "Updater" aspect of a widget is responsible for making sure it gets
-        redrawn when invalidate() has been called.
-
-        The default implementation uses a pointer to parent to pass up redraw
-        requests until they reach the root widget, which "handles" the request
-        by passing it along to callback function.
-     */
-    template<class Config, bool With_layout> class Abstract_container;
-    template<class Config, bool With_layout, class Parent> class Default_container_updater;
-
-    template<class Config, bool With_layout, class Parent>
-    struct Default__Widget__Updater: public Parent
-    {
-        class Widget_t: public Widget<Config, true> { friend struct Default__Widget__Updater; };
-        using Abstract_container_t = Abstract_container<Config, With_layout>;
+        //-------------------------------------------------
+        // "Updater" "aspect
+        // TODO: make configurable by preprocessor
 
         void invalidate();
 
-    private:
-        auto p() { return static_cast<Widget_t*>(static_cast<Widget<Config, true>*>(this)); }
-    };
+        // END of Updater aspect
+        //-------------------------------------------------
 
-    // Layouting aspect
-
-    /** TODO: rename to reflect the fact that this is abstract ?
-     */
-    template <class Config, class Parent> 
-    struct Widget__Layouter<Config, true, Parent>: public Parent
-    {
-        /** It is up to the implementation to guarantee that any internal state/data
-            needed for layouting (including computing/returning the get_minimal_size())
-            is kept up to date.
-         */
-
-        // Layouter aspect contract
+        // Layouting aspect -------------------------------
+        // TODO: make optional via preprocessor
 
         virtual void init_layout() = 0;
         virtual auto get_minimal_size  () -> Extents = 0;
@@ -208,13 +174,16 @@ namespace cppgui {
         void set_rectangle_se(const Point &, const Extents &);
         void set_rectangle_sw(const Point &, const Extents &);
 
-    protected:
+        // END of Layouting aspect ------------------------
 
-        class Widget_t: public Widget<Config, true> { friend struct Widget__Layouter; };
-        auto p() { return static_cast<Widget_t*>(static_cast<Widget<Config, true>*>(this)); }
+    private:
+        friend class Drag_controller;
 
-        // "Stylesheet" TODO: make this into another aspect ?
-        static constexpr auto button_padding() -> Padding { return { 5, 5, 5, 5 }; }
+        RGBA                   _bkgnd_clr = {0, 0, 0, 0};
+        Click_handler           _click_hndlr;
+        bool                    _visible = true;
+        bool                    _focussable = true;
+        bool                    _hovered = false;
     };
 
 } // ns cppgui

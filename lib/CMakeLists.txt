@@ -142,6 +142,7 @@ add_library( ${PROJECT_NAME} STATIC
 
     include/cppgui/Abstract_widget.hpp              src/Abstract_widget.cpp
     include/cppgui/Widget.hpp                       src/Widget.cpp
+    include/cppgui/Abstract_container.hpp           src/Abstract_container.cpp
 
     include/cppgui/utils.hpp
 
@@ -211,9 +212,19 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/ge
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(${PROJECT_BINARY_DIR}) # for cppgui_config.hpp
 
+# Renderer
 # TODO: make configurable
 add_subdirectory(builtin_drivers/renderer_opengl)
-target_link_libraries(${PROJECT_NAME} PUBLIC renderer_opengl)
+target_link_libraries(${PROJECT_NAME} PUBLIC cppgui_renderer_opengl)
+
+# Session manager (windows and input)
+add_subdirectory(builtin_drivers/session_sdl2)
+target_link_libraries(${PROJECT_NAME} PUBLIC cppgui_session_sdl2)
+
+
+#--------------------------------------------------------------------
+# Other dependencies
+#
 
 # libGPCFonts
 

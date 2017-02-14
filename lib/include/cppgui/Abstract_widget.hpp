@@ -25,10 +25,11 @@ limitations under the License.
 #include "./Canvas.hpp"
 #include "./Resource.hpp"
 
+#include CPPGUI_RENDERER_HEADER
+#include CPPGUI_INPUT_ADAPTER_HEADER
+
 
 namespace cppgui {
-
-    template <class Renderer> class Canvas;
 
     // Forward declarations 
 
@@ -46,16 +47,17 @@ namespace cppgui {
     public:
         virtual ~Abstract_widget() {}
 
+        using Keycode           = Keyboard_adapter::Keycode;
+        using Native_color      = Renderer::Native_color;
+
         #ifdef OBSOLETE
         using Abstract_widget_t = Abstract_widget;
         using Root_widget_t     = Root_widget_base;
-        using Native_color      = typename Canvas_t::Native_color;
-        using Font_handle       = typename Canvas_t::Font_handle;
+        using Font_handle       = typename Canvas::Font_handle;
         using Keyboard          = typename Config::Keyboard;
-        using Keycode           = typename Keyboard::Keycode;
         // TODO: move the following resource type definitions into a special struct and inherit from that ?
-        using Color_resource    = Resource<const Color &, Native_color, Canvas_t, true>;
-        using Font_resource     = Resource<const Rasterized_font *, Font_handle, Canvas_t, false>;
+        using Color_resource    = Resource<const RGBA &, Native_color, Canvas, true>;
+        using Font_resource     = Resource<const Rasterized_font *, Font_handle, Canvas, false>;
         #endif
 
         using Click_handler     = std::function<void(const Point &, int button, Count clicks)>; // TODO: support return value ?
@@ -105,29 +107,29 @@ namespace cppgui {
 
         // Rendering conveniences
 
-        // auto rgba_to_native(Canvas_t *, const Color &) -> Native_color;
-        auto rgba_to_native(const Color &) -> Native_color;
-        void fill_rect(Canvas_t *, const Rectangle &rect, const Native_color &);
-        void fill_rect(Canvas_t *, const Rectangle &rect, const Point &offs, const Native_color &);
-        void fill_rect(Canvas_t *, const Point &pos, const Extents &ext, const Native_color &);
-        void fill(Canvas_t *, const Point &offs, const Native_color &);
+        // auto rgba_to_native(Canvas *, const RGBA &) -> Native_color;
+        auto rgba_to_native(const RGBA &) -> Native_color;
+        void fill_rect(Canvas *, const Rectangle &rect, const Native_color &);
+        void fill_rect(Canvas *, const Rectangle &rect, const Point &offs, const Native_color &);
+        void fill_rect(Canvas *, const Point &pos, const Extents &ext, const Native_color &);
+        void fill(Canvas *, const Point &offs, const Native_color &);
         auto convert_position_to_inner(const Point &) -> Point;
         auto advance_to_glyph_at(const Rasterized_font *, const std::u32string &text, size_t from, size_t to, Point &pos) 
             -> const Glyph_control_box *;
-        void draw_borders(Canvas_t *, const Point & offs, Width width, const Color &color);
-        void draw_borders(Canvas_t *, const Rectangle &rect, const Point &offs, Width width, const Color &color);
-        void draw_borders(Canvas_t *, const Rectangle &rect, const Point &offs, 
-            Width width, const Color & top, const Color & right, const Color & bottom, const Color & left);
+        void draw_borders(Canvas *, const Point & offs, Width width, const RGBA &color);
+        void draw_borders(Canvas *, const Rectangle &rect, const Point &offs, Width width, const RGBA &color);
+        void draw_borders(Canvas *, const Rectangle &rect, const Point &offs, 
+            Width width, const RGBA & top, const RGBA & right, const RGBA & bottom, const RGBA & left);
         // PROVISIONAL
-        //void draw_stippled_inner_rect(Canvas_t *, const Rectangle &, const Point &offs);
+        //void draw_stippled_inner_rect(Canvas *, const Rectangle &, const Point &offs);
 
         // Experimental & temporary: implement more sophisticated (and flexible!) styling
         // - May not / should not stay static; make const if possible
 
         static auto stroke_width() -> int { return 1; }
-        static auto stroke_color() -> Color { return { 0, 0, 0, 1 }; }
+        static auto stroke_color() -> RGBA { return { 0, 0, 0, 1 }; }
         //static auto padding() -> int { return 5; }
-        static auto paper_color() -> Color { return {1, 1, 1, 1}; }
+        static auto paper_color() -> RGBA { return {1, 1, 1, 1}; }
 
     private:
 

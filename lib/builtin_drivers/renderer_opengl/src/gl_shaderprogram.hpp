@@ -42,86 +42,50 @@ namespace gl {
 
     // Simple integers
 
-    inline void 
-        setUniform(GLuint index, GLint value)
-    {
-        GL(Uniform1i, index, value);
-    }
+    inline void setUniform(GLuint index, GLint value) { GL(Uniform1i, index, value); }
 
-    inline void
-        setUniform(GLuint index, GLuint value)
-    {
-        setUniform(index, GLint(value));
-    }
+    inline void setUniform(GLuint index, GLuint value) { setUniform(index, GLint(value)); }
 
     // Standard homogeneous 3D vector (x, y, z, w) --------------
 
-    inline void 
-        setUniform(GLuint index, const FloatVec4 &values)
-    {
-        GL(Uniform4fv, index, 1, values);
-    }
+    inline void setUniform(GLuint index, const FloatVec4 &values) { GL(Uniform4fv, index, 1, values); }
 
-    inline void 
-        setUniform(GLuint index, const std::array<GLfloat, 4> &values)
-    {
-        GL(Uniform4fv, index, 1, &values[0]);
-    }
+    inline void setUniform(GLuint index, const std::array<GLfloat, 4> &values) { GL(Uniform4fv, index, 1, &values[0]); }
 
     // Pixel-aligned (integer) coordinates ----------------------
 
-    inline void
-        setUniform(GLuint index, const IntVec2 &values)
-    {
-        GL(Uniform2iv, index, 1, values);
-    }
+    inline void setUniform(GLuint index, const IntVec2 &values) { GL(Uniform2iv, index, 1, values); }
 
     // Somewhat exotic: vector of 4 integers --------------------
 
-    inline void
-        setUniform(GLuint index, const IntVec4 &values)
-    {
-        GL(Uniform4iv, index, 1, values);
-    }
+    inline void setUniform(GLuint index, const IntVec4 &values) { GL(Uniform4iv, index, 1, values); }
 
     // 3x3 matrix (for 2D transforms) ---------------------------
 
-    inline void
-        setUniform(GLuint index, const Matrix3 &values)
-    {
-        GL(UniformMatrix3fv, index, 1, GL_FALSE, &values[0][0]);
-    }
+    inline void setUniform(GLuint index, const Matrix3 &values) { GL(UniformMatrix3fv, index, 1, GL_FALSE, &values[0][0]); }
 
-    inline void
-        setUniformMatrix2(const char *name, GLuint index, const GLfloat *values)
+    inline void setUniformMatrix2(const char *name, GLuint index, const GLfloat *values)
     {
         checkUniformLocation(name, index);
         GL(UniformMatrix2fv, index, 1, GL_FALSE, values);
     }
 
-    inline void
-        setUniformMatrix3(const char *name, GLuint index, const GLfloat *values)
+    inline void setUniformMatrix3(const char *name, GLuint index, const GLfloat *values)
     {
         checkUniformLocation(name, index);
         GL(UniformMatrix3fv, index, 1, GL_FALSE, values);
     }
 
-    inline void
-        setUniformMatrix3(GLuint index, const GLfloat *values)
-    {
-        GL(UniformMatrix3fv, index, 1, GL_FALSE, values);
-    }
+    inline void setUniformMatrix3(GLuint index, const GLfloat *values) { GL(UniformMatrix3fv, index, 1, GL_FALSE, values); }
 
     // Classic 4x4 matrix ---------------------------------------
 
-    inline void
-        setUniform(GLuint index, const Matrix4 &values)
+    inline void setUniform(GLuint index, const Matrix4 &values)
     {
         GL(UniformMatrix4fv, index, 1, GL_FALSE, &values[0][0]);
     }
 
-    inline void
-        setUniformMatrix4(GLuint index, const GLfloat *values)
+    inline void setUniformMatrix4(GLuint index, const GLfloat *values)
     {
         GL(UniformMatrix4fv, index, 1, GL_FALSE, values);
     }

@@ -24,28 +24,17 @@
 
 namespace cppgui {
 
-    template <class Config, bool With_layout, class Parent> struct Abstract_container__Layouter;
-
     /** Container functionality (ability to contain Widgets).
     */
 
-    #define CPPGUI_INSTANTIATE_ABSTRACT_CONTAINER(Config, With_layout) \
-        template cppgui::Abstract_container<Config, With_layout>; \
-        template cppgui::Abstract_container__Layouter<Config, With_layout, cppgui::Nil_struct>;
-
-    template <class Config, bool With_layout>
-    class Abstract_container: public Config::template Abstract_container_Container_updater<Nil_struct>,
-        public Abstract_container__Layouter<Config, With_layout, Nil_struct>
+    class Abstract_container
     {
     public:
-        using Widget_t = Widget<Config, With_layout>;
-        using Canvas_t = typename Widget_t::Canvas_t;
-        using Keyboard = typename Config::Keyboard;
-        using Keycode  = typename Keyboard::Keycode;
+        using Keycode = Keyboard_adapter::Keycode;
 
         Abstract_container(): _hovered_child { nullptr } {}
 
-        void set_initial_focus(Widget_t *);
+        void set_initial_focus(Widget *);
 
         auto& children() { return _children; }
 
@@ -56,30 +45,50 @@ namespace cppgui {
 
         virtual bool container_has_focus() = 0;       
         virtual auto container_absolute_position() -> Point = 0;
-        virtual void switch_focused_child(Widget_t *);
-        auto focused_child() -> Widget_t * { return _focused_child; }
+        virtual void switch_focused_child(Widget *);
+        auto focused_child() -> Widget * { return _focused_child; }
 
-        auto first_child() -> Widget_t * { assert(!_children.empty()); return _children.front(); }
-        auto last_child () -> Widget_t * { assert(!_children.empty()); return _children.back (); }
+        auto first_child() -> Widget * { assert(!_children.empty()); return _children.front(); }
+        auto last_child () -> Widget * { assert(!_children.empty()); return _children.back (); }
 
-        auto child_index(Widget_t *child) -> Index;
+        auto child_index(Widget *child) -> Index;
 
         template<class Pred> auto scan_children_forward (Index from, Pred) -> Index;
         template<class Pred> auto scan_children_backward(Index from, Pred) -> Index;
 
+    //-----------------------------------------------------
+    // Container Updater "aspect"
+
+        virtual void child_invalidated(Widget *) = 0;
+
+        virtual auto container_root_widget() -> Root_widget * = 0;
+
+    // END of Container Updater aspect
+    //-----------------------------------------------------
+
+    // Layouting aspect -----------------------------------
+    // TODO: make optional via preprocessor
+
+        void init_children_layout();
+
+    protected:
+        bool contains_widget(Widget *);
+
+    // END of Layouting aspect ----------------------------
+
     protected:
 
-        void add_child(Widget_t *);
+        void add_child(Widget *);
         // TODO: should removal methods be moved to optional aspect ?
-        void remove_child(Widget_t *);
+        void remove_child(Widget *);
         void remove_all_children();
 
-        auto child_at(const Point &) -> Widget_t *;
+        auto child_at(const Point &) -> Widget *;
 
         void init_child_resources();
         void compute_child_views();
 
-        void render_children(Canvas_t *, const Point &offs);
+        void render_children(Canvas *, const Point &offs);
 
         /** The container_xxxx() methods are intended as "delegate" event handlers, to be 
             called from "real" containers (i.e. descendants of Container<>).            
@@ -92,53 +101,9 @@ namespace cppgui {
         void container_text_input(const char32_t *, size_t);
         bool container_key_down(const Keycode &);
 
-        std::vector<Widget_t*> _children;
-        Widget_t *_hovered_child = nullptr;
-        Widget_t *_focused_child = nullptr;
-    };
-
-    template <class Config, bool With_layout> class Container_base;
-
-    // Container_updater aspect -------------------------------------
-
-    // IMPORTANT! This is *different* from the "Updater" aspect, which belongs to Widgets!
-
-    template <class Config, bool With_layout, class Parent>
-    struct Default_Abstract_container_Container_updater: public Parent 
-    {
-        using Widget_t = Widget<Config, With_layout>;
-        class Container_base_t: public Container_base<Config, With_layout> { friend struct Default_Abstract_container_Container_updater; };
-        using Root_widget_t = Root_widget_base<Config, With_layout>;
-
-        auto p() { return static_cast<Container_base_t*>(static_cast<Container_base<Config, With_layout>*>(this)); }
-
-        virtual void child_invalidated(Widget_t *) = 0;
-
-        virtual auto container_root_widget() -> Root_widget_t * = 0;
-    };
-
-    // Layouter aspect ----------------------------------------------
-
-    // Dummy implementation
-
-    template <class Config, class Parent> 
-    struct Abstract_container__Layouter<Config, false, Parent>: Parent { };
-
-    // Real implementation
-
-    template <class Config, class Parent> 
-    struct Abstract_container__Layouter<Config, true, Parent>: Parent
-    {
-        using Widget_t = typename Widget<Config, true>;
-        class Abstract_container_t: public Abstract_container<Config, true> { friend struct Abstract_container__Layouter; };
-
-        void init_children_layout();
-
-    protected:
-        bool contains_widget(Widget_t *);
-
-    private:
-        auto p() { return static_cast<Abstract_container_t*>(static_cast<Abstract_container<Config, true>*>(this)); }
+        std::vector<Widget*> _children;
+        Widget *_hovered_child = nullptr;
+        Widget *_focused_child = nullptr;
     };
 
 } // ns cppgui
