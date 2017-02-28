@@ -26,7 +26,7 @@ namespace cppgui
  
     // TODO: configure via preprocessor
 
-    enum class Box_model_definition { build_time, run_time };
+    //enum class Box_model_definition { build_time, run_time };
 
     #ifdef NOT_DEFINED
 
@@ -95,45 +95,39 @@ namespace cppgui
 
     // Base class, providing common functionality
 
-    template<class Config, bool With_layout>
     struct Box_model_base
     {
-        template<class Impl, class Parent>
-        struct Aspect: Parent
+        static auto box_rectangle() -> Rectangle;
+
+        static auto content_rectangle() -> Rectangle;
+
+        // TODO: this belongs into the Layouter aspect
+        auto position_text_element(const Text_bounding_box & bbox, Alignment minor_align, Alignment major_align) const -> Point;
+
+        auto border_color(int /*dir*/)
         {
-            constexpr auto box_rectangle() const -> Rectangle;
+            // TODO: return value that takes enabled(), hovered(), focused() properties into account
+            return Color{ 0, 0, 0, 1 }; // TODO: styling!
+        }
 
-            constexpr auto content_rectangle() const -> Rectangle;
+    protected:
+        struct Implementation: Impl { friend struct Aspect; };
+        auto p() { return static_cast<Implementation*>(this); }
+        auto p() const { return static_cast<const Implementation*>(this); }
 
-            // TODO: this belongs into the Layouter aspect
-            auto position_text_element(const Text_bounding_box & bbox, Alignment minor_align, Alignment major_align) const -> Point;
+        constexpr auto box_inset(int border) const
+        {
+            return p()->margin(border);
+        }
 
-            auto border_color(int /*dir*/)
-            {
-                // TODO: return value that takes enabled(), hovered(), focused() properties into account
-                return Color{ 0, 0, 0, 1 }; // TODO: styling!
-            }
-
-        protected:
-            struct Implementation: Impl { friend struct Aspect; };
-            auto p() { return static_cast<Implementation*>(this); }
-            auto p() const { return static_cast<const Implementation*>(this); }
-
-            constexpr auto box_inset(int border) const
-            {
-                return p()->margin(border);
-            }
-
-            constexpr auto content_inset(int border) const
-            {
-                return box_inset(border) + p()->border_width(border) + p()->padding(border);
-            }
-        };
+        constexpr auto content_inset(int border) const
+        {
+            return box_inset(border) + p()->border_width(border) + p()->padding(border);
+        }
     };
 
     // Box model template declaration
 
-    template<class Config, bool With_layout, Box_model_definition BMDef> 
     struct Box_model 
     { 
         template<class Impl, class Parent>
@@ -184,7 +178,7 @@ namespace cppgui
 
             auto add_boxing(const Extents & ext) -> Extents;
 
-            void draw_border(Canvas_t * canvas, const Point & offset);
+            void draw_border(Canvas * canvas, const Point & offset);
 
         private:
             class Implementation_t: public Impl { friend struct Aspect; };

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cppgui_config.hpp>
+#include <cppgui_opengl_config.hpp>
 
 // Include the configured OpenGL bindings
 

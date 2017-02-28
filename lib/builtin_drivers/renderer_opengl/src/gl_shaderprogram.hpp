@@ -5,6 +5,7 @@
 
 #include "./gl.h"
 #include "./gl_wrappers.hpp"
+#include <cassert>
 
 // DECLARATIONS --------------------------------------------
 

@@ -20,43 +20,16 @@
 #include <iostream> // TODO: REMOVE!
 
 #include "./Widget.hpp"
-#include "./Box_model.hpp"
+//#include "./Box_model.hpp"
 
 namespace cppgui {
-
-    template<class Config, bool With_layout> 
-    struct Button__Layouter
-    {
-        template<class Class, class Parent>
-        struct Aspect: Parent {};
-    };
-
-    // Internal stuff
-
-    template<class Config>
-    struct _button
-    {
-        //template<class Parent>
-        //using Default_box_model = Fixed_border_and_padding_box_model<1, 3, Parent>; // TODO: take DPI into account
-    };
 
     /** TODO: how to support changing label (and later on, icon) at runtime without mixing
             in the layouting aspect ?
      */
-    template<class Config, bool With_layout, Box_model_definition BMDef>
-    class Button: public 
-        Button__Layouter<Config, With_layout>::template Aspect< Button<Config, With_layout, BMDef>,
-        Box_model<Config, With_layout, BMDef>::template Aspect< Button<Config, With_layout, BMDef>,
-        Widget<Config, With_layout> > >
+    class Button: public Widget
     {
     public:
-        using Renderer = typename Config::Renderer;
-        using Font_handle = typename Renderer::font_handle;
-        using Widget_t = Widget<Config, With_layout>;
-        using Parent_t = Widget_t;
-        using Canvas_t = typename Widget_t::Canvas_t;
-        using Font_resource = typename Widget_t::Font_resource;
-        using Pushed_handler = typename Widget_t::Pushed_handler;
 
         Button();
 
@@ -70,7 +43,7 @@ namespace cppgui {
 
         void init() override;
 
-        void render(Canvas_t *, const Point &) override;
+        void render(Canvas *, const Point &) override;
 
         // TODO: visual feedback on mouse down / up
 

@@ -19,7 +19,7 @@ limitations under the License.
 
 #include <functional>
 
-#include "cppgui_config.hpp"
+#include <cppgui_config.hpp>
 
 #include "./basic_types.hpp"
 #include "./Canvas.hpp"

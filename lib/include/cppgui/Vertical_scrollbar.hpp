@@ -21,7 +21,7 @@
 #include "./Glyph_button.hpp"
 #include "./Resource.hpp"
 //#include "./Drag_controller.hpp"
-#include "./Box_model.hpp"
+//#include "./Box_model.hpp"
 
 namespace cppgui {
 

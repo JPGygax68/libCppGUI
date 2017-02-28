@@ -20,7 +20,7 @@
 #include <string>
 
 #include "./Widget.hpp"
-#include "./Box_model.hpp"
+//#include "./Box_model.hpp"
 
 namespace cppgui {
 

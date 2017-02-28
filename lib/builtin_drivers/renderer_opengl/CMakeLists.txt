@@ -9,6 +9,11 @@ add_library(${PROJECT_NAME} STATIC
 # Note: this library is intended to be used as a CMake target only
 target_include_directories(${PROJECT_NAME} BEFORE PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+# Generate configuration file and make it available to target and consumers
+configure_file("${PROJECT_SOURCE_DIR}/cppgui_opengl_config.in.hpp"
+               "${PROJECT_BINARY_DIR}/cppgui_opengl_config.hpp" )
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_BINARY_DIR})
+
 # GLSL shader files
 
 source_group("Shader files" FILES ${SHADER_FILES})  # for Visual Studio

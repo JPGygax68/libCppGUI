@@ -102,10 +102,10 @@ namespace gl {
 
 #if defined (GLDEBUG)  
 
-#define CALL_GL(fn, ...) ::gpc::gl::func(#fn, __LINE__, __FILE__, fn, __VA_ARGS__)
-#define EXEC_GL(pr, ...) ::gpc::gl::proc(#pr, __LINE__, __FILE__, pr, __VA_ARGS__)
+#define CALL_GL(fn, ...) ::gl::func(#fn, __LINE__, __FILE__, fn, __VA_ARGS__)
+#define EXEC_GL(pr, ...) ::gl::proc(#pr, __LINE__, __FILE__, pr, __VA_ARGS__)
 
-#define GL(fn, ...) gpc::gl::call(#fn, __LINE__, __FILE__, gl##fn, __VA_ARGS__)
+#define GL(fn, ...) ::gl::call(#fn, __LINE__, __FILE__, gl##fn, __VA_ARGS__)
 
 #else
 

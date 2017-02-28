@@ -19,7 +19,9 @@
 
 #include <iostream> // TODO: REMOVE!!
 
-#include <cppgui/Widget.hpp>
+#include <Widget.hpp>
+
+
 #include <cppgui/Abstract_container.hpp>
 #include <cppgui/Container_base.hpp>
 #include <cppgui/Root_widget.hpp>

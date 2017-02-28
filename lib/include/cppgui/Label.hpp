@@ -22,7 +22,7 @@
 #include "./utils.hpp" // TODO: move to Widget.hpp
 
 #include "./Widget.hpp"
-#include "./Box_model.hpp"
+//#include "./Box_model.hpp"
 
 namespace gpc { namespace fonts {
 

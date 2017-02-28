@@ -18,7 +18,7 @@
 */
 
 #include "./Widget.hpp"
-#include "./Box_model.hpp"
+//#include "./Box_model.hpp"
 #include "./Vertical_scrollbar.hpp"
 
 namespace cppgui {

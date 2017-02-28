@@ -2,8 +2,6 @@
 
 #ifndef CPPGUI_RENDERER_HEADER
 #define CPPGUI_RENDERER_HEADER <cppgui/builtin_drivers/renderer_opengl.hpp>
-// TODO: make this configurable
-#define CPPGUI_OPENGL_USE_GLEW
 #endif
 
 #ifndef CPPGUI_INPUT_ADAPTER_HEADER
