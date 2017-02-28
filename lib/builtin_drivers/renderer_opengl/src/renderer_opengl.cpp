@@ -320,12 +320,12 @@ namespace cppgui {
     }
 
     // TODO: free resources allocated for fonts
-    auto Renderer::register_font(const gpc::fonts::rasterized_font &font) -> Font_handle
+    auto Renderer::register_font(const Rasterized_font &font) -> Font_handle
     {
         // TODO: re-use discarded slots
         Font_handle index = managed_fonts.size();
 
-        managed_fonts.emplace_back(managed_font{ font });
+        managed_fonts.emplace_back(Managed_font{ font });
         auto &mf = managed_fonts.back();
 
         mf.store_pixels();
@@ -400,7 +400,7 @@ namespace cppgui {
 
     // managed_font private class -------------------------------------
 
-    void Renderer::managed_font::create_quads()
+    void Renderer::Managed_font::create_quads()
     {
         struct Vertex { GLint x, y; };
 
@@ -448,7 +448,7 @@ namespace cppgui {
         GL(BindBuffer, GL_ARRAY_BUFFER, 0); // just in case
     }
 
-    void Renderer::managed_font::store_pixels()
+    void Renderer::Managed_font::store_pixels()
     {
         buffer_textures.resize(variants.size());
         GL(GenBuffers, buffer_textures.size(), &buffer_textures[0]);

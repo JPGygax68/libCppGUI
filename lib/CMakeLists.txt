@@ -21,7 +21,12 @@ project (libCppGUI)
 # Define main target: static library
 add_library( ${PROJECT_NAME} 
 STATIC
+    include/cppgui/basic_types.hpp
+
     include/cppgui/Widget.hpp           src/Widget.cpp
+    include/cppgui/Container.hpp        src/Container.cpp
+    include/cppgui/Root_widget.hpp      src/Root_widget.cpp
+    include/cppgui/Label.hpp            src/Label.cpp
 )
 
 # This will allow source files to include their contract header files without using paths
@@ -39,6 +44,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/i
 # "Drivers"
 #
 
+# Driver sources must be able to access certain header files of libCppGUI core
 include_directories(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 # Renderer

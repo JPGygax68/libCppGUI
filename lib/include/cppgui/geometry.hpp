@@ -332,6 +332,8 @@ namespace cppgui {
 
     };
 
+    #ifdef ORIENTED_GEOMETRY
+
     template<class Impl>
     struct Geometry_accessor_base
     {
@@ -593,6 +595,8 @@ namespace cppgui {
 
         void set_first_axis_center(Position p) { this->pos.y = p - this->ext.h / 2; }
     };
+
+    #endif // ORIENTED_GEOMETRY
 
 } // ns cppgui
 

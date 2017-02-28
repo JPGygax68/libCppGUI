@@ -19,8 +19,9 @@
 
 #include <stack>
 
-#include "cppgui_config.hpp"
-#include "./basic_types.hpp"
+#include <cppgui_config.hpp>
+
+#include "basic_types.hpp"
 
 #include CPPGUI_RENDERER_HEADER
 

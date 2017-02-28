@@ -21,54 +21,26 @@
 #include <stack>
 
 #include "./Widget.hpp"
-#include "./Container_base.hpp"
-#include "./Container_layouter.hpp"
+#include "./Container.hpp"
+//#include "./Container_layouter.hpp"
 //#include "./Box_model.hpp"
 
 #pragma warning(disable: 4505)
 
 namespace cppgui {
 
-    extern int dummy;
-
-    // Root_widget_base -------------------------------------------------------
-
-    template <class Config, bool With_layout, class Parent> struct Root_widget_base__Layouter;
-
-    // TODO: confer the ability to render a background ?
-
-    template <class Config, bool With_layout>
-    class Root_widget_base: 
-        public Root_widget_base__Layouter<Config, With_layout, 
-            typename Config::template Root_widget__Container_updater<
-                typename Config::template Root_widget__Updater< 
-                    Container_base<Config, With_layout> > > >
+    class Root_widget: public Container
     {
     public:
-        //using Renderer = typename GUIConfig::Renderer;
-        using Keycode  = typename Config::Keyboard::Keycode;
-        using Widget_t = typename Widget<Config, With_layout>;
-        using Abstract_widget_t = typename Abstract_widget<Config, With_layout>;
-        using Canvas_t = typename Widget_t::Canvas_t;
-        //using Abstract_container_t = Abstract_container<Config, With_layout>;
-        using Container_base_t = Container_base<Config, With_layout>;
-        //using Font_mapper = typename Config::Font_mapper;
-        using Font_handle = typename Canvas_t::Font_handle;
-        using Cursor_handle = typename Config::Mouse::Cursor_handle;
 
-        // Root_widget(Canvas_t *);
-
-        using Container_base_t::add_child;
-        using Container_base_t::remove_child;
-
-        Root_widget_base()
+        Root_widget()
         {
             this->set_id("Root_widget_base");
         }
 
-        void set_background_color(const Color &color) { _bkgnd_clr = color; }
+        void set_background_color(const RGBA &color) { _bkgnd_clr = color; }
 
-        void set_canvas(Canvas_t *);
+        void set_canvas(Canvas *);
         auto canvas() const { return _canvas; }
 
         void init() override;
@@ -100,98 +72,53 @@ namespace cppgui {
 
         void child_key_down(const Keycode &) override;
 
-        void capture_mouse(Widget_t *);
+        void capture_mouse(Widget *);
         void release_mouse();
         auto mouse_holder() const { return _mouse_holder; }
 
+        // Specific functionality
+
+        void insert_child(Widget * child);
+        void drop_child(Widget * child);
+
     protected:
         
-        void render(Canvas_t *, const Point &) override;
+        void render(Canvas *, const Point &) override;
 
     private:
-        Color                       _bkgnd_clr = { 0, 0, 0, 0 };
-        Canvas_t                   *_canvas = nullptr;
-        //Widget_t                   *_focused_widget = nullptr;
+        RGBA                        _bkgnd_clr = { 0, 0, 0, 0 };
+        Canvas                     *_canvas = nullptr;
         std::stack<Cursor_handle>   _cursor_stack;
-        Widget_t                   *_mouse_holder = nullptr;
+        Widget                     *_mouse_holder = nullptr;
         Point                       _capture_offset;
-    };
 
-    // Default implementation for Widget_updater aspect
-
-    template <class Config, bool With_layout, class Parent>
-    struct Default__Root_widget__Updater: public Parent 
-    {
-        using Abstract_container_t = Abstract_container<Config, With_layout>;
+    // Updating aspect ------------------------------------
+    
+    public:
         using Invalidated_handler = std::function<void()>;
-        using Root_widget_t = Root_widget_base<Config, With_layout>;
-
-        auto root_widget() { return p(); }
 
         void invalidate();
-
         void on_invalidated(Invalidated_handler handler) { _on_invalidated = handler; }
 
     private:
-        auto p() -> Root_widget_t * { return static_cast<Root_widget_t*>(static_cast<Root_widget_base<Config, true>*>(this)); }
-
         Invalidated_handler _on_invalidated;
-    };
 
-    // Default implementation for Container_updater aspect
+    // Container_updater aspect --------------------------
+    public:
 
-    template <class Config, bool With_layout, class Parent>
-    struct Default__Root_widget__Container_updater: public Parent
-    {
-        using Widget_t = Widget<Config, With_layout>;
-        using Container_base_t = Container_base<Config, With_layout>;
-        using Root_widget_t = Root_widget_base<Config, With_layout>;
-
-        // Container_updater contract
-
-        void child_invalidated(Widget_t *) override { _must_update = true; }
-
-        auto container_root_widget() -> Root_widget_t * override { return static_cast<Root_widget_t*>(this); }
+        // Contract
+        void child_invalidated(Widget *) override { _must_update = true; }
+        auto container_root_widget() -> Root_widget * override { return static_cast<Root_widget*>(this); }
 
         // Specific functionality 
 
         void lock() { _must_update = false; }
 
-        void unlock() { if (_must_update) p()->invalidate(); }
+        void unlock() { if (_must_update) invalidate(); }
 
     private:
-        auto p() { return static_cast<Root_widget_t*>(static_cast<Root_widget_base<Config, With_layout>*>(this)); }
-
         bool                _must_update;
-    };
 
-    // Layouting aspect
-
-    template <class Config, class Parent> 
-    struct Root_widget_base__Layouter<Config, true, Parent>: public Parent 
-    {
-        class Root_widget_t: public Root_widget_base<Config, true> { friend struct Root_widget_base__Layouter; };
-
-        using Widget_t = Widget<Config, true>;
-
-        auto p() { return static_cast<Root_widget_t*>(this); }
-
-        //virtual void init_layout();
-        auto get_minimal_size() -> Extents override { return {0, 0}; }
-        //virtual void layout();
-
-        void insert_child(Widget_t *);
-        void drop_child(Widget_t *);
-    };
-
-    // Root_widget ------------------------------------------------------------
-
-    template<class Config, bool With_layout, Box_model_definition BMDef, class Layouter>
-    class Root_widget: public 
-        Layouter::template Aspect< Root_widget<Config, With_layout, BMDef, Layouter>,
-        Box_model<Config, With_layout, BMDef>::template Aspect<Root_widget<Config, With_layout, BMDef, Layouter>,
-        Root_widget_base<Config, With_layout> > >
-    {};
+    }; // class Root_widget
 
 } // ns cppgui
-

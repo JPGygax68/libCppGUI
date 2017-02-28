@@ -1,56 +1,108 @@
 #pragma once
 
-#include "./Container_base.hpp"
-//#include "./Box_model.hpp"
+/*  libCppGUI - A GUI library for C++11/14
+    
+    Copyright 2016 Hans-Peter Gygax
 
-namespace cppgui
-{
-    // Internals ----------------------------------------------------
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-    template<class Config>
-    struct _container
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+
+#include <memory>
+
+#include "./Widget.hpp"
+
+//#include "./layout_managers.hpp"
+
+namespace cppgui {
+
+    /** Container functionality (ability to contain Widgets).
+     */
+    class Container: public Widget
     {
-        // TODO: put into two-tiered form
+    public:
+        
+        Container(): _hovered_child { nullptr } {}
 
-        template<class Class, bool With_layout, class Parent> struct Layouter;
+        void set_initial_focus(Widget *);
 
-        template<class Class, class Parent> 
-        struct Layouter<Class, false, Parent>: Parent {};
+        auto& children() { return _children; }
 
-        template<class Class, class Parent> 
-        struct Layouter<Class, true, Parent>: Parent
-        {
-            using Container_base_t = Container_base<Config, true>;
+        /** Called when a key_down event could not be handled by the child it was sent to
+            (from container_key_down()) and needs to "bubble" back up.
+         */
+        virtual void child_key_down(const Keyboard_adapter::Keycode &) = 0;
 
-            auto get_minimal_size() -> Extents override;
-            void layout() override;
+        virtual bool container_has_focus() = 0;       
+        virtual auto container_absolute_position() -> Point = 0;
+        virtual void switch_focused_child(Widget *);
+        auto focused_child() -> Widget * { return _focused_child; }
 
-            template<class ManagerType> auto set_layout_manager() -> ManagerType *
-            {
-                _manager.reset( new ManagerType{} ); 
-                //_manager->set_padding(this->_padding); // TODO: should padding really be a member of Container ?
+        auto first_child() -> Widget * { assert(!_children.empty()); return _children.front(); }
+        auto last_child () -> Widget * { assert(!_children.empty()); return _children.back (); }
 
-                return static_cast<ManagerType*>( _manager.get() ); // as a convenience
-            };
-            auto layout_manager() { return _manager.get(); }
+        auto child_index(Widget *child) -> Index;
 
-            auto compute_minimal_size() -> Extents;
-            void layout_children(const Extents &);
+        template<class Pred> auto scan_children_forward (Index from, Pred) -> Index;
+        template<class Pred> auto scan_children_backward(Index from, Pred) -> Index;
 
-        private:
-            auto p() { return static_cast<Class*>(this); }
+    //-----------------------------------------------------
+    // Container Updater "aspect"
 
-            std::unique_ptr<typename layouting<Config>::Manager> _manager;
-        };
+        virtual void child_invalidated(Widget *) = 0;
+
+        virtual auto container_root_widget() -> Root_widget * = 0;
+
+    // END of Container Updater aspect
+    //-----------------------------------------------------
+
+    // Layouting aspect -----------------------------------
+    // TODO: make optional via preprocessor
+
+        void init_children_layout();
+
+    protected:
+        bool contains_widget(Widget *);
+
+    // END of Layouting aspect ----------------------------
+
+    protected:
+
+        void add_child(Widget *);
+        // TODO: should removal methods be moved to optional aspect ?
+        void remove_child(Widget *);
+        void remove_all_children();
+
+        auto child_at(const Point &) -> Widget *;
+
+        void init_child_resources();
+        void compute_child_views();
+
+        void render_children(Canvas *, const Point &offs);
+
+        /** The container_xxxx() methods are intended as "delegate" event handlers, to be 
+            called from "real" containers (i.e. descendants of Container<>).            
+        */
+        void container_mouse_motion(const Point &);
+        void container_mouse_button(const Point &, int button, Key_state, Count clicks);
+        //void container_mouse_click(const Point &, int button, int count);
+        void container_mouse_wheel(const Point &dist);
+        void container_mouse_exit();
+        void container_text_input(const char32_t *, size_t);
+        bool container_key_down(const Keycode &);
+
+        std::vector<Widget*> _children;
+        Widget *_hovered_child = nullptr;
+        Widget *_focused_child = nullptr;
     };
-
-    // Public class -------------------------------------------------
-
-    template<class Class, class Config, bool With_layout, Box_model_definition BMDef, class Layouter>
-    class Container: public 
-        Layouter::template Aspect< Class,
-        Box_model<Config, With_layout, BMDef>::template Aspect< Class,
-        Container_base<Config, With_layout> > >
-    {};
 
 } // ns cppgui

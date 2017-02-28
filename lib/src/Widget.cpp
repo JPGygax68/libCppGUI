@@ -20,13 +20,13 @@
 #include <iostream> // TODO: REMOVE!!
 
 #include <Widget.hpp>
+#include <Container.hpp>
+#include <Root_widget.hpp>
 
+//#include <cppgui/Abstract_container.hpp>
+//#include <cppgui/Container_base.hpp>
 
-#include <cppgui/Abstract_container.hpp>
-#include <cppgui/Container_base.hpp>
-#include <cppgui/Root_widget.hpp>
-
-#include <cppgui/Canvas.hpp>
+//#include <cppgui/Canvas.hpp>
 
 namespace cppgui {
 
@@ -37,7 +37,7 @@ namespace cppgui {
     {
     }
 
-    void Widget::set_background_color(const Color &color)
+    void Widget::set_background_color(const RGBA &color)
     {
         _bkgnd_clr = color;
     }
@@ -59,12 +59,12 @@ namespace cppgui {
         _visible = vis;
     }
 
-    void Widget::added_to_container(Abstract_container_t *cont)
+    void Widget::added_to_container(Container *cont)
     {
         _container = cont;
     }
 
-    void Widget::removed_from_container(Abstract_container_t *)
+    void Widget::removed_from_container(Container *)
     {
         _container = nullptr;
     }
@@ -211,7 +211,7 @@ namespace cppgui {
 
     // Style
 
-    inline auto Widget::button_face_color() -> Color
+    inline auto Widget::button_face_color() -> RGBA
     {
         if (hovered())
         {
@@ -222,7 +222,7 @@ namespace cppgui {
         }
     }
 
-    inline auto Widget::button_border_color() -> Color
+    inline auto Widget::button_border_color() -> RGBA
     {
         if (hovered())
         {

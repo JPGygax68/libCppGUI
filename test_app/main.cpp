@@ -1,17 +1,19 @@
 #include <iostream>
+#include <memory>
 
 #include <SDL_main.h>
 
-#include <cppgui/sdl/Application.hpp>
+//#include <cppgui/sdl/Application.hpp>
 
-#include "./Test_window.hpp"
+#include "./SDL_window.hpp"
+#include "./SDL_application.hpp"
 
 int main(int /*argc*/, char * /*argv*/[])
 {
     try
     {
-        auto win = std::make_unique<Test_window>();
-        cppgui::sdl::Application<Test_window> app;
+        auto win = std::make_unique<SDL_window>("My window");
+        SDL_application app;
 
         app.run();
 

@@ -2,10 +2,13 @@ project(cppgui_renderer_opengl)
 
 add_library(${PROJECT_NAME} STATIC 
     src/renderer_opengl.cpp include/cppgui/builtin_drivers/renderer_opengl.hpp
-    src/gl.h
+    include/cppgui/builtin_drivers/gl.h
     src/gl_shaderprogram.hpp src/gl_shaderprogram.cpp
 )
     
+# Source files need easy access to our gl.h OpenGL importer convenience
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/cppgui/builtin_drivers/)
+
 # Note: this library is intended to be used as a CMake target only
 target_include_directories(${PROJECT_NAME} BEFORE PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -43,10 +46,12 @@ endforeach()
 
 # External dependencies
 
+if (0)
 if (NOT TARGET libGPCFonts)
     message(FATAL_ERROR "libGPCFonts not defined as a target")
 endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC libGPCFonts)
+endif(0)
 
 
 

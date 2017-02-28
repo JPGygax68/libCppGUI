@@ -1,0 +1,14 @@
+# Tell the user project where to find our headers and libraries
+#set(@TARGET@_INCLUDE_DIR  "@TARGETSET_INCLUDE_DIR@")
+#set(@TARGET@_INCLUDE_DIRS "${@TARGET_SET@_INCLUDE_DIR}")
+#set(@TARGET@_LIBRARY_DIRS "@TARGETSET_LIB_DIR@")
+set(@TARGET@_EXECUTABLE "@TARGET_EXECUTABLE@")
+
+# Our library dependencies (contains definitions for IMPORTED targets)
+include("@TARGET_CMAKE_DIR@/@TARGET@-targets.cmake")
+
+# Defines (if required)
+#set(@TARGET@_DEFINITIONS "@TARGET_COMPILE_DEFINITIONS@")
+
+# USE file (if there is one)
+#set(@TARGET@_USE_FILE "@TARGET_CMAKE_DIR@/@TARGET@-use.cmake")

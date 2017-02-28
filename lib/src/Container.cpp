@@ -19,20 +19,16 @@
 
 #include <algorithm>
 
-#include "./Abstract_container.hpp"
-
-#include "./Widget.ipp"
+#include <Container.hpp>
 
 namespace cppgui {
 
-    template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::set_initial_focus(Widget_t *child)
+    void Container::set_initial_focus(Widget *child)
     {
         _focused_child = child;
     }
 
-    template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::switch_focused_child(Widget_t *child)
+    void Container::switch_focused_child(Widget *child)
     {
         if (child != _focused_child)
         {
@@ -45,23 +41,20 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    auto Abstract_container<Config, With_layout>::child_index(Widget_t *child) -> Index
+    auto Container::child_index(Widget *child) -> Index
     {
         using namespace std;
 
         return distance(begin(_children), find(begin(_children), end(_children), child) );
     }
 
-    template <class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::add_child(Widget_t *child)
+    void Container::add_child(Widget *child)
     {
         _children.push_back(child);
         child->added_to_container(this);
     }
 
-    template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::remove_child(Widget_t *child)
+    void Container::remove_child(Widget *child)
     {
         if (child == _hovered_child)
         {
@@ -81,8 +74,7 @@ namespace cppgui {
         _children.erase(it);
     }
 
-    template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::remove_all_children()
+    void Container::remove_all_children()
     {
         for (auto child: _children)
         {
@@ -90,8 +82,7 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    auto Abstract_container<Config, With_layout>::child_at(const Point &pos) -> Widget<Config, With_layout>*
+    auto Container::child_at(const Point &pos) -> Widget*
     {
         auto child = std::find_if(std::begin(_children), std::end(_children), [&](auto child) { 
             return child->visible() && child->rectangle().contains(pos); 
@@ -100,8 +91,7 @@ namespace cppgui {
         return child != std::end(_children) ? *child : nullptr;
     }
 
-    template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::init_child_resources()
+    void Container::init_child_resources()
     {
         for (auto child : children())
         {
@@ -109,8 +99,7 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::compute_child_views()
+    void Container::compute_child_views()
     {
         for (auto& child : children())
         {
@@ -118,8 +107,7 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::render_children(Canvas_t *cv, const Point & offs)
+    void Container::render_children(Canvas *cv, const Point & offs)
     {
         for (auto& child : children())
         {
@@ -130,16 +118,15 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::container_mouse_motion(const Point &pos)
+    void Container::container_mouse_motion(const Point &pos)
     {
         auto hovered = child_at(pos);
 
         if (hovered != _hovered_child)
         {
             /** TODO: this does not account for situations where the pointer enters a
-            widget, then moves on to a zone on a higher Z-level (Z levels not being 
-            implemented yet at the time of writing).
+                widget, then moves on to a zone on a higher Z-level (Z levels not being 
+                implemented yet at the time of writing).
             */
             if (_hovered_child) _hovered_child->mouse_exit();
             if (hovered) hovered->mouse_enter();
@@ -152,8 +139,7 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::container_mouse_button(const Point &pos, int button, Key_state state, Count clicks)
+    void Container::container_mouse_button(const Point &pos, int button, Key_state state, Count clicks)
     {
         auto child = child_at(pos);
 
@@ -170,14 +156,12 @@ namespace cppgui {
     }
     */
 
-    template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::container_mouse_wheel(const Point &dist)
+    void Container::container_mouse_wheel(const Point &dist)
     {
         if (_hovered_child) _hovered_child->mouse_wheel(dist);
     }
 
-    template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::container_mouse_exit()
+    void Container::container_mouse_exit()
     {
         // We must propagate the exit to any currently hovered child
         if (_hovered_child)
@@ -187,8 +171,7 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    void Abstract_container<Config, With_layout>::container_text_input(const char32_t *text, size_t size)
+    void Container::container_text_input(const char32_t *text, size_t size)
     {
         if (_focused_child)
         {
@@ -196,8 +179,7 @@ namespace cppgui {
         }
     }
 
-    template<class Config, bool With_layout>
-    bool Abstract_container<Config, With_layout>::container_key_down(const Keycode &key)
+    bool Container::container_key_down(const Keycode &key)
     {
         if (_focused_child)
         {
@@ -207,9 +189,8 @@ namespace cppgui {
             return true;
     }
 
-    template<class Config, bool With_layout>
     template<class Pred>
-    auto Abstract_container<Config, With_layout>::scan_children_forward(Index from, Pred pred) -> Index
+    auto Container::scan_children_forward(Index from, Pred pred) -> Index
     {
         for (auto i = from; i < (Index) _children.size(); i ++)
         {
@@ -219,9 +200,8 @@ namespace cppgui {
         return (Index) _children.size();
     }
 
-    template<class Config, bool With_layout>
     template<class Pred>
-    auto Abstract_container<Config, With_layout>::scan_children_backward(Index from, Pred pred) -> Index
+    auto Container::scan_children_backward(Index from, Pred pred) -> Index
     {
         for (Index i = from; i >= 0; i--)
         {
@@ -233,20 +213,18 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    template<class Config, class Parent>
-    void Abstract_container__Layouter<Config, true, Parent>::init_children_layout()
+    void Container::init_children_layout()
     {
-        for (auto child : p()->children())
+        for (auto child : children())
         {
             child->init_layout();
         }
     }
 
-    template<class Config, class Parent>
-    bool Abstract_container__Layouter<Config, true, Parent>::contains_widget(Widget_t *widget)
+    bool Container::contains_widget(Widget *widget)
         // Recursively check whether this or a descendant widget contains the specified widget.
     {
-        for (auto child: p()->_children)
+        for (auto child: _children)
         {
             if (child == widget)
             {

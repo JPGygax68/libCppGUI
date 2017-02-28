@@ -1,15 +1,11 @@
 #pragma once
 
 #include <string>
-// TODO: make customizable (other binding libraries) via cppgui_config.hpp
-#ifdef _WIN32
-#include <Windows.h>
-#endif
-#include <GL/glew.h>
-//using namespace ::gl;
+
+#include "./gl.h" // import OpenGL (via configurable means)
 
 #include <cppgui/basic_types.hpp>
-
+#include <cppgui/fonts/Rasterized_font.hpp>
 
 namespace cppgui {
 
@@ -27,7 +23,7 @@ namespace cppgui {
 
     public:
 
-        using rasterized_font = gpc::fonts::rasterized_font;
+        using Rasterized_font = fonts::Rasterized_font;
 
     public:
 
@@ -104,7 +100,7 @@ namespace cppgui {
 
         void cancel_clipping();
 
-        auto register_font(const rasterized_font &font) -> Font_handle;
+        auto register_font(const Rasterized_font &font) -> Font_handle;
 
         void release_font(Font_handle reg_font);
         //void release_font(const rasterized_font &);
@@ -126,11 +122,9 @@ namespace cppgui {
         void _draw_greyscale_image(int x, int y, int w, int h, Image_handle, const RGBA &color,
             int origin_x, int origin_y, float texrot_sin, float texrot_cos, int offset_x = 0, int offset_y = 0);
 
-        // TODO: move this back into non-template base class
-
-        struct managed_font: gpc::fonts::rasterized_font {
+        struct Managed_font: fonts::Rasterized_font {
             
-            managed_font(const rasterized_font &font_) : gpc::fonts::rasterized_font{ font_ } {}
+            Managed_font(const Rasterized_font &font_) : Rasterized_font{ font_ } {}
             
             void store_pixels();
             void create_quads();
@@ -146,7 +140,7 @@ namespace cppgui {
         GLuint vertex_shader, fragment_shader;
         GLuint program;
         std::vector<GLuint> image_textures;
-        std::vector<managed_font> managed_fonts;
+        std::vector<Managed_font> managed_fonts;
         GLint vp_width, vp_height;
         RGBA text_color;
 

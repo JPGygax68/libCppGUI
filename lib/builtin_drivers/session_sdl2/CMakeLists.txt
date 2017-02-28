@@ -7,6 +7,8 @@ add_library(${PROJECT_NAME} STATIC
 # Note: this library is intended to be used as a CMake target only
 target_include_directories(${PROJECT_NAME} BEFORE PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+# TODO: configuration file
+
 # External dependencies
 
 if (NOT TARGET SDL2)

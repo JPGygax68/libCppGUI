@@ -19,40 +19,16 @@
 
 #include <string>
 
-#include "./utils.hpp" // TODO: move to Widget.hpp
-
 #include "./Widget.hpp"
-//#include "./Box_model.hpp"
-
-namespace gpc { namespace fonts {
-
-    struct rasterized_font;
-} }
 
 namespace cppgui {
-
-    template <class Config, bool With_layout>
-    struct Label__Layouter
-    {
-        template<class Class, class Parent> 
-        struct Aspect: Parent {};
-    };
 
     /** Label widget.
      */
 
-    template <class Config, bool With_layout, Box_model_definition BMDef>
-    class Label: public 
-        Label__Layouter<Config, With_layout>::template Aspect<Label<Config, With_layout, BMDef>,
-        Box_model<Config, With_layout, BMDef>::template Aspect<Label<Config, With_layout, BMDef>,
-        Widget<Config, With_layout> > >
+    class Label: public Widget
     {
     public:
-        using Renderer = typename Config::Renderer;
-        //using Font_handle = typename Renderer::font_handle;
-        using Widget_t = Widget<Config, With_layout>;
-        using Canvas_t = typename Widget_t::Canvas_t;
-        using Font_resource = typename Widget_t::Font_resource;
 
         void set_font(const Rasterized_font *);
         auto font() const { return _font.source(); }
@@ -61,7 +37,7 @@ namespace cppgui {
 
         void init() override;
 
-        void render(Canvas_t *, const Point &offset) override;
+        void render(Canvas *, const Point &offset) override;
 
         // void change_text(const std::u32string &);
 
@@ -70,42 +46,28 @@ namespace cppgui {
         std::u32string          _text;
         Point                   _text_origin; // origin of first character of label
         Rectangle               _text_rect;
-    };
 
-    class Single_element_layout;
+    // Layouter aspect ------------------------------------
 
-    // Layouter aspect ----------------------------------------------
+        // Contract
 
-    template <class Config>
-    struct Label__Layouter<Config, true>
-    {
-        template<class Class, class Parent>
-        struct Aspect: Parent
-        {
-            // Layouter aspect contract
+        void init_layout() override;
+        auto get_minimal_size() -> Extents override;
+        void layout() override;
 
-            void init_layout() override;
-            auto get_minimal_size() -> Extents override;
-            void layout() override;
+        // Own methods
 
-            // Own methods
+        void set_minor_alignment(Alignment align) { _minor_alignment = align; }
+        void set_major_alignment(Alignment align) { _major_alignment = align; }
+        // TODO: "change" versions of the above that update layout
 
-            void set_minor_alignment(Alignment align) { _minor_alignment = align; }
-            void set_major_alignment(Alignment align) { _major_alignment = align; }
-            // TODO: "change" versions of the above that update layout
+    private:
+        // "Stylesheet"
+        //static constexpr auto default_padding() -> Padding { return { 4, 4, 4, 4 }; }
 
-        private:
-            class Implementation: public Class { friend struct Aspect; };
-            auto p() { return static_cast<Implementation*>(this); }
-
-            // "Stylesheet"
-            //static constexpr auto default_padding() -> Padding { return { 4, 4, 4, 4 }; }
-
-            Alignment               _minor_alignment = Alignment::cultural_minor_middle;
-            Alignment               _major_alignment = Alignment::cultural_major_middle;
-            Text_bounding_box       _bounding_box;
-            //Single_element_layout   _layout;
-        };
+        Alignment               _minor_alignment = Alignment::cultural_minor_middle;
+        Alignment               _major_alignment = Alignment::cultural_major_middle;
+        Text_bounding_box       _bounding_box;
     };
 
 } // ns cppgui

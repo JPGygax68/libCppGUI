@@ -4,6 +4,10 @@
 
 // Include the configured OpenGL bindings
 
+// TODO: except for the type declarations at the end (which should probably be private anyway),
+//  it may be better to offer to have CMake define a macro to help import OpenGL, rather than dedicate
+//  a whole header file to that purpose. E.g. CPPGUI_OPENGL_HEADER
+
 #ifdef CPPGUI_OPENGL_USE_GLEW
 #include <GL/glew.h>
 #elif CPPGUI_OPENGL_USE_GLBINDING

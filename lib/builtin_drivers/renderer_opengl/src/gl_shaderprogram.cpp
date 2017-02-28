@@ -1,6 +1,6 @@
 #include <vector>
 
-#include "./gl.h"
+#include <gl.h>
 #include "./gl_wrappers.hpp"
 
 #include "./gl_shaderprogram.hpp"

@@ -1,5 +1,7 @@
 #pragma once
 
+// OBSOLETE - DO NOT USE
+
 /*  libCppGUI - A GUI library for C++11/14
 
 Copyright 2016 Hans-Peter Gygax
@@ -84,8 +86,8 @@ namespace cppgui {
         */
         virtual void init() {}
 
-        /** The update_view_from_data() entry point must be called after init(), and also after 
-        layout() if run-time layouting is enabled.
+        /** The compute_view_from_data() entry point must be called after init(), and also after 
+            layout() if run-time layouting is enabled.
         */
         virtual void compute_view_from_data() {}
 
