@@ -2,11 +2,11 @@
 
 #include <cppgui/Box_model.hpp>
 
-//#pragma warning(disable: 4505)
-
 namespace cppgui
 {
-    
+ 
+    #ifdef NOT_DEFINED
+
     auto Box_model_base::box_rectangle() -> Rectangle
     {
         return {
@@ -133,4 +133,7 @@ namespace cppgui
         this->fill_rect(canvas, {rect.pos, {w, rect.ext.h}}, offset,
                         Canvas_t::rgba_to_native(p()->border_color(2)));
     }
+
+    #endif // NOT_DEFINED
+
 } // ns cppgui

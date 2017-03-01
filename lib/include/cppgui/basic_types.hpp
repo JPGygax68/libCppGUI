@@ -18,12 +18,13 @@
 */
 
 #include <cassert>
+#include <array>
 
 #include "./fonts/Rasterized_font.hpp"
 #include "./fonts/Bounding_box.hpp"
 #include "./fonts/Rasterized_glyph_cbox.hpp"
 
-#include "./geometry.hpp" // TODO: remove, leave choice of whether to include to user code
+// #include "./geometry.hpp" // TODO: remove, leave choice of whether to include to user code
 
 namespace cppgui {
 
@@ -33,6 +34,48 @@ namespace cppgui {
 
     using Text_bounding_box = fonts::Bounding_box;
     using Glyph_control_box = fonts::Rasterized_glyph_cbox;
+
+    using Position          = int;
+    using Position_delta    = int;
+    using Length            = int;
+    using Width             = Length;
+
+
+    struct Point
+    {
+        Position        x, y;
+
+        auto operator + (const Point &delta) const -> Point { return { x + delta.x, y + delta.y }; }
+        auto operator - (const Point &delta) const -> Point { return { x - delta.x, y - delta.y }; }
+
+        auto& operator += (const Point &delta) { x += delta.x, y += delta.y; return *this; }
+        auto& operator -= (const Point &delta) { x -= delta.x, y -= delta.y; return *this; }
+    };
+
+    using Vector = Point;
+
+    struct Extents
+    {
+        Length          w, h;
+    };
+
+    struct Rectangle {
+        Point           pos;
+        Extents         ext;
+    };
+
+    class Bounding_box: public Text_bounding_box {
+    public:
+        bool is_point_inside(const Point &p) const
+        {
+            // Important: by convention, Y is positive-down in the CppGUI coordinate system; but 
+            // Y is positive-up in typography, which means that y_min extends *below* the baseline
+            // with negative numbers while y_max goes grows up from the baseline with positive
+            // numbers.
+            return p.x >= x_min && p.x < x_max 
+                && p.y >= - y_max && p.y < - y_max;
+        }
+    };
 
     using Index             = int; // Index is signed so that -1 can be used to report "invalid" or "not found"
     using Count             = unsigned int;

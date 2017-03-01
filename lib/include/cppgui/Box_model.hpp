@@ -17,83 +17,17 @@
     limitations under the License.
 */
 
-#include "./geometry.hpp"
+//#include "./geometry.hpp"
 
 #include "./Widget.hpp"
 
 namespace cppgui
 {
- 
-    // TODO: configure via preprocessor
-
-    //enum class Box_model_definition { build_time, run_time };
-
-    #ifdef NOT_DEFINED
-
-    template<bool PerDirection>
-    struct _Box_model_initializer 
-    {
-        template<class Impl, class Parent>
-        struct Aspect {};
-    };
-
-    template<>
-    struct _Box_model_initializer<false>
-    {
-        template<class Impl, class Parent>
-        struct Aspect
-        {
-            Aspect()
-            {
-                p()->set_margin      ( p()->default_margin      () );
-                p()->set_border_width( p()->default_border_width() );
-                p()->set_padding     ( p()->default_margin      () );
-
-                p()->set_border_color( p()->default_border_color() );
-            }
-
-            auto p() { return static_cast<Impl*>(this); }
-        };
-    };
-
-    template<>
-    struct _Box_model_initializer<true>
-    {
-        template<class Impl, class Parent>
-        struct Aspect
-        {
-            Aspect()
-            {
-                p()->set_margin      ( 0, p()->default_margin      (0) );
-                p()->set_border_width( 0, p()->default_border_width(0) );
-                p()->set_padding     ( 0, p()->default_margin      (0) );
-                p()->set_border_color( 0, p()->default_border_color(0) );
-
-                p()->set_margin      ( 1, p()->default_margin      (1) );
-                p()->set_border_width( 1, p()->default_border_width(1) );
-                p()->set_padding     ( 1, p()->default_margin      (1) );
-                p()->set_border_color( 1, p()->default_border_color(1) );
-
-                p()->set_margin      ( 2, p()->default_margin      (2) );
-                p()->set_border_width( 2, p()->default_border_width(2) );
-                p()->set_padding     ( 2, p()->default_margin      (2) );
-                p()->set_border_color( 2, p()->default_border_color(2) );
-
-                p()->set_margin      ( 3, p()->default_margin      (3) );
-                p()->set_border_width( 3, p()->default_border_width(3) );
-                p()->set_padding     ( 3, p()->default_margin      (3) );
-                p()->set_border_color( 3, p()->default_border_color(3) );
-            }
-
-            auto p() { return static_cast<Impl*>(this); }
-
-            auto p() { return static_cast<Impl*>(this); }
-        };
-    };
-
-    #endif
+     // TODO: configure via preprocessor
 
     // Base class, providing common functionality
+
+    #ifdef NOT_DEFINED
 
     struct Box_model_base
     {
@@ -107,7 +41,7 @@ namespace cppgui
         auto border_color(int /*dir*/)
         {
             // TODO: return value that takes enabled(), hovered(), focused() properties into account
-            return Color{ 0, 0, 0, 1 }; // TODO: styling!
+            return RGBA{ 0, 0, 0, 1 }; // TODO: styling!
         }
 
     protected:
@@ -126,68 +60,64 @@ namespace cppgui
         }
     };
 
-    // Box model template declaration
-
-    struct Box_model 
-    { 
-        template<class Impl, class Parent>
-        struct Aspect: Parent {};
-    };
+    #endif // NOT_DEFINED
 
     // Box_model specialization for build-time definition
 
-    template<class Config, bool With_layout>
-    struct Box_model<Config, With_layout, Box_model_definition::build_time>
+    #if defined CPPGUI_BOX_MODEL_BUILD_TIME
+    
+    template <class Impl>
+    struct Box_model
     {
-        template<class Impl, class Parent>
-        struct Aspect: Box_model_base<Config, With_layout>::template Aspect<Impl, Parent>
-        {
-            // All setters are no-ops in the build-time implementation
-            static void set_margin      (int dir, Width /*w*/) {}
-            static void set_border_width(int dir, Width /*w*/) {}
-            static void set_padding     (int dir, Width /*w*/) {}
-        };
+        // All setters are no-ops in the build-time implementation
+        static void set_margin      (int dir, Width /*w*/) {}
+        static void set_border_width(int dir, Width /*w*/) {}
+        static void set_padding     (int dir, Width /*w*/) {}
+
+        auto add_boxing(const Extents & ext) -> Extents;
+        void draw_border(Canvas * canvas, const Point & offset);
     };
+
+    #elif defined CPPGUI_BOX_MODEL_RUN_TIME
 
     // Box_model specialization for run-time definition
 
-    template<class Config, bool With_layout>
-    struct Box_model<Config, With_layout, Box_model_definition::run_time>
+    struct Box_model
     {
-        template<class Impl, class Parent>
-        struct Aspect: Box_model_base<Config, With_layout>::template Aspect<Impl, Parent>
-        {
-            // Default values, override in implementations
-            static constexpr auto default_margin      (int /*dir*/) { return 0; }
-            static constexpr auto default_border_width(int /*dir*/) { return 0; }
-            static constexpr auto default_padding     (int /*dir*/) { return 0; }
+        // Default values, override in implementations
+        static constexpr auto default_margin      (int /*dir*/) { return 0; }
+        static constexpr auto default_border_width(int /*dir*/) { return 0; }
+        static constexpr auto default_padding     (int /*dir*/) { return 0; }
 
-            Aspect();
+        Box_model();
 
-            void set_margin      (int /*dir*/, Width w) { _margin = w; }
-            void set_border_width(int /*dir*/, Width w) { _border_width = w; }
-            void set_padding     (int /*dir*/, Width w) { _padding = w; }
+        void set_margin      (int /*dir*/, Width w) { _margin = w; }
+        void set_border_width(int /*dir*/, Width w) { _border_width = w; }
+        void set_padding     (int /*dir*/, Width w) { _padding = w; }
 
-            void set_margin      (Width w) { _margin = w; }
-            void set_border_width(Width w) { _border_width = w; }
-            void set_padding     (Width w) { _padding = w; }
+        void set_margin      (Width w) { _margin = w; }
+        void set_border_width(Width w) { _border_width = w; }
+        void set_padding     (Width w) { _padding = w; }
 
-            auto margin      (int /*dir*/) const { return _margin; }
-            auto border_width(int /*dir*/) const { return _border_width; }
-            auto padding     (int /*dir*/) const { return _padding; }
+        auto margin      (int /*dir*/) const { return _margin; }
+        auto border_width(int /*dir*/) const { return _border_width; }
+        auto padding     (int /*dir*/) const { return _padding; }
 
-            auto add_boxing(const Extents & ext) -> Extents;
+        auto add_boxing(const Extents & ext) -> Extents;
 
-            void draw_border(Canvas * canvas, const Point & offset);
+        void draw_border(Canvas * canvas, const Point & offset);
 
-        private:
-            class Implementation_t: public Impl { friend struct Aspect; };
-            auto p() { return static_cast<Implementation_t*>(this); }
+    private:
+        //class Implementation_t: public Impl { friend struct Aspect; };
+        //auto p() { return static_cast<Implementation_t*>(this); }
 
-            Width       _margin = 0;
-            Width       _border_width = 1;
-            Width       _padding = 2;
-        };
+        Width       _margin = 0;
+        Width       _border_width = 1;
+        Width       _padding = 2;
     };
+
+    #else
+    #error either CPPGUI_BOX_MODEL_RUN_TIME or CPPGUI_BOX_MODEL_BUILD_TIME must be defined
+    #endif
 
 } // ns cppgui

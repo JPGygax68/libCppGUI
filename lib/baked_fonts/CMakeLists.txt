@@ -57,6 +57,7 @@ foreach(size IN ITEMS 16 24)
     list(APPEND FONT_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/generated/headers/${font_file}-${size}.h)
     list(APPEND FONT_SOURCES ${CMAKE_CURRENT_BINARY_DIR}/generated/sources/${font_file}-${size}.c)
 
+    if (0)
     file(APPEND ${GENERATED_HEADERS_DIR}/liberationsans_font.h "
 template<> struct ${font_name_as_id}<${size}> {
     static constexpr auto get() -> std::pair<const uint8_t *, std::size_t> {
@@ -65,6 +66,7 @@ template<> struct ${font_name_as_id}<${size}> {
 };
 
 ")
+    endif(0)
 
 endforeach(size)
 
@@ -104,6 +106,7 @@ foreach(size IN ITEMS 12 13 16 20 24 32 36)
     string(REPLACE "-" "_" identifier ${identifier})
     set(identifier "${identifier}_${size}")
 
+    if (0)
     file(APPEND ${GENERATED_HEADERS_DIR}/all_icon_fonts.h "static const uint8_t ${identifier}[] = {\n")
     file(APPEND ${GENERATED_HEADERS_DIR}/all_icon_fonts.h "    #include \"${font_file}-${size}.h\"\n")
     file(APPEND ${GENERATED_HEADERS_DIR}/all_icon_fonts.h "};\n\n")
@@ -114,6 +117,7 @@ template<> struct materialicons_regular<${size}>{ static auto get() -> std::pair
     }
 };
 ")
+    endif(0)
 
 endforeach(size)
 

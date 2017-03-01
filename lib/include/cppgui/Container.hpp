@@ -95,7 +95,7 @@ namespace cppgui {
         void container_mouse_motion(const Point &);
         void container_mouse_button(const Point &, int button, Key_state, Count clicks);
         //void container_mouse_click(const Point &, int button, int count);
-        void container_mouse_wheel(const Point &dist);
+        void container_mouse_wheel(const Vector & dist);
         void container_mouse_exit();
         void container_text_input(const char32_t *, size_t);
         bool container_key_down(const Keycode &);

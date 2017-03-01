@@ -85,7 +85,7 @@ namespace cppgui {
     auto Container::child_at(const Point &pos) -> Widget*
     {
         auto child = std::find_if(std::begin(_children), std::end(_children), [&](auto child) { 
-            return child->visible() && child->rectangle().contains(pos); 
+            return child->visible() && child->contains_point(pos); 
         });
 
         return child != std::end(_children) ? *child : nullptr;
@@ -156,7 +156,7 @@ namespace cppgui {
     }
     */
 
-    void Container::container_mouse_wheel(const Point &dist)
+    void Container::container_mouse_wheel(const Vector & dist)
     {
         if (_hovered_child) _hovered_child->mouse_wheel(dist);
     }

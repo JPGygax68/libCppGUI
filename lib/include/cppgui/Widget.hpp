@@ -17,20 +17,17 @@
     limitations under the License.
 */
 
-#include "./Abstract_widget.hpp"
+#include <functional>
 
-#ifdef NOT_DEFINED
+#include <cppgui_config.hpp>
 
-#include <cassert>
-#include <type_traits>
-#include <initializer_list>
+#include "./basic_types.hpp"
+#include "./Canvas.hpp"
+#include "./Resource.hpp"
 
-#include "./geometry.hpp"
+#include CPPGUI_RENDERER_HEADER
+#include CPPGUI_INPUT_ADAPTER_HEADER
 
-//#include "./Stylesheet.hpp"
-#include "./Full_resource_mapper.hpp"
-
-#endif
 
 namespace cppgui {
 
@@ -38,8 +35,6 @@ namespace cppgui {
 
     class Root_widget;
     class Container;
-
-    //template <class Config, bool With_layout, class Parent> struct Widget__Layouter;
 
     // Widget 
 
@@ -54,16 +49,6 @@ namespace cppgui {
         using Click_handler     = std::function<void(const Point &, int button, Count clicks)>; // TODO: support return value ?
         using Pushed_handler    = std::function<void()>; // for buttons TODO: renamed event to "Push" (as in "a push happened") ?
 
-        #ifdef OBSOLETE
-        using Renderer = typename Config::Renderer;
-        using Font_handle = typename Renderer::font_handle;
-        using Keyboard = typename Config::Keyboard;
-        using Keycode = typename Keyboard::Keycode;
-        using Abstract_container = Abstract_container<Config>;
-        using Root_widget = Root_widget_base<Config>;
-        using Click_handler = typename Abstract_widget<Config>::Click_handler;
-        #endif
-
         Widget();
 
         void set_id(const char *id)
@@ -73,14 +58,16 @@ namespace cppgui {
             #endif
         }
 
-        auto& rectangle() { return _rect; }
-        auto& rectangle() const { return _rect; }
-        auto& position() { return _rect.pos; }
-        auto& position() const { return _rect.pos; }
-        auto& extents() { return _rect.ext; }
-        auto& extents() const { return _rect.ext; }
+        //auto& rectangle() { return _rect; }
+        //auto& rectangle() const { return _rect; }
+        auto& position() { return _position; }
+        auto& position() const { return _position; }
+        //auto& extents() { return _rect.ext; }
+        //auto& extents() const { return _rect.ext; }
+        auto& bounds() { return _bounds; }
+        auto& bounds() const { return _bounds; }
         void set_position(const Point &);
-        void set_extents(const Extents &);
+        void set_bounds(const Bounding_box &);
 
         void set_background_color(const RGBA &);
         auto background_color() const -> RGBA;
@@ -145,6 +132,7 @@ namespace cppgui {
         // Queries
 
         virtual auto absolute_position() -> Point;
+        bool contains_point(const Point &point);
 
         // Run-time manipulations
 
@@ -220,30 +208,32 @@ namespace cppgui {
 
         //Rectangle               _inner_rect;
 
-        //-------------------------------------------------
-        // "Updater" "aspect
-        // TODO: make configurable by preprocessor
-
-        void invalidate();
-
-        // END of Updater aspect
-        //-------------------------------------------------
-
     private:
         friend class Drag_controller;
-
-    private:
 
         #ifdef _DEBUG
         const char  *_id;
         #endif
 
-        Rectangle               _rect = {};
+        //Rectangle               _rect = {};
+        Point                   _position = {};
+        //Extents                 _extents = {};
+        Bounding_box            _bounds = {};
         RGBA                    _bkgnd_clr = {0, 0, 0, 0};
         Click_handler           _click_hndlr;
         bool                    _visible = true;
         bool                    _focussable = true;
         bool                    _hovered = false;
+
+    public:
+    //-----------------------------------------------------
+    // "Updater" "aspect
+        // TODO: make configurable by preprocessor
+
+        void invalidate();
+
+    // END of Updater aspect
+    //-----------------------------------------------------
 
     // Layouting aspect -----------------------------------
     public:

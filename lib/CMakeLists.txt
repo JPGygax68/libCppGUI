@@ -23,6 +23,7 @@ add_library( ${PROJECT_NAME}
 STATIC
     include/cppgui/basic_types.hpp
     include/cppgui/Resource.hpp
+    include/cppgui/Box_model.hpp        src/Box_model.cpp
     include/cppgui/Canvas.hpp           src/Canvas.cpp
     include/cppgui/Widget.hpp           src/Widget.cpp
     include/cppgui/Container.hpp        src/Container.cpp

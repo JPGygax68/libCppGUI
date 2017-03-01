@@ -37,6 +37,11 @@ namespace cppgui {
     {
     }
 
+    void Widget::set_bounds(const Bounding_box &bounds)
+    {
+        _bounds = bounds;
+    }
+
     void Widget::set_background_color(const RGBA &color)
     {
         _bkgnd_clr = color;
@@ -149,6 +154,11 @@ namespace cppgui {
         return container()->container_absolute_position() + position();
     }
 
+    bool Widget::contains_point(const Point & point)
+    {
+        return _bounds.is_point_inside(point - _position);
+    }
+
     void Widget::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
     {
         if (state == Key_state::pressed)
@@ -244,6 +254,8 @@ namespace cppgui {
         }
     }
 
+    #ifdef NOT_DEFINED
+
     // Layouter aspect ----------------------------------------------
 
     void Widget::set_rectangle(const Point &nw, const Point &se)
@@ -275,5 +287,7 @@ namespace cppgui {
         set_position({ pos.x - static_cast<Position>(ext.w), pos.y - static_cast<Position>(ext.h) });
         set_extents(ext);
     }
+
+    #endif // NOT_DEFINED
 
 } // ns cppgui
