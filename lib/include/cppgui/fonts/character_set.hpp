@@ -36,7 +36,7 @@ namespace cppgui {
         class Character_set {
         public:
 
-            auto add(uint32_t start, uint32_t count = 1) -> character_set &
+            auto add(uint32_t start, uint32_t count = 1) -> Character_set &
             {
                 /** TODO: implement an internal version that returns a reference to the _ranges
                 iterator where the added range has been stored. This will make it easier
@@ -51,7 +51,7 @@ namespace cppgui {
                 // After last current range ?
                 if (it == end(_ranges)) 
                 {
-                    _ranges.emplace_back<character_range>({start, count});
+                    _ranges.emplace_back<Character_range>({start, count});
                 }
                 // No: beginning before or inside an existing range, or appending to one
                 else {
@@ -74,7 +74,7 @@ namespace cppgui {
                 return *this;
             }
 
-            auto add(const character_range &range) -> character_set &
+            auto add(const Character_range &range) -> Character_set &
             {
                 return add(range.starting_codepoint, range.count);
             }
@@ -83,7 +83,7 @@ namespace cppgui {
                 be found. As this should be the exception, removing a range is not supported
                 here.
              */
-            auto remove(uint32_t ch) -> character_set & 
+            auto remove(uint32_t ch) -> Character_set & 
             {
                 using namespace std;
 
@@ -103,7 +103,7 @@ namespace cppgui {
                             uint32_t offset = ch - it->starting_codepoint;
                             uint32_t remaining = it->count - offset;
                             it->count = offset;
-                            _ranges.emplace<character_range>(it + 1, { it->starting_codepoint + offset + 1, remaining });
+                            _ranges.emplace<Character_range>(it + 1, { it->starting_codepoint + offset + 1, remaining });
                         }
                     }
                     break; // we're done
@@ -122,7 +122,7 @@ namespace cppgui {
 
         private:
 
-            std::vector<character_range> _ranges;
+            std::vector<Character_range> _ranges;
         };
         
     } // ns fonts

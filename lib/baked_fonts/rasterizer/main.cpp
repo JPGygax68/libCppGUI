@@ -37,11 +37,10 @@
 
 #include <cereal/archives/binary.hpp>
 
-#include <gpc/fonts/rasterized_glyph_cbox.hpp>
-#include <gpc/fonts/character_range.hpp>
-#include <gpc/fonts/character_set.hpp>
-#include <gpc/fonts/rasterized_font.hpp>
-#include <gpc/fonts/cereal.hpp>
+#include <cppgui/fonts/rasterized_font.hpp>
+#include <cppgui/fonts/character_set.hpp>
+#include <cppgui/fonts/cereal.hpp>
+
 
 typedef std::pair<std::string, std::string> NameValuePair;
 
@@ -91,9 +90,9 @@ static auto findFontFile(const std::string &file) -> std::string {
 int main(int argc, const char *argv[])
 {
     using namespace std;
-	using gpc::fonts::rasterized_glyph_cbox;
-    using gpc::fonts::character_range;
-	using gpc::fonts::rasterized_font;
+	using cppgui::fonts::Rasterized_glyph_cbox;
+    using cppgui::fonts::Character_range;
+	using cppgui::fonts::Rasterized_font;
 
     int exit_code = -1;
 
@@ -101,7 +100,7 @@ int main(int argc, const char *argv[])
 
         string font_file, output_file;
 		set<uint16_t> sizes;
-        gpc::fonts::character_set char_set;
+        cppgui::fonts::Character_set char_set;
         bool full_range = false;
 
         // Get command-line arguments
@@ -194,7 +193,7 @@ int main(int argc, const char *argv[])
         //fterror = FT_Set_Char_Size(face, 0, 16*64, 300, 300);
         //if (fterror) throw runtime_error("Failed to set character size (in 64ths of point)");
 
-		rasterized_font rast_font;
+		Rasterized_font rast_font;
 		rast_font.variants.resize(sizes.size()); // TODO: support styles, not just sizes
 
 		uint32_t glyph_count = 0, missing_count = 0;
@@ -211,8 +210,8 @@ int main(int argc, const char *argv[])
 			    if (glyph_index > 0)
                 {
 				    // Add this codepoint to the range, or begin a new range
-				    if (cp > next_codepoint) rast_font.ranges.emplace_back<character_range>({ cp, 0 });
-				    character_range &out_range = rast_font.ranges.back();
+				    if (cp > next_codepoint) rast_font.ranges.emplace_back<Character_range>({ cp, 0 });
+				    Character_range &out_range = rast_font.ranges.back();
 				    out_range.count++;
 				    next_codepoint = cp + 1;
 				    glyph_count++;
@@ -270,7 +269,7 @@ int main(int argc, const char *argv[])
                     if (ascender  > max_ascender ) max_ascender  = ascender ;
                     if (descender > max_descender) max_descender = descender;
 
-                    variant.glyphs.emplace_back(rasterized_font::glyph_record {
+                    variant.glyphs.emplace_back(Rasterized_font::glyph_record {
                         slot->bitmap_left, static_cast<signed>(bitmap.width) + slot->bitmap_left,
                         slot->bitmap_top - static_cast<signed>(bitmap.rows), slot->bitmap_top,
                         slot->advance.x >> 6, slot->advance.y >> 6,

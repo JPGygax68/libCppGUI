@@ -72,7 +72,7 @@ private:
 
 template<typename SourceType, typename AdaptedType, typename BackendType>
 struct Resource<SourceType, AdaptedType, BackendType, false>: 
-    public Resource_concept<Resource<SourceType, AdaptedType, BackendType, false>, SourceType, AdaptedType, BackendType>
+    Resource_concept<Resource<SourceType, AdaptedType, BackendType, false>, SourceType, AdaptedType, BackendType>
 {
     using Resource_concept::Resource_concept;
     using Resource_concept::operator =;

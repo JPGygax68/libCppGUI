@@ -49,7 +49,7 @@ namespace cppgui {
         using Keycode           = Keyboard_adapter::Keycode;
         using Cursor_handle     = Mouse_adapter::Cursor_handle;
         using Native_color      = Renderer::Native_color;
-        using Font_resource     = Renderer::Font_resource;
+        using Font_resource     = Canvas::Font_resource;
 
         using Click_handler     = std::function<void(const Point &, int button, Count clicks)>; // TODO: support return value ?
         using Pushed_handler    = std::function<void()>; // for buttons TODO: renamed event to "Push" (as in "a push happened") ?
@@ -83,7 +83,7 @@ namespace cppgui {
         void set_extents(const Extents &);
 
         void set_background_color(const RGBA &);
-        auto background_color() const;
+        auto background_color() const -> RGBA;
 
         void on_click(Click_handler);
 

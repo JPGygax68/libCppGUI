@@ -27,7 +27,6 @@ add_subdirectory(external/GPCBin2C)
 #add_subdirectory(external/libGPCGLUtils/lib)
 #add_subdirectory(external/libGPCGUIGLRenderer/lib)
 
-add_subdirectory(fontrasterizer)
 add_subdirectory(lib)
 
 #add_subdirectory(sdl)

@@ -42,7 +42,7 @@ namespace cppgui {
         _bkgnd_clr = color;
     }
 
-    auto Widget::background_color() const
+    auto Widget::background_color() const -> RGBA
     {
         // TODO: stylesheets!
         return _bkgnd_clr;

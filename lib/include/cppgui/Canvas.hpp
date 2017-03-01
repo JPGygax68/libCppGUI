@@ -21,7 +21,8 @@
 
 #include <cppgui_config.hpp>
 
-#include "basic_types.hpp"
+#include "./basic_types.hpp"
+#include "./Resource.hpp"
 
 #include CPPGUI_RENDERER_HEADER
 
@@ -33,11 +34,10 @@ namespace cppgui {
 
         /** TODO: Auto-select the correct mapper type by querying static properties of Renderer.
          */
-        template <class Renderer>
         struct Font_mapper : public Full_resource_mapper<
-            Font_mapper<Renderer>,
+            Font_mapper,
             Renderer,
-            const gpc::fonts::rasterized_font *, 
+            const fonts::Rasterized_font *, 
             typename Renderer::Font_handle 
         >
         {
@@ -51,17 +51,8 @@ namespace cppgui {
     class Canvas: public Renderer /*, public _canvas::Font_mapper<Renderer> */
     {
     public:
-        #ifdef OBSOLETE
-        using Native_color      = typename Renderer::native_color;
-        using Native_mono       = typename Renderer::native_mono;
-        using Font_handle       = typename Renderer::font_handle;
-        using Image_handle      = typename Renderer::image_handle;
-        using RGBA         = typename gpc::gui::rgba_norm;
-        using Rgba32            = typename gpc::gui::rgba32;
-        using Mono8             = typename gpc::gui::mono8;
-        using rgba32            = Renderer::rgba32;
-        #endif
-        using Font_mapper       = typename _canvas::Font_mapper<Renderer>;
+        using Font_resource     = Resource<const Rasterized_font *, Font_handle, Renderer, false>;
+        using Font_mapper       = _canvas::Font_mapper;
 
         struct Image_definition {
             Length          w, h;

@@ -22,7 +22,8 @@ project (libCppGUI)
 add_library( ${PROJECT_NAME} 
 STATIC
     include/cppgui/basic_types.hpp
-
+    include/cppgui/Resource.hpp
+    include/cppgui/Canvas.hpp           src/Canvas.cpp
     include/cppgui/Widget.hpp           src/Widget.cpp
     include/cppgui/Container.hpp        src/Container.cpp
     include/cppgui/Root_widget.hpp      src/Root_widget.cpp
@@ -40,19 +41,24 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_BINARY_DIR})
 # Make public header files available to consumers
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-#------------------------------------------------------------------------------
-# "Drivers"
+#-----------------------------------------------------------------------------
+# Sub-libraries (= library components)
 #
 
-# Driver sources must be able to access certain header files of libCppGUI core
+# Component sources must be able to access certain header files of libCppGUI core
 include_directories(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-# Renderer
+# "Baked" fonts
+
+add_subdirectory(baked_fonts)
+target_link_libraries(${PROJECT_NAME} PRIVATE cppgui_baked_fonts)
+
+# Driver: Renderer
 # TODO: make configurable
 add_subdirectory(builtin_drivers/renderer_opengl)
 target_link_libraries(${PROJECT_NAME} PUBLIC cppgui_renderer_opengl)
 
-# Session manager (windows and input)
+# Driver: Session manager (windows and input)
 # TODO: make configurable
 add_subdirectory(builtin_drivers/session_sdl2)
 target_link_libraries(${PROJECT_NAME} PUBLIC cppgui_session_sdl2)
