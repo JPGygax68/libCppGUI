@@ -70,9 +70,25 @@ namespace cppgui {
         const Rasterized_font  *rasterized;
         Renderer::Font_handle   handle;
 
+        void assign(const Rasterized_font *font);
+        auto get() const -> Renderer::Font_handle;
+
         void translate(Canvas * canvas);
         void release(Canvas * canvas);
     };
+
+    inline void Font_resource::assign(const Rasterized_font * font)
+    {
+        assert(!handle);
+        rasterized = font;
+    }
+
+    inline auto Font_resource::get() const -> Renderer::Font_handle
+    {
+        assert(handle);
+        return handle;
+    }
+
 
     class Canvas: public Renderer
     {

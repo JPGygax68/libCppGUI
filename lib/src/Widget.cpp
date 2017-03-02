@@ -198,14 +198,16 @@ namespace cppgui {
     void Widget::shift_horizontally(Position_delta delta)
     {
         // TODO: 
-        set_position({ position().x + delta, position().y });
+        //set_position({ position().x + delta, position().y });
+        _position.x += delta;
         invalidate();
     }
 
     void Widget::shift_vertically(Position_delta delta)
     {
         // TODO: 
-        set_position({ position().x, position().y + delta });
+        //set_position({ position().x, position().y + delta });
+        _position.y += delta;
         invalidate();
     }
 

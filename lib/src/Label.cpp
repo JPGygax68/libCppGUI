@@ -72,13 +72,13 @@ namespace cppgui {
     {
         if (!text().empty())
         {
-            return Bounding_box{_font.source()->compute_text_extents(0, _text.data(), _text.size())};
+            return Bounding_box{_font.rasterized->compute_text_extents(0, _text.data(), _text.size())};
         }
 
         return {};
     }
 
-    void Label::layout()
+    void Label::set_bounds(const Point & p, const Bounding_box & b)
     {
         // Nothing to do for now
     }

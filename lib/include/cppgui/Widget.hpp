@@ -232,14 +232,14 @@ namespace cppgui {
         // END of Updater aspect
         //-----------------------------------------------------------
 
-    public:
         // Layouting aspect -----------------------------------------
         // TODO: make optional via preprocessor
 
+    public:
         virtual void init_layout() = 0;
         virtual auto get_minimal_bounds() -> Bounding_box = 0;
         //virtual auto get_preferred_size() -> Extents { return get_minimal_size(); }
-        virtual void layout() = 0;
+        virtual void set_bounds(const Point & p, const Bounding_box & b) = 0;
 
         //void set_padding(Width);
         //void set_padding(const std::initializer_list<Width> &);

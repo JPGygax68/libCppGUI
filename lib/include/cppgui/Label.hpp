@@ -52,7 +52,7 @@ namespace cppgui {
 
         void init_layout() override;
         auto get_minimal_bounds() -> Bounding_box override;
-        void layout() override;
+        void set_bounds(const Point & p, const Bounding_box & b) override;
 
         // Own methods
 

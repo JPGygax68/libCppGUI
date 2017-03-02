@@ -89,6 +89,6 @@ Test_window::Test_window(): SDL_window("Test window")
     _root_widget.on_invalidated([this]() { invalidate(); });
 
     _root_widget.init_layout();
-    _root_widget.layout(); // TODO: replace with set_bounds()
+    _root_widget.set_bounds(,); // TODO: replace with set_bounds()
     _root_widget.init();
 }

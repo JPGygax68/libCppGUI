@@ -266,17 +266,17 @@ namespace cppgui {
         return {}; // TODO: better solution ?
     }
 
-    void Root_widget::layout()
+    void Root_widget::set_bounds(const Point & p, const Bounding_box & b)
     {
-        Container::layout();
+        Container::set_bounds(p, b);
     }
 
-    void Root_widget::insert_child(Widget *child)
+    void Root_widget::insert_child(Widget *child, const Point & p, const Bounding_box & b)
     {
         add_child(child);
 
         child->init_layout();
-        child->layout();
+        child->set_bounds(p, b);
         child->init();
 
         invalidate();
