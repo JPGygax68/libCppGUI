@@ -103,7 +103,9 @@ namespace cppgui {
     private:
         Invalidated_handler _on_invalidated;
 
-    // Container_updater aspect --------------------------
+
+        // Container_updater aspect ---------------------------------
+
     public:
 
         // Contract
@@ -115,9 +117,18 @@ namespace cppgui {
         void lock() { _must_update = false; }
 
         void unlock() { if (_must_update) invalidate(); }
-
+    
     private:
+
         bool                _must_update;
+
+        // Layouter aspect ------------------------------------------
+
+    public:
+
+        void init_layout() override;
+        auto get_minimal_bounds() -> Bounding_box override;
+        void layout() override;
 
     }; // class Root_widget
 

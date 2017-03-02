@@ -44,7 +44,6 @@ namespace cppgui {
         using Keycode           = Keyboard_adapter::Keycode;
         using Cursor_handle     = Mouse_adapter::Cursor_handle;
         using Native_color      = Renderer::Native_color;
-        using Font_resource     = Canvas::Font_resource;
 
         using Click_handler     = std::function<void(const Point &, int button, Count clicks)>; // TODO: support return value ?
         using Pushed_handler    = std::function<void()>; // for buttons TODO: renamed event to "Push" (as in "a push happened") ?
@@ -66,8 +65,8 @@ namespace cppgui {
         //auto& extents() const { return _rect.ext; }
         auto& bounds() { return _bounds; }
         auto& bounds() const { return _bounds; }
-        void set_position(const Point &);
-        void set_bounds(const Bounding_box &);
+        //void set_position(const Point &);
+        //void set_bounds(const Bounding_box &);
 
         void set_background_color(const RGBA &);
         auto background_color() const -> RGBA;
@@ -215,9 +214,7 @@ namespace cppgui {
         const char  *_id;
         #endif
 
-        //Rectangle               _rect = {};
         Point                   _position = {};
-        //Extents                 _extents = {};
         Bounding_box            _bounds = {};
         RGBA                    _bkgnd_clr = {0, 0, 0, 0};
         Click_handler           _click_hndlr;
@@ -226,34 +223,34 @@ namespace cppgui {
         bool                    _hovered = false;
 
     public:
-    //-----------------------------------------------------
-    // "Updater" "aspect
+        //-----------------------------------------------------------
+        // "Updater" "aspect
         // TODO: make configurable by preprocessor
 
         void invalidate();
 
-    // END of Updater aspect
-    //-----------------------------------------------------
+        // END of Updater aspect
+        //-----------------------------------------------------------
 
-    // Layouting aspect -----------------------------------
     public:
+        // Layouting aspect -----------------------------------------
         // TODO: make optional via preprocessor
 
         virtual void init_layout() = 0;
-        virtual auto get_minimal_size  () -> Extents = 0;
+        virtual auto get_minimal_bounds() -> Bounding_box = 0;
         //virtual auto get_preferred_size() -> Extents { return get_minimal_size(); }
         virtual void layout() = 0;
 
         //void set_padding(Width);
         //void set_padding(const std::initializer_list<Width> &);
 
-        void set_rectangle(const Point &nw, const Point &se);
-        void set_rectangle_nw(const Point &, const Extents &);
-        void set_rectangle_ne(const Point &, const Extents &);
-        void set_rectangle_se(const Point &, const Extents &);
-        void set_rectangle_sw(const Point &, const Extents &);
+        //void set_rectangle(const Point &nw, const Point &se);
+        //void set_rectangle_nw(const Point &, const Extents &);
+        //void set_rectangle_ne(const Point &, const Extents &);
+        //void set_rectangle_se(const Point &, const Extents &);
+        //void set_rectangle_sw(const Point &, const Extents &);
 
-    // END of Layouting aspect ----------------------------
+        // END of Layouting aspect ----------------------------------
 
     }; // class Widget
 

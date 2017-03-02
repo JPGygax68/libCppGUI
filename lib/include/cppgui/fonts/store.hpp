@@ -26,7 +26,7 @@ namespace cppgui {
 
         inline auto load(const Data_store &store)
         {
-            rasterized_font rastfont;
+            Rasterized_font rastfont;
             
             std::stringstream is(std::string{ reinterpret_cast<const char *>(store.first), store.second });
             cereal::BinaryInputArchive archive(is);
@@ -35,11 +35,11 @@ namespace cppgui {
             return rastfont;
         }
 
-        inline auto get(const Data_store &store) -> rasterized_font *
+        inline auto get(const Data_store &store) -> Rasterized_font *
         {
-            static std::map<const uint8_t *, std::unique_ptr<rasterized_font>> map;
+            static std::map<const uint8_t *, std::unique_ptr<Rasterized_font>> map;
 
-            return map.emplace(store.first, std::make_unique<rasterized_font>(load(store))).first->second.get();
+            return map.emplace(store.first, std::make_unique<Rasterized_font>(load(store))).first->second.get();
         }
 
         // FOR COMPATIBILITY

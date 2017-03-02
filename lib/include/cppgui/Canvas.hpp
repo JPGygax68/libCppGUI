@@ -48,11 +48,37 @@ namespace cppgui {
         };
     }
 
-    class Canvas: public Renderer /*, public _canvas::Font_mapper<Renderer> */
+    class Canvas;
+
+    class _Font_mapper
     {
     public:
-        using Font_resource     = Resource<const Rasterized_font *, Font_handle, Renderer, false>;
-        using Font_mapper       = _canvas::Font_mapper;
+        using Font_handle = Renderer::Font_handle;
+
+        auto translate(Renderer *r, const Rasterized_font *f) -> Font_handle;
+
+        void release  (Renderer *r, Font_handle h);
+
+    private:
+        std::map<const Rasterized_font *, Font_handle>  _map;
+        //std::vector<SourceType>             _laundry;
+    };
+
+    struct Font_resource
+    {
+        // TODO: it might be possible to put these two fields into a union
+        const Rasterized_font  *rasterized;
+        Renderer::Font_handle   handle;
+
+        void translate(Canvas * canvas);
+        void release(Canvas * canvas);
+    };
+
+    class Canvas: public Renderer
+    {
+    public:
+        //using Font_resource     = Resource<const Rasterized_font *, Font_handle, Renderer, false>;
+        //using Font_mapper       = _canvas::Font_mapper;
 
         struct Image_definition {
             Length          w, h;
@@ -70,8 +96,12 @@ namespace cppgui {
         void init   ();
         void cleanup();
 
-        static constexpr auto adapt_resource(const RGBA &color) { return color; }
-        auto adapt_resource(const Rasterized_font *font) -> Font_handle { return _font_mapper.adapt_resource(this, font); }
+        //static constexpr auto adapt_resource(const RGBA &color) { return color; }
+        //auto adapt_resource(const Rasterized_font *font) -> Font_handle { return _font_mapper.adapt_resource(this, font); }
+
+        // Font management
+        auto register_font(const Rasterized_font *rf) -> Font_handle;
+        void release_font(Font_handle h);
 
         // TODO: move to Renderer ?
         void draw_stippled_rectangle_outline(int x, int y, int w, int h, const RGBA &color);
@@ -82,7 +112,7 @@ namespace cppgui {
     private:
         static auto stipple_image() -> const Mono_image_definition &;
 
-        Font_mapper                 _font_mapper;
+        _Font_mapper                _font_mapper;
 
         Image_handle                _stipple_img;
 

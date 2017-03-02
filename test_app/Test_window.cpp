@@ -1,7 +1,7 @@
 #include <iostream>
 #include <memory>
 
-#include <gpc/fonts/store.hpp>
+#include <cppgui/baked_fonts.hpp>
 
 //#include <cppgui/Default_font.hpp>
 
@@ -18,28 +18,23 @@
 //static cppgui::Rasterized_font  dflt_font;
 //static cppgui::Rasterized_font  glyph_font;     // TODO: move this to a reusable module in cppgui itself
 
-Test_window::Test_window(): Parent("Test window")
+Test_window::Test_window(): SDL_window("Test window")
 {
-    //static const auto font_size = cppgui::Default_font<>::size<>;
-    using Default_font = GUI_configuration::Default_font;
+    //auto tick_font_data = cppgui::Icon_resources<Default_font::size>::tick_font_data();
+    //glyph_font = gpc::fonts::load(tick_font_data.first, tick_font_data.second);
+    //auto tick_descr = cppgui::Icon_resources<Default_font::size>::tick_descr();
 
-    // TODO: doesn't really belong here (could be executed more than once)
-    auto dflt_font_data = Default_font::get();
-    dflt_font = gpc::fonts::load(dflt_font_data.first, dflt_font_data.second);
-
-    auto tick_font_data = cppgui::Icon_resources<Default_font::size>::tick_font_data();
-    glyph_font = gpc::fonts::load(tick_font_data.first, tick_font_data.second);
-    auto tick_descr = cppgui::Icon_resources<Default_font::size>::tick_descr();
-
-    _label.set_font(&dflt_font);
+    _label.set_font(&cppgui::baked_fonts::default_font());
     _label.set_background_color({1, 1, 1, 1});
     _label.set_text(U"Hello World!");
-    _label.on_click([](const cppgui::Position &pos, int button, int clicks) {
+    _label.on_click([](const cppgui::Point &pos, int button, int clicks) {
         std::cout << "Label was clicked! (pos = " << pos.x << ", " << pos.y 
             << ", button = " << button << ", clicks = " << clicks << ")" << std::endl;
     });
     _label.set_position({ 50, 50 });
     _label.set_extents({ 200, 50 });
+
+    #ifdef NOT_DEFINED
 
     _textbox.set_font(&dflt_font);
     _textbox.set_position({50, 120});
@@ -87,11 +82,13 @@ Test_window::Test_window(): Parent("Test window")
     root_widget().add_child(&_menu);
     root_widget().add_child(&_input_dlg);
 
-    root_widget().set_focus_to(&_textbox);
+    #endif
 
-    root_widget().on_invalidated([this]() { invalidate(); });
+    _root_widget.set_focus_to(&_label);
 
-    root_widget().init_layout();
-    root_widget().layout();
-    root_widget().init();
+    _root_widget.on_invalidated([this]() { invalidate(); });
+
+    _root_widget.init_layout();
+    _root_widget.layout(); // TODO: replace with set_bounds()
+    _root_widget.init();
 }

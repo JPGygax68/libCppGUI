@@ -19,6 +19,7 @@ public:
     auto root_widget() { return &_root_widget; }
 
 private:
-    cppgui::Root_widget _root_widget;
-    cppgui::Label       _my_label;
+    cppgui::fonts::Rasterized_font  _dflt_font;
+    cppgui::Root_widget             _root_widget;
+    cppgui::Label                   _label;
 };

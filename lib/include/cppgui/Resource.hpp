@@ -37,9 +37,13 @@ struct Resource_concept
 template<typename SourceType, typename AdaptedType, class BackendType, bool StaticTranslation>
 struct Resource;
 
+/*
+ * This implementation of the Resource concept should be used when resources are translated
+ * statically, i.e. at compile-time.
+ */
 template<typename SourceType, typename AdaptedType, typename BackendType>
 struct Resource<SourceType, AdaptedType, BackendType, true>: 
-    public Resource_concept<Resource<SourceType, AdaptedType, BackendType, true>, SourceType, AdaptedType, BackendType>
+    Resource_concept<Resource<SourceType, AdaptedType, BackendType, true>, SourceType, AdaptedType, BackendType>
 {
     Resource::Resource(const SourceType &resource)
     {
@@ -70,9 +74,9 @@ private:
     AdaptedType     _adapted;
 };
 
-template<typename SourceType, typename AdaptedType, typename BackendType>
-struct Resource<SourceType, AdaptedType, BackendType, false>: 
-    Resource_concept<Resource<SourceType, AdaptedType, BackendType, false>, SourceType, AdaptedType, BackendType>
+template<typename SourceType, typename AdaptedType, typename AdapterType>
+struct Resource<SourceType, AdaptedType, AdapterType, false>: 
+    Resource_concept<Resource<SourceType, AdaptedType, AdapterType, false>, SourceType, AdaptedType, AdapterType>
 {
     using Resource_concept::Resource_concept;
     using Resource_concept::operator =;
@@ -84,14 +88,14 @@ struct Resource<SourceType, AdaptedType, BackendType, false>:
         _resource = resource;
     }
 
-    void translate(BackendType *backend)
+    void translate(AdapterType *backend)
     {
         _adapted = backend->adapt_resource(_resource);
     }
 
-    void release(BackendType *backend) 
+    void release(AdapterType *backend) 
     {
-        BackendType::release_resource(_adapted);
+        AdapterType::release_resource(_adapted);
     }
 
     auto get()

@@ -31,7 +31,7 @@ namespace cppgui {
     public:
 
         void set_font(const Rasterized_font *);
-        auto font() const { return _font.source(); }
+        //auto font() const { return _font.source(); }
         void set_text(const std::u32string &);
         auto& text() const { return _text; }
 
@@ -44,15 +44,14 @@ namespace cppgui {
     protected:
         Font_resource           _font;
         std::u32string          _text;
-        Point                   _text_origin; // origin of first character of label
-        Rectangle               _text_rect;
 
-    // Layouter aspect ------------------------------------
+    public:
+    // Layouter aspect ----------------------------------------------
 
         // Contract
 
         void init_layout() override;
-        auto get_minimal_size() -> Extents override;
+        auto get_minimal_bounds() -> Bounding_box override;
         void layout() override;
 
         // Own methods
@@ -67,7 +66,9 @@ namespace cppgui {
 
         Alignment               _minor_alignment = Alignment::cultural_minor_middle;
         Alignment               _major_alignment = Alignment::cultural_major_middle;
-        Text_bounding_box       _bounding_box;
+
+    // END of layouter aspect ---------------------------------------
+
     };
 
 } // ns cppgui

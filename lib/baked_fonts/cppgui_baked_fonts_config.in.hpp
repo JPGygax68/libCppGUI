@@ -10,6 +10,6 @@
 #include "generated/headers/LiberationSans-Regular-24.h"
 
 // TODO: make this configurable
-const std::vector<unsigned char> standard_font { liberationsans_regular_16 };
-// TODO: the name of the array should at least hint at the contained character set
-const std::vector<unsigned char> standard_symbols { liberationsans_regular_24 };
+#define CPPGUI_STANDARD_FONT_ARRAY_NAME liberationsans_regular_16
+// TODO: the array name should indicate that it contains symbols rather than regular characters
+#define CPPGUI_SYMBOLS_FONT_ARRAY_NAME liberationsans_regular_24

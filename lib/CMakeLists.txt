@@ -52,7 +52,7 @@ include_directories(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/include")
 # "Baked" fonts
 
 add_subdirectory(baked_fonts)
-target_link_libraries(${PROJECT_NAME} PRIVATE cppgui_baked_fonts)
+target_link_libraries(${PROJECT_NAME} PUBLIC cppgui_baked_fonts)
 
 # Driver: Renderer
 # TODO: make configurable

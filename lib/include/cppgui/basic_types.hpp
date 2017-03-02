@@ -59,13 +59,11 @@ namespace cppgui {
         Length          w, h;
     };
 
-    struct Rectangle {
-        Point           pos;
-        Extents         ext;
-    };
-
     class Bounding_box: public Text_bounding_box {
     public:
+        explicit Bounding_box(const Text_bounding_box &from): Text_bounding_box{from} {}
+        Bounding_box() = default;
+
         bool is_point_inside(const Point &p) const
         {
             // Important: by convention, Y is positive-down in the CppGUI coordinate system; but 
@@ -74,6 +72,24 @@ namespace cppgui {
             // numbers.
             return p.x >= x_min && p.x < x_max 
                 && p.y >= - y_max && p.y < - y_max;
+        }
+    };
+
+    struct Rectangle {
+        Point           pos;
+        Extents         ext;
+
+        explicit Rectangle(const Bounding_box &b)
+        {
+            pos.x = b.x_min, pos.y = - b.y_max; // TODO: adapt to support positive-up Y axis
+            ext.w = - b.x_min + b.x_max;
+            ext.h = - b.y_min + b.y_min;
+        }
+
+        void inflate(Width x, Width y)
+        {
+            pos.x -= x, ext.w += 2 * x;
+            pos.y -= y, ext.h += 2 * y;
         }
     };
 

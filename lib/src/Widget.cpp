@@ -37,10 +37,10 @@ namespace cppgui {
     {
     }
 
-    void Widget::set_bounds(const Bounding_box &bounds)
+    /* void Widget::set_bounds(const Bounding_box &bounds)
     {
         _bounds = bounds;
-    }
+    } */
 
     void Widget::set_background_color(const RGBA &color)
     {

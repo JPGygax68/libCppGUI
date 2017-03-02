@@ -256,21 +256,20 @@ namespace cppgui {
 
     // Layouter aspect ----------------------------------------------
 
-    /*
-
-    template<class Config, class Parent>
-    void Root_widget_base__Layouter<Config, true, Parent>::init_layout()
+    void Root_widget::init_layout()
     {
-        p()->init_children_layout();
+        init_children_layout();
     }
 
-    template<class Config, class Parent>
-    void Root_widget_base__Layouter<Config, true, Parent>::layout()
+    auto Root_widget::get_minimal_bounds() -> Bounding_box
     {
-        Container_base_t::layout();
+        return {}; // TODO: better solution ?
     }
 
-    */
+    void Root_widget::layout()
+    {
+        Container::layout();
+    }
 
     void Root_widget::insert_child(Widget *child)
     {

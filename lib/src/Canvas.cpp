@@ -23,7 +23,35 @@
 
 namespace cppgui {
 
-    // Method implementations ---------------------------------------
+    auto _Font_mapper::translate(Renderer * r, const Rasterized_font * f) -> Font_handle
+    {
+        auto it = _map.find(f);
+        if (it != end(_map)) return it->second;
+
+        auto h = r->register_font(*f);
+        _map[f] = h;
+        return h;
+    }
+
+    void _Font_mapper::release(Renderer * r, Font_handle h)
+    {
+        // NO-OP for the time being: we do not release OpenGL resources created for fonts
+        // TODO: actual implementation
+        // TODO: reference-counting!
+    }
+
+    void Font_resource::translate(Canvas * canvas)
+    {
+        assert(!handle);
+        handle = canvas->register_font(rasterized);
+    }
+
+    void Font_resource::release(Canvas * canvas)
+    {
+        assert(handle);
+        canvas->release_font(handle);
+        handle = 0;
+    }
 
     void Canvas::init()
     {
@@ -42,13 +70,16 @@ namespace cppgui {
         Renderer::cleanup();
     }
 
-    /*
-    template<class Renderer>
-    auto Canvas<Renderer>::translate_resource(const Rasterized_font *font) -> Font_handle
+    auto Canvas::register_font(const Rasterized_font * rf) -> Font_handle
     {
-        return _font_mapper.get_resource(this, font);
+        return _font_mapper.translate(this, rf);
     }
-    */
+
+    void Canvas::release_font(Font_handle h)
+    {
+        /* NO-OP: we do not release font textures for the time being; to do this properly
+         * would require LRU, and possibly more sophisticated management. */
+    }
 
     void Canvas::draw_stippled_rectangle_outline(int x, int y, int w, int h, const RGBA &color)
     {

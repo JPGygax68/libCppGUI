@@ -50,13 +50,13 @@ namespace cppgui {
 
         if (!_text.empty())
         {
-            cnv->render_text(_font.get(), pos.x + _text_origin.x, pos.y + _text_origin.y, _text.data(), _text.size());
+            cnv->render_text(_font.get(), pos.x, pos.y, _text.data(), _text.size());
         }
 
         if (this->has_focus())
         {
-            // TODO: make this into a method of Box<>
-            auto r = _text_rect + Extents{ 3, 2 };
+            auto r = Rectangle{bounds()};
+            r.inflate(3, 2); // TODO: make this configurable somewhere
             cnv->draw_stippled_rectangle_outline(pos.x + r.pos.x, pos.y + r.pos.y, r.ext.w, r.ext.h, {0, 0, 0.5f, 1});
         }
     }
@@ -65,24 +65,14 @@ namespace cppgui {
 
     void Label::init_layout()
     {
-        //assert(!p()->text().empty());
-
-        if (!text().empty())
-        {
-            _bounding_box = font()->compute_text_extents(0, text().data(), text().size() );
-        }
-        else {
-            _bounding_box = {};
-        }
+        // TODO ?
     }
 
-    auto Label::get_minimal_size() -> Extents
+    auto Label::get_minimal_bounds() -> Bounding_box
     {
-        //assert(!p()->text().empty());
-
         if (!text().empty())
         {
-            return add_boxing({ _bounding_box.width(), _bounding_box.height() });
+            return Bounding_box{_font.source()->compute_text_extents(0, _text.data(), _text.size())};
         }
 
         return {};
@@ -90,14 +80,7 @@ namespace cppgui {
 
     void Label::layout()
     {
-        // _layout.compute_layout( p()->extents(), Padding{} ); // TODO _padding);
-
-        _text_origin = position_text_element(_bounding_box, _minor_alignment, _major_alignment);
-
-        _text_rect = {
-            _text_origin.x + _bounding_box.x_min, _text_origin.y - _bounding_box.y_max,
-            _bounding_box.width(), _bounding_box.height()
-        };
+        // Nothing to do for now
     }
 
 } // ns cppgui

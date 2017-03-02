@@ -129,8 +129,12 @@ endforeach(size)
 add_library(${PROJECT_NAME}
 STATIC
     ${FONT_SOURCES}
+    include/cppgui/baked_fonts.hpp      src/baked_fonts.cpp
     ${PROJECT_BINARY_DIR}/cppgui_baked_fonts_config.hpp
 )
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/include/cppgui)
+target_include_directories(${PROJECT_NAME} PUBLIC  ${PROJECT_SOURCE_DIR}/include)
 
 # Generate configuration file and make it available to target and consumers
 configure_file("${PROJECT_SOURCE_DIR}/cppgui_baked_fonts_config.in.hpp"
