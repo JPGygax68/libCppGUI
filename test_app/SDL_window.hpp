@@ -30,7 +30,7 @@ public:
     struct Extents { int w, h; };
     enum Button_direction { down = 0, up = 1 };
 
-    SDL_window(const std::string &title, int w = 800, int h = 600); // TODO: should probably be made protected
+    explicit SDL_window(const std::string &title, int w = 800, int h = 600); // TODO: should probably be made protected
     ~SDL_window();
 
     auto id() -> uint32_t;
@@ -79,9 +79,7 @@ protected:
     void handle_redraw();
     // /*virtual*/ void handle_custom_event(SDL_UserEvent &) {}
 
-    // Concept: to implement in derived class:
-
-    //void redraw();
+    virtual void size_changed(Sint32 data1, Sint32 data2) {}
 
 private:
 

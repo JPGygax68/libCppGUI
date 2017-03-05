@@ -18,10 +18,23 @@ project (libCppGUI)
 #  limitations under the License.
 #-----------------------------------------------------------------------------
 
+# The core must be accessible to all components
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
+
+# TODO: also make all components accessible to each other ? AVOID IF POSSIBLE
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/builtin_drivers/renderer_opengl/include)
+#include_directories(${CMAKE_CURRENT_BINARY_DIR}/builtin_drivers/renderer_opengl)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/builtin_drivers/platform_sdl2/include)
+#include_directories(${CMAKE_CURRENT_BINARY_DIR}/builtin_drivers/platform_sdl2)
+
+
 # Define main target: static library
 add_library( ${PROJECT_NAME} 
 STATIC
     include/cppgui/basic_types.hpp
+    include/cppgui/Window.hpp           src/Window.cpp
     include/cppgui/Resource.hpp
     include/cppgui/Box_model.hpp        src/Box_model.cpp
     include/cppgui/Canvas.hpp           src/Canvas.cpp
@@ -48,6 +61,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/i
 
 # Component sources must be able to access certain header files of libCppGUI core
 include_directories(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/include")
+# Component sources must also be allowed to access the generated config header file
+include_directories(${PROJECT_NAME} "${CMAKE_CURRENT_BINARY_DIR}")
 
 # "Baked" fonts
 
@@ -61,7 +76,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC cppgui_renderer_opengl)
 
 # Driver: Session manager (windows and input)
 # TODO: make configurable
-add_subdirectory(builtin_drivers/session_sdl2)
-target_link_libraries(${PROJECT_NAME} PUBLIC cppgui_session_sdl2)
+add_subdirectory(builtin_drivers/platform_sdl2)
+target_link_libraries(${PROJECT_NAME} PUBLIC cppgui_platform_sdl2)
 
 

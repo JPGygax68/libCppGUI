@@ -71,15 +71,11 @@ namespace cppgui {
         Widget::compute_view_from_data();
     }
 
-    /*
-    template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::set_focus_to(Widget_t *widget)
+    /* void Root_widget::set_focus_to(Widget *widget)
     {
-        if (_focused_widget) _focused_widget->loosing_focus(); // TODO: support veto-ing loss of focus ?
-        _focused_widget = widget;
-        if (_focused_widget) _focused_widget->gained_focus();
-    }
-    */
+        switch_focused_child(widget);
+        if (widget) widget->gained_focus(); // TODO: why is this not done in switch_focused_child() ?
+    } */
 
     void Root_widget::push_cursor(Cursor_handle cursor)
     {

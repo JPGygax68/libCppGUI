@@ -31,8 +31,7 @@ Test_window::Test_window(): SDL_window("Test window")
         std::cout << "Label was clicked! (pos = " << pos.x << ", " << pos.y 
             << ", button = " << button << ", clicks = " << clicks << ")" << std::endl;
     });
-    _label.set_position({ 50, 50 });
-    _label.set_extents({ 200, 50 });
+    _label.set_bounds({ 50, 50 }, _label.get_minimal_bounds());
 
     #ifdef NOT_DEFINED
 
@@ -84,11 +83,14 @@ Test_window::Test_window(): SDL_window("Test window")
 
     #endif
 
-    _root_widget.set_focus_to(&_label);
+    _root_widget.switch_focused_child(&_label);
 
     _root_widget.on_invalidated([this]() { invalidate(); });
+}
 
+void Test_window::size_changed(Sint32 data1, Sint32 data2)
+{
     _root_widget.init_layout();
-    _root_widget.set_bounds(,); // TODO: replace with set_bounds()
+    _root_widget.set_bounds({0, 0}, cppgui::Bounding_box{cppgui::Extents{data1, data2}});
     _root_widget.init();
 }

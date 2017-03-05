@@ -1,12 +1,16 @@
 #pragma once
 
+// TODO: split into several modules
+
+
 #include <SDL2/SDL.h>
+
 
 namespace cppgui {
 
-    struct Keyboard_adapter {
+    using Keycode = SDL_Keysym;
 
-        using Keycode = SDL_Keysym;
+    namespace sdl2 {
 
         static bool is_left     (const Keycode &key) { return key.sym == SDLK_LEFT     ; }
         static bool is_right    (const Keycode &key) { return key.sym == SDLK_RIGHT    ; }
@@ -26,13 +30,10 @@ namespace cppgui {
 
         static bool is_shift_down() { return (SDL_GetModState() & KMOD_SHIFT) != 0; }
         static bool is_ctrl_down () { return (SDL_GetModState() & KMOD_CTRL ) != 0; }
-    };
-
-    struct Mouse_adapter {
 
         using Cursor_handle = SDL_Cursor *;
 
-        static inline bool is_button_down(int button) { return (SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(button)) != 0; }
+        static inline bool is_mouse_button_down(int button) { return (SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(button)) != 0; }
 
         static auto get_current_cursor() -> SDL_Cursor *;
 
@@ -43,6 +44,9 @@ namespace cppgui {
         static void free_cursor(Cursor_handle cursor);
 
         static void set_cursor(Cursor_handle cursor);
-    };
+
+    } // ns sdl2
 
 } // ns cppgui
+
+#include "./SDL2_window.hpp"

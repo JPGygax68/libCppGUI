@@ -45,7 +45,7 @@ namespace cppgui {
         virtual bool container_has_focus() = 0;       
         virtual auto container_absolute_position() -> Point = 0;
         virtual void switch_focused_child(Widget *);
-        auto focused_child() -> Widget * { return _focused_child; }
+        auto focused_child() const -> Widget * { return _focused_child; }
 
         auto first_child() -> Widget * { assert(!_children.empty()); return _children.front(); }
         auto last_child () -> Widget * { assert(!_children.empty()); return _children.back (); }

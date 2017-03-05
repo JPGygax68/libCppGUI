@@ -38,6 +38,11 @@ namespace cppgui {
             }
 
             _focused_child = child;
+
+            if (_focused_child)
+            {
+                _focused_child->gained_focus();
+            }
         }
     }
 

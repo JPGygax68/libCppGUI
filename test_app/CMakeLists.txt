@@ -7,9 +7,9 @@ add_executable( ${PROJECT_NAME}
   main.cpp
   Test_window.hpp           Test_window.cpp
 
-  SDL_window.hpp            SDL_window.cpp
-  SDL_application.hpp       SDL_application.cpp
-  SDL_exception.hpp
+  #SDL_window.hpp            SDL_window.cpp
+  #SDL_application.hpp       SDL_application.cpp
+  #SDL_exception.hpp
 
   # libcppgui_inst.cpp
 )

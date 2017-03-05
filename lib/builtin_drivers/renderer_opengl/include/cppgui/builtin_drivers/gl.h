@@ -1,5 +1,7 @@
 #pragma once
 
+// TODO: rename ? .hpp extension ?
+
 #include <cppgui_opengl_config.hpp>
 
 // Include the configured OpenGL bindings

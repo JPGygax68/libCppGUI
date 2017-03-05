@@ -13,7 +13,8 @@
 // TODO: reintroduce a base class with dummy impl
 //#include <gpc/gui/renderer.hpp>
 
-#include <cppgui/builtin_drivers/renderer_opengl.hpp>
+#include "OpenGL_renderer.hpp"
+
 
 namespace cppgui {
 
@@ -29,14 +30,14 @@ namespace cppgui {
 
     // Method implementations -----------------------------------------
 
-    Renderer::Renderer() :
+    OpenGL_renderer::OpenGL_renderer() :
         vertex_buffer(0), index_buffer(0),
         vertex_shader(0), fragment_shader(0), program(0)
     {
         text_color = rgba_to_native({0, 0, 0, 1});
     }
 
-    void Renderer::init()
+    void OpenGL_renderer::init()
     {
         // User code is responsible for creating and/or selecting the proper GL context when calling init()
         // TODO: somehow (optionally) make use of glbinding's context management facilities?
@@ -80,7 +81,7 @@ namespace cppgui {
         GL(GetProgramInfoLog, program, 2048, &len, log);
         if (log[0] != '\0') {
             std::cerr << "Shader info log:" << std::endl << log << std::endl;
-            throw std::runtime_error("gpc::gui::gl::Renderer: failed to build shader program");
+            throw std::runtime_error("gpc::gui::gl::OpenGL_renderer: failed to build shader program");
         }
 
         // Generate a vertex and an index buffer for rectangle vertices
@@ -95,12 +96,12 @@ namespace cppgui {
         GL(BufferData, GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLushort), indices, GL_STATIC_DRAW);
     }
 
-    void Renderer::cleanup()
+    void OpenGL_renderer::cleanup()
     {
         // TODO: free all resources
     }
 
-    void Renderer::define_viewport(int x, int y, int w, int h)
+    void OpenGL_renderer::define_viewport(int x, int y, int w, int h)
     {
         vp_width = w, vp_height = h;
         GL(Viewport, x, y, w, h);
@@ -110,7 +111,7 @@ namespace cppgui {
         gl::setUniform("viewport_h", 1, h);
     }
 
-    void Renderer::enter_context()
+    void OpenGL_renderer::enter_context()
     {
         // TODO: does all this really belong here, or should there be a one-time init independent of viewport ?
         GL(BlendFunc, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -119,18 +120,18 @@ namespace cppgui {
         GL(UseProgram, program);
     }
 
-    void Renderer::leave_context()
+    void OpenGL_renderer::leave_context()
     {
         GL(UseProgram, 0);
     }
 
-    void Renderer::clear(const RGBA &color)
+    void OpenGL_renderer::clear(const RGBA &color)
     {
         GL(ClearColor, color.r(), color.g(), color.b(), color.a());
         GL(Clear, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void Renderer::draw_rect(int x, int y, int w, int h)
+    void OpenGL_renderer::draw_rect(int x, int y, int w, int h)
     {
         // Prepare the vertices
         GLint v[4][2];
@@ -151,7 +152,7 @@ namespace cppgui {
         GL(BindBuffer, GL_ARRAY_BUFFER, 0);
     }
 
-    auto Renderer::register_rgba32_image(size_t width, size_t height, const RGBA32 *pixels) -> Image_handle
+    auto OpenGL_renderer::register_rgba32_image(size_t width, size_t height, const RGBA32 *pixels) -> Image_handle
     {
         auto i = image_textures.size();
         image_textures.resize(i + 1);
@@ -163,7 +164,7 @@ namespace cppgui {
         return image_textures[i];
     }
 
-    void Renderer::release_rgba32_image(Image_handle hnd)
+    void OpenGL_renderer::release_rgba32_image(Image_handle hnd)
     {
         auto i = std::find(std::begin(image_textures), std::end(image_textures), hnd);
         assert(i != std::end(image_textures));
@@ -171,7 +172,7 @@ namespace cppgui {
         *i = 0; // TODO: put into "recycle" list ?
     }
 
-    auto Renderer::register_mono8_image(size_t width, size_t height, const Mono8 *pixels) -> Image_handle
+    auto OpenGL_renderer::register_mono8_image(size_t width, size_t height, const Mono8 *pixels) -> Image_handle
     {
         auto i = image_textures.size();
         image_textures.resize(i + 1);
@@ -183,12 +184,12 @@ namespace cppgui {
         return image_textures[i];
     }
 
-    void Renderer::release_mono8_image(Image_handle hnd)
+    void OpenGL_renderer::release_mono8_image(Image_handle hnd)
     {
         release_rgba32_image(hnd); // same resource list
     }
 
-    void Renderer::fill_rect(int x, int y, int w, int h, const RGBA &color)
+    void OpenGL_renderer::fill_rect(int x, int y, int w, int h, const RGBA &color)
     {
         GL(Uniform4fv, 2, 1, color);
         gl::setUniform("render_mode", 5, 1);
@@ -196,12 +197,12 @@ namespace cppgui {
         draw_rect(x, y, w, h);
     }
 
-    void Renderer::draw_image(int x, int y, int w, int h, Image_handle image)
+    void OpenGL_renderer::draw_image(int x, int y, int w, int h, Image_handle image)
     {
         draw_image(x, y, w, h, image, 0, 0);
     }
 
-    void Renderer::draw_image(int x, int y, int w, int h, Image_handle image, int offset_x, int offset_y)
+    void OpenGL_renderer::draw_image(int x, int y, int w, int h, Image_handle image, int offset_x, int offset_y)
     {
         static const GLfloat black[4] = { 0, 0, 0, 0 };
 
@@ -221,13 +222,13 @@ namespace cppgui {
     }
 
     // TODO: rename to "modulate_greyscale_image()" ?
-    void Renderer::modulate_greyscale_image(int x, int y, int w, int h, 
+    void OpenGL_renderer::modulate_greyscale_image(int x, int y, int w, int h, 
         Image_handle img, const RGBA &color, int offset_x, int offset_y)
     {
         _draw_greyscale_image(x, y, w, h, img, color, 0, 0, 0, 1, offset_x, offset_y);
     }
 
-    void Renderer::draw_greyscale_image_right_righthand(int x, int y, int length, int width, 
+    void OpenGL_renderer::draw_greyscale_image_right_righthand(int x, int y, int length, int width, 
         Image_handle img, const RGBA &color, int offset_x, int offset_y)
     {
         _draw_greyscale_image(x, y, length, width, img, color, 
@@ -237,7 +238,7 @@ namespace cppgui {
             );
     }
 
-    void Renderer::draw_greyscale_image_down_righthand(int x, int y, int length, int width, 
+    void OpenGL_renderer::draw_greyscale_image_down_righthand(int x, int y, int length, int width, 
         Image_handle img, const RGBA &color, int offset_x, int offset_y)
     {
         _draw_greyscale_image(x - width, y, width, length, img, color, 
@@ -247,7 +248,7 @@ namespace cppgui {
             );
     }
 
-    void Renderer::draw_greyscale_image_left_righthand(int x, int y, int length, int width, 
+    void OpenGL_renderer::draw_greyscale_image_left_righthand(int x, int y, int length, int width, 
         Image_handle img, const RGBA &color, int offset_x, int offset_y)
     {
         _draw_greyscale_image(x - length, y - width, length, width, img, color, 
@@ -257,7 +258,7 @@ namespace cppgui {
             );
     }
 
-    void Renderer::draw_greyscale_image_up_righthand(int x, int y, int length, int width, 
+    void OpenGL_renderer::draw_greyscale_image_up_righthand(int x, int y, int length, int width, 
         Image_handle img, const RGBA &color, int offset_x, int offset_y)
     {
         _draw_greyscale_image(x, y - length, width, length, img, color, 
@@ -267,7 +268,7 @@ namespace cppgui {
             );
     }
 
-    void Renderer::_draw_greyscale_image(int x, int y, int w, int h, Image_handle img, const RGBA &color, 
+    void OpenGL_renderer::_draw_greyscale_image(int x, int y, int w, int h, Image_handle img, const RGBA &color, 
         int origin_x, int origin_y, float texrot_sin, float texrot_cos, int offset_x, int offset_y)
     {
         using namespace gl;
@@ -291,7 +292,7 @@ namespace cppgui {
         GL(BindTexture, GL_TEXTURE_RECTANGLE, 0);
     }
 
-    void Renderer::set_clipping_rect(int x, int y, int w, int h)
+    void OpenGL_renderer::set_clipping_rect(int x, int y, int w, int h)
     {
         #ifdef DEBUG
         assert(!dbg_clipping_active);
@@ -309,7 +310,7 @@ namespace cppgui {
         #endif
     }
 
-    void Renderer::cancel_clipping()
+    void OpenGL_renderer::cancel_clipping()
     {
         #ifdef DEBUG
         assert(dbg_clipping_active);
@@ -320,7 +321,7 @@ namespace cppgui {
     }
 
     // TODO: free resources allocated for fonts
-    auto Renderer::register_font(const Rasterized_font &font) -> Font_handle
+    auto OpenGL_renderer::register_font(const Rasterized_font &font) -> Font_handle
     {
         // TODO: re-use discarded slots
         Font_handle index = managed_fonts.size();
@@ -334,18 +335,18 @@ namespace cppgui {
         return index + 1;
     }
 
-    void Renderer::release_font(Font_handle /*handle*/)
+    void OpenGL_renderer::release_font(Font_handle /*handle*/)
     {
         // auto &font = managed_fonts[handle - 1];
         // TODO: actual implementation
     }
 
-    void Renderer::set_text_color(const RGBA &color)
+    void OpenGL_renderer::set_text_color(const RGBA &color)
     {
         text_color = color;
     }
 
-    void Renderer::render_text(Font_handle handle, int x, int y, const char32_t *text, size_t count, int w_max)
+    void OpenGL_renderer::render_text(Font_handle handle, int x, int y, const char32_t *text, size_t count, int w_max)
     {
         // TODO: support text that advances in Y direction (and right-to-left)
 
@@ -400,7 +401,7 @@ namespace cppgui {
 
     // managed_font private class -------------------------------------
 
-    void Renderer::Managed_font::create_quads()
+    void OpenGL_renderer::Managed_font::create_quads()
     {
         struct Vertex { GLint x, y; };
 
@@ -448,7 +449,7 @@ namespace cppgui {
         GL(BindBuffer, GL_ARRAY_BUFFER, 0); // just in case
     }
 
-    void Renderer::Managed_font::store_pixels()
+    void OpenGL_renderer::Managed_font::store_pixels()
     {
         buffer_textures.resize(variants.size());
         GL(GenBuffers, buffer_textures.size(), &buffer_textures[0]);

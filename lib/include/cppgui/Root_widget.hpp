@@ -53,7 +53,7 @@ namespace cppgui {
         auto container_absolute_position() -> Point override;
         bool container_has_focus() override { return true; } // TODO: only return true if owning window is active ?
 
-        //void set_focus_to(Widget_t *);
+        //void set_focus_to(Widget *);
         //auto focused_widget() const { return focused_child(); } // TODO: remove and replace all calls?
 
         void push_cursor(Cursor_handle);

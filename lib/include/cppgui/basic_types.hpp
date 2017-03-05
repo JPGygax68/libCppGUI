@@ -57,11 +57,22 @@ namespace cppgui {
     struct Extents
     {
         Length          w, h;
+
+        explicit Extents(Length w_, Length h_): w{w_}, h{h_} {}
+        Extents() = default;
     };
 
     class Bounding_box: public Text_bounding_box {
     public:
         explicit Bounding_box(const Text_bounding_box &from): Text_bounding_box{from} {}
+
+        /*
+         * When initialized from an Extents struct, the bounding box is positioned at (0, 0),
+         * the width is assigned to x_max, and the height to y_max - the ascendent - while
+         * the descendent is set to 0.
+         */
+        explicit Bounding_box(const Extents &x): Text_bounding_box{0, x.w, 0, x.h} {}
+        
         Bounding_box() = default;
 
         bool is_point_inside(const Point &p) const

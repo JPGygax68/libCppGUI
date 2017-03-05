@@ -9,9 +9,9 @@
 
 namespace cppgui {
 
-    // TODO: rename this class to Renderer_OpenGL and use cppgui_config.in.hpp to define a macro RENDERER_CLASS
+    #define CPPGUI_RENDERER_CLASS OpenGL_renderer
     
-    class Renderer { 
+    class OpenGL_renderer { 
     public:
 
         // Metadata
@@ -50,7 +50,7 @@ namespace cppgui {
 
         // Lifecycle
 
-        Renderer();
+        OpenGL_renderer();
 
         void enter_context();
 

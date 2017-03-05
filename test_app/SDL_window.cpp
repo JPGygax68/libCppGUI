@@ -32,6 +32,9 @@
 #include "./SDL_exception.hpp"
 #include "./SDL_application.hpp"
 
+#include <cppgui_config.hpp>
+#include CPPGUI_RENDERER_HEADER
+
 
 struct SDL_window::Static_init {
 
@@ -163,7 +166,8 @@ void SDL_window::dispatch_custom_event(uint32_t win_id)
 
 void SDL_window::init_window()
 {
-    init_renderer(); // call into renderer adapter
+    // Renderer adapter
+    cppgui::Renderer::init();
     // TODO: other subsystem adapters
 }
 
