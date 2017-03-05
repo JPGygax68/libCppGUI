@@ -79,9 +79,9 @@ namespace cppgui {
 
     void Root_widget::push_cursor(Cursor_handle cursor)
     {
-        _cursor_stack.push( Mouse_adapter::get_current_cursor() );
+        _cursor_stack.push( get_current_cursor() );
 
-        Mouse_adapter::set_cursor(cursor);
+        set_cursor(cursor);
     }
 
     void Root_widget::pop_cursor()
@@ -89,10 +89,10 @@ namespace cppgui {
         // All cursors but the top one must be freed after use
         if (_cursor_stack.size() > 1)
         {
-            Mouse_adapter::free_cursor( Mouse_adapter::get_current_cursor() );
+            free_cursor( get_current_cursor() );
         }
 
-        Mouse_adapter::set_cursor(_cursor_stack.top());
+        set_cursor(_cursor_stack.top());
 
         _cursor_stack.pop();
     }

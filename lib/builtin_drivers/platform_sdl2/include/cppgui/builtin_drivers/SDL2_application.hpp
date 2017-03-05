@@ -5,40 +5,37 @@
 #include <map>
 #include <set>
 
+
 union SDL_Event;
 struct SDL_UserEvent;
 
 namespace cppgui
 {
-    namespace sdl2
-    {
-        class SDL2_window;
+    class SDL2_window;
 
-        class SDL2_application {
-        public:
-            using Custom_event_handler = std::function<void(const SDL_UserEvent &)>;
+    class SDL2_application {
+    public:
+        using Custom_event_handler = std::function<void(const SDL_UserEvent &)>;
 
-            // Concept implementation
+        // Concept implementation
 
-            int run();
+        int run();
 
-            // Additional methods
+        // Additional methods
 
-            // TODO: overload that changes the handler but keeps the event id
-            static auto register_custom_event(Custom_event_handler) -> uint32_t;
-            //static auto register_custom_window_event(Custom_window_event_handler) -> uint32_t;
+        // TODO: overload that changes the handler but keeps the event id
+        static auto register_custom_event(Custom_event_handler) -> uint32_t;
+        //static auto register_custom_window_event(Custom_window_event_handler) -> uint32_t;
 
-            // void post_custom_event(const SDL_UserEvent &);
+        // void post_custom_event(const SDL_UserEvent &);
 
-        private:
+    private:
 
-            static auto event_map() -> std::map<uint32_t, Custom_event_handler> &;
+        static auto event_map() -> std::map<uint32_t, Custom_event_handler> &;
 
-            //static auto instance_pointer() -> Test_application * &;
+        //static auto instance_pointer() -> Test_application * &;
 
-            std::set<SDL2_window*>     windows;
-        };
-
-    } // ns sdl2
+        std::set<SDL2_window*>     windows;
+    };
 
 } // ns cppui

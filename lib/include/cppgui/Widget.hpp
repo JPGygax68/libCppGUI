@@ -26,7 +26,7 @@
 #include "./Resource.hpp"
 
 #include CPPGUI_RENDERER_HEADER
-#include CPPGUI_INPUT_ADAPTER_HEADER
+#include CPPGUI_PLATFORM_ADAPTER_HEADER
 
 
 namespace cppgui {
@@ -41,10 +41,6 @@ namespace cppgui {
     class Widget
     {
     public:
-        using Keycode           = Keyboard_adapter::Keycode;
-        using Cursor_handle     = Mouse_adapter::Cursor_handle;
-        using Native_color      = Renderer::Native_color;
-
         using Click_handler     = std::function<void(const Point &, int button, Count clicks)>; // TODO: support return value ?
         using Pushed_handler    = std::function<void()>; // for buttons TODO: renamed event to "Push" (as in "a push happened") ?
 

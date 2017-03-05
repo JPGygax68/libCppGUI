@@ -40,7 +40,7 @@ namespace cppgui {
         /** Called when a key_down event could not be handled by the child it was sent to
             (from container_key_down()) and needs to "bubble" back up.
          */
-        virtual void child_key_down(const Keyboard_adapter::Keycode &) = 0;
+        virtual void child_key_down(const Keycode &) = 0;
 
         virtual bool container_has_focus() = 0;       
         virtual auto container_absolute_position() -> Point = 0;

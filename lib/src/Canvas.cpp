@@ -23,7 +23,7 @@
 
 namespace cppgui {
 
-    auto _Font_mapper::translate(Renderer * r, const Rasterized_font * f) -> Font_handle
+    auto _Font_mapper::translate(CPPGUI_RENDERER_CLASS * r, const Rasterized_font * f) -> Font_handle
     {
         auto it = _map.find(f);
         if (it != end(_map)) return it->second;
@@ -33,7 +33,7 @@ namespace cppgui {
         return h;
     }
 
-    void _Font_mapper::release(Renderer * r, Font_handle h)
+    void _Font_mapper::release(CPPGUI_RENDERER_CLASS * r, Font_handle h)
     {
         // NO-OP for the time being: we do not release OpenGL resources created for fonts
         // TODO: actual implementation
@@ -55,7 +55,7 @@ namespace cppgui {
 
     void Canvas::init()
     {
-        Renderer::init();
+        CPPGUI_RENDERER_CLASS::init();
 
         auto &img = stipple_image(); // TODO: variable size ? (would no longer belong into init() then)
 
@@ -67,7 +67,7 @@ namespace cppgui {
         // TODO: replace with yet-to-do release_all_images() (called internally by Renderer) ?
         release_mono8_image(_stipple_img);
 
-        Renderer::cleanup();
+        CPPGUI_RENDERER_CLASS::cleanup();
     }
 
     auto Canvas::register_font(const Rasterized_font * rf) -> Font_handle
@@ -83,7 +83,7 @@ namespace cppgui {
 
     void Canvas::draw_stippled_rectangle_outline(int x, int y, int w, int h, const RGBA &color)
     {
-        auto nativ_clr = Renderer::rgba_to_native(color);
+        auto nativ_clr = CPPGUI_RENDERER_CLASS::rgba_to_native(color);
 
         draw_greyscale_image_right_righthand(x        , y        , w    , 1, _stipple_img, color, 0, 0);
         draw_greyscale_image_down_righthand (x + w    , y + 1    , h - 1, 1, _stipple_img, color, 0, 0);

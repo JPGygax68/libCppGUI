@@ -7,10 +7,22 @@
 #include <cppgui/basic_types.hpp>
 #include <cppgui/fonts/Rasterized_font.hpp>
 
+
 namespace cppgui {
 
+    /* 
+     * Renderer-specific definitions for Renderer companion types
+     */
+    using Image_handle  = GLuint;
+    using Font_handle   = GLint;
+    using Native_color  = RGBA;
+    using Native_mono   = Mono;
+
     #define CPPGUI_RENDERER_CLASS OpenGL_renderer
-    
+
+    /**
+     * A class conforming to the Renderer contract.
+     */
     class OpenGL_renderer { 
     public:
 
@@ -21,20 +33,12 @@ namespace cppgui {
         //static const bool font_handles_are_resources = true;
         //static const bool colors_are_resources       = false;
 
-    public:
-
         using Rasterized_font = fonts::Rasterized_font;
-
-    public:
 
         // Exported types
 
         using offset        = int;
         using length        = int;
-        using Image_handle  = GLuint;
-        using Font_handle   = GLint;
-        using Native_color  = RGBA;
-        using Native_mono   = Mono;
 
         // Class methods
 

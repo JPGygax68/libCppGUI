@@ -36,15 +36,13 @@ namespace cppgui {
          */
         struct Font_mapper : public Full_resource_mapper<
             Font_mapper,
-            Renderer,
+            CPPGUI_RENDERER_CLASS,
             const fonts::Rasterized_font *, 
-            typename Renderer::Font_handle 
+            Font_handle 
         >
         {
-            using Font_handle = typename Renderer::Font_handle;
-
-            auto obtain (Renderer *r, const Rasterized_font *font) { return r->register_font(*font); }
-            void release(Renderer *r, Font_handle hnd)             { r->release_font(hnd); }
+            auto obtain (CPPGUI_RENDERER_CLASS *r, const Rasterized_font *font) { return r->register_font(*font); }
+            void release(CPPGUI_RENDERER_CLASS *r, Font_handle hnd)             { r->release_font(hnd); }
         };
     }
 
@@ -53,11 +51,10 @@ namespace cppgui {
     class _Font_mapper
     {
     public:
-        using Font_handle = Renderer::Font_handle;
 
-        auto translate(Renderer *r, const Rasterized_font *f) -> Font_handle;
+        auto translate(CPPGUI_RENDERER_CLASS *r, const Rasterized_font *f) -> Font_handle;
 
-        void release  (Renderer *r, Font_handle h);
+        void release  (CPPGUI_RENDERER_CLASS *r, Font_handle h);
 
     private:
         std::map<const Rasterized_font *, Font_handle>  _map;
@@ -68,10 +65,10 @@ namespace cppgui {
     {
         // TODO: it might be possible to put these two fields into a union
         const Rasterized_font  *rasterized;
-        Renderer::Font_handle   handle;
+        Font_handle             handle;
 
         void assign(const Rasterized_font *font);
-        auto get() const -> Renderer::Font_handle;
+        auto get() const -> Font_handle;
 
         void translate(Canvas * canvas);
         void release(Canvas * canvas);
@@ -83,14 +80,14 @@ namespace cppgui {
         rasterized = font;
     }
 
-    inline auto Font_resource::get() const -> Renderer::Font_handle
+    inline auto Font_resource::get() const -> Font_handle
     {
         assert(handle);
         return handle;
     }
 
 
-    class Canvas: public Renderer
+    class Canvas: public CPPGUI_RENDERER_CLASS
     {
     public:
         //using Font_resource     = Resource<const Rasterized_font *, Font_handle, Renderer, false>;

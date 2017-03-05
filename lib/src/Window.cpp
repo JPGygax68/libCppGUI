@@ -1,22 +1,19 @@
 #include "cppgui_config.hpp"
 #include CPPGUI_RENDERER_HEADER
-
+#include "Canvas.hpp"
 #include "Window.hpp"
 
 
 namespace cppgui {
     
-    void Window::init_window()
+    void Window::init_graphics(void *context)
     {
-        // Renderer adapter
-        CPPGUI_RENDERER_CLASS::init();
-        // TODO: other subsystem adapters
+        _canvas = std::make_unique<Canvas>();
     }
 
-    void Window::cleanup_window()
+    void Window::cleanup_graphics(void *context)
     {
-        CPPGUI_RENDERER_CLASS::cleanup();
-        // TODO: other subsystem adapters
+        _canvas.release();
     }
 
 } // ns cppgui
