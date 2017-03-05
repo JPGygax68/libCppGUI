@@ -35,6 +35,7 @@ add_library( ${PROJECT_NAME}
 STATIC
     include/cppgui/basic_types.hpp
     include/cppgui/Window.hpp           src/Window.cpp
+    include/cppgui/Application.hpp
     include/cppgui/Resource.hpp
     include/cppgui/Box_model.hpp        src/Box_model.cpp
     include/cppgui/Canvas.hpp           src/Canvas.cpp

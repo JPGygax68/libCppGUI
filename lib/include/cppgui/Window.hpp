@@ -12,6 +12,9 @@ namespace cppgui {
     
     class Window: public CPPGUI_WINDOW_BASE_CLASS
     {
+    public:
+        Window(const char *title);
+
     protected:
         
         void init_graphics(void *context) override;

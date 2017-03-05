@@ -45,3 +45,4 @@ namespace cppgui {
 } // ns cppgui
 
 #include "./SDL2_window.hpp"
+#include "./SDL2_application.hpp"

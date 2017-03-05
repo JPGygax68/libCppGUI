@@ -18,7 +18,7 @@
 //static cppgui::Rasterized_font  dflt_font;
 //static cppgui::Rasterized_font  glyph_font;     // TODO: move this to a reusable module in cppgui itself
 
-Test_window::Test_window(): SDL_window("Test window")
+Test_window::Test_window(): cppgui::Window("Test window")
 {
     //auto tick_font_data = cppgui::Icon_resources<Default_font::size>::tick_font_data();
     //glyph_font = gpc::fonts::load(tick_font_data.first, tick_font_data.second);

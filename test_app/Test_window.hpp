@@ -1,12 +1,11 @@
 #pragma once
 
+#include <cppgui/Window.hpp>
 #include <cppgui/Root_widget.hpp>
 #include <cppgui/Label.hpp>
 
-#include "./SDL_window.hpp"
 
-
-class Test_window: public SDL_window
+class Test_window: public cppgui::Window
 {
 public:
 
@@ -15,7 +14,7 @@ public:
     auto root_widget() { return &_root_widget; }
 
 protected:
-    void size_changed(Sint32 data1, Sint32 data2) override;
+    void size_changed(int w, int h) override;
 
 private:
     cppgui::fonts::Rasterized_font  _dflt_font;

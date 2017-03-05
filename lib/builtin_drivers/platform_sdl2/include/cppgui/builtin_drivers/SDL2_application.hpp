@@ -13,6 +13,8 @@ namespace cppgui
 {
     class SDL2_window;
 
+    #define CPPGUI_APPLICATION_BASE_CLASS SDL2_application
+
     class SDL2_application {
     public:
         using Custom_event_handler = std::function<void(const SDL_UserEvent &)>;
