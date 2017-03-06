@@ -21,7 +21,7 @@ namespace cppgui {
         void init_graphics(void *context) override;
         void cleanup_graphics(void *context) override;
         void redraw(void *context) override;
-        void size_changed(int w, int h) override;
+        void size_changed(const Extents &) override;
 
         void mouse_motion(const Point &) override;
 

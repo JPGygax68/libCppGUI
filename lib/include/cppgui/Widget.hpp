@@ -218,11 +218,11 @@ namespace cppgui {
         bool                    _focussable = true;
         bool                    _hovered = false;
 
-    public:
         //-----------------------------------------------------------
         // "Updater" "aspect
         // TODO: make configurable by preprocessor
 
+    public:
         void invalidate();
 
         // END of Updater aspect

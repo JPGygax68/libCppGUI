@@ -29,16 +29,20 @@ namespace cppgui {
 
     void Window::redraw(void * context)
     {
+        begin_rendering();
         _canvas->enter_context();
         _root_widget.render(_canvas.get(), {0, 0});
         _canvas->leave_context();
+        done_rendering();
     }
 
-    void Window::size_changed(int w, int h) // TODO: use Extents ?
+    void Window::size_changed(const Extents &e)
     {
+        // Inform canvas
+        _canvas->define_viewport(0, 0, e.w, e.h);
         // (Re-)do layout
         _root_widget.init_layout();
-        _root_widget.set_bounds({0, 0}, cppgui::Bounding_box{cppgui::Extents{w, h}});
+        _root_widget.set_bounds({0, 0}, Bounding_box{e});
     }
 
     void Window::mouse_motion(const Point &p)

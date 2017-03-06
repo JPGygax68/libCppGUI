@@ -41,7 +41,6 @@ namespace cppgui
 
     public:
         using Pointer = std::unique_ptr<SDL_Window, Deleter>;
-        struct Extents { int w, h; };
         enum Button_direction { down = 0, up = 1 };
 
         // Lifecycle --------------------------------------
@@ -60,7 +59,12 @@ namespace cppgui
 
         auto id() -> uint32_t;
 
-        // OpenGL -----------------------------------------
+        // Rendering management ---------------------------
+
+        void begin_rendering();
+        void done_rendering();
+
+        // OpenGL-specific --------------------------------
 
         auto get_current_gl_context() -> SDL_GLContext;
         auto create_gl_context() -> SDL_GLContext;           
@@ -102,7 +106,7 @@ namespace cppgui
         virtual void closing() {}
 
         // Event hooks
-        virtual void size_changed(int w, int h) {}
+        virtual void size_changed(const Extents &) {}
         virtual void mouse_motion(const Point &) {}
         virtual void mouse_button(int x, int y, uint8_t button, Button_direction dir, unsigned int clicks) {}
         virtual void mouse_wheel(int x, int y) {}
@@ -131,6 +135,8 @@ namespace cppgui
         Pointer         _win;
         #ifdef CPPGUI_USING_OPENGL
         SDL_GLContext   _gr_ctx;
+        #else
+        #error No or unsupported graphics backend 
         #endif
 
         bool            _must_redraw;

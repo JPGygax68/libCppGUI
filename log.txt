@@ -1,3 +1,9 @@
+2017-03-06
+==========
+
+- Note: support canvas-specific OpenGL context (separate from the context of the window) so that canvas does not to manage state
+
+
 2017-02-09
 ==========
 

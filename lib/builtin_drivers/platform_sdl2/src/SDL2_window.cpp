@@ -79,6 +79,16 @@ namespace cppgui {
         return SDL_GetWindowID(_win.get());
     }
 
+    void SDL2_window::begin_rendering()
+    {
+        SDL_GL_MakeCurrent(_win.get(), _gr_ctx);
+    }
+
+    void SDL2_window::done_rendering()
+    {
+        SDL_GL_SwapWindow(_win.get());
+    }
+
     auto SDL2_window::get_current_gl_context() -> SDL_GLContext
     {
         return SDL_GL_GetCurrentContext();
@@ -177,7 +187,7 @@ namespace cppgui {
             // TODO: is this needed ? difference to SIZE_CHANGE ?
             break;
         case SDL_WINDOWEVENT_RESIZED:
-            size_changed(ev.data1, ev.data2);
+            size_changed(Extents{ev.data1, ev.data2});
             invalidate();
             break;
         case SDL_WINDOWEVENT_SHOWN:
