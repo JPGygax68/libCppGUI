@@ -1,5 +1,7 @@
 project(cppgui_renderer_opengl)
 
+# GLSL shader files
+
 add_library(${PROJECT_NAME} STATIC 
     src/OpenGL_renderer.cpp include/cppgui/builtin_drivers/OpenGL_renderer.hpp
     include/cppgui/builtin_drivers/gl.h
@@ -17,23 +19,21 @@ configure_file("${PROJECT_SOURCE_DIR}/cppgui_opengl_config.in.hpp"
                "${PROJECT_BINARY_DIR}/cppgui_opengl_config.hpp" )
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_BINARY_DIR})
 
-# GLSL shader files
-
-source_group("Shader files" FILES ${SHADER_FILES})  # for Visual Studio
-
 # TODO: make this into a CMake module
 
 set(GENERATED_HEADERS_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated_headers")
 target_include_directories(${PROJECT_NAME} PRIVATE ${GENERATED_HEADERS_DIR})
 
 # Find the GPC Bin2C utility
+# TODO: replace with CppGUI-specific version
 if (NOT TARGET gpcbin2c)
     find_package(gpcbin2c REQUIRED)
 endif()
 
 # Add a custom target and a dependency for each shader file
 
-foreach(shader "src/vertex.glsl" "src/fragment.glsl")
+set(SHADER_FILES "src/vertex.glsl" "src/fragment.glsl")
+foreach(shader ${SHADER_FILES})
   get_filename_component(name "${shader}" NAME)
   set(shader_header "${GENERATED_HEADERS_DIR}/${name}.h")
   add_custom_command(
@@ -41,8 +41,11 @@ foreach(shader "src/vertex.glsl" "src/fragment.glsl")
     DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${shader}
     COMMAND gpcbin2c --input=${CMAKE_CURRENT_SOURCE_DIR}/${shader} --output=${shader_header}
   )
+  target_sources(${PROJECT_NAME} PRIVATE ${shader})
   target_sources(${PROJECT_NAME} PUBLIC ${shader_header})
 endforeach()
+
+source_group("Shader files" FILES ${SHADER_FILES}) # REGULAR_EXPRESSION "(.*\.glsl)")  # for Visual Studio
 
 # External dependencies
 

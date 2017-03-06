@@ -43,16 +43,13 @@ namespace cppgui {
         // User code is responsible for creating and/or selecting the proper GL context when calling init()
         // TODO: somehow (optionally) make use of glbinding's (when used) context management facilities?
         static std::once_flag flag;
-        std::call_once(flag, []()
-        {
-            glewInit();
-        });
+        std::call_once(flag, []() { glewInit(); });
 
         // Upload and compile our shader program
         {
             assert(vertex_shader == 0);
             vertex_shader = GL(CreateShader, GL_VERTEX_SHADER);
-            auto code = std::string(vertex_code);
+            auto code = std::string(vertex_code, sizeof(vertex_code));
             #ifdef Y_AXIS_DOWN
             code = gl::insertLinesIntoShaderSource(code, "#define Y_AXIS_DOWN");
             #endif
@@ -63,7 +60,7 @@ namespace cppgui {
         {
             assert(fragment_shader == 0);
             fragment_shader = GL(CreateShader, GL_FRAGMENT_SHADER);
-            auto code = std::string(fragment_code);
+            auto code = std::string(fragment_code, sizeof(fragment_code));
             #ifdef Y_AXIS_DOWN
             code = gl::insertLinesIntoShaderSource(code, "#define Y_AXIS_DOWN");
             #endif
