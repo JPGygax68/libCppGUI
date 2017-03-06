@@ -46,7 +46,7 @@ namespace cppgui {
     * 
     * wait:        if true, will block until there is something to do; otherwise, 
     *              returns immediately 
-    * Returns:     true while the application is running normally, false if it 
+    * Returns:     true while the application should continue to run, false if it
     *              should be terminated (Windows: WM_QUIT)
     */
     bool perform_pending_main_thread_tasks(bool wait = false);

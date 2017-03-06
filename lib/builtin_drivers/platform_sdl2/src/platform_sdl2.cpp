@@ -68,20 +68,20 @@ namespace cppgui
         }
         else
         {
-            if (SDL_PollEvent(&ev) == 0) return false;
+            if (SDL_PollEvent(&ev) == 0) return true;
         }
 
         // Handle all available events in one burst
         do
         {
-            if (handle_event(ev) == true) return true;
+            if (handle_event(ev) == true) return false;
         }
         while (SDL_PollEvent(&ev) == 1);
 
         // Signal end of even burst (good time for a redraw)
         SDL2_window::for_each_window([](SDL2_window *window) { window->end_of_event_burst(); });
 
-        return false;
+        return true;
     }
 
 } // ns cppgui

@@ -17,17 +17,21 @@ namespace cppgui {
     {
         _canvas = std::make_unique<Canvas>();
         _canvas->init();
+        _root_widget.init(_canvas.get());
     }
 
     void Window::cleanup_graphics(void *context)
     {
+        _root_widget.cleanup(); // TODO: pass canvas ?
         _canvas->cleanup();
         _canvas.release();
     }
 
     void Window::redraw(void * context)
     {
+        _canvas->enter_context();
         _root_widget.render(_canvas.get(), {0, 0});
+        _canvas->leave_context();
     }
 
     void Window::size_changed(int w, int h) // TODO: use Extents ?
