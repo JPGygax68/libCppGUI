@@ -128,6 +128,7 @@ endforeach(size)
 
 add_library(${PROJECT_NAME}
 STATIC
+    ${FONT_HEADERS}
     ${FONT_SOURCES}
     include/cppgui/baked_fonts.hpp      src/baked_fonts.cpp
     ${PROJECT_BINARY_DIR}/cppgui_baked_fonts_config.hpp

@@ -18,6 +18,12 @@ namespace cppgui {
     using Native_color  = RGBA;
     using Native_mono   = Mono;
 
+    // Companion functions
+
+    constexpr auto rgba_to_native(const RGBA &color) -> RGBA { return color; }
+
+    constexpr auto mono_to_native(const Mono &color) -> Mono { return color; }
+
     #define CPPGUI_RENDERER_CLASS OpenGL_renderer
 
     /**
@@ -39,18 +45,6 @@ namespace cppgui {
 
         using offset        = int;
         using length        = int;
-
-        // Class methods
-
-        static constexpr auto rgba_to_native(const RGBA &color) -> RGBA
-        {
-            return color;
-        }
-
-        static constexpr auto mono_to_native(const Mono &color) -> Mono
-        {
-            return color;
-        }
 
         // Lifecycle
 

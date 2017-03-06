@@ -93,7 +93,7 @@ namespace cppgui
 
         // Event hooks
         virtual void size_changed(int w, int h) {}
-        virtual void mouse_motion(int x, int y) {}
+        virtual void mouse_motion(const Point &) {}
         virtual void mouse_button(int x, int y, uint8_t button, Button_direction dir, unsigned int clicks) {}
         virtual void mouse_wheel(int x, int y) {}
         virtual void text_input(const char32_t *text, size_t cp_count) {}

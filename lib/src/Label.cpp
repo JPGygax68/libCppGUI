@@ -44,7 +44,7 @@ namespace cppgui {
 
     void Label::render(Canvas *cnv, const Point &offs)
     {
-        fill(cnv, offs, this->rgba_to_native(background_color())); 
+        fill(cnv, offs, rgba_to_native(background_color())); 
 
         auto pos = offs + this->position();
 

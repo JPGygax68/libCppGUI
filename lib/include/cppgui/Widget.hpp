@@ -54,7 +54,7 @@ namespace cppgui {
         }
 
         //auto& rectangle() { return _rect; }
-        //auto& rectangle() const { return _rect; }
+        auto rectangle() const -> Rectangle; 
         auto& position() { return _position; }
         auto& position() const { return _position; }
         //auto& extents() { return _rect.ext; }
@@ -160,7 +160,7 @@ namespace cppgui {
         // Rendering conveniences
 
         // auto rgba_to_native(Canvas *, const RGBA &) -> Native_color;
-        auto rgba_to_native(const RGBA &) -> Native_color;
+        //auto rgba_to_native(const RGBA &) -> Native_color;
         void fill_rect(Canvas *, const Rectangle &rect, const Native_color &);
         void fill_rect(Canvas *, const Rectangle &rect, const Point &offs, const Native_color &);
         void fill_rect(Canvas *, const Point &pos, const Extents &ext, const Native_color &);
@@ -235,7 +235,7 @@ namespace cppgui {
         virtual void init_layout() = 0;
         virtual auto get_minimal_bounds() -> Bounding_box = 0;
         //virtual auto get_preferred_size() -> Extents { return get_minimal_size(); }
-        virtual void set_bounds(const Point & p, const Bounding_box & b) = 0;
+        virtual void set_bounds(const Point & p, const Bounding_box & b);
 
         //void set_padding(Width);
         //void set_padding(const std::initializer_list<Width> &);

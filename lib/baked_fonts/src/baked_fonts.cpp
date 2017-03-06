@@ -1,7 +1,7 @@
 #include <cppgui/fonts/store.hpp>
 #include <cppgui_baked_fonts_config.hpp>
-
 #include <baked_fonts.hpp>
+
 
 namespace cppgui
 {

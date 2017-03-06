@@ -14,8 +14,8 @@ namespace cppgui
     static bool handle_event(SDL_Event &ev)
     {
         // Custom event ?
-        auto it = custom_events.find(ev.type);
-        if (it != custom_events.end())
+        auto it = custom_events().find(ev.type);
+        if (it != custom_events().end())
         {
             it->second(ev.user);
         }

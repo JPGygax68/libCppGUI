@@ -37,4 +37,9 @@ namespace cppgui {
         _root_widget.set_bounds({0, 0}, cppgui::Bounding_box{cppgui::Extents{w, h}});
     }
 
+    void Window::mouse_motion(const Point &p)
+    {
+        _root_widget.mouse_motion(p);
+    }
+
 } // ns cppgui

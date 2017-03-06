@@ -23,7 +23,7 @@ namespace cppgui {
         void redraw(void *context) override;
         void size_changed(int w, int h) override;
 
-        void mouse_motion(int x, int y) override;
+        void mouse_motion(const Point &) override;
 
     private:
         std::unique_ptr<Canvas>     _canvas;

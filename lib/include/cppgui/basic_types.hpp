@@ -97,6 +97,12 @@ namespace cppgui {
             ext.h = - b.y_min + b.y_min;
         }
 
+        auto& operator += (const Point &p)
+        {
+            pos += p;
+            return *this;
+        }
+
         void inflate(Width x, Width y)
         {
             pos.x -= x, ext.w += 2 * x;

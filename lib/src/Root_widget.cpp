@@ -229,7 +229,7 @@ namespace cppgui {
 
         if (_bkgnd_clr[3] > 0)
         {
-            cv->clear(cv->rgba_to_native(_bkgnd_clr));
+            cv->clear(rgba_to_native(_bkgnd_clr));
         }
         
         for (auto& child : this->children())

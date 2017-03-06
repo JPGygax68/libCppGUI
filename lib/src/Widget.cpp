@@ -22,11 +22,10 @@
 #include <Widget.hpp>
 #include <Container.hpp>
 #include <Root_widget.hpp>
-
 //#include <cppgui/Abstract_container.hpp>
 //#include <cppgui/Container_base.hpp>
-
 //#include <cppgui/Canvas.hpp>
+
 
 namespace cppgui {
 
@@ -35,6 +34,13 @@ namespace cppgui {
     Widget::Widget():
         _focussable{ true }
     {
+    }
+
+    auto Widget::rectangle() const -> Rectangle
+    {
+        Rectangle r{_bounds};
+        r += _position;
+        return r;
     }
 
     /* void Widget::set_bounds(const Bounding_box &bounds)
@@ -256,7 +262,38 @@ namespace cppgui {
         }
     }
 
-    #ifdef NOT_DEFINED
+    void Widget::invalidate()
+    {
+        _container->child_invalidated(this);
+    }
+
+    void Widget::fill_rect(Canvas *r, const Rectangle &rect, const Native_color &color)
+    {
+        r->fill_rect(rect.pos.x, rect.pos.y, rect.ext.w, rect.ext.h, color);
+    }
+
+    void Widget::fill_rect(Canvas *r, const Rectangle & rect, const Point & offs, const Native_color &color)
+    {
+        r->fill_rect(rect.pos.x + offs.x, rect.pos.y + offs.y, rect.ext.w, rect.ext.h, color);
+    }
+
+    void Widget::fill_rect(Canvas *r, const Point & pos, const Extents & ext, const Native_color &color)
+    {
+        r->fill_rect(pos.x, pos.y, ext.w, ext.h, color);
+    }
+
+    void Widget::fill(Canvas *r, const Point &offs, const Native_color &color)
+    {
+        fill_rect(r, rectangle(), offs, color);
+    }
+
+    void Widget::set_bounds(const Point & p, const Bounding_box & b)
+    {
+        _position = p;
+        _bounds = b;
+    }
+
+#ifdef NOT_DEFINED
 
     // Layouter aspect ----------------------------------------------
 

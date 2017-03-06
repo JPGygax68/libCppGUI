@@ -173,7 +173,7 @@ namespace cppgui {
     {
         // std::cout << "Window::handle_mousemotion_event()" << std::endl;
 
-        mouse_motion(ev.x, ev.y);
+        mouse_motion({ev.x, ev.y});
     }
 
     void SDL2_window::handle_mousebutton_event(SDL_MouseButtonEvent & ev)
