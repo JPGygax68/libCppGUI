@@ -10,6 +10,7 @@ namespace cppgui {
     Window::Window(const char * title):
         SDL2_window(title)
     {
+        _root_widget.on_invalidated([this]() { invalidate(); });
     }
 
     void Window::init_graphics(void *context)
@@ -22,6 +23,18 @@ namespace cppgui {
     {
         _canvas->cleanup();
         _canvas.release();
+    }
+
+    void Window::redraw(void * context)
+    {
+        _root_widget.render(_canvas.get(), {0, 0});
+    }
+
+    void Window::size_changed(int w, int h) // TODO: use Extents ?
+    {
+        // (Re-)do layout
+        _root_widget.init_layout();
+        _root_widget.set_bounds({0, 0}, cppgui::Bounding_box{cppgui::Extents{w, h}});
     }
 
 } // ns cppgui

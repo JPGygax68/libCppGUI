@@ -96,11 +96,11 @@ namespace cppgui {
         return child != std::end(_children) ? *child : nullptr;
     }
 
-    void Container::init_child_resources()
+    void Container::init_child_resources(Canvas *c)
     {
         for (auto child : children())
         {
-            child->init();
+            child->init(c);
         }
     }
 

@@ -84,7 +84,7 @@ namespace cppgui {
 
         auto child_at(const Point &) -> Widget *;
 
-        void init_child_resources();
+        void init_child_resources(Canvas *);
         void compute_child_views();
 
         void render_children(Canvas *, const Point &offs);

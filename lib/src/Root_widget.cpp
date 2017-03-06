@@ -41,19 +41,19 @@ namespace cppgui {
     }
     */
 
-    void Root_widget::set_canvas(Canvas *cv)
+    /* void Root_widget::set_canvas(Canvas *cv)
     {
         _canvas = cv;
 
         //_canvas->init(); // TODO: parameters ?
             // removed for now: init done by root_widget() user
-    }
+    } */
 
-    void Root_widget::init()
+    void Root_widget::init(Canvas *c)
     {
-        init_child_resources();
+        init_child_resources(c);
 
-        Widget::init();
+        Widget::init(c);
     }
 
     void Root_widget::cleanup()
@@ -181,11 +181,6 @@ namespace cppgui {
         unlock();
     }
 
-    void Root_widget::render()
-    {
-        render(_canvas, {0, 0});
-    }
-
     void Root_widget::child_key_down(const Keycode &key)
     {
         if (!handle_key_down(key))
@@ -228,7 +223,7 @@ namespace cppgui {
         return position();
     }
 
-    inline void Root_widget::render(Canvas *cv, const Point &offs)
+    void Root_widget::render(Canvas *cv, const Point &offs)
     {
         auto pos = offs + this->position();
 
@@ -267,13 +262,13 @@ namespace cppgui {
         Container::set_bounds(p, b);
     }
 
-    void Root_widget::insert_child(Widget *child, const Point & p, const Bounding_box & b)
+    void Root_widget::insert_child(Widget *child, const Point & p, const Bounding_box & b, Canvas *c)
     {
         add_child(child);
 
         child->init_layout();
         child->set_bounds(p, b);
-        child->init();
+        child->init(c);
 
         invalidate();
     }

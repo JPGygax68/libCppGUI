@@ -37,9 +37,9 @@ namespace cppgui {
         _text = text;
     }
 
-    void Label::init()
+    void Label::init(Canvas *c)
     {
-        _font.translate( root_widget()->canvas() );
+        _font.translate(c);
     }
 
     void Label::render(Canvas *cnv, const Point &offs)

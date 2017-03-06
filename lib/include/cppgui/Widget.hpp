@@ -72,7 +72,7 @@ namespace cppgui {
         /** The init() entry point is where a widget "connects" to its backends (the most important of
             which being the canvas).
         */
-        virtual void init() {}
+        virtual void init(Canvas *) {}
 
         /** The compute_view_from_data() entry point must be called after init(), and also after 
             layout() if run-time layouting is enabled.

@@ -40,10 +40,10 @@ namespace cppgui {
 
         void set_background_color(const RGBA &color) { _bkgnd_clr = color; }
 
-        void set_canvas(Canvas *);
-        auto canvas() const { return _canvas; }
+        //void set_canvas(Canvas *);
+        //auto canvas() const { return _canvas; }
 
-        void init() override;
+        void init(Canvas *) override;
         void cleanup(); // TODO: override!
 
         void compute_view_from_data() override;
@@ -68,7 +68,7 @@ namespace cppgui {
         void key_down(const Keycode &);
         //void key_up(const Keycode &);
 
-        void render();
+        void render(Canvas *c, const Point &p) override;
 
         void child_key_down(const Keycode &) override;
 
@@ -78,16 +78,12 @@ namespace cppgui {
 
         // Specific functionality
 
-        void insert_child(Widget * child, const Point & p, const Bounding_box & b);
+        void insert_child(Widget * child, const Point &p, const Bounding_box &b, Canvas *c);
         void drop_child(Widget * child);
-
-    protected:
-        
-        void render(Canvas *, const Point &) override;
 
     private:
         RGBA                        _bkgnd_clr = { 0, 0, 0, 0 };
-        Canvas                     *_canvas = nullptr;
+        //Canvas                     *_canvas = nullptr;
         std::stack<Cursor_handle>   _cursor_stack;
         Widget                     *_mouse_holder = nullptr;
         Point                       _capture_offset;
@@ -113,9 +109,7 @@ namespace cppgui {
         auto container_root_widget() -> Root_widget * override { return static_cast<Root_widget*>(this); }
 
         // Specific functionality 
-
         void lock() { _must_update = false; }
-
         void unlock() { if (_must_update) invalidate(); }
     
     private:

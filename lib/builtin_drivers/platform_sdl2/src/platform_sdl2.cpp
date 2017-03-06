@@ -3,7 +3,6 @@
 #include <SDL_events.h>
 #include "./SDL2_exception.hpp"
 #include "./SDL2_window.hpp"
-#include "./SDL2_application.hpp"
 #include "./custom_events.hpp"
 
 

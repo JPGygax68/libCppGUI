@@ -35,7 +35,7 @@ namespace cppgui {
         void set_text(const std::u32string &);
         auto& text() const { return _text; }
 
-        void init() override;
+        void init(Canvas *) override;
 
         void render(Canvas *, const Point &offset) override;
 
