@@ -3,6 +3,8 @@
 
 - Note: support canvas-specific OpenGL context (separate from the context of the window) so that canvas does not to manage state
 
+- The OpenGL renderer displays text correctly when the Y axis is oriented downward, but incorrectly in the opposite case.
+
 
 2017-02-09
 ==========

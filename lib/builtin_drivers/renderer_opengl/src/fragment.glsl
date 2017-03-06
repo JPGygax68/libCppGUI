@@ -43,7 +43,7 @@ void main() {
         int w = x_max - x_min, h = y_max - y_min;
 
         int col = int(tp.x - x_min);
-        #ifdef Y_AXIS_DOWN
+        #ifdef CPPGUI_Y_AXIS_DOWN
         int row = int(tp.y + y_max);
         #else
         int row = int(y_max - tp.y) - 1;

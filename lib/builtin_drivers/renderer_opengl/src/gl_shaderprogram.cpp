@@ -1,26 +1,23 @@
 #include <vector>
-
 #include <gl.h>
 #include "./gl_wrappers.hpp"
-
 #include "./gl_shaderprogram.hpp"
+
 
 namespace gl {
 
-    inline auto
-    getShaderCompilationLog(GLuint shader) -> std::string
+    auto getShaderCompilationLog(GLuint shader) -> std::string
     {
-        GLint log_size = 0;
+        auto log_size = 0;
         GL(GetShaderiv, shader, GL_INFO_LOG_LENGTH, &log_size);
         std::string log(log_size, 0);
-        GLsizei real_size = 0;
+        auto real_size = 0;
         GL(GetShaderInfoLog, shader, log.size(), &real_size, &log[0]);
         log.resize(real_size);
         return log;
     }
 
-    inline auto 
-    insertLinesIntoShaderSource(const std::string &source, const std::string &inserts) -> std::string
+    auto insertLinesIntoShaderSource(const std::string &source, const std::string &inserts) -> std::string
     {
         // Traverse the source line by line
         for (size_t i = 0, j = 0; (j = source.find("\n", i)) != std::string::npos; i = j + 1)
@@ -40,8 +37,7 @@ namespace gl {
 
     /** header_lines: how many lines to skip before inserting define's
      */
-    inline auto
-    compileShader(GLuint shader, const std::string &source, const std::string &defines) -> std::string
+    auto compileShader(GLuint shader, const std::string &source, const std::string &defines) -> std::string
     {
         // NOTE: this method of adding #define's to a shader violates the GLSL specification that says that
         //  the first non-blank, non-comment statement must be #version
@@ -66,8 +62,8 @@ namespace gl {
         GLuint vertex_shader = GL(CreateShader, GL_VERTEX_SHADER);
         GLuint fragment_shader = GL(CreateShader, GL_FRAGMENT_SHADER);
 
-        gl::compileShader(vertex_shader, vertex_code);
-        gl::compileShader(fragment_shader, fragment_code);
+        compileShader(vertex_shader, vertex_code);
+        compileShader(fragment_shader, fragment_code);
 
         return buildShaderProgram(vertex_shader, fragment_shader);
     }
@@ -81,7 +77,7 @@ namespace gl {
 
     void checkShaderProgramLinkStatus(GLuint program)
     {
-        GLint is_linked = 0;
+        auto is_linked = 0;
         GL(GetProgramiv, program, GL_LINK_STATUS, &is_linked);
         if (!is_linked) throw std::runtime_error("shader program has not been linked successfully");
     }

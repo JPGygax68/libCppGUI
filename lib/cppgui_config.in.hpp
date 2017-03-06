@@ -5,6 +5,7 @@
 // TODO: make this configurable
 #define CPPGUI_RENDERER_HEADER <cppgui/builtin_drivers/OpenGL_renderer.hpp>
 #define CPPGUI_USING_OPENGL
+#define CPPGUI_Y_AXIS_DOWN
 
 // TODO: make this configurable
 #define CPPGUI_PLATFORM_ADAPTER_HEADER <cppgui/builtin_drivers/platform_sdl2.hpp>

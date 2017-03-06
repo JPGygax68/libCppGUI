@@ -16,7 +16,7 @@ void main() {
     // Rendering text glyphs ?
     if (render_mode == 3)
     {
-        #ifdef Y_AXIS_DOWN
+        #ifdef CPPGUI_Y_AXIS_DOWN
         vec2 pixel_position = position + ivec2(vp.x, - vp.y);
         gl_Position = vec4(2 * float(position.x + vp.x) / float(viewport_w) - 1, - (2 * float(position.y + vp.y) / float(viewport_h) - 1), 0.0, 1.0);
         //tp = vec2(vp.x, - vp.y);
@@ -31,7 +31,7 @@ void main() {
     //if (render_mode == 1 || render_mode == 2 || render_mode == 4)
     else
     {
-        #ifdef Y_AXIS_DOWN
+        #ifdef CPPGUI_Y_AXIS_DOWN
         gl_Position = vec4(2 * vp.x / float(viewport_w) - 1, - (2 * vp.y / float(viewport_h) - 1), 0.0, 1.0);
         #else
         gl_Position = vec4(2 * vp.x / float(viewport_w) - 1,    2 * vp.y / float(viewport_h) - 1 , 0.0, 1.0);

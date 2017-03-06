@@ -4,6 +4,7 @@
 
 #include "./gl.h" // import OpenGL (via configurable means)
 
+#include "cppgui_config.hpp"
 #include <cppgui/basic_types.hpp>
 #include <cppgui/fonts/Rasterized_font.hpp>
 

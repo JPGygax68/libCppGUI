@@ -9,10 +9,6 @@
 #include "./gl_wrappers.hpp"
 #include "./gl_shaderprogram.hpp"
 
-#include <gpc/fonts/rasterized_font.hpp>
-// TODO: reintroduce a base class with dummy impl
-//#include <gpc/gui/renderer.hpp>
-
 #include "OpenGL_renderer.hpp"
 
 
@@ -50,8 +46,8 @@ namespace cppgui {
             assert(vertex_shader == 0);
             vertex_shader = GL(CreateShader, GL_VERTEX_SHADER);
             auto code = std::string(vertex_code, sizeof(vertex_code));
-            #ifdef Y_AXIS_DOWN
-            code = gl::insertLinesIntoShaderSource(code, "#define Y_AXIS_DOWN");
+            #ifdef CPPGUI_Y_AXIS_DOWN
+            code = gl::insertLinesIntoShaderSource(code, "#define CPPGUI_Y_AXIS_DOWN");
             #endif
             // TODO: dispense with the error checking and logging in release builds
             auto log = gl::compileShader(vertex_shader, code);
@@ -61,8 +57,8 @@ namespace cppgui {
             assert(fragment_shader == 0);
             fragment_shader = GL(CreateShader, GL_FRAGMENT_SHADER);
             auto code = std::string(fragment_code, sizeof(fragment_code));
-            #ifdef Y_AXIS_DOWN
-            code = gl::insertLinesIntoShaderSource(code, "#define Y_AXIS_DOWN");
+            #ifdef CPPGUI_Y_AXIS_DOWN
+            code = gl::insertLinesIntoShaderSource(code, "#define CPPGUI_Y_AXIS_DOWN");
             #endif
             //std::cerr << code << std::endl;
             // TODO: dispense with the error checking and logging in release builds
@@ -110,6 +106,10 @@ namespace cppgui {
         gl::setUniform("viewport_h", 1, h);
     }
 
+    /*
+     * TODO: enter_context() / leave_context() could be made unnecessary, i.e. replaced with
+     * a single setup_context() method, if the renderer gets its own OpenGL context.
+     */
     void OpenGL_renderer::enter_context()
     {
         // TODO: does all this really belong here, or should there be a one-time init independent of viewport ?
@@ -297,7 +297,7 @@ namespace cppgui {
         assert(!dbg_clipping_active);
         #endif
 
-        #ifdef Y_AXIS_DOWN
+        #ifdef CPPGUI_Y_AXIS_DOWN
         GL(Scissor, x, vp_height - (y + h), w, h);
         #else
         GL(Scissor, x, y, w, h);
@@ -348,6 +348,7 @@ namespace cppgui {
     void OpenGL_renderer::render_text(Font_handle handle, int x, int y, const char32_t *text, size_t count, int w_max)
     {
         // TODO: support text that advances in Y direction (and right-to-left)
+        // TODO: text is garbled if CPPGUI_Y_AXIS_DOWN is not defined -> bug probably in the shader
 
         using gl::setUniform;
 
@@ -422,7 +423,7 @@ namespace cppgui {
             for (const auto &glyph : variant.glyphs) {
 
     #ifndef NOT_DEFINED
-                #ifdef Y_AXIS_DOWN
+                #ifdef CPPGUI_Y_AXIS_DOWN
                 /* top left     */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_min, -glyph.cbox.bounds.y_max });
                 /* bottom left  */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_min, -glyph.cbox.bounds.y_min });
                 /* bottom right */ vertices.emplace_back<Vertex>({ glyph.cbox.bounds.x_max, -glyph.cbox.bounds.y_min });
