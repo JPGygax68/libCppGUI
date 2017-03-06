@@ -18,8 +18,8 @@
 */
 
 #include <string>
-
 #include "./Widget.hpp"
+
 
 namespace cppgui {
 
@@ -32,6 +32,7 @@ namespace cppgui {
 
         void set_font(const Rasterized_font *);
         //auto font() const { return _font.source(); }
+        void set_color(const RGBA &);
         void set_text(const std::u32string &);
         auto& text() const { return _text; }
 
@@ -44,6 +45,7 @@ namespace cppgui {
     protected:
         Font_resource           _font;
         std::u32string          _text;
+        RGBA                    _color;
 
     public:
     // Layouter aspect ----------------------------------------------

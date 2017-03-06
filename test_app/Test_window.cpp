@@ -21,7 +21,8 @@ Test_window::Test_window(): cppgui::Window("Test window")
     //auto tick_descr = cppgui::Icon_resources<Default_font::size>::tick_descr();
 
     _label.set_font(&cppgui::baked_fonts::default_font());
-    _label.set_background_color({1, 1, 1, 1});
+    _label.set_color({1, 1, 1, 1});
+    //_label.set_background_color({1, 1, 1, 1});
     _label.set_text(U"Hello World!");
     _label.on_click([](const cppgui::Point &pos, int button, int clicks) {
         std::cout << "Label was clicked! (pos = " << pos.x << ", " << pos.y 

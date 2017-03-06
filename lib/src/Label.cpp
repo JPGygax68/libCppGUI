@@ -32,6 +32,11 @@ namespace cppgui {
         _font.assign(font);
     }
 
+    void Label::set_color(const RGBA &color)
+    {
+        _color = color;
+    }
+
     void Label::set_text(const std::u32string &text)
     {
         _text = text;
@@ -50,6 +55,7 @@ namespace cppgui {
 
         if (!_text.empty())
         {
+            cnv->set_text_color(_color);
             cnv->render_text(_font.get(), pos.x, pos.y, _text.data(), _text.size());
         }
 
