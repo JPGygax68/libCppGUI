@@ -38,13 +38,15 @@ namespace cppgui {
     }
 
     void OpenGL_renderer::init()
+        // TODO: context parameter ?
     {
         // User code is responsible for creating and/or selecting the proper GL context when calling init()
-        // TODO: somehow (optionally) make use of glbinding's context management facilities?
-        #ifdef NOT_DEFINED
+        // TODO: somehow (optionally) make use of glbinding's (when used) context management facilities?
         static std::once_flag flag;
-        std::call_once(flag, []() { glewInit(); });
-        #endif
+        std::call_once(flag, []()
+        {
+            glewInit();
+        });
 
         // Upload and compile our shader program
         {

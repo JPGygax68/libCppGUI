@@ -44,13 +44,23 @@ namespace cppgui
         struct Extents { int w, h; };
         enum Button_direction { down = 0, up = 1 };
 
+        // Lifecycle --------------------------------------
+
         explicit SDL2_window(const std::string &title, int w = 800, int h = 600); // TODO: should probably be made protected
-        ~SDL2_window();
+        virtual ~SDL2_window();
+
+        /* TODO: the following lifecycle methods are only required because a C++ constructor
+         * cannot call a specialized virtual method. CRTP specialization could solve that
+         * problem. A decision needs to be made regarding this.
+         * An alternative could be to post a user-defined message that will serve as the
+         * "created" event.
+         */
+        void init();
+        void cleanup();
 
         auto id() -> uint32_t;
 
-        // OpenGL
-        // TODO: move to renderer aspect
+        // OpenGL -----------------------------------------
 
         auto get_current_gl_context() -> SDL_GLContext;
         auto create_gl_context() -> SDL_GLContext;           
@@ -120,7 +130,7 @@ namespace cppgui
 
         Pointer         _win;
         #ifdef CPPGUI_USING_OPENGL
-        SDL_GLContext   _gl_ctx;
+        SDL_GLContext   _gr_ctx;
         #endif
 
         bool            _must_redraw;

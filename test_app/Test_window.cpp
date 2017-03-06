@@ -1,17 +1,13 @@
 #include <iostream>
 #include <memory>
-
 #include <cppgui/baked_fonts.hpp>
-
 //#include <cppgui/Default_font.hpp>
-
 //#include <cppgui/all_widgets.ipp>
 //#include <cppgui/sdl/Window.ipp>
 //#include <cppgui/GUI_window.ipp>
-
 //#include "./Fonts.hpp"
-
 #include "./Test_window.hpp"
+
 
 // Class implementation  --------------------------------------------
 
@@ -32,6 +28,7 @@ Test_window::Test_window(): cppgui::Window("Test window")
             << ", button = " << button << ", clicks = " << clicks << ")" << std::endl;
     });
     _label.set_bounds({ 50, 50 }, _label.get_minimal_bounds());
+    root_widget().add_child(&_label);
 
     #ifdef NOT_DEFINED
 

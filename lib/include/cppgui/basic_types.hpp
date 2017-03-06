@@ -94,7 +94,7 @@ namespace cppgui {
         {
             pos.x = b.x_min, pos.y = - b.y_max; // TODO: adapt to support positive-up Y axis
             ext.w = - b.x_min + b.x_max;
-            ext.h = - b.y_min + b.y_min;
+            ext.h = - b.y_min + b.y_max;
         }
 
         auto& operator += (const Point &p)

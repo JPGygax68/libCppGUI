@@ -15,7 +15,11 @@ int main(int /*argc*/, char * /*argv*/[])
         auto win = std::make_unique<Test_window>();
         cppgui::Application app;
 
+        win->init();
+
         app.run();
+
+        win->cleanup();
 
         return 0;
     }

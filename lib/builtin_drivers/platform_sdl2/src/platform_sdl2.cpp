@@ -64,7 +64,7 @@ namespace cppgui
         // Either wait for event or poll
         if (wait)
         {
-            if (SDL_WaitEvent(&ev) != 0) throw SDL2_exception("waiting for event");
+            if (SDL_WaitEvent(&ev) != 1) throw SDL2_exception("waiting for event");
         }
         else
         {

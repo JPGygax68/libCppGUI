@@ -41,7 +41,7 @@ namespace cppgui {
         _win.reset(win);
 
         #ifdef CPPGUI_USING_OPENGL
-        _gl_ctx = SDL_GL_CreateContext(win);
+        _gr_ctx = SDL_GL_CreateContext(win);
         #endif
 
         window_map()[id()] = this; // static_cast<SDL2_window*>(this);
@@ -50,6 +50,28 @@ namespace cppgui {
     SDL2_window::~SDL2_window()
     {
         window_map().erase(id());
+    }
+
+    void SDL2_window::init()
+    {
+        // Graphics
+        #ifdef CPPGUI_USING_OPENGL
+        SDL_GL_MakeCurrent(_win.get(), _gr_ctx);
+        #else
+        #error No or unsupported graphics library defined
+        #endif
+        init_graphics(_gr_ctx);
+
+        // TODO: other subsystems
+    }
+
+    void SDL2_window::cleanup()
+    {
+        #ifdef CPPGUI_USING_OPENGL
+        SDL_GL_MakeCurrent(_win.get(), _gr_ctx);
+        #else
+        #error No or unsupported graphics library defined
+        #endif
     }
 
     auto SDL2_window::id() -> uint32_t
@@ -226,8 +248,8 @@ namespace cppgui {
         if (_must_redraw)
         {
             #ifdef CPPGUI_USING_OPENGL
-            SDL_GL_MakeCurrent(_win.get(), _gl_ctx);
-            redraw(_gl_ctx);
+            SDL_GL_MakeCurrent(_win.get(), _gr_ctx);
+            redraw(_gr_ctx);
             #else
             redraw(nullptr); // TODO: a different type of context ?
             #endif

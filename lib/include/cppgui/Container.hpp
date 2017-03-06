@@ -37,6 +37,11 @@ namespace cppgui {
 
         auto& children() { return _children; }
 
+        void add_child(Widget *);
+        // TODO: should removal methods be moved to optional aspect ?
+        void remove_child(Widget *);
+        void remove_all_children();
+
         /** Called when a key_down event could not be handled by the child it was sent to
             (from container_key_down()) and needs to "bubble" back up.
          */
@@ -76,11 +81,6 @@ namespace cppgui {
     // END of Layouting aspect ----------------------------
 
     protected:
-
-        void add_child(Widget *);
-        // TODO: should removal methods be moved to optional aspect ?
-        void remove_child(Widget *);
-        void remove_all_children();
 
         auto child_at(const Point &) -> Widget *;
 

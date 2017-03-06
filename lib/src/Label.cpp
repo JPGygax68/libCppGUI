@@ -78,9 +78,9 @@ namespace cppgui {
         return {};
     }
 
-    void Label::set_bounds(const Point & p, const Bounding_box & b)
+    /* void Label::set_bounds(const Point & p, const Bounding_box & b)
     {
         // Nothing to do for now
-    }
+    } */
 
 } // ns cppgui

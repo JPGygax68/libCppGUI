@@ -18,15 +18,12 @@
 */
 
 #include <stack>
-
 #include <cppgui_config.hpp>
-
 #include "./basic_types.hpp"
 #include "./Resource.hpp"
-
 #include CPPGUI_RENDERER_HEADER
-
 #include "./Full_resource_mapper.hpp" // TODO: replace with auto-selecting Resource_mapper.hpp as soon as ready
+
 
 namespace cppgui {
 
@@ -65,7 +62,7 @@ namespace cppgui {
     {
         // TODO: it might be possible to put these two fields into a union
         const Rasterized_font  *rasterized;
-        Font_handle             handle;
+        Font_handle             handle = 0;
 
         void assign(const Rasterized_font *font);
         auto get() const -> Font_handle;
