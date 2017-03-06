@@ -3,8 +3,8 @@ project(cppgui_platform_sdl2)
 add_library(${PROJECT_NAME} STATIC 
     src/platform_sdl2.cpp           include/cppgui/builtin_drivers/platform_sdl2.hpp
     src/SDL2_window.cpp             include/cppgui/builtin_drivers/SDL2_window.hpp
-    src/SDL2_application.cpp        include/cppgui/builtin_drivers/SDL2_application.hpp
                                     include/cppgui/builtin_drivers/SDL2_exception.hpp
+    src/custom_events.cpp           src/custom_events.hpp
 )
     
 # Note: this library is intended to be used as a CMake target only

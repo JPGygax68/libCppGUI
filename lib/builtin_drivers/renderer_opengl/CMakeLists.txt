@@ -46,6 +46,14 @@ endforeach()
 
 # External dependencies
 
+# GLEW
+# TODO: make optional (or one of several choices)
+find_package(GLEW REQUIRED)
+if (GLEW_FOUND)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${GLEW_INCLUDE_DIRS})
+    target_link_libraries(${PROJECT_NAME} ${GLEW_LIBRARIES})
+endif()
+
 if (0)
 if (NOT TARGET libGPCFonts)
     message(FATAL_ERROR "libGPCFonts not defined as a target")

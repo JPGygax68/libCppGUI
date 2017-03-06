@@ -1,8 +1,5 @@
 #pragma once
 
-// TODO: split into several modules
-
-
 #include <SDL2/SDL.h>
 
 
@@ -32,6 +29,8 @@ namespace cppgui {
 
     inline bool is_mouse_button_down(int button) { return (SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(button)) != 0; }
 
+    // Cursors
+
     inline auto get_current_cursor() -> SDL_Cursor * { return SDL_GetCursor(); }
 
     inline auto get_arrow_cursor() -> SDL_Cursor* { return SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW); }
@@ -42,7 +41,16 @@ namespace cppgui {
 
     inline void set_cursor(Cursor_handle cursor) { SDL_SetCursor(cursor); }
 
+    /*
+    * Must be called periodically from the main thread.
+    * 
+    * wait:        if true, will block until there is something to do; otherwise, 
+    *              returns immediately 
+    * Returns:     true while the application is running normally, false if it 
+    *              should be terminated (Windows: WM_QUIT)
+    */
+    bool perform_pending_main_thread_tasks(bool wait = false);
+
 } // ns cppgui
 
 #include "./SDL2_window.hpp"
-#include "./SDL2_application.hpp"
