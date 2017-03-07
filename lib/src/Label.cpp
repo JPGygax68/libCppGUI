@@ -47,23 +47,23 @@ namespace cppgui {
         _font.translate(c);
     }
 
-    void Label::render(Canvas *cnv, const Point &offs)
+    void Label::render(Canvas *c, const Point &offs)
     {
-        fill(cnv, offs, rgba_to_native(background_color())); 
+        auto p = offs + this->position();
 
-        auto pos = offs + this->position();
+        c->fill_rect(Rectangle{bounds()} + p, background_color());
 
         if (!_text.empty())
         {
-            cnv->set_text_color(_color);
-            cnv->render_text(_font.get(), pos.x, pos.y, _text.data(), _text.size());
+            c->set_text_color(_color);
+            c->render_text(_font.get(), p.x, p.y, _text.data(), _text.size());
         }
 
         if (this->has_focus())
         {
             auto r = Rectangle{bounds()};
             r.inflate(3, 2); // TODO: make this configurable somewhere
-            cnv->draw_stippled_rectangle_outline(pos.x + r.pos.x, pos.y + r.pos.y, r.ext.w, r.ext.h, {0, 0, 0.5f, 1});
+            c->draw_stippled_rectangle_outline(p.x + r.pos.x, p.y + r.pos.y, r.ext.w, r.ext.h, {0, 0, 0.5f, 1});
         }
     }
 

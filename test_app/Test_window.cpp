@@ -30,15 +30,18 @@ Test_window::Test_window(): cppgui::Window("Test window")
         std::cout << "Label was clicked! (pos = " << pos.x << ", " << pos.y 
             << ", button = " << button << ", clicks = " << clicks << ")" << std::endl;
     });
-    _label.set_bounds({ 50, 50 }, _label.get_minimal_bounds());
     root_widget().add_child(&_label);
 
-    /*
     _textbox.set_font(&cppgui::baked_fonts::default_font());
-    _textbox.set_bounds({ 100, 50 }, _textbox.get_minimal_bounds());
-    //_textbox.set_extents({ 200, 30 });
     _textbox.set_text(U"Abc1234567890");
-    */
+    root_widget().add_child(&_textbox);
+
+    root_widget().init_layout();
+
+    _label.set_bounds({ 50, 50 }, _label.get_minimal_bounds());
+    _textbox.set_bounds({ 150, 50 }, _textbox.get_minimal_bounds());
+
+
 
     #ifdef NOT_DEFINED
 

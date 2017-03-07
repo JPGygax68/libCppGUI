@@ -113,6 +113,11 @@ namespace cppgui {
         }
     }
 
+    void Canvas::fill_rect(const Rectangle &r, const RGBA &c)
+    {
+        CPPGUI_RENDERER_CLASS::fill_rect(r.pos.x, r.pos.y, r.ext.w, r.ext.h, c);
+    }
+
     /* 
     auto Canvas::stipple_image() -> const Image_definition &
     {

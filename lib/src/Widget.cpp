@@ -267,9 +267,33 @@ namespace cppgui {
         _container->child_invalidated(this);
     }
 
-    void Widget::fill_rect(Canvas *r, const Rectangle &rect, const Native_color &color)
+    /*
+     * TODO: this function should be moved to the fonts namespace
+     */
+    auto Widget::advance_to_glyph_at(const Rasterized_font *font, const std::u32string &text, 
+        size_t from, size_t to, Point &pos) -> const Glyph_control_box *
     {
-        r->fill_rect(rect.pos.x, rect.pos.y, rect.ext.w, rect.ext.h, color);
+        assert(to >= from);
+
+        const Glyph_control_box *cbox = nullptr;
+
+        for (auto i = from; ; i++)
+        {
+            cbox = & font->lookup_glyph(0, text[i])->cbox;
+            if (i == to) break;
+            pos.x += cbox->adv_x;
+            pos.y += cbox->adv_y;
+        }
+
+        return cbox;
+    }
+
+    
+    #ifdef NOT_DEFINED
+
+    void Widget::fill_rect(Canvas *c, const Rectangle &rect, const Native_color &color)
+    {
+        c->fill_rect(rectrect.pos.x, rect.pos.y, rect.ext.w, rect.ext.h, color);
     }
 
     void Widget::fill_rect(Canvas *r, const Rectangle & rect, const Point & offs, const Native_color &color)
@@ -286,6 +310,8 @@ namespace cppgui {
     {
         fill_rect(r, rectangle(), offs, color);
     }
+
+    #endif // NOT_DEFINED
 
     void Widget::set_bounds(const Point & p, const Bounding_box & b)
     {

@@ -34,15 +34,17 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/builtin_drivers/platform_sdl2/in
 add_library( ${PROJECT_NAME} 
 STATIC
     include/cppgui/basic_types.hpp
+    include/cppgui/unicode.hpp
     include/cppgui/Window.hpp           src/Window.cpp
     include/cppgui/Application.hpp      src/Application.cpp
     include/cppgui/Resource.hpp
-    # include/cppgui/Box_model.hpp        src/Box_model.cpp
+    include/cppgui/Box.hpp              src/Box.cpp
     include/cppgui/Canvas.hpp           src/Canvas.cpp
     include/cppgui/Widget.hpp           src/Widget.cpp
     include/cppgui/Container.hpp        src/Container.cpp
     include/cppgui/Root_widget.hpp      src/Root_widget.cpp
     include/cppgui/Label.hpp            src/Label.cpp
+    include/cppgui/Textbox.hpp          src/Textbox.cpp
 )
 
 # This will allow source files to include their contract header files without using paths

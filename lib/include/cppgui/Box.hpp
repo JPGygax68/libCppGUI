@@ -17,106 +17,134 @@
     limitations under the License.
 */
 
-#include "./Canvas.hpp"
-#include "./Box_model.hpp"
 #include "./Widget.hpp"
 
-namespace cppgui {
 
-    // Forward declaration
-
-    template<class Config, bool With_layout, class Parent> struct Box;
-
-    // Internal templatized namespace
-
-    template<class Config>
-    struct _box
+namespace cppgui
+{
+    class Textfield_box
     {
-        template<bool With_layout, class Parent> struct Layouter;
+    public:
+        
+        void draw_background_and_border(Canvas *, const Point &, const Bounding_box &);
 
-        using Canvas_t = Canvas<typename Config::Renderer>;
+        #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
-        // Border_drawer --------------------------------------------
+        auto adjust_box_bounds(const Bounding_box &, int sign = 1) -> Bounding_box;
 
-        /*  Border_drawer is an aspect that needs to be given a Widget<> descendent for a parent.
-            It also uses CRTP.
-         */
+        #endif // CPPGUI_EXCLUDE_LAYOUTING
 
-        template<class Class, class Parent, bool HasBorder = Parent::has_border()> 
-        struct Border_drawer: public Parent
-        {
-            // TODO: obtain rectangle on its own instead
-            static void draw_border(Canvas_t *, const Point &/*offset*/) {} // default implementation does nothing
-        };
-
-        template<class Class, class Parent> 
-        struct Border_drawer<Class, Parent, true>: Parent
-        {
-            void draw_border(Canvas_t *canvas,  const Point &offset)
-            {
-                auto rect = p()->get_border_rectangle();
-                Width w;
-
-                bool ena = true; // this->enabled(); // TODO: implement enabled() in Widget<> !!
-                bool hov = this->hovered();
-                bool foc = this->has_focus();
-
-                w = p()->get_border_width(0);
-                this->fill_rect(canvas, { rect.pos + Point{w, 0}, {rect.ext.w - w, w} }, offset, 
-                    Canvas_t::rgba_to_native( p()->get_border_color(0, ena, hov, foc) ) );
-                w = p()->get_border_width(1);
-                this->fill_rect(canvas, { rect.pos + Point{rect.ext.w - w, 0}, {w, rect.ext.h} }, offset, 
-                    Canvas_t::rgba_to_native( p()->get_border_color(1, ena, hov, foc) ) );
-                w = p()->get_border_width(2);
-                this->fill_rect(canvas, { rect.pos + Point{0, rect.ext.h - w}, {rect.ext.w - w, w} }, offset, 
-                    Canvas_t::rgba_to_native( p()->get_border_color(2, ena, hov, foc) ) );
-                w = p()->get_border_width(3);
-                this->fill_rect(canvas, { rect.pos, {w, rect.ext.h} }, offset, 
-                    Canvas_t::rgba_to_native( p()->get_border_color(2, ena, hov, foc) ) );
-            }
-
-            auto p() { return static_cast<Class*>(this); }
-        };
-
-        // Layouter aspect ------------------------------------------
-
-        // Dummy implementation (without layouting capabilities)
-        template<class Parent> struct Layouter<false, Parent>: Parent {};
-
-        // Real implementation
-
-        template<class Parent>
-        struct Layouter<true, Parent>: Parent
-        {
-            auto add_boxing(const Extents &ext) -> Extents
-            {
-                return { 
-                    ext.w + this->get_distance(3) + this->get_distance(1),
-                    ext.h + this->get_distance(0) + this->get_distance(2)
-                };
-            }
-
-            auto position_text_element(const Text_bounding_box &bbox, Alignment minor_align, Alignment major_align) -> Point;
-        };
-
+    private:
+        // TODO: make configurable:
+        static auto border_width() -> Width { return 1; }
+        static auto padding_width() -> Width { return 2; }
+        static auto background_color() -> RGBA { return {1, 1, 1, 1}; }
     };
 
-    /** This is an aspect that must be given a parent that IS_A BoxModel implementation and
-        IS_A Widget<>.
-        TODO: concept checking ?
-     */
-    template<class Config, bool With_layout, class Parent>
-    struct Box: 
-        _box<Config>::template Layouter< With_layout,
-            _box<Config>::template Border_drawer<
-                Box<Config, With_layout, Parent >, 
-                Parent > > 
+
+
+
+
+
+
+
+
+
+
+
+    #ifdef NOT_DEFINED
+
+    // Base class, providing common functionality
+
+    struct Box_model_base
     {
-        auto get_border_rectangle() const -> Rectangle { return this->border_rectangle( this->extents() ); }
-        auto get_inner_rectangle() const -> Rectangle { return this->inner_rectangle( this->extents() ); }
+        static auto box_rectangle() -> Rectangle;
+
+        static auto content_rectangle() -> Rectangle;
+
+        // TODO: this belongs into the Layouter aspect
+        auto position_text_element(const Text_bounding_box & bbox, Alignment minor_align, Alignment major_align) const -> Point;
+
+        auto border_color(int /*dir*/)
+        {
+            // TODO: return value that takes enabled(), hovered(), focused() properties into account
+            return RGBA{ 0, 0, 0, 1 }; // TODO: styling!
+        }
+
+    protected:
+        struct Implementation: Impl { friend struct Aspect; };
+        auto p() { return static_cast<Implementation*>(this); }
+        auto p() const { return static_cast<const Implementation*>(this); }
+
+        constexpr auto box_inset(int border) const
+        {
+            return p()->margin(border);
+        }
+
+        constexpr auto content_inset(int border) const
+        {
+            return box_inset(border) + p()->border_width(border) + p()->padding(border);
+        }
     };
 
-    // template<class Config, class With_layout, class Parent> using Box__Layouter = typename _box<Config>::template Layouter<With_layout, Parent>;
+    // Box_model specialization for build-time definition
+
+    #if defined CPPGUI_BOX_MODEL_BUILD_TIME
+    
+    template <class Impl>
+    struct Box_model
+    {
+        // All setters are no-ops in the build-time implementation
+        static void set_margin      (int dir, Width /*w*/) {}
+        static void set_border_width(int dir, Width /*w*/) {}
+        static void set_padding     (int dir, Width /*w*/) {}
+
+        auto add_boxing(const Extents & ext) -> Extents;
+        void draw_border(Canvas * canvas, const Point & offset);
+    };
+
+    #elif defined CPPGUI_BOX_MODEL_RUN_TIME
+
+    // Box_model specialization for run-time definition
+
+    struct Box_model
+    {
+        // Default values, override in implementations
+        static constexpr auto default_margin      (int /*dir*/) { return 0; }
+        static constexpr auto default_border_width(int /*dir*/) { return 0; }
+        static constexpr auto default_padding     (int /*dir*/) { return 0; }
+
+        Box_model();
+
+        void set_margin      (int /*dir*/, Width w) { _margin = w; }
+        void set_border_width(int /*dir*/, Width w) { _border_width = w; }
+        void set_padding     (int /*dir*/, Width w) { _padding = w; }
+
+        void set_margin      (Width w) { _margin = w; }
+        void set_border_width(Width w) { _border_width = w; }
+        void set_padding     (Width w) { _padding = w; }
+
+        auto margin      (int /*dir*/) const { return _margin; }
+        auto border_width(int /*dir*/) const { return _border_width; }
+        auto padding     (int /*dir*/) const { return _padding; }
+
+        auto add_boxing(const Extents & ext) -> Extents;
+
+        void draw_border(Canvas * canvas, const Point & offset);
+
+    private:
+        //class Implementation_t: public Impl { friend struct Aspect; };
+        //auto p() { return static_cast<Implementation_t*>(this); }
+
+        Width       _margin = 0;
+        Width       _border_width = 1;
+        Width       _padding = 2;
+    };
+
+    #else
+    #error either CPPGUI_BOX_MODEL_RUN_TIME or CPPGUI_BOX_MODEL_BUILD_TIME must be defined
+    #endif
+
+    #endif // NOT_DEFINED
 
 } // ns cppgui
-

@@ -45,6 +45,7 @@ namespace cppgui {
         using Pushed_handler    = std::function<void()>; // for buttons TODO: renamed event to "Push" (as in "a push happened") ?
 
         Widget();
+        virtual ~Widget() {}
 
         void set_id(const char *id)
         {
@@ -161,12 +162,10 @@ namespace cppgui {
 
         // auto rgba_to_native(Canvas *, const RGBA &) -> Native_color;
         //auto rgba_to_native(const RGBA &) -> Native_color;
-        void fill_rect(Canvas *, const Rectangle &rect, const Native_color &);
-        void fill_rect(Canvas *, const Rectangle &rect, const Point &offs, const Native_color &);
-        void fill_rect(Canvas *, const Point &pos, const Extents &ext, const Native_color &);
-        void fill(Canvas *, const Point &offs, const Native_color &);
-        auto convert_position_to_inner(const Point &) -> Point;
-        auto advance_to_glyph_at(const Rasterized_font *, const std::u32string &text, size_t from, size_t to, Point &pos) 
+        //void fill_rect(Canvas *, const Point &pos, const Extents &ext, const Native_color &);
+        //void fill(Canvas *, const Point &offs, const Native_color &);
+        //auto convert_position_to_inner(const Point &) -> Point;
+        static auto advance_to_glyph_at(const Rasterized_font *, const std::u32string &text, size_t from, size_t to, Point &pos) 
             -> const Glyph_control_box *;
         void draw_borders(Canvas *, const Point & offs, Width width, const RGBA &color);
         void draw_borders(Canvas *, const Rectangle &rect, const Point &offs, Width width, const RGBA &color);

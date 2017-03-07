@@ -19,14 +19,15 @@
 
 #include <cassert>
 #include <array>
-
 #include "./fonts/Rasterized_font.hpp"
 #include "./fonts/Bounding_box.hpp"
 #include "./fonts/Rasterized_glyph_cbox.hpp"
 
-// #include "./geometry.hpp" // TODO: remove, leave choice of whether to include to user code
 
 namespace cppgui {
+
+    using Index             = int; // Index is signed so that -1 can be used to report "invalid" or "not found"
+    using Count             = unsigned int;
 
     using Rasterized_font   = fonts::Rasterized_font;
     using Font_size         = unsigned int;
@@ -74,7 +75,17 @@ namespace cppgui {
 
         explicit Bounding_box(const Text_bounding_box &from): Text_bounding_box{from} {}
 
+        explicit Bounding_box(Position x_min, Position x_max, Position y_min, Position y_max):
+            fonts::Bounding_box{x_min, x_max, y_min, y_max} {}
+
         Bounding_box() = default;
+
+        auto expand(Width w) const -> Bounding_box
+        {
+            auto d = static_cast<Position_delta>(w);
+
+            return Bounding_box{fonts::Bounding_box{ x_min - d, x_max + d, y_min - d, y_max + d }};
+        }
 
         bool is_point_inside(const Point &p) const
         {
@@ -98,10 +109,20 @@ namespace cppgui {
             ext.h = - b.y_min + b.y_max;
         }
 
-        auto& operator += (const Point &p)
+        Rectangle(const Rectangle &) = default;
+        Rectangle(Rectangle &&) = default;
+
+        explicit Rectangle(const Point &p, const Extents &e): pos{p}, ext{e} {}
+        explicit Rectangle(Point &&p, Extents &&e): pos{p}, ext{e} {}
+        explicit Rectangle(Position x, Position y, Length w, Length h): pos{x, y}, ext{w, h} {}
+
+        auto& operator += (const Point &p) { pos += p; return *this; }
+
+        auto operator + (const Point &p)
         {
-            pos += p;
-            return *this;
+            auto r{*this};
+            r.pos += p;
+            return r;
         }
 
         void inflate(Width x, Width y)
@@ -111,8 +132,7 @@ namespace cppgui {
         }
     };
 
-    using Index             = int; // Index is signed so that -1 can be used to report "invalid" or "not found"
-    using Count             = unsigned int;
+    using Padding = std::array<Width, 4>;
 
     /** Normalized RGBA (red, green, blue, alpha) color.
     */

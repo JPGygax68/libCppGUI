@@ -119,6 +119,8 @@ namespace cppgui {
         void push_clipping_rect(const Rectangle &);
         void pop_clipping_rect ();
 
+        void fill_rect(const Rectangle &, const RGBA &);
+
     private:
         static auto stipple_image() -> const Mono_image_definition &;
 

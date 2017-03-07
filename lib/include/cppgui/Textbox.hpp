@@ -18,37 +18,19 @@
 */
 
 #include "./Widget.hpp"
+#include "./Box.hpp"
+
 
 namespace cppgui {
-
-    // Forward declarations 
-
-    template<class Config, bool With_layout>
-    struct Textbox__Layouter
-    {
-        template <class Class, class Parent>
-        struct Aspect: Parent
-        {
-        };
-    };
 
     // Main class 
 
     // TODO: do not stretch vertically to fill all available space, instead display a strip with border and padding to fit the font size
 
-    template<class Config, bool With_layout, Box_model_definition BMDef>
-    class Textbox: public 
-        Textbox__Layouter<Config, With_layout>::template Aspect<Textbox<Config, With_layout, BMDef>,
-        Box_model<Config, With_layout, BMDef>::template Aspect<Textbox<Config, With_layout, BMDef>,
-        Widget<Config, With_layout> > >
+    class Textbox: public Widget, public Textfield_box
     {
     public:
-        using Widget_t      = Widget<Config, With_layout>;
-        using Textbox_t     = Textbox<Config, With_layout, BMDef>;
-        using Renderer      = typename Config::Renderer;
-        using Keycode       = typename Config::Keyboard::Keycode;
-        using Canvas_t      = typename Widget_t::Canvas_t;
-        using Font_resource = typename Widget_t::Font_resource;
+
         using Done_handler  = std::function<void(const std::u32string&)>;
 
         static constexpr auto default_padding(int /*dir*/) { return 2; }
@@ -69,7 +51,7 @@ namespace cppgui {
         void change_text(const std::string &);
         auto text() const { return _text; }
 
-        void init() override;
+        void init(Canvas *) override;
         void compute_view_from_data() override;
 
         void mouse_motion(const Point &) override;
@@ -83,7 +65,7 @@ namespace cppgui {
         void gained_focus() override;
         void loosing_focus() override;
 
-        void render(Canvas_t *, const Point &pos) override;
+        void render(Canvas *, const Point &pos) override;
 
         bool handle_key_down(const Keycode &) override;
 
@@ -113,18 +95,18 @@ namespace cppgui {
 
         // Styling
         // TODO: make into aspect ?
-        auto selected_text_background_color() -> Color;
-        auto caret_color() -> Color;
+        auto selected_text_background_color() -> RGBA;
+        auto caret_color() -> RGBA;
 
         Done_handler            _on_done;
 
         int                     _size;
         Font_resource           _font;
 
+        Bounding_box            _inner_bbox;
         int                     _ascent, _descent; // TODO: support vertical writing
         int                     _mean_char_width;
-        Rectangle               _inner_rect;
-        Point                   _txpos;
+        //Point                   _txpos;
         //int                     _txmaxlen;
 
         std::u32string          _text;
@@ -132,30 +114,22 @@ namespace cppgui {
         int                     _caret_pixel_pos, _sel_start_pixel_pos, _sel_end_pixel_pos;
         unsigned int            _first_vis_char_idx = 0;
         int                     _scroll_offs = 0;
-    };
 
-    // Layouting aspect ---------------------------------------------
+        #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
-    template<class Config>
-    struct Textbox__Layouter<Config, true>
-    {
-        template <class Class, class Parent>
-        struct Aspect: Parent
-        {
-            class Textbox_t: public Class { friend struct Aspect; };
-            auto p() { return static_cast<Textbox_t*>(this); }
+    public:
+        void change_font(const Rasterized_font *);
 
-            void change_font(const Rasterized_font *);
+        void compute_text_extents();
 
-            void compute_text_extents();
+        void init_layout() override;
+        auto get_minimal_bounds() -> Bounding_box override;
+        void set_bounds(const Point &, const Bounding_box &) override;
 
-            void init_layout() override;
-            auto get_minimal_size() -> Extents override;
-            void layout() override;
+        // "Stylesheet"
+        //static constexpr auto default_padding() -> Padding { return { 3, 3, 3, 3 }; }
 
-            // "Stylesheet"
-            static constexpr auto default_padding() -> Padding { return { 3, 3, 3, 3 }; }
-        };
+        #endif // CPPGUI_EXCLUDE_LAYOUTING
     };
 
 } // ns cppgui
