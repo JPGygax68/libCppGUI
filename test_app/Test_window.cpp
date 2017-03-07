@@ -20,6 +20,8 @@ Test_window::Test_window(): cppgui::Window("Test window")
     //glyph_font = gpc::fonts::load(tick_font_data.first, tick_font_data.second);
     //auto tick_descr = cppgui::Icon_resources<Default_font::size>::tick_descr();
 
+    set_background_color({0, 0.5, 1, 1});
+
     _label.set_font(&cppgui::baked_fonts::default_font());
     _label.set_color({1, 1, 1, 1});
     //_label.set_background_color({1, 1, 1, 1});
@@ -31,13 +33,15 @@ Test_window::Test_window(): cppgui::Window("Test window")
     _label.set_bounds({ 50, 50 }, _label.get_minimal_bounds());
     root_widget().add_child(&_label);
 
-    #ifdef NOT_DEFINED
-
-    _textbox.set_font(&dflt_font);
-    _textbox.set_position({50, 120});
+    /*
+    _textbox.set_font(&cppgui::baked_fonts::default_font());
+    _textbox.set_bounds({ 100, 50 }, _textbox.get_minimal_bounds());
     //_textbox.set_extents({ 200, 30 });
     _textbox.set_text(U"Abc1234567890");
-    
+    */
+
+    #ifdef NOT_DEFINED
+
     _button.set_font(&dflt_font);
     _button.set_position({50, 160});
     _button.set_extents({200, 30});

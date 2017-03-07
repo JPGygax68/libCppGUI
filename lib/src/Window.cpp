@@ -8,9 +8,15 @@
 namespace cppgui {
 
     Window::Window(const char * title):
-        SDL2_window(title)
+        SDL2_window(title),
+        _bkg_color{0, 0, 0, 0}
     {
         _root_widget.on_invalidated([this]() { invalidate(); });
+    }
+
+    void Window::set_background_color(const RGBA &color)
+    {
+        _bkg_color = color;
     }
 
     void Window::init_graphics(void *context)
@@ -31,6 +37,7 @@ namespace cppgui {
     {
         begin_rendering();
         _canvas->enter_context();
+        _canvas->clear(_bkg_color);
         _root_widget.render(_canvas.get(), {0, 0});
         _canvas->leave_context();
         done_rendering();
