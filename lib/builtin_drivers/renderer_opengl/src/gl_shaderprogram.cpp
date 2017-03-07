@@ -1,5 +1,5 @@
 #include <vector>
-#include <gl.h>
+#include "./import_gl.hpp"
 #include "./gl_wrappers.hpp"
 #include "./gl_shaderprogram.hpp"
 

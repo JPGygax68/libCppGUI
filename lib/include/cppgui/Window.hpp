@@ -30,6 +30,7 @@ namespace cppgui {
         void text_input(const char32_t *text, size_t cp_count) override;
         void key_down(Keycode key) override;
         void mouse_motion(const Point &) override;
+        void mouse_button(const Point &p, uint btn, Key_state, uint clicks) override;
 
         // Further specialization
         virtual void create_ui() {}

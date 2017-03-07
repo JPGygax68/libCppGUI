@@ -73,4 +73,9 @@ namespace cppgui {
         _root_widget.mouse_motion(p);
     }
 
+    void Window::mouse_button(const Point &p, uint btn, Key_state state, uint clicks)
+    {
+        _root_widget.mouse_button(p, btn, state, clicks);
+    }
+
 } // ns cppgui

@@ -4,11 +4,9 @@
 #include <mutex>
 #include <string>
 #include <array>
-
-#include "./gl.h"
+#include "./import_gl.hpp"
 #include "./gl_wrappers.hpp"
 #include "./gl_shaderprogram.hpp"
-
 #include "OpenGL_renderer.hpp"
 
 

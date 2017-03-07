@@ -1,19 +1,15 @@
 #pragma once
 
-#pragma once
-
 #include <cstdint>
 #include <string>
 #include <memory>
 #include <map>
 #include <functional>
-
 #include <SDL.h>
-
 #include <cppgui_config.hpp>
 #include <cppgui/basic_types.hpp>
-
 #include "platform_sdl2.hpp"
+#include <cppgui/Widget.hpp>
 
 
 struct SDL_Window;
@@ -41,7 +37,6 @@ namespace cppgui
 
     public:
         using Pointer = std::unique_ptr<SDL_Window, Deleter>;
-        enum Button_direction { down = 0, up = 1 };
 
         // Lifecycle --------------------------------------
 
@@ -106,7 +101,7 @@ namespace cppgui
         // Event hooks
         virtual void size_changed(const Extents &) {}
         virtual void mouse_motion(const Point &) {}
-        virtual void mouse_button(int x, int y, uint8_t button, Button_direction dir, unsigned int clicks) {}
+        virtual void mouse_button(const Point &p, uint btn, Key_state, uint clicks) {}
         virtual void mouse_wheel(int x, int y) {}
         virtual void text_input(const char32_t *text, size_t cp_count) {}
         virtual void key_down(Keycode key) {}

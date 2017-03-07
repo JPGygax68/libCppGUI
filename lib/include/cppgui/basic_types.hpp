@@ -22,9 +22,14 @@
 #include "./fonts/Rasterized_font.hpp"
 #include "./fonts/Bounding_box.hpp"
 #include "./fonts/Rasterized_glyph_cbox.hpp"
+#include "cppgui_config.hpp"
 
 
 namespace cppgui {
+
+    using ushort            = unsigned short;
+    using uint              = unsigned int;
+    using ulong             = unsigned long;
 
     using Index             = int; // Index is signed so that -1 can be used to report "invalid" or "not found"
     using Count             = unsigned int;
@@ -40,6 +45,8 @@ namespace cppgui {
     using Position_delta    = int;
     using Length            = int;
     using Width             = Length;
+
+    enum Key_state { pressed = 0, released = 1};
 
 
     struct Point
@@ -89,12 +96,17 @@ namespace cppgui {
 
         bool is_point_inside(const Point &p) const
         {
+            #ifdef CPPGUI_Y_AXIS_DOWN
+
             // Important: by convention, Y is positive-down in the CppGUI coordinate system; but 
             // Y is positive-up in typography, which means that y_min extends *below* the baseline
             // with negative numbers while y_max goes grows up from the baseline with positive
             // numbers.
-            return p.x >= x_min && p.x < x_max 
-                && p.y >= - y_max && p.y < - y_max;
+            return p.x >= x_min && p.x < x_max && p.y >= - y_max && p.y < - y_min;
+
+            #else
+            #error Upward Y axis not supported yet
+            #endif
         }
     };
 

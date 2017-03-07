@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <type_traits>
 #include <sstream>
-#include "./gl.h"
+#include "./import_gl.hpp"
 
 
 namespace gl {

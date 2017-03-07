@@ -3,7 +3,7 @@
 #include <array>
 #include <vector>
 #include <string>
-#include "./gl.h"
+#include "./import_gl.hpp"
 #include "./gl_wrappers.hpp"
 #include <cassert>
 

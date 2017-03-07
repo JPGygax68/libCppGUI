@@ -209,8 +209,8 @@ namespace cppgui {
 
     void SDL2_window::handle_mousebutton_event(SDL_MouseButtonEvent & ev)
     {
-        auto dir = ev.state == SDL_PRESSED ? down : up;
-        mouse_button(ev.x, ev.y, ev.button, dir, ev.clicks);
+        Key_state state = ev.state == SDL_PRESSED ? pressed : released;
+        mouse_button({ev.x, ev.y}, ev.button, state, ev.clicks);
     }
 
     void SDL2_window::handle_mousewheel_event(SDL_MouseWheelEvent & ev)

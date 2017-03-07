@@ -2,8 +2,8 @@
 
 #include <stdexcept>
 #include <string>
-
 #include <SDL_error.h>
+
 
 class SDL2_exception : public std::exception {
 public:

@@ -18,20 +18,15 @@
 */
 
 #include <functional>
-
 #include <cppgui_config.hpp>
-
 #include "./basic_types.hpp"
 #include "./Canvas.hpp"
 #include "./Resource.hpp"
-
 #include CPPGUI_RENDERER_HEADER
 #include CPPGUI_PLATFORM_ADAPTER_HEADER
 
 
 namespace cppgui {
-
-    enum Key_state { pressed, released }; // TODO: move to basic_types.hpp ?
 
     class Root_widget;
     class Container;

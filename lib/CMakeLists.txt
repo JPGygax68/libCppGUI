@@ -25,9 +25,9 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
 
 # TODO: also make all components accessible to each other ? AVOID IF POSSIBLE
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/builtin_drivers/renderer_opengl/include)
-#include_directories(${CMAKE_CURRENT_BINARY_DIR}/builtin_drivers/renderer_opengl)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/builtin_drivers/renderer_opengl)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/builtin_drivers/platform_sdl2/include)
-#include_directories(${CMAKE_CURRENT_BINARY_DIR}/builtin_drivers/platform_sdl2)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/builtin_drivers/platform_sdl2)
 
 
 # Define main target: static library
