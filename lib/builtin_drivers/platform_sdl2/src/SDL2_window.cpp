@@ -54,19 +54,18 @@ namespace cppgui {
 
     void SDL2_window::init()
     {
-        // Graphics
         #ifdef CPPGUI_USING_OPENGL
         SDL_GL_MakeCurrent(_win.get(), _gr_ctx);
         #else
         #error No or unsupported graphics library defined
         #endif
-        init_graphics(_gr_ctx);
-
-        // TODO: other subsystems
+        init_window(_gr_ctx); // TODO: other subsystem contexts ?
     }
 
     void SDL2_window::cleanup()
     {
+        cleanup_window(_gr_ctx);
+
         #ifdef CPPGUI_USING_OPENGL
         SDL_GL_MakeCurrent(_win.get(), _gr_ctx);
         #else

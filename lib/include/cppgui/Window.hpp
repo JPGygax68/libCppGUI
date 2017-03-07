@@ -23,12 +23,17 @@ namespace cppgui {
         
         // Specializing base Window for UI tasks
 
-        void init_graphics(void *context) override;
-        void cleanup_graphics(void *context) override;
+        void init_window(void *context) override;
+        void cleanup_window(void *context) override;
         void redraw(void *context) override;
         void size_changed(const Extents &) override;
-
+        void text_input(const char32_t *text, size_t cp_count) override;
+        void key_down(Keycode key) override;
         void mouse_motion(const Point &) override;
+
+        // Further specialization
+        virtual void create_ui() {}
+        virtual void adjust_ui_layout() {}  // in case something needs to be laid out manually
 
     private:
         RGBA                        _bkg_color;

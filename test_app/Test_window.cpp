@@ -14,8 +14,14 @@
 //static cppgui::Rasterized_font  dflt_font;
 //static cppgui::Rasterized_font  glyph_font;     // TODO: move this to a reusable module in cppgui itself
 
-Test_window::Test_window(): cppgui::Window("Test window")
+Test_window::Test_window():
+    cppgui::Window{"Test window"}
 {
+}
+
+void Test_window::create_ui()
+{
+    // TODO: 
     //auto tick_font_data = cppgui::Icon_resources<Default_font::size>::tick_font_data();
     //glyph_font = gpc::fonts::load(tick_font_data.first, tick_font_data.second);
     //auto tick_descr = cppgui::Icon_resources<Default_font::size>::tick_descr();
@@ -35,12 +41,6 @@ Test_window::Test_window(): cppgui::Window("Test window")
     _textbox.set_font(&cppgui::baked_fonts::default_font());
     _textbox.set_text(U"Abc1234567890");
     root_widget().add_child(&_textbox);
-
-    root_widget().init_layout();
-
-    _label.set_bounds({ 50, 50 }, _label.get_minimal_bounds());
-    _textbox.set_bounds({ 150, 50 }, _textbox.get_minimal_bounds());
-
 
 
     #ifdef NOT_DEFINED
@@ -88,5 +88,11 @@ Test_window::Test_window(): cppgui::Window("Test window")
 
     #endif
 
-    root_widget().switch_focused_child(&_label);
+    root_widget().switch_focused_child(&_textbox);
+}
+
+void Test_window::adjust_ui_layout()
+{
+    _label.set_bounds({ 50, 50 }, _label.get_minimal_bounds());
+    _textbox.set_bounds({ 150, 50 }, _textbox.get_minimal_bounds());
 }

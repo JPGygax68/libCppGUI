@@ -96,13 +96,11 @@ namespace cppgui
     protected:
 
         // Specialization
-        virtual void init_graphics(void *context) = 0;
-        virtual void cleanup_graphics(void *context) = 0;
+        virtual void init_window(void *context) = 0;
+        virtual void cleanup_window(void *context) = 0;
         virtual void redraw(void *context) = 0;
 
         // Lifecycle hooks
-        virtual void init_window() {}
-        virtual void cleanup_window() {}
         virtual void closing() {}
 
         // Event hooks

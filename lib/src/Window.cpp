@@ -19,14 +19,19 @@ namespace cppgui {
         _bkg_color = color;
     }
 
-    void Window::init_graphics(void *context)
+    void Window::init_window(void *context)
     {
+        create_ui();
+
+        _root_widget.init_layout();
+        _root_widget.compute_view_from_data();
+
         _canvas = std::make_unique<Canvas>();
         _canvas->init();
         _root_widget.init(_canvas.get());
     }
 
-    void Window::cleanup_graphics(void *context)
+    void Window::cleanup_window(void *context)
     {
         _root_widget.cleanup(); // TODO: pass canvas ?
         _canvas->cleanup();
@@ -50,6 +55,17 @@ namespace cppgui {
         // (Re-)do layout
         _root_widget.init_layout();
         _root_widget.set_bounds({0, 0}, Bounding_box{e});
+        adjust_ui_layout();
+    }
+
+    void Window::text_input(const char32_t *text, size_t cp_count)
+    {
+        _root_widget.text_input(text, cp_count);
+    }
+
+    void Window::key_down(Keycode key)
+    {
+        _root_widget.key_down(key);
     }
 
     void Window::mouse_motion(const Point &p)

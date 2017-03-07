@@ -9,8 +9,12 @@
 class Test_window: public cppgui::Window
 {
 public:
+    explicit Test_window();
 
-    Test_window();
+protected:
+
+    void create_ui() override;
+    void adjust_ui_layout() override;
 
 private:
     cppgui::fonts::Rasterized_font  _dflt_font;

@@ -175,7 +175,7 @@ namespace cppgui {
             focused_child()->key_down(key);
         }
         */
-        Container::key_down( key );
+        container_key_down( key );
 
         // TODO: ensure this is called in case of an exception
         unlock();
