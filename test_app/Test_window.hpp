@@ -4,6 +4,7 @@
 #include <cppgui/Label.hpp>
 #include <cppgui/Textbox.hpp>
 #include <cppgui/Button.hpp>
+#include <cppgui/Checkbox.hpp>
 
 
 class Test_window: public cppgui::Window
@@ -20,4 +21,5 @@ private:
     cppgui::Label                   _label;
     cppgui::Textbox                 _textbox;
     cppgui::Button                  _button;
+    cppgui::Checkbox                _checkbox;
 };

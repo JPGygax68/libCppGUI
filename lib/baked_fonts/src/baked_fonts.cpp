@@ -20,7 +20,7 @@ namespace cppgui
         return font;
     }
 
-    auto baked_fonts::symbols_font() -> const fonts::Rasterized_font &
+    auto baked_fonts::default_symbol_font() -> const fonts::Rasterized_font &
     {
         static fonts::Rasterized_font font;
         static auto loaded = false;

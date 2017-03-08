@@ -47,16 +47,15 @@ void Test_window::create_ui()
     //_button.set_alignment(cppgui::cultural_minor_start);
     root_widget().add_child(&_button);
 
-
-    #ifdef NOT_DEFINED
-
-    _checkbox.set_font(&dflt_font);
+    _checkbox.set_font(&cppgui::baked_fonts::default_font());
     //_checkbox.set_glyph_font(dflt_font);
     //_checkbox.set_glyph_font_size(22);
-    _checkbox.set_tick_glyph(&glyph_font, tick_descr);
-    _checkbox.set_position({500, 50});
-    _checkbox.set_extents({200, 40});
+    //_checkbox.set_tick_glyph(&cppgui::baked_fonts::default_symbol_font(), tick_descr);
     _checkbox.set_label(U"Check me!");
+    root_widget().add_child(&_checkbox);
+
+
+    #ifdef NOT_DEFINED
 
     _button_list.resize(8);
     for (auto i = 0U; i < _button_list.size(); i ++)
@@ -96,4 +95,5 @@ void Test_window::adjust_ui_layout()
     _label.set_bounds({ 50, 50 }, _label.get_minimal_bounds());
     _textbox.set_bounds({ 150, 50 }, _textbox.get_minimal_bounds());
     _button.set_bounds({300, 50}, _button.get_minimal_bounds());
+    _checkbox.set_bounds({450, 50}, _checkbox.get_minimal_bounds());
 }

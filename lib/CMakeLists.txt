@@ -35,6 +35,7 @@ add_library( ${PROJECT_NAME}
 STATIC
     include/cppgui/basic_types.hpp
     include/cppgui/unicode.hpp
+    include/cppgui/layouting.hpp        src/layouting.cpp
     include/cppgui/Window.hpp           src/Window.cpp
     include/cppgui/Application.hpp      src/Application.cpp
     include/cppgui/Resource.hpp
@@ -46,6 +47,7 @@ STATIC
     include/cppgui/Label.hpp            src/Label.cpp
     include/cppgui/Textbox.hpp          src/Textbox.cpp
     include/cppgui/Button.hpp           src/Button.cpp
+    include/cppgui/Checkbox.hpp         src/Checkbox.cpp
 )
 
 # This will allow source files to include their contract header files without using paths

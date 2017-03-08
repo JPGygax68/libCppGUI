@@ -21,41 +21,24 @@
 
 //#include "./Box_model.hpp"
 #include "./Widget.hpp"
-#include "./Icon_resources.hpp"
+#include "./Box.hpp"
+//#include "./Icon_resources.hpp"
 
-namespace gpc { namespace fonts {
-
-    struct rasterized_font;
-} }
 
 namespace cppgui {
 
     struct Font_icon_descr;
 
-    template <class Config, bool With_layout>
-    struct Checkbox__Layouter
-    {
-        template<class Class, class Parent>
-        struct Aspect: Parent {};
-    };
-
-    template <class Config, bool With_layout, Box_model_definition BMDef>
-    class Checkbox: public 
-        Checkbox__Layouter<Config, With_layout>::template Aspect<Checkbox<Config, With_layout, BMDef>, 
-        Box_model<Config, With_layout, BMDef>::template Aspect<Checkbox<Config, With_layout, BMDef>,
-        Widget<Config, With_layout> > >
+    class Checkbox: public Widget, protected Box<Button_box_styles> // TODO: replace with specific styles
     {
     public:
-        using Widget_t      = Widget<Config, With_layout>;
-        using Canvas_t      = typename Widget_t::Canvas_t;
-        //using Font_handle = typename Widget_t::Font_handle;
-        using Font_resource = typename Widget_t::Font_resource;
-
         using State_change_handler = std::function<void(bool)>;
+
+        Checkbox();
 
         void set_font(const Rasterized_font *font) { _label_font.assign(font); }
         auto font() const { return _label_font; }
-        void set_tick_glyph(const Rasterized_font *, const Font_icon_descr &); // TODO: use improved Icon_resources methods
+        //void set_tick_glyph(const Rasterized_font *, char32_t codepoint); // TODO: use improved Icon_resources methods
         void set_label(const std::u32string &label) { _label = label; }
         auto label() const { return _label; }
         bool checked() const { return _checked; }
@@ -63,9 +46,9 @@ namespace cppgui {
 
         void on_state_change(State_change_handler handler);
 
-        void init() override;
+        void init(Canvas *) override;
 
-        void render(Canvas_t *, const Point &offset) override;
+        void render(Canvas *, const Point &offset) override;
 
         void mouse_click(const Point &, int button, Count count) override;
 
@@ -73,48 +56,45 @@ namespace cppgui {
         
         Font_resource           _label_font;
         Font_resource           _glyph_font;    // TODO: rename to _tick_font ?
-        Font_icon_descr         _tick_descr;
+        //char32_t                _tick_codepoint;
         std::u32string          _label;
         State_change_handler    _state_change_handler;
 
-        Point                   _label_pos;
-        Point                   _tick_pos;
-        Rectangle               _box_rect;
+        //Point                   _label_pos;
+        //Point                   _tick_pos;
+        //Rectangle               _box_rect;
+        Position                _tick_orig = 0;
 
     private:
-        bool                    _checked;
-    };
+        bool                    _checked = false;
 
-    template <class Config>
-    struct Checkbox__Layouter<Config, true>
-    {
-        template<class Class, class Parent>
-        struct Aspect: Parent 
-        {
-            void init_layout() override;
-            auto get_minimal_size() -> Extents override;
-            void layout() override;
+        #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
-            auto padding() { return 2; }
+    public:
+        void init_layout() override;
+        auto get_minimal_bounds() -> Bounding_box override;
+        void set_bounds(const Point &, const Bounding_box &) override;
 
-            // TODO:
-            // void change_font();
-            // void change_glyph_font();
+        auto tick_padding() const { return 1; }
+        auto tick_border() const { return 1; }
 
-        private:
-            class Checkbox_t: public Class { friend struct Aspect; };
-            auto p() { return static_cast<Checkbox_t*>(this); }
-            
-            void compute_em_bounds();
-            void compute_label_size();
-            void get_tick_metrics();
+        // TODO:
+        // void change_font();
+        // void change_glyph_font();
 
-            Text_bounding_box       _em_bounds;
-            Text_bounding_box       _tick_bounds;
-            Extents                 _tick_extents;
-            Length                  _box_edge;
-            Text_bounding_box       _label_bounds;
-        };
+    private:
+        //void compute_em_bounds();
+        //void compute_label_size();
+        void get_tick_bounds();
+
+        //Text_bounding_box       _em_bounds;
+        //Text_bounding_box       _tick_bounds;
+        //Extents                 _tick_extents;
+        //Length                  _box_edge;
+        //Text_bounding_box       _label_bounds;
+        Bounding_box            _tick_bbox;
+
+        #endif // CPPGUI_EXCLUDE_LAYOUTING
     };
 
 } // ns cppgui

@@ -22,12 +22,10 @@
 
 #include <cstdint>
 #include <utility>
-
 #include <gpc/fonts/store.hpp>
-
 #include "./basic_types.hpp"
-
 #include "all_icon_fonts.h"
+
 
 namespace cppgui {
 

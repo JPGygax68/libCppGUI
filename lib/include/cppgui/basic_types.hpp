@@ -143,6 +143,12 @@ namespace cppgui {
             pos.x -= x, ext.w += 2 * x;
             pos.y -= y, ext.h += 2 * y;
         }
+
+        bool contains(const Point &p) const
+        {
+            return p.x >= pos.x && p.x < (pos.x + ext.w)
+                && p.y >= pos.y && p.y < (pos.y + ext.h);
+        }
     };
 
     using Padding = std::array<Width, 4>;

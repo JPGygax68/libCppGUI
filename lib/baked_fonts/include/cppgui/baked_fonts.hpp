@@ -9,7 +9,7 @@ namespace cppgui {
         
         auto default_font() -> const fonts::Rasterized_font &;
         
-        auto symbols_font() -> const fonts::Rasterized_font &;
+        auto default_symbol_font() -> const fonts::Rasterized_font &;
         
     } // ns fonts
     
