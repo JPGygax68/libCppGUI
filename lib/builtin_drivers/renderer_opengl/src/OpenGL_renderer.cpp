@@ -365,7 +365,7 @@ namespace cppgui {
 
         auto glyph_index = mfont.find_glyph(*text);
         auto glyph = & variant.glyphs[glyph_index];
-        dx -= glyph->cbox.bounds.x_min;
+        //dx -= glyph->cbox.bounds.x_min;
 
         GL(Uniform4fv, 2, 1, text_color); // 2 = color
         setUniform("render_mode", 5, 3);

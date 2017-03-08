@@ -65,7 +65,7 @@ namespace cppgui {
         c->render_text(_label_font.get(), p.x, p.y, _label.data(), _label.size());
 
         // Box border and background
-        auto r = Rectangle{_tick_bbox.expand(tick_padding() + tick_border())} + p;
+        auto r = Rectangle{_tick_bbox.expand(tick_padding() + tick_border())} + Point{_tick_orig, 0};
         c->fill_rect(r + p, {0, 0, 0, 1}); // TODO: make configurable
         r.inflate(-tick_border(), -tick_border());
         c->fill_rect(r + p, {1, 1, 1, 1}); // TODO: make configurable
@@ -79,7 +79,7 @@ namespace cppgui {
 
     void Checkbox::mouse_click(const Point &p, int button, Count count)
     {
-        auto r = Rectangle{_tick_bbox} + position() + Point{_tick_orig, 0};
+        auto r = Rectangle{_tick_bbox} + Point{_tick_orig, 0};
 
         if (r.contains(p)) // todo: subtract stroke_width() ?
         {

@@ -3,6 +3,8 @@
 
 - Move Box functionality into Widget (currently separate class) ?
 
+- I removed the x_min adjustement from Canvas::render_text() - it was messing with the new, baseline-oriented layouting approach. It is quite possible that text alignment (especially to the left) will now require special care.
+
 
 2017-03-06
 ==========

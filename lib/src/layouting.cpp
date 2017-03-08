@@ -36,6 +36,7 @@ namespace cppgui
         _bbox.y_max = std::max(_bbox.y_max, b.y_max);
 
         _orig += b.width(); // TODO: vertical!
+        _bbox.x_max += b.width();
 
         if (has_border) _separate = true;
     }
@@ -50,6 +51,7 @@ namespace cppgui
         if (_separate)
         {
             _orig += _spacing;
+            _bbox.x_max += _spacing;
             _separate = false;
         }
     }
