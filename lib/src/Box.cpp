@@ -5,25 +5,18 @@
 
 namespace cppgui
 {
- 
-    void Textfield_box::draw_background_and_border(Canvas *c, const Point &p, const Bounding_box &b)
-    {
-        #ifdef CPPGUI_Y_AXIS_DOWN
-        c->fill_rect(Rectangle(b) + p, background_color());
-        #else
-        #error Upward Y axis not supported!
-        #endif
-    }
-
     #ifndef CPPGUI_EXCLUDE_LAYOUTING
-
-    auto Textfield_box::adjust_box_bounds(const Bounding_box &b, int sign) -> Bounding_box
-    {
-        return b.expand(sign * (border_width() + padding_width()));
-    }
 
     #endif // CPPGUI_EXCLUDE_LAYOUTING
 
+
+    auto Button_box_styles::background_color(Widget_states s) -> RGBA 
+    { 
+        if (s.has(hovered))
+            return { 0.8f, 0.8f, 0.8f, 1};
+        else
+            return {0.7f, 0.7f, 0.7f, 1}; 
+    }
 
 
 

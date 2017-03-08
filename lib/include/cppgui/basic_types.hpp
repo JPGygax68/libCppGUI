@@ -286,6 +286,24 @@ namespace cppgui {
         NativeColorT    color;
     };
 
+    enum Widget_state
+    {
+        hovered = 0,
+        focused,
+        disabled,
+        default_button
+    };
+
+    class Widget_states
+    {
+    public:
+        auto& set(Widget_state state) { bits |= (1 << state); return *this; }
+        auto& clear(Widget_state state) { bits &= ~(1 << state); return *this; }
+        bool has(Widget_state state) const { return (bits & (1 << state)) != 0; }
+    private:
+        ushort  bits = 0;
+    };
+
     using Separator = Border; // TODO: if Border gets more sophisticated, this will need to become its own structure
     template<class Renderer> using Mapped_separator = Mapped_border<Renderer>;
 

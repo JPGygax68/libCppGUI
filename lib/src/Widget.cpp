@@ -288,8 +288,19 @@ namespace cppgui {
         return cbox;
     }
 
-    
-    #ifdef NOT_DEFINED
+    auto Widget::visual_states() -> Widget_states
+    {
+        Widget_states states;
+
+        if (disabled ()) states.set(Widget_state::disabled);
+        if (hovered  ()) states.set(Widget_state::hovered);
+        if (has_focus()) states.set(Widget_state::focused);
+
+        return states;
+    }
+
+
+#ifdef NOT_DEFINED
 
     void Widget::fill_rect(Canvas *c, const Rectangle &rect, const Native_color &color)
     {

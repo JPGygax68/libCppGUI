@@ -22,29 +22,62 @@
 
 namespace cppgui
 {
-    class Textfield_box
+    // TODO: make box model a feature of the Widget base class ?
+
+    /*
+     *  TODO: move to Textbox.hpp ?
+     */
+    class Textfield_box_styles
     {
-    public:
-        
-        void draw_background_and_border(Canvas *, const Point &, const Bounding_box &);
-
-        #ifndef CPPGUI_EXCLUDE_LAYOUTING
-
-        auto adjust_box_bounds(const Bounding_box &, int sign = 1) -> Bounding_box;
-
-        #endif // CPPGUI_EXCLUDE_LAYOUTING
-
-    private:
+    protected:
         // TODO: make configurable:
-        static auto border_width() -> Width { return 1; }
-        static auto padding_width() -> Width { return 2; }
-        static auto background_color() -> RGBA { return {1, 1, 1, 1}; }
+        static auto border_width    (Widget_states) -> Width { return 1; }
+        static auto padding_width   (Widget_states) -> Width { return 2; }
+        static auto border_color    (Widget_states) -> RGBA { return { 0, 0, 0, 1 }; }
+        static auto background_color(Widget_states) -> RGBA { return { 1, 1, 1, 1 }; }
     };
 
     /*
-     *  TODO: TEMPORARY, PROVIDE MORE SPECIALIZED VERSION
+     * TODO: move to Button.hpp ?
      */
-    using Button_box = Textfield_box;
+    class Button_box_styles
+    {
+    protected:
+        // TODO: make configurable:
+        static auto border_width    (Widget_states) -> Width { return 1; }
+        static auto padding_width   (Widget_states) -> Width { return 4; }
+        static auto border_color    (Widget_states) -> RGBA { return { 0, 0, 0, 1 }; }
+        static auto background_color(Widget_states) -> RGBA;
+    };
+
+    template<class Styles>
+    class Box: protected Styles
+    {
+    public:
+        
+        void draw_background_and_border(Canvas *c, const Point &p, const Bounding_box &b, const Widget_states &s)
+        {
+            /*
+            * We draw two solid rectangles over each other, the first in the border color, then a second,
+            * smaller one with the background color.
+            * TODO: better approach ? define a ready-made method in Canvas, or even in Renderer ?
+            */
+            auto r = Rectangle{b};
+            c->fill_rect(r + p, border_color(s));
+            r.inflate(-border_width(s), -border_width(s));
+            c->fill_rect(r + p, background_color(s));
+        }
+
+        #ifndef CPPGUI_EXCLUDE_LAYOUTING
+
+        auto adjust_box_bounds(const Bounding_box &b, int sign = 1) -> Bounding_box
+        {
+            return b.expand(sign * (border_width({}) + padding_width({})));
+        }
+
+        #endif // CPPGUI_EXCLUDE_LAYOUTING
+    };
+
 
 
 

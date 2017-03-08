@@ -207,7 +207,7 @@ namespace cppgui {
     {
         auto p = offs + position();
 
-        draw_background_and_border(c, p, bounds());
+        draw_background_and_border(c, p, bounds(), visual_states());
 
         //c->set_clipping_rect(p.x + _inner_rect.p.x, p.y + _inner_rect.p.y, _inner_rect.ext.w, _inner_rect.ext.h);
         c->push_clipping_rect(Rectangle{_inner_bbox} + p);

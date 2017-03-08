@@ -27,7 +27,7 @@ namespace cppgui {
 
     // TODO: do not stretch vertically to fill all available space, instead display a strip with border and padding to fit the font size
 
-    class Textbox: public Widget, public Textfield_box
+    class Textbox: public Widget, public Box<Textfield_box_styles>
     {
     public:
 

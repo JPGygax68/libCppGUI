@@ -50,7 +50,7 @@ namespace cppgui {
     {
         auto p = offs + position();
 
-        draw_background_and_border(c, p, bounds());
+        draw_background_and_border(c, p, bounds(), visual_states());
 
         c->render_text(_font.get(), p.x /*+ _x_offs*/, p.y, _label.data(), _label.size());
 

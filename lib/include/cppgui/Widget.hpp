@@ -169,6 +169,9 @@ namespace cppgui {
         // PROVISIONAL
         //void draw_stippled_inner_rect(Canvas *, const Rectangle &, const Point &offs);
 
+        // Visual state
+        virtual auto visual_states() -> Widget_states;
+
         // Experimental & temporary: implement more sophisticated (and flexible!) styling
         // - May not / should not stay static; make const if possible
 
@@ -179,13 +182,13 @@ namespace cppgui {
 
         // Static styles
         // TODO: move to "stylesheet"
-        static constexpr auto default_dialog_background_color() -> RGBA     { return {0.6f, 0.6f, 0.6f, 1}; }
-        static constexpr auto widget_background_color        () -> RGBA     { return { 1, 1, 1, 1 }; }
+        static constexpr auto default_dialog_background_color() -> RGBA      { return {0.6f, 0.6f, 0.6f, 1}; }
+        static constexpr auto widget_background_color        () -> RGBA      { return { 1, 1, 1, 1 }; }
         static constexpr auto interior_separator             () -> Separator { return { 1, { 0.2f, 0.2f, 0.2f, 1 } }; }
         static constexpr auto grid_separator                 () -> Separator { return { 1, { 0.4f, 0.4f, 0.4f, 1 } }; }
-        static constexpr auto item_background_color          () -> RGBA     { return { 0.7f, 0.7f, 0.7f, 1 }; }
-        static constexpr auto selected_item_background_color () -> RGBA     { return { 0.9f, 0.9f, 0.9f, 1 }; }
-        static constexpr auto hovered_item_background_color  () -> RGBA     { return { 0.8f, 0.8f, 0.8f, 1 }; }
+        static constexpr auto item_background_color          () -> RGBA      { return { 0.7f, 0.7f, 0.7f, 1 }; }
+        static constexpr auto selected_item_background_color () -> RGBA      { return { 0.9f, 0.9f, 0.9f, 1 }; }
+        static constexpr auto hovered_item_background_color  () -> RGBA      { return { 0.8f, 0.8f, 0.8f, 1 }; }
 
         // Styling
         // TODO: move to new class Abstract_button<> ?

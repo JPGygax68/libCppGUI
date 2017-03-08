@@ -27,7 +27,7 @@ namespace cppgui {
     /** TODO: how to support changing label (and later on, icon) at runtime without mixing
             in the layouting aspect ?
      */
-    class Button: public Widget, public Button_box
+    class Button: public Widget, public Box<Button_box_styles>
     {
     public:
 
