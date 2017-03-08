@@ -291,6 +291,7 @@ namespace cppgui {
         hovered = 0,
         focused,
         disabled,
+        active,
         default_button
     };
 

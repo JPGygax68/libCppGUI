@@ -56,8 +56,8 @@ namespace cppgui {
 
         if (this->has_focus())
         {
-            auto r = Rectangle{bounds()};
-            r.inflate(3, 3); // TODO: make this configurable somewhere
+            auto r = Rectangle{_label_bounds};
+            r.inflate(2, 2); // TODO: make this configurable somewhere
             c->draw_stippled_rectangle_outline(p.x + r.pos.x, p.y + r.pos.y, r.ext.w, r.ext.h, {0, 0, 0.5f, 1});
         }
     }
@@ -76,7 +76,7 @@ namespace cppgui {
 
     void Button::compute_label_bounds()
     {
-        _label_bbox = _font.rasterized->compute_text_extents(0, _label.data(), _label.size());
+        _label_bounds = _font.rasterized->compute_text_extents(0, _label.data(), _label.size());
     }
 
     void Button::init_layout()
@@ -86,7 +86,7 @@ namespace cppgui {
 
     auto Button::get_minimal_bounds() -> Bounding_box
     {
-        return adjust_box_bounds(_label_bbox);
+        return adjust_box_bounds(_label_bounds);
     }
 
     void Button::set_bounds(const Point &p, const Bounding_box &b)

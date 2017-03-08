@@ -12,7 +12,7 @@ namespace cppgui
 
     auto Button_box_styles::background_color(Widget_states s) -> RGBA 
     { 
-        if (s.has(hovered))
+        if (s.has(hovered) || s.has(focused))
             return { 0.8f, 0.8f, 0.8f, 1};
         else
             return {0.7f, 0.7f, 0.7f, 1}; 

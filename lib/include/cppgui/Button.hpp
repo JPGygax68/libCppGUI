@@ -52,9 +52,7 @@ namespace cppgui {
         Pushed_handler          _on_pushed;
         Font_resource           _font;
         std::u32string          _label;
-        //Point                   _label_origin;
-        //Rectangle               _label_rect;
-        //Position_delta          _x_offs;
+        Bounding_box            _label_bounds;
 
         #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
@@ -83,7 +81,7 @@ namespace cppgui {
     private:
         //Alignment               _minor_align = cultural_minor_middle;
         //Alignment               _major_align = cultural_major_middle;
-        Text_bounding_box       _label_bbox;
+        //Text_bounding_box       _label_bbox;
         
         #endif // CPPGUI_EXCLUDE_LAYOUTING
 
