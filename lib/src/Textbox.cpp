@@ -240,14 +240,14 @@ namespace cppgui {
 
     bool Textbox::handle_key_down(const Keycode &key)
     {
-        if      (is_left     (key)) { move_cursor_left    (is_shift_down()); return true; }
-        else if (is_right    (key)) { move_cursor_right   (is_shift_down()); return true; }
-        else if (is_home     (key)) { move_cursor_to_start(is_shift_down()); return true; }
-        else if (is_end      (key)) { move_cursor_to_end  (is_shift_down()); return true; }
-        else if (is_backspace(key)) { delete_before_caret ()               ; return true; }
-        else if (is_delete   (key)) { delete_after_caret  ()               ; return true; }
-        else if (is_return   (key)) { done                ()               ; return true; }                
-        else return false;
+        if (is_left     (key)) { move_cursor_left    (is_shift_down()); return true; }
+        if (is_right    (key)) { move_cursor_right   (is_shift_down()); return true; }
+        if (is_home     (key)) { move_cursor_to_start(is_shift_down()); return true; }
+        if (is_end      (key)) { move_cursor_to_end  (is_shift_down()); return true; }
+        if (is_backspace(key)) { delete_before_caret ()               ; return true; }
+        if (is_delete   (key)) { delete_after_caret  ()               ; return true; }
+        if (is_return   (key)) { done                ()               ; return true; }                
+        return false;
     }
 
     void Textbox::move_cursor_left(bool extend_sel)

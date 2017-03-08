@@ -1,6 +1,7 @@
 #pragma once
 
-/*  libCppGUI - A GUI library for C++11/14
+/*  
+    libCppGUI - A GUI library for C++11/14
     
     Copyright 2016 Hans-Peter Gygax
 
@@ -80,7 +81,7 @@ namespace cppgui {
          */
         explicit Bounding_box(const Extents &e): fonts::Bounding_box{0, e.w, 0, e.h} {}
 
-        explicit Bounding_box(const Text_bounding_box &from): Text_bounding_box{from} {}
+        Bounding_box(const Text_bounding_box &from): Text_bounding_box{from} {}
 
         explicit Bounding_box(Position x_min, Position x_max, Position y_min, Position y_max):
             fonts::Bounding_box{x_min, x_max, y_min, y_max} {}
@@ -252,7 +253,8 @@ namespace cppgui {
         Range(T &&from_, T &&to_): from{std::move(from_)}, to{std::move(to_)} { assert(from_ <= to_); }
 
         auto& operator = (const Range &src) { from = src.from, to = src.to; return *this; }
-        auto& operator = (Range &&src) { from = std::move(src.from), to = std::move(src.to); return *this; }
+        auto& operator = (Range &&src) noexcept
+        { from = std::move(src.from), to = std::move(src.to); return *this; }
 
         void define(const T &from_, const T &to_) { from = from_, to = to_; }
 

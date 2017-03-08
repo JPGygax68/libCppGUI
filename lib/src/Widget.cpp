@@ -313,13 +313,38 @@ namespace cppgui {
 
     #endif // NOT_DEFINED
 
+    #ifndef CPPGUI_EXCLUDE_LAYOUT
+
     void Widget::set_bounds(const Point & p, const Bounding_box & b)
     {
         _position = p;
         _bounds = b;
     }
 
-#ifdef NOT_DEFINED
+    auto Widget::align_cultural_minor(const Bounding_box &inner, const Bounding_box &outer, Alignment align) -> Position_delta
+    {
+        #ifndef CPPGUI_CULTURE_WESTERN
+        #error Non-western cultures not supported yet!
+        #endif
+
+        if (align == cultural_minor_start)
+        {
+            return 0;
+        }
+        if (align == cultural_minor_middle)
+        {
+            return (outer.width() - inner.width()) / 2; // + outer.x_min;
+        }
+        if (align == cultural_minor_end)
+        {
+            return outer.width() - inner.width();
+        }
+
+        assert(false);
+        return 0;
+    }
+
+    #ifdef NOT_DEFINED
 
     // Layouter aspect ----------------------------------------------
 
@@ -354,5 +379,7 @@ namespace cppgui {
     }
 
     #endif // NOT_DEFINED
+
+    #endif // CPPGUI_EXCLUDE_LAYOUT
 
 } // ns cppgui

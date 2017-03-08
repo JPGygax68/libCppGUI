@@ -42,13 +42,13 @@ void Test_window::create_ui()
     _textbox.set_text(U"Abc1234567890");
     root_widget().add_child(&_textbox);
 
+    _button.set_font(&cppgui::baked_fonts::default_font());
+    _button.set_label(U"Click Me!");
+    //_button.set_alignment(cppgui::cultural_minor_start);
+    root_widget().add_child(&_button);
+
 
     #ifdef NOT_DEFINED
-
-    _button.set_font(&dflt_font);
-    _button.set_position({50, 160});
-    _button.set_extents({200, 30});
-    _button.set_label(U"Click Me!");
 
     _checkbox.set_font(&dflt_font);
     //_checkbox.set_glyph_font(dflt_font);
@@ -95,4 +95,5 @@ void Test_window::adjust_ui_layout()
 {
     _label.set_bounds({ 50, 50 }, _label.get_minimal_bounds());
     _textbox.set_bounds({ 150, 50 }, _textbox.get_minimal_bounds());
+    _button.set_bounds({300, 50}, _button.get_minimal_bounds());
 }

@@ -13,3 +13,6 @@
 // TODO: make configurable
 #define CPPGUI_BOX_MODEL_BUILD_TIME
 //#define CPPGUI_BOX_MODEL_RUN_TIME
+
+// TODO: make configurable
+#define CPPGUI_CULTURE_WESTERN

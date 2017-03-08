@@ -222,15 +222,22 @@ namespace cppgui {
         // END of Updater aspect
         //-----------------------------------------------------------
 
-        // Layouting aspect -----------------------------------------
-        // TODO: make optional via preprocessor
+        #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
     public:
+        
         virtual void init_layout() = 0;
         virtual auto get_minimal_bounds() -> Bounding_box = 0;
-        //virtual auto get_preferred_size() -> Extents { return get_minimal_size(); }
-        virtual void set_bounds(const Point & p, const Bounding_box & b);
 
+        /*
+         * The bounding box specified 
+         */
+        virtual void set_bounds(const Point &p, const Bounding_box &b);
+
+    protected:
+        // TODO: this really belongs to a utility module
+        static auto align_cultural_minor(const Bounding_box &inner, const Bounding_box &outer, Alignment align) -> Position_delta;
+        
         //void set_padding(Width);
         //void set_padding(const std::initializer_list<Width> &);
 
@@ -240,7 +247,7 @@ namespace cppgui {
         //void set_rectangle_se(const Point &, const Extents &);
         //void set_rectangle_sw(const Point &, const Extents &);
 
-        // END of Layouting aspect ----------------------------------
+        #endif // CPPGUI_EXCLUDE_LAYOUTING
 
     }; // class Widget
 

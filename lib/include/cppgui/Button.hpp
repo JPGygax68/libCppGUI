@@ -18,30 +18,28 @@
 */
 
 #include <iostream> // TODO: REMOVE!
-
 #include "./Widget.hpp"
-//#include "./Box_model.hpp"
+#include "./Box.hpp"
+
 
 namespace cppgui {
 
     /** TODO: how to support changing label (and later on, icon) at runtime without mixing
             in the layouting aspect ?
      */
-    class Button: public Widget
+    class Button: public Widget, public Button_box
     {
     public:
-
-        Button();
 
         void on_pushed(Pushed_handler);
 
         void set_font(const Rasterized_font *);
-        auto font() const { return _font.source(); }
+        auto font() const { return _font.rasterized; }
         void set_label(const std::u32string &);
         void set_label(const std::string &);
         auto label() const { return _label; }
 
-        void init() override;
+        void init(Canvas *) override;
 
         void render(Canvas *, const Point &) override;
 
@@ -54,49 +52,41 @@ namespace cppgui {
         Pushed_handler          _on_pushed;
         Font_resource           _font;
         std::u32string          _label;
-        Point                   _label_origin;
-        Rectangle               _label_rect;
-    };
+        //Point                   _label_origin;
+        //Rectangle               _label_rect;
+        //Position_delta          _x_offs;
 
-    // Layouter aspect ----------------------------------------------
+        #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
-    template<class Config>
-    struct Button__Layouter<Config, true>
-    {
-        template<class Class, class Parent>
-        struct Aspect: Parent 
-        {
-            // Button__Layouter() { _padding = this->button_padding(); }
+    public:
+        void init_layout() override;
+        auto get_minimal_bounds() -> Bounding_box override;
+        void set_bounds(const Point &, const Bounding_box &) override;
 
-            // Layouter contract
+        // Extra capabilities coming with layouting
+        // TODO
+        // void change_font(const Rasterized_font *);
+        // void change_label(const std::u32string &);
+        //void set_alignment(Alignment);
 
-            void init_layout() override;
-            auto get_minimal_size() -> Extents override;
-            void layout() override;
+        // Extra properties
+        //auto minimal_padding() -> int; // THIS *INCLUDES* THE BORDER WIDTH (unlike the CSS box model!)
 
-            // Extra capabilities coming with layouting
-            // TODO
-            // void change_font(const Rasterized_font *);
-            // void change_label(const std::u32string &);
+        // Interface with main class (Button)
 
-            // Extra properties
-            //auto minimal_padding() -> int; // THIS *INCLUDES* THE BORDER WIDTH (unlike the CSS box model!)
+        void font_changed();
+        void text_changed();
 
-            // Interface with main class (Button)
+    protected:
+        void compute_label_bounds();
 
-            void font_changed();
-            void text_changed();
+    private:
+        //Alignment               _minor_align = cultural_minor_middle;
+        //Alignment               _major_align = cultural_major_middle;
+        Text_bounding_box       _label_bbox;
+        
+        #endif // CPPGUI_EXCLUDE_LAYOUTING
 
-        protected:
-            class Button_t: public Class { friend struct Button__Layouter; };
-
-            auto p() { return static_cast<Button_t*>(this); }
-            void compute_bounding_box();
-
-            Alignment               _minor_align = Alignment::cultural_minor_middle;
-            Alignment               _major_align = Alignment::cultural_major_middle;
-            Text_bounding_box       _bounding_box;
-        };
     };
 
 } // ns cppgui

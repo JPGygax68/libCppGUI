@@ -41,6 +41,11 @@ namespace cppgui
         static auto background_color() -> RGBA { return {1, 1, 1, 1}; }
     };
 
+    /*
+     *  TODO: TEMPORARY, PROVIDE MORE SPECIALIZED VERSION
+     */
+    using Button_box = Textfield_box;
+
 
 
 

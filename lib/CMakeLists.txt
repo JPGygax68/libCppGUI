@@ -45,6 +45,7 @@ STATIC
     include/cppgui/Root_widget.hpp      src/Root_widget.cpp
     include/cppgui/Label.hpp            src/Label.cpp
     include/cppgui/Textbox.hpp          src/Textbox.cpp
+    include/cppgui/Button.hpp           src/Button.cpp
 )
 
 # This will allow source files to include their contract header files without using paths

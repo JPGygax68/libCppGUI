@@ -105,11 +105,11 @@ namespace cppgui {
         if (!_clipping_stack.empty())
         {
             auto &rect = _clipping_stack.top();
-            this->set_clipping_rect( rect.pos.x, rect.pos.y, rect.ext.w, rect.ext.h );
+            set_clipping_rect( rect.pos.x, rect.pos.y, rect.ext.w, rect.ext.h );
         }
         else
         {
-            this->cancel_clipping();
+            cancel_clipping();
         }
     }
 
