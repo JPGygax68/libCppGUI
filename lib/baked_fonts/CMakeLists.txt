@@ -2,6 +2,8 @@
 
 project(cppgui_baked_fonts)
 
+include(CMakeParseArguments)
+
 
 #------------------------------------------------------------------------------
 # Prerequisite: font rasterizer command-line tool
@@ -13,6 +15,67 @@ add_subdirectory(rasterizer)
 #------------------------------------------------------------------------------
 # Custom rules to generate constant data files
 #
+
+function(bake_font font_file)
+
+    # Extract filename components
+    get_filename_component(filename ${font_file} NAME_WE)
+    get_filename_component(ext      ${font_file} EXT    )
+
+    # Convert filename to ID (lowercase, underscores instead of dashes)
+    string(TOLOWER ${filename} font_id)
+    string(REPLACE "-" "_" font_id ${font_id})
+
+    cmake_parse_arguments(PARSE_ARGV 1 "" "ALL" "TARGET" "SIZES;CODEPOINTS")
+
+    foreach(size ${_SIZES})
+
+        set(args)
+        if (_ALL)
+            set(args ${args} "range=all")
+        endif()
+        if (_CODEPOINTS)
+            foreach(cp ${_CODEPOINTS})
+                set(args ${args} "cp=${cp}")
+            endforeach()
+        endif()
+        message("args: ${args}")
+
+        set(raster_file "${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${filename}-${size}.rastfont")
+
+        add_custom_command(
+            OUTPUT ${raster_file}
+            DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/data/fonts/${font_file}
+            COMMAND fontrasterizer ARGS
+                input=${CMAKE_CURRENT_SOURCE_DIR}/data/fonts/${font_file}
+                size=${size}
+                output="${raster_file}"
+                ${args}
+        )
+
+        set(header_file "${CMAKE_CURRENT_BINARY_DIR}/generated/headers/${filename}-${size}.h")
+        set(source_file "${CMAKE_CURRENT_BINARY_DIR}/generated/sources/${filename}-${size}.c")
+
+        add_custom_command(
+            OUTPUT ${header_file}
+            OUTPUT ${source_file}
+            DEPENDS ${raster_file}
+            # TODO: use "bin2c" instead of "gpcbin2c"
+            COMMAND gpcbin2c ARGS
+                -i ${raster_file}
+                -c ${font_id}_${size}
+                -h ${header_file}
+                -s ${source_file}
+        )
+
+        target_sources(${_TARGET} PRIVATE ${source_file})
+
+    endforeach()
+
+endfunction()
+
+
+if (0)
 
 set(font_file LiberationSans-Regular)
 
@@ -74,6 +137,10 @@ template<> struct ${font_name_as_id}<${size}> {
     endif(0)
 
 endforeach(size)
+
+endif(0)
+
+if (0)
 
 # TODO: support a variety of sizes
 
@@ -142,6 +209,7 @@ template<> struct materialicons_regular<${size}>{ static auto get() -> std::pair
 
 endforeach(size)
 
+endif(0)
 
 #------------------------------------------------------------------------------
 # Main target: static sub-library
@@ -154,6 +222,11 @@ STATIC
     include/cppgui/baked_fonts.hpp      src/baked_fonts.cpp
     ${PROJECT_BINARY_DIR}/cppgui_baked_fonts_config.hpp
 )
+
+bake_font("LiberationSans-Regular.ttf" SIZES 16 24 ALL TARGET ${PROJECT_NAME})
+bake_font("modernpics.otf"             SIZES 18 24 CODEPOINTS $25 $3E TARGET ${PROJECT_NAME})
+
+
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/include/cppgui)
 target_include_directories(${PROJECT_NAME} PUBLIC  ${PROJECT_SOURCE_DIR}/include)

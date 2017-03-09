@@ -156,6 +156,7 @@ int main(int argc, const char *argv[])
                         std::cout << "Including complete Unicode rage (disabling warnings for missing glyphs)" << std::endl;
                     }
                     else {
+                        // TODO: support actual ranges (instead of single codepoints)
                         char_set.add(parse_codepoint(v), 1);
                     }
 
