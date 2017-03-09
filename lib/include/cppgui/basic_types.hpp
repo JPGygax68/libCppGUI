@@ -117,9 +117,13 @@ namespace cppgui {
 
         explicit Rectangle(const Bounding_box &b)
         {
+            #ifdef CPPGUI_Y_AXIS_DOWN
             pos.x = b.x_min, pos.y = - b.y_max; // TODO: adapt to support positive-up Y axis
             ext.w = - b.x_min + b.x_max;
             ext.h = - b.y_min + b.y_max;
+            #else
+            #error Bottom-up Y axis not yet supported
+            #endif
         }
 
         Rectangle(const Rectangle &) = default;
@@ -158,8 +162,8 @@ namespace cppgui {
     struct RGBA {
 
         // Predefined colors
-        static constexpr const RGBA black() { return { 0, 0, 0, 1 }; }
-        static constexpr const RGBA white() { return { 1, 1, 1, 1 }; }
+        static constexpr RGBA black() { return { 0, 0, 0, 1 }; }
+        static constexpr RGBA white() { return { 1, 1, 1, 1 }; }
 
         // Constructors
         constexpr RGBA(): RGBA { 0, 0, 0, 1 } {}

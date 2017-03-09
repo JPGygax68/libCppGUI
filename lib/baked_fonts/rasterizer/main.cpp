@@ -87,6 +87,26 @@ static auto findFontFile(const std::string &file) -> std::string {
     throw runtime_error(string("Font file \"") + file + "\" doesn't exist");
 }
 
+static auto parse_codepoint(const std::string &s) -> char32_t 
+{
+    char32_t cp;
+    size_t size;
+
+    if (s[0] == '$')
+    {
+        cp = stoi(s.substr(1), &size, 16);
+    }
+    else
+    {
+        cp = stoi(s, &size);
+    }
+
+    if (size == 0) throw std::runtime_error("codepoint number expected but not found");
+
+    return cp;
+}
+
+
 int main(int argc, const char *argv[])
 {
     using namespace std;
@@ -113,11 +133,15 @@ int main(int argc, const char *argv[])
 				font_file = findFontFile(value);
             }
 			else if (name == "size") {
-				sizes.insert((int16_t)stoi(value));
+				sizes.insert(static_cast<int16_t>(stoi(value)));
 			}
 			else if (name == "output") {
 				output_file = value;
 			}
+            else if (name == "cp" || name == "codepoint")
+            {
+                char_set.add(parse_codepoint(value));
+            }
             else if (name == "range")
             {
                 size_t j = 0, k;
@@ -131,10 +155,8 @@ int main(int argc, const char *argv[])
                         full_range = true;
                         std::cout << "Including complete Unicode rage (disabling warnings for missing glyphs)" << std::endl;
                     }
-                    else if (v[0] == '$')
-                    {
-                        auto cp = std::stoi(v.substr(1), nullptr, 16);
-                        char_set.add(cp, 1);
+                    else {
+                        char_set.add(parse_codepoint(v), 1);
                     }
 
                     if (k == std::string::npos) break;
@@ -163,6 +185,7 @@ int main(int argc, const char *argv[])
         fterror = FT_New_Face(library, font_file.c_str(), 0, &face);
         if (fterror) throw runtime_error("Couldn't load or use font file");
 
+        cout << "Font filename is \"" << font_file << "\"" << endl;
         cout << "Font file contains " << face->num_faces << " face(s)." << endl;
         cout << "This face contains " << face->num_glyphs << " glyphs." << endl;
 		cout << "Face flags:";
@@ -203,21 +226,24 @@ int main(int argc, const char *argv[])
 
         for (auto &range: char_set.ranges())
         {
-		    for (uint32_t cp = range.starting_codepoint; cp <= range.starting_codepoint + range.count; cp++)
+		    for (uint32_t cp = range.starting_codepoint; cp < range.starting_codepoint + range.count; cp++)
             {
-			    FT_UInt glyph_index = FT_Get_Char_Index(face, cp);
+                if (FT_Select_Charmap(face, ft_encoding_unicode) != 0)
+                    throw runtime_error("Failed to select Unicode charmap for this font face");
+
+                auto glyph_index = FT_Get_Char_Index(face, cp);
 
 			    if (glyph_index > 0)
                 {
 				    // Add this codepoint to the range, or begin a new range
 				    if (cp > next_codepoint) rast_font.ranges.emplace_back<Character_range>({ cp, 0 });
-				    Character_range &out_range = rast_font.ranges.back();
+				    auto& out_range = rast_font.ranges.back();
 				    out_range.count++;
 				    next_codepoint = cp + 1;
 				    glyph_count++;
 			    }
 			    else {
-				    if (!full_range) cout << "No glyph for codepoint " << cp << endl;
+				    if (!full_range) cout << "No glyph for codepoint $" << hex << cp << dec << " (" << cp << ")" << endl;
 				    missing_count++;
 			    }
 		    }

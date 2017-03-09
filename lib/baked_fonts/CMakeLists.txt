@@ -77,7 +77,10 @@ endforeach(size)
 
 # TODO: support a variety of sizes
 
-set(font_file MaterialIcons-Regular)
+#set(font_file MaterialIcons-Regular.ttf)
+#set(font_ext .ttf)
+set(font_file modernpics)
+set(font_ext .otf)
 
 string(TOLOWER ${font_file} font_name_as_id)
 string(REPLACE "-" "_" font_name_as_id ${font_name_as_id})
@@ -92,12 +95,13 @@ foreach(size IN ITEMS 18)   # 12 13 16 20 24 32 36)
 
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont
-        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/data/fonts/${font_file}.ttf
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/data/fonts/${font_file}${font_ext}
         COMMAND fontrasterizer ARGS
-            input=${CMAKE_CURRENT_SOURCE_DIR}/data/fonts/${font_file}.ttf
+            input=${CMAKE_CURRENT_SOURCE_DIR}/data/fonts/${font_file}${font_ext}
             size=${size}
             output="${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${font_file}-${size}.rastfont"
-            range=$E876 range=$E14C range=$E154 range=$E15E range=$E834 range=$E835 range=$E836 range=$E837 range=$E5C5 range=$E5C7
+            cp=$0025 
+            #range=$E876 range=$E14C range=$E154 range=$E15E range=$E834 range=$E835 range=$E836 range=$E837 range=$E5C5 range=$E5C7
     )
 
     add_custom_command(
@@ -112,9 +116,9 @@ foreach(size IN ITEMS 18)   # 12 13 16 20 24 32 36)
     )
 
     # TODO: derive filename from variable
-    file(APPEND ${GENERATED_HEADERS_DIR}/materialicons_font.h "extern \"C\" {\n")
-    file(APPEND ${GENERATED_HEADERS_DIR}/materialicons_font.h "#include \"${font_file}-${size}.h\"\n")
-    file(APPEND ${GENERATED_HEADERS_DIR}/materialicons_font.h "}\n")
+    file(APPEND ${GENERATED_HEADERS_DIR}/${font_name_as_id}.h "extern \"C\" {\n")
+    file(APPEND ${GENERATED_HEADERS_DIR}/${font_name_as_id}.h "#include \"${font_file}-${size}.h\"\n")
+    file(APPEND ${GENERATED_HEADERS_DIR}/${font_name_as_id}.h "}\n")
 
     list(APPEND FONT_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/generated/headers/${font_file}-${size}.h)
     list(APPEND FONT_SOURCES ${CMAKE_CURRENT_BINARY_DIR}/generated/sources/${font_file}-${size}.c)

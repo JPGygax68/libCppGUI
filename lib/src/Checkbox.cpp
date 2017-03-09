@@ -28,7 +28,7 @@ namespace cppgui {
 
     // static std::unique_ptr<Rasterized_font> glyph_font;
 
-    static const char32_t tick_cp = 0xE876;
+    static const char32_t tick_cp = 0x25; //0x2714; // E14C; // 0xE876;
 
     #ifdef NOT_DEFINED
 
