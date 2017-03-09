@@ -49,7 +49,7 @@ STATIC
     include/cppgui/Button.hpp               src/Button.cpp
     include/cppgui/Checkbox.hpp             src/Checkbox.cpp
     include/cppgui/Glyph_button.hpp         src/Glyph_button.cpp
-    #include/cppgui/Vertical_scrollbar.hpp   src/Vertical_scrollbar.cpp
+    include/cppgui/Vertical_scrollbar.hpp   src/Vertical_scrollbar.cpp
     #include/cppgui/Scrollbox.hpp            src/Scrollbox.cpp
 )
 

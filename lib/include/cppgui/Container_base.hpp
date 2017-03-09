@@ -2,7 +2,7 @@
 
 /*  libCppGUI - A GUI library for C++11/14
     
-    Copyright 2016 Hans-Peter Gygax
+    Copyright 2016, 2017 Hans-Peter Gygax
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@
     limitations under the License.
 */
 
-#include "./Widget.hpp"
-#include "./Abstract_container.hpp"
+#include "./Container.hpp"
 //#include "./Box_model.hpp"
+
 
 namespace cppgui {
 

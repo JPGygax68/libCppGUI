@@ -17,7 +17,7 @@
     limitations under the License.
 */
 
-#include "./Container_base.hpp"
+#include "./Container.hpp"
 #include "./Glyph_button.hpp"
 #include "./Resource.hpp"
 //#include "./Drag_controller.hpp"
@@ -45,15 +45,6 @@ namespace cppgui {
         - "page":       move forward or backward by N pages [Note: currently N is always = 1 for page navigation]
         - "fraction":   move forward or backward by a fractional amount (this occurs when the user drags the thumb)
      */ 
-
-    // Forward declarations
-
-    template <class Config, bool With_layout> 
-    struct Vertical_scrollbar__Layouter
-    {
-        template<class Impl, class Parent>
-        struct Aspect: Parent {};
-    };
 
     // Base class ===================================================
 
@@ -86,18 +77,9 @@ namespace cppgui {
             position, under the control of the consumer.
      */
 
-    template<class Impl, class Config, bool With_layout, Box_model_definition BMDef>
-    class Vertical_scrollbar_base: public 
-        Vertical_scrollbar__Layouter<Config, With_layout>::template Aspect <Impl,
-        Box_model<Config, With_layout, BMDef>::template Aspect< Impl,
-        Container_base<Config, With_layout> > >
+    class Vertical_scrollbar_base: public Container, public Box<Button_box_styles> // TODO: specific box styles!
     {
     public:
-        using Widget_t = typename Widget<Config, With_layout>;
-        using Container_base_t = typename Container_base<Config, With_layout>;
-        using Canvas_t = typename Widget_t::Canvas_t;
-
-        using Native_color = typename Widget_t::Native_color;
 
         using Navigation_handler = std::function<void(Navigation_unit, /* Position initial_pos, */ const Fraction<int> &delta)>; //, bool ending)>;
 
@@ -105,7 +87,7 @@ namespace cppgui {
 
         void define_sizes(Length full, Length shown);
 
-        void init() override;
+        void init(Canvas *) override;
 
         void compute_view_from_data() override;
 
@@ -114,7 +96,7 @@ namespace cppgui {
         void mouse_wheel(const Vector & ) override;
         void mouse_exit() override;
 
-        void render(Canvas_t *, const Point &offset) override;
+        void render(Canvas *, const Point &offset) override;
 
         void change_sizes(Length full, Length shown);
         auto full_range() const { return _full_range; }
@@ -131,20 +113,19 @@ namespace cppgui {
             // Recomputes and updates the thumb position according to the specified value.
 
     protected:
-        using Glyph_button_t = Glyph_button<Config, With_layout, BMDef>;
-        using Color_resource = typename Widget_t::Color_resource;
 
         //void move_thumb_to(Position);
         void recalc_thumb();
         void clip_thumb_pos();
         void notify_drag_navigation(Position_delta);
 
-        Color_resource          _slide_bgcol;
-        Color_resource          _thumb_color;
-        Color_resource          _thumb_hovered_color;
+        RGBA                    _slide_bgcol;
+        RGBA                    _thumb_color;
+        RGBA                    _thumb_hovered_color;
 
-        Glyph_button_t          _up_btn, _down_btn;
-        Length                  _full_range = 0;    // the range represented by the full length of the track (= strip on which the thumb moves)
+        Glyph_button            _up_btn, _down_btn;
+        Length                  _full_range = 0;    // the range represented by the full length of the track 
+                                                    // (= strip on which the thumb moves)
         Length                  _shown_range = 0;   // the range represented by the length of the thumb
 
         Range<Position>         _track;             // starting and ending position of the track (as pixel positions)
@@ -154,30 +135,19 @@ namespace cppgui {
         Position                _drag_anchor_pos;
         Position                _curr_drag_pos;
         bool                    _dragging_thumb = false;
-    };
 
-    // Layouter aspect
+    #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
-    template <class Config>
-    struct Vertical_scrollbar__Layouter<Config, true>
-    {
-        template<class Class, class Parent>
-        struct Aspect: Parent 
-        {
-            // Layouter contract
+        // Layouter contract
 
-            //void init_layout() override;
-            auto get_minimal_size() -> Extents override;
-            void layout() override;
+        //void init_layout() override;
+        auto get_minimal_bounds() -> Bounding_box override;
+        void set_bounds(const Point &, const Bounding_box &) override;
 
-            // Extra capabilities coming with layouting
-            // TODO
+        // Extra capabilities coming with layouting
+        // TODO
 
-        protected:
-            class Vertical_scrollbar_base_t: public Class { friend struct Aspect; };
-
-            auto p() { return static_cast<Vertical_scrollbar_base_t*>(this); }
-        };
+    #endif // CPPGUI_EXCLUDE_LAYOUTING
     };
 
     // Customizable specialization ==================================
@@ -185,16 +155,13 @@ namespace cppgui {
     /* Use this specialization when you need to control navigation directly, with the scrollbar widget acting as both input (arrows, thumb dragging, keyboard) and output (thumb position), but not as the direct controller of the interaction.
      */
 
-    template<class Config, bool With_layout, Box_model_definition BMDef>
-    class Custom_vertical_scrollbar: public 
-        Vertical_scrollbar_base<
-        Custom_vertical_scrollbar<Config, With_layout, BMDef>, Config, With_layout, BMDef> 
+    class Custom_vertical_scrollbar: public Vertical_scrollbar_base
     {
     public:
         void on_navigation(Navigation_handler);
 
     protected:
-        friend class Vertical_scrollbar_base<Custom_vertical_scrollbar, Config, With_layout, BMDef>;
+        friend class Vertical_scrollbar_base;
 
         void move_by_page(int delta);
         void move_by_elements(int delta);
@@ -209,9 +176,7 @@ namespace cppgui {
     /* Use this specialization when there is direct and linear correspondance between the thumb's position inside the track and the position of the target viewable area inside the viewing window (however those are defined).
      */
 
-    template<class Config, bool With_layout, Box_model_definition BMDef>
-    class Vertical_scrollbar: public 
-        Vertical_scrollbar_base<  Vertical_scrollbar<Config, With_layout, BMDef>, Config, With_layout, BMDef>
+    class Vertical_scrollbar: public Vertical_scrollbar_base
     {
     public:
         using Position_change_handler = std::function<void(Position)>;
