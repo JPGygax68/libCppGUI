@@ -17,7 +17,6 @@
     limitations under the License.
 */
 
-#include <iostream> // TODO: REMOVE!
 #include "./Widget.hpp"
 #include "./Box.hpp"
 
@@ -52,7 +51,7 @@ namespace cppgui {
         Pushed_handler          _on_pushed;
         Font_resource           _font;
         std::u32string          _label;
-        Bounding_box            _label_bounds;
+        Bounding_box            _label_bbox;
 
         #ifndef CPPGUI_EXCLUDE_LAYOUTING
 

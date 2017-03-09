@@ -5,6 +5,8 @@
 #include <cppgui/Textbox.hpp>
 #include <cppgui/Button.hpp>
 #include <cppgui/Checkbox.hpp>
+#include <cppgui/Glyph_button.hpp>
+//#include <cppgui/Vertical_scrollbar.hpp>
 
 
 class Test_window: public cppgui::Window
@@ -22,4 +24,6 @@ private:
     cppgui::Textbox                 _textbox;
     cppgui::Button                  _button;
     cppgui::Checkbox                _checkbox;
+    cppgui::Glyph_button            _glyphbutton;
+    //cppgui::Vertical_scrollbar      _vscrollbar;
 };

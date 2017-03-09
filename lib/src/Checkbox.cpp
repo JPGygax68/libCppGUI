@@ -75,6 +75,8 @@ namespace cppgui {
         {
             c->render_text(_glyph_font.get(), p.x + _tick_orig, p.y, &tick_cp, 1);
         }
+
+        // TODO: stippled rectangle when focused ?
     }
 
     void Checkbox::mouse_click(const Point &p, int button, Count count)
@@ -115,8 +117,8 @@ namespace cppgui {
         #ifdef NOT_DEFINED
         // TODO: spacing between label and tick
         return { 
-            _label_bounds.width() + /* spacing() + */ _tick_extents.w + 2, 
-            std::max(_label_bounds.height(), _em_bounds.height() + 2 * padding() + 2 * p()->stroke_width())
+            _label_bbox.width() + /* spacing() + */ _tick_extents.w + 2, 
+            std::max(_label_bbox.height(), _em_bounds.height() + 2 * padding() + 2 * p()->stroke_width())
         };
         #endif
     }
@@ -132,8 +134,8 @@ namespace cppgui {
 
         #ifdef NOT_DEFINED
 
-        auto baseline = std::max(_label_bounds.y_max, _em_bounds.y_max + this->stroke_width() + padding() );
-        auto h = static_cast<Length>(baseline + std::max(- _label_bounds.y_min, - _em_bounds.y_min + this->stroke_width() + padding()));
+        auto baseline = std::max(_label_bbox.y_max, _em_bounds.y_max + this->stroke_width() + padding() );
+        auto h = static_cast<Length>(baseline + std::max(- _label_bbox.y_min, - _em_bounds.y_min + this->stroke_width() + padding()));
         baseline += static_cast<Position>((extents().h - h) / 2);
 
         _label_pos = { 0,  baseline };
@@ -168,7 +170,7 @@ namespace cppgui {
 
     void Checkbox::compute_label_size()
     {
-        _label_bounds = font().rasterized->compute_text_extents(0, _label.data(), _label.size());
+        _label_bbox = font().rasterized->compute_text_extents(0, _label.data(), _label.size());
     }
 
     #endif // NOT_DEFINED

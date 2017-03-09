@@ -1,18 +1,18 @@
 /*  libCppGUI - A GUI library for C++11/14
 
-Copyright 2016 Hans-Peter Gygax
+    Copyright 2016, 2017 Hans-Peter Gygax
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 */
 
 #include "unicode.hpp"
@@ -56,7 +56,7 @@ namespace cppgui {
 
         if (this->has_focus())
         {
-            auto r = Rectangle{_label_bounds};
+            auto r = Rectangle{_label_bbox};
             r.inflate(2, 2); // TODO: make this configurable somewhere
             c->draw_stippled_rectangle_outline(p.x + r.pos.x, p.y + r.pos.y, r.ext.w, r.ext.h, {0, 0, 0.5f, 1});
         }
@@ -76,7 +76,7 @@ namespace cppgui {
 
     void Button::compute_label_bounds()
     {
-        _label_bounds = _font.rasterized->compute_text_extents(0, _label.data(), _label.size());
+        _label_bbox = _font.rasterized->compute_text_extents(0, _label.data(), _label.size());
     }
 
     void Button::init_layout()
@@ -86,7 +86,7 @@ namespace cppgui {
 
     auto Button::get_minimal_bounds() -> Bounding_box
     {
-        return adjust_box_bounds(_label_bounds);
+        return adjust_box_bounds(_label_bbox);
     }
 
     void Button::set_bounds(const Point &p, const Bounding_box &b)

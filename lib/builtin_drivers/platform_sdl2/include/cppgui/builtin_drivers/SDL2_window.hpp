@@ -5,7 +5,7 @@
 #include <memory>
 #include <map>
 #include <functional>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <cppgui_config.hpp>
 #include <cppgui/basic_types.hpp>
 #include "platform_sdl2.hpp"

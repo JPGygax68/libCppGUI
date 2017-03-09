@@ -91,7 +91,7 @@ namespace cppgui {
         //Text_bounding_box       _tick_bounds;
         //Extents                 _tick_extents;
         //Length                  _box_edge;
-        //Text_bounding_box       _label_bounds;
+        //Text_bounding_box       _label_bbox;
         Bounding_box            _tick_bbox;
 
         #endif // CPPGUI_EXCLUDE_LAYOUTING

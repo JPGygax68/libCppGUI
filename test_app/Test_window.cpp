@@ -1,5 +1,4 @@
 #include <iostream>
-#include <memory>
 #include <cppgui/baked_fonts.hpp>
 //#include <cppgui/Default_font.hpp>
 //#include <cppgui/all_widgets.ipp>
@@ -48,12 +47,14 @@ void Test_window::create_ui()
     root_widget().add_child(&_button);
 
     _checkbox.set_font(&cppgui::baked_fonts::default_font());
-    //_checkbox.set_glyph_font(dflt_font);
-    //_checkbox.set_glyph_font_size(22);
     //_checkbox.set_tick_glyph(&cppgui::baked_fonts::default_symbol_font(), tick_descr);
     _checkbox.set_label(U"Check me!");
     root_widget().add_child(&_checkbox);
 
+    _glyphbutton.set_font(&cppgui::baked_fonts::default_font());
+    _glyphbutton.set_label(U"Click me too!");
+    _glyphbutton.set_glyph(&cppgui::baked_fonts::default_symbol_font(), 0x3E); // TODO: refer to font by other, more specific name
+    root_widget().add_child(&_glyphbutton);
 
     #ifdef NOT_DEFINED
 
@@ -96,4 +97,5 @@ void Test_window::adjust_ui_layout()
     _textbox.set_bounds({ 150, 50 }, _textbox.get_minimal_bounds());
     _button.set_bounds({300, 50}, _button.get_minimal_bounds());
     _checkbox.set_bounds({450, 50}, _checkbox.get_minimal_bounds());
+    _glyphbutton.set_bounds({50, 100}, _glyphbutton.get_minimal_bounds());
 }

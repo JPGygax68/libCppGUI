@@ -17,22 +17,15 @@
     limitations under the License.
 */
 
-#include "./Widget.hpp"
-//#include "./Box_model.hpp"
+#include "./Container.hpp"
 #include "./Vertical_scrollbar.hpp"
+
 
 namespace cppgui {
 
     // Forward declarations
+    class Scrollable_pane;
 
-    template<class Config, bool With_layout>
-    struct Scrollbox__Layouter
-    {
-        template<class Class, class Parent> 
-        struct Aspect {};
-    };
-
-    template<class Config, bool With_layout> class Scrollable_pane;
 
     // Class definition
 
@@ -40,20 +33,10 @@ namespace cppgui {
 
     // TODO: this is very much incomplete!
 
-    template<class Config, bool With_layout, class Pane, Box_model_definition BMDef>
-    class Scrollbox: public 
-        Scrollbox__Layouter<Config, With_layout>::template Aspect< Scrollbox<Config, With_layout, Pane, BMDef>,
-        Box_model<Config, With_layout, BMDef>::template Aspect< Scrollbox<Config, With_layout, Pane, BMDef>,
-        Container_base<Config, With_layout> > >
+    // TODO: box
+    class Scrollbox: public Container
     {
     public:
-        using Container_t = Container_base<Config, With_layout>;
-        using Parent_t = Container_t;
-        using Canvas_t = typename Canvas<typename Config::Renderer>;
-        using Scrollable_pane_t = Pane; // Scrollable_pane<Config, With_layout>;
-        using Keyboard = typename Config::Keyboard;
-        using Keycode = typename Keyboard::Keycode;
-        //using List_pane_t = List_pane_base<Config, With_layout>;
 
         using Navigation_handler = std::function<void(Navigation_unit)>;
 
@@ -63,7 +46,7 @@ namespace cppgui {
 
         void on_navigation(Navigation_handler);
 
-        void set_content_pane(Scrollable_pane_t *);
+        void set_content_pane(Scrollable_pane *);
         auto content_pane() { return _content; }
 
         auto& vertical_scrollbar() { return _vert_sbar; }
@@ -71,42 +54,33 @@ namespace cppgui {
         void mouse_wheel(const Vector &) override;
         void key_down(const Keycode &) override;
 
-        void render(Canvas_t *, const Point &offset) override;
+        void render(Canvas *, const Point &offset) override;
 
         // TODO: it may be better to let the pane access the member directly via friend declaration
         auto content_rectangle() const -> const Rectangle & { return _content_rect; } // to be accessed by Scrollable_pane (or derived)
 
     protected:
-        using Vertical_scrollbar_t = Custom_vertical_scrollbar<Config, With_layout, BMDef>;
-
-        auto pane() { return static_cast<Scrollable_pane_t*>(_content); }
+        auto pane() { return static_cast<Scrollable_pane*>(_content); }
 
         //Border                  _border    = { 4, {0, 0.2f, 0.6f, 1} };     // encompasses both content area and scrollbar(s)
         Separator               _separator = { 1, {0.2f, 0.2f, 0.2f, 1} };
-        Vertical_scrollbar_t    _vert_sbar;
+        Vertical_scrollbar      _vert_sbar;
         Rectangle               _content_rect;      // set by layouter
         Position                _vert_sep_pos;      // positions of the separators (vertical = x, horizontal = y)
         Navigation_handler      _on_navigation;
-        Scrollable_pane_t      *_content = nullptr;
-    };
+        Scrollable_pane         *_content = nullptr;
 
-    // Layouter aspect
+        #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
-    template<class Config>
-    struct Scrollbox__Layouter<Config, true>
-    {
-        template<class Class, class Parent>
-        struct Aspect: Parent
-        {
-            struct Scrollbox_t: Class { friend struct Aspect; };
-            auto p() { return static_cast<Scrollbox_t*>(this); }
-
-            auto get_minimal_size() -> Extents override;
-            void layout() override;
+    public:
+        auto get_minimal_bounds() -> Bounding_box override;
+        void set_bounds(const Point &, const Bounding_box &) override;
 
         protected:
             //auto content_rect() -> Rectangle;
         };
+
+        #endif // CPPGUI_EXCLUDE_LAYOUTING
     };
 
     // Scrollable pane ==============================================

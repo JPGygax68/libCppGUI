@@ -1,3 +1,9 @@
+2017-03-09
+==========
+
+- Button and Glyph_button both need to have a way of handling descents, and lack thereof
+
+
 2017-03-08
 ==========
 
