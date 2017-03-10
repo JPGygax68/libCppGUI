@@ -54,7 +54,7 @@ namespace cppgui
         if (has_border) separate_here();
     }
 
-    auto Inline_layouter::bounds() const -> Bounding_box
+    auto Inline_layouter::minimal_bounds() const -> Bounding_box
     {
         return _bbox;
     }

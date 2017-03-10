@@ -18,7 +18,8 @@
 */
 
 #include <algorithm>
-#include "./basic_types.hpp"
+#include <basic_types.hpp>
+#include <Icon_resources.hpp>
 #include "./Vertical_scrollbar.hpp"
 
 
@@ -30,14 +31,13 @@ namespace cppgui {
         _thumb_color        ({ 0.8f, 0.8f, 0.8f, 1 }),
         _thumb_hovered_color({ 0.9f, 0.9f, 0.9f, 1 })
     {
-
         //_up_btn  .enable_border(false);
         //_down_btn.enable_border(false);
         //_up_btn  .set_border({0});
         //_down_btn.set_border({0});
 
-        _up_btn  .set_glyph(cppgui::Icon_resources<24>::up_arrow  ());
-        _down_btn.set_glyph(cppgui::Icon_resources<24>::down_arrow());
+        _up_btn  .set_glyph(Icon_resources::up_arrow  ());
+        _down_btn.set_glyph(Icon_resources::down_arrow());
 
         _up_btn  .set_focussable(false);
         _down_btn.set_focussable(false);

@@ -50,6 +50,24 @@ namespace cppgui {
     enum Key_state { pressed = 0, released = 1};
 
 
+    enum Alignment {
+
+        // Culturally defined
+
+        cultural_minor_start,       // = left in western culture
+        cultural_minor_middle,      
+        cultural_minor_end,         // = right in western culture
+        cultural_major_start,       // = top in western culture
+        cultural_major_middle,
+        cultural_major_end,         // = bottom in western culture
+        
+        // Geometrically defined
+        horizontal_middle,
+        // TODO: more...
+
+        _end
+    };
+
     struct Point
     {
         Position        x, y;
@@ -108,6 +126,32 @@ namespace cppgui {
             #else
             #error Upward Y axis not supported yet
             #endif
+        }
+
+        auto& append_at_bottom(const Bounding_box &bbox, Alignment align = horizontal_middle)
+        {
+            y_min -= bbox.height();
+
+            assert(align == horizontal_middle); // No other option supported at this time
+            if (bbox.width() > width())
+            {
+                auto d = (bbox.width() - width()) / 2;
+                x_min -= d, x_max += d;
+            }
+
+            return *this;
+        }
+
+        auto& remove_from_top(Length h)
+        {
+            y_max -= h;
+            return *this;
+        }
+
+        auto& remove_from_bottom(Length h)
+        {
+            y_min += h;
+            return *this;
         }
     };
 
@@ -269,16 +313,6 @@ namespace cppgui {
         void define(const T &from_, const T &to_) { from = from_, to = to_; }
 
         constexpr auto length() const { return to - from; }
-    };
-
-    enum Alignment {
-        cultural_minor_start,       // = left in western culture
-        cultural_minor_middle,      
-        cultural_minor_end,         // = right in western culture
-        cultural_major_start,       // = top in western culture
-        cultural_major_middle,
-        cultural_major_end,         // = bottom in western culture
-        _end
     };
 
     // TODO: use this everywhere!

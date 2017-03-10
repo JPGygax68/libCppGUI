@@ -13,7 +13,7 @@ namespace cppgui
 
         if (!loaded)
         {
-            font = fonts::load(CPPGUI_STANDARD_FONT_ARRAY_NAME, sizeof(CPPGUI_STANDARD_FONT_ARRAY_NAME));
+            font = fonts::load(CPPGUI_STANDARD_FONT_ARRAY_NAME); //, sizeof(CPPGUI_STANDARD_FONT_ARRAY_NAME));
             loaded = true;
         }
 
@@ -27,7 +27,7 @@ namespace cppgui
 
         if (!loaded)
         {
-            font = fonts::load(CPPGUI_SYMBOLS_FONT_ARRAY_NAME, sizeof(CPPGUI_SYMBOLS_FONT_ARRAY_NAME));
+            font = fonts::load(CPPGUI_SYMBOLS_FONT_ARRAY_NAME); //, sizeof(CPPGUI_SYMBOLS_FONT_ARRAY_NAME));
             loaded = true;
         }
 

@@ -17,11 +17,9 @@
     limitations under the License.
 */
 
-#include <memory>
-
 #include "./Widget.hpp"
-
 //#include "./layout_managers.hpp"
+
 
 namespace cppgui {
 
@@ -60,28 +58,9 @@ namespace cppgui {
         template<class Pred> auto scan_children_forward (Index from, Pred) -> Index;
         template<class Pred> auto scan_children_backward(Index from, Pred) -> Index;
 
-    //-----------------------------------------------------
-    // Container Updater "aspect"
-
-        virtual void child_invalidated(Widget *) = 0;
-
-        virtual auto container_root_widget() -> Root_widget * = 0;
-
-    // END of Container Updater aspect
-    //-----------------------------------------------------
-
-    // Layouting aspect -----------------------------------
-    // TODO: make optional via preprocessor
-
-        void init_children_layout();
-
     protected:
+
         bool contains_widget(Widget *);
-
-    // END of Layouting aspect ----------------------------
-
-    protected:
-
         auto child_at(const Point &) -> Widget *;
 
         void init_child_resources(Canvas *);
@@ -103,6 +82,28 @@ namespace cppgui {
         std::vector<Widget*> _children;
         Widget *_hovered_child = nullptr;
         Widget *_focused_child = nullptr;
+
+    //-----------------------------------------------------
+    // Container Updater "aspect"
+
+    public:
+
+        virtual void child_invalidated(Widget *) = 0;
+        virtual auto container_root_widget() -> Root_widget * = 0;
+
+    // END of Container Updater aspect
+    //-----------------------------------------------------
+
+    #ifndef CPPGUI_EXCLUDE_LAYOUTING
+
+    public:
+        void init_layout() override;
+
+    protected:
+        void init_children_layout();
+
+    #endif // CPPGUI_EXCLUDE_LAYOUTING
+
     };
 
 } // ns cppgui

@@ -33,8 +33,21 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/builtin_drivers/platform_sdl2)
 # Define main target: static library
 add_library( ${PROJECT_NAME} 
 STATIC
+
+    # "fonts" component  TODO: single out into own library again ?
+    include/cppgui/fonts/character_range.hpp # TODO: capitalize
+    include/cppgui/fonts/character_set.hpp # TODO: capitalize
+    include/cppgui/fonts/rasterized_font.hpp # TODO: capitalize
+    include/cppgui/fonts/rasterized_glyph_cbox.hpp # TODO: capitalize
+    include/cppgui/fonts/bounding_box.hpp # TODO: capitalize
+    include/cppgui/fonts/store.hpp
+    include/cppgui/fonts/cereal.hpp
+
     include/cppgui/basic_types.hpp
     include/cppgui/unicode.hpp
+
+    include/cppgui/Icon_resources.hpp
+
     include/cppgui/layouting.hpp            src/layouting.cpp
     include/cppgui/Window.hpp               src/Window.cpp
     include/cppgui/Application.hpp          src/Application.cpp

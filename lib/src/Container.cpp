@@ -216,16 +216,6 @@ namespace cppgui {
         return - 1;
     }
 
-    // Layouter aspect ----------------------------------------------
-
-    void Container::init_children_layout()
-    {
-        for (auto child : children())
-        {
-            child->init_layout();
-        }
-    }
-
     bool Container::contains_widget(Widget *widget)
         // Recursively check whether this or a descendant widget contains the specified widget.
     {
@@ -245,5 +235,22 @@ namespace cppgui {
 
         return false;
     }
+
+#ifndef CPPGUI_EXCLUDE_LAYOUTING
+
+    void Container::init_layout()
+    {
+        init_children_layout();
+    }
+
+    void Container::init_children_layout()
+    {
+        for (auto child : children())
+        {
+            child->init_layout();
+        }
+    }
+
+#endif // CPPGUI_EXCLUDE_LAYOUTING
 
 } // ns cppgui

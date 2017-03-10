@@ -31,6 +31,13 @@ target_bake_font(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/data/fonts/modernp
     CODEPOINTS $25 $3E
 )
 
+# TODO: auto-generate from list of sizes
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/generated/fonts/all_baked_icon_fonts.h 
+    "#include <modernpics-18.h>\n"
+    "#include <modernpics-24.h>\n"
+)
+target_include_directories(${PROJECT_NAME} PUBLIC  ${CMAKE_CURRENT_BINARY_DIR}/generated/fonts)
+
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/include/cppgui)
 target_include_directories(${PROJECT_NAME} PUBLIC  ${PROJECT_SOURCE_DIR}/include)
 

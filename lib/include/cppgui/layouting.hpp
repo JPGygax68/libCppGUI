@@ -18,7 +18,7 @@ namespace cppgui {
         void append_space();
         void separate_here();
 
-        auto bounds() const -> Bounding_box;
+        auto minimal_bounds() const -> Bounding_box;
 
     protected:
         void insert_separation_if_needed();
@@ -29,5 +29,22 @@ namespace cppgui {
         Position        _orig = 0;
         bool            _separate = false;
     };
+
+#ifdef NOT_DEFINED
+
+    /*
+     * Layout vertically, from top to bottom, stacking edge on edge, i.e. disregarding
+     * typographical rules.
+     */
+    class Stack_layouter
+    {
+    public:
+        void append(const Bounding_box &);
+        void separate(Position_delta d);
+
+        auto minimal_bounds() const -> Bounding_box;
+    };
+
+#endif // NOT_DEFINED
 
 } // ns cppgui

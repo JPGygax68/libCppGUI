@@ -94,7 +94,7 @@ namespace cppgui {
         l.append_space(); // necessary to make room for stippled "focus" rectangle
         l.append_glyph(_glyph_font.rasterized, _glyph_cp);
 
-        return adjust_box_bounds(l.bounds());
+        return adjust_box_bounds(l.minimal_bounds());
     }
 
     void Glyph_button::set_bounds(const Point &p, const Bounding_box &b)

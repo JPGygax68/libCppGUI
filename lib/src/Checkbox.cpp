@@ -112,7 +112,7 @@ namespace cppgui {
         l.append_text(_label_font.rasterized, _label.data(), _label.size());
         l.append_bounding_box(_tick_bbox.expand(tick_padding() + tick_border()), tick_border() > 0);
 
-        return l.bounds();
+        return l.minimal_bounds();
 
         #ifdef NOT_DEFINED
         // TODO: spacing between label and tick
