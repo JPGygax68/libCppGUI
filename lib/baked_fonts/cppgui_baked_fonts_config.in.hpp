@@ -7,9 +7,9 @@
 
 extern "C" {
 // TODO: those paths are dangerous in the sense that they do not include "cppgui"
-#include "generated/headers/LiberationSans-Regular-16.h"
+#include <LiberationSans-Regular-16.h>
 //#include "generated/headers/MaterialIcons-Regular-18.h"
-#include "generated/headers/modernpics-18.h"
+#include <modernpics-18.h>
 }
 
 // TODO: make this configurable
