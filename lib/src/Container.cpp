@@ -226,8 +226,8 @@ namespace cppgui {
         {
             return _focused_child->handle_key_down(key);
         }
-        else
-            return true;
+
+        return true;
     }
 
     template<class Pred>

@@ -36,10 +36,12 @@ template<class T> T clamp(T value, T min_val, T max_val)
 
 namespace cppgui {
 
+    // TODO: focus and keyboard interaction
+
     Vertical_scrollbar_base::Vertical_scrollbar_base():
         // TODO: obtain from static value or stylesheet:
         _slide_bgcol        ({ 0.7f, 0.7f, 0.7f, 1 }), // TODO: _slide_hovered_bgcol ?
-        _thumb_color        ({ 0.8f, 0.8f, 0.8f, 1 }),
+        _thumb_color        ({ 0.6f, 0.6f, 0.6f, 1 }),
         _thumb_hovered_color({ 0.4f, 0.4f, 0.4f, 1 })
     {
         //_up_btn  .enable_border(false);
@@ -93,7 +95,9 @@ namespace cppgui {
         draw_background_and_border(c, p, bounds(), visual_states());
 
         // Thumb
-        c->fill_rect(_thumb_rect + p, _thumb_hovered || _dragging_thumb ? _thumb_hovered_color : _thumb_color);
+        //auto hilite = _thumb_hovered || _dragging_thumb; // does not work well with mouse wheel
+        auto hilite = hovered() || _dragging_thumb;
+        c->fill_rect(_thumb_rect + p, hilite ? _thumb_hovered_color : _thumb_color);
 
         // Children: up and down buttons
         render_children(c, p);
