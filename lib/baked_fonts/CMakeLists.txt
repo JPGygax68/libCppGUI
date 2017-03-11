@@ -29,7 +29,7 @@ target_bake_font(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/data/fonts/Liberat
 
 target_bake_font(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/data/fonts/modernpics.otf"             
     SIZES 18 24 
-    CODEPOINTS $25 $3E
+    CODEPOINTS $39 $25 $3C $3E $5B $5D
 )
 
 # TODO: auto-generate from list of sizes

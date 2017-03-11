@@ -38,9 +38,9 @@ namespace cppgui {
 
     Vertical_scrollbar_base::Vertical_scrollbar_base():
         // TODO: obtain from static value or stylesheet:
-        _slide_bgcol        ({ 0.7f, 0.7f, 0.7f, 1 }), 
+        _slide_bgcol        ({ 0.7f, 0.7f, 0.7f, 1 }), // TODO: _slide_hovered_bgcol ?
         _thumb_color        ({ 0.8f, 0.8f, 0.8f, 1 }),
-        _thumb_hovered_color({ 0.9f, 0.9f, 0.9f, 1 })
+        _thumb_hovered_color({ 0.4f, 0.4f, 0.4f, 1 })
     {
         //_up_btn  .enable_border(false);
         //_down_btn.enable_border(false);
@@ -93,11 +93,10 @@ namespace cppgui {
         draw_background_and_border(c, p, bounds(), visual_states());
 
         // Thumb
-        //fill_rect(c, _thumb_rect, offset + position(), _thumb_hovered ? _thumb_hovered_color : _thumb_color);
-        c->fill_rect(_thumb_rect + p, _thumb_hovered ? _thumb_hovered_color : _thumb_color);
+        c->fill_rect(_thumb_rect + p, _thumb_hovered || _dragging_thumb ? _thumb_hovered_color : _thumb_color);
 
         // Children: up and down buttons
-        Container::render(c, offset);
+        render_children(c, p);
     }
 
     // TODO: test!!
@@ -137,7 +136,7 @@ namespace cppgui {
                 return; // done with this event
             }
         }
-        else if (button == 1 && state == Key_state::released)
+        else if (button == 1 && state == released)
         {
             if (_dragging_thumb)
             {
@@ -145,6 +144,7 @@ namespace cppgui {
                 // We bypass Container_t::mouse_button() here and call Widget_t::mouse_button() instead,
                 // because Container_t does not (at the moment - TODO) pass thru to Widget<>
                 Container::mouse_button(pos, button, state, clicks); //root_widget()->release_mouse();
+                invalidate();
                 return;
             }
         }
@@ -268,7 +268,7 @@ namespace cppgui {
         }
     }
 
-    // Layouter aspect ----------------------------------------------
+#ifndef CPPGUI_EXCLUDE_LAYOUTING
 
     auto Vertical_scrollbar_base::get_minimal_bounds() -> Bounding_box
     {
@@ -276,7 +276,7 @@ namespace cppgui {
         //auto btn_minsz = _up_btn.get_minimal_bounds();
         //return { btn_minsz.w, 3 * btn_minsz.h };
 
-        Bounding_box bbox;
+        Bounding_box bbox{};
         bbox.append_at_bottom( _up_btn.get_minimal_bounds() );
         bbox.append_at_bottom( 3 * _up_btn.get_minimal_bounds().height() );
         bbox.append_at_bottom( _down_btn.get_minimal_bounds() );
@@ -289,39 +289,29 @@ namespace cppgui {
         Widget::set_bounds(p, b); // direct parent is Container, which however does no layouting of its own
 
         auto bbox{ b };
-        Bounding_box bbmin;
 
-        bbmin = _up_btn.get_minimal_bounds();
-        _up_btn.set_bounds(bbmin.position_inside_rectangle(bbox.cut_from_top(bbmin.height())), bbmin);
+        {
+            auto bbmin = _up_btn.get_minimal_bounds();
+            auto bb = bbox.cut_from_top(bbmin.height());
+            auto pp = bbmin.position_inside_rectangle(bb);
+            _up_btn.set_bounds(pp, bbmin);
+        }
 
-        bbmin = _down_btn.get_minimal_bounds();
-        _down_btn.set_bounds(bbmin.position_inside_rectangle(bbox.cut_from_bottom(bbmin.height())), bbmin);
+        {
+            auto bbmin = _down_btn.get_minimal_bounds();
+            auto bb = bbox.cut_from_bottom(bbmin.height());
+            auto pp = bbmin.position_inside_rectangle(bb);
+            _down_btn.set_bounds(pp, bbmin);
+        }
 
         auto r = Rectangle{ bbox }.inflate(0, -2);
         _track.define(r.pos.y, r.pos.y + r.ext.h);
 
-        // TODO...
-
-    #ifdef NOT_DEFINED
-
-        auto ext = extents();
-
-        auto minsz_up_btn   = _up_btn  .get_minimal_size();
-        auto minsz_down_btn = _down_btn.get_minimal_size();
-
-        _up_btn  .set_rectangle_nw({0, 0           }, { ext.w, minsz_up_btn  .h} );
-        _down_btn.set_rectangle_sw({0, ext.bottom()}, { ext.w, minsz_down_btn.h} );
-
-        _track.define( _up_btn.rectangle().bottom() + 2, _down_btn.rectangle().top() - 2 );
-
-        _thumb_rect.pos.x = 2; // TODO: obtain margin from style
-        _thumb_rect.ext.w = extents().w - 4; // obtain margin from style
-                                                       //_thumb_rect.ext.h = 20; // TODO: REMOVE, temporary
-
-        _up_btn  .layout();
-        _down_btn.layout();
-    #endif
+        _thumb_rect.pos.x = b.x_min + 2; // TODO: obtain margin from style
+        _thumb_rect.ext.w = b.width() - 4; // obtain margin from style
     }
+
+#endif // !CPPGUI_EXCLUDE_LAYOUTING
 
     // Customizable specialization ==================================
 
@@ -391,7 +381,7 @@ namespace cppgui {
         notify_position_change();
     }
 
-    void cppgui::Vertical_scrollbar::notify_position_change()
+    void Vertical_scrollbar::notify_position_change()
     {
         if (_on_pos_chng) _on_pos_chng(current_value_from_thumb_position());
     }

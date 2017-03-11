@@ -24,7 +24,6 @@ namespace cppgui {
         create_ui();
 
         _root_widget.init_layout();
-        _root_widget.compute_view_from_data();
 
         _canvas = std::make_unique<Canvas>();
         _canvas->init();
@@ -55,7 +54,9 @@ namespace cppgui {
         // (Re-)do layout
         _root_widget.init_layout();
         _root_widget.set_bounds({0, 0}, Bounding_box{e});
-        adjust_ui_layout();
+        adjust_layout();
+        _root_widget.compute_view_from_data();
+        adjust_layout();
     }
 
     void Window::text_input(const char32_t *text, size_t cp_count)
@@ -76,6 +77,11 @@ namespace cppgui {
     void Window::mouse_button(const Point &p, uint btn, Key_state state, uint clicks)
     {
         _root_widget.mouse_button(p, btn, state, clicks);
+    }
+
+    void Window::mouse_wheel(const Point &p)
+    {
+        _root_widget.mouse_wheel(p);
     }
 
 } // ns cppgui

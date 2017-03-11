@@ -6,6 +6,7 @@
 //#include <cppgui/GUI_window.ipp>
 //#include "./Fonts.hpp"
 #include "./Test_window.hpp"
+#include "cppgui/Icon_resources.hpp"
 
 
 // Class implementation  --------------------------------------------
@@ -53,8 +54,11 @@ void Test_window::create_ui()
 
     _glyphbutton.set_font(&cppgui::baked_fonts::default_font());
     _glyphbutton.set_label(U"Click me too!");
-    _glyphbutton.set_glyph(, 0x3E); // TODO: refer to font by other, more specific name
+    _glyphbutton.set_glyph(cppgui::Icon_resources::bell());
     root_widget().add_child(&_glyphbutton);
+
+    _vscrollbar.define_sizes(100, 20);
+    root_widget().add_child(&_vscrollbar);
 
     #ifdef NOT_DEFINED
 
@@ -91,11 +95,12 @@ void Test_window::create_ui()
     root_widget().switch_focused_child(&_textbox);
 }
 
-void Test_window::adjust_ui_layout()
+void Test_window::adjust_layout()
 {
     _label.set_bounds({ 50, 50 }, _label.get_minimal_bounds());
     _textbox.set_bounds({ 150, 50 }, _textbox.get_minimal_bounds());
     _button.set_bounds({300, 50}, _button.get_minimal_bounds());
     _checkbox.set_bounds({450, 50}, _checkbox.get_minimal_bounds());
     _glyphbutton.set_bounds({50, 100}, _glyphbutton.get_minimal_bounds());
+    _vscrollbar.set_bounds({50, 150}, _vscrollbar.get_minimal_bounds());
 }

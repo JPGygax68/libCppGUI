@@ -28,6 +28,11 @@ namespace cppgui {
         _focused_child = child;
     }
 
+    auto Container::container_absolute_position() -> Point
+    {
+        return container()->container_absolute_position() + position();
+    }
+
     void Container::switch_focused_child(Widget *child)
     {
         if (child != _focused_child)
@@ -74,7 +79,7 @@ namespace cppgui {
 
         child->removed_from_container(this);
 
-        auto it = std::find(std::begin(_children), std::end(_children), child);
+        auto it = find(begin(_children), end(_children), child);
         assert(it != std::end(_children));
         _children.erase(it);
     }
@@ -87,13 +92,31 @@ namespace cppgui {
         }
     }
 
+    void Container::init(Canvas *c)
+    {
+        init_child_resources(c);
+    }
+
+    void Container::mouse_motion(const Point &p)
+    {
+        container_mouse_motion(p);
+    }
+
+    void Container::child_key_down(const Keycode &key)
+    {
+        if (!handle_key_down(key))
+        {
+            this->container()->child_key_down(key);
+        }
+    }
+
     auto Container::child_at(const Point &pos) -> Widget*
     {
-        auto child = std::find_if(std::begin(_children), std::end(_children), [&](auto child) { 
-            return child->visible() && child->contains_point(pos); 
+        auto child = std::find_if(begin(_children), end(_children), [&](auto ch) { 
+            return ch->visible() && ch->contains_point(pos); 
         });
 
-        return child != std::end(_children) ? *child : nullptr;
+        return child != end(_children) ? *child : nullptr;
     }
 
     void Container::init_child_resources(Canvas *c)
@@ -234,6 +257,13 @@ namespace cppgui {
         }
 
         return false;
+    }
+
+    // "Updater" aspect
+
+    void Container::child_invalidated(Widget *)
+    {
+        container()->child_invalidated(this);
     }
 
 #ifndef CPPGUI_EXCLUDE_LAYOUTING

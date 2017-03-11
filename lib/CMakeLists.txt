@@ -46,7 +46,7 @@ STATIC
     include/cppgui/basic_types.hpp
     include/cppgui/unicode.hpp
 
-    include/cppgui/Icon_resources.hpp
+    include/cppgui/Icon_resources.hpp       src/Icon_resources.cpp
 
     include/cppgui/layouting.hpp            src/layouting.cpp
     include/cppgui/Window.hpp               src/Window.cpp

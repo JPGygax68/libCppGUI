@@ -225,7 +225,7 @@ namespace cppgui {
         // END of Updater aspect
         //-----------------------------------------------------------
 
-        #ifndef CPPGUI_EXCLUDE_LAYOUTING
+    #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
     public:
         
@@ -250,7 +250,7 @@ namespace cppgui {
         //void set_rectangle_se(const Point &, const Extents &);
         //void set_rectangle_sw(const Point &, const Extents &);
 
-        #endif // CPPGUI_EXCLUDE_LAYOUTING
+    #endif // CPPGUI_EXCLUDE_LAYOUTING
 
     }; // class Widget
 

@@ -18,7 +18,7 @@ namespace cppgui {
             size_t          size;
 
             // Initialize from fixed-sized array
-            template<typename T> Store(T arr): data{&arr[0]}, size{sizeof(T)} {}
+            template<typename T, int Size> Store(T(&arr)[Size]): data{&arr[0]}, size{Size} {}
         };
 
         // TODO?: put this into its own header file "load.hpp" ?

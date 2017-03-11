@@ -137,8 +137,10 @@ namespace cppgui {
             assert(align == horizontal_middle); // No other option supported at this time
             if (bbox.width() > width())
             {
-                auto d = (bbox.width() - width()) / 2;
-                x_min -= d, x_max += d;
+                auto dw = bbox.width() - width();
+                auto dl = dw / 2;
+                auto dr = dw - dl;
+                x_min -= dl, x_max += dr;
             }
 
             return *this;
@@ -146,7 +148,7 @@ namespace cppgui {
 
         auto& append_at_bottom(Length h)
         {
-            x_min -= h;
+            y_min -= h;
             return *this;
         }
 
@@ -226,8 +228,12 @@ namespace cppgui {
     inline auto Bounding_box::position_inside_rectangle(const Rectangle &r) const -> Point
     {
         return {
-            r.pos.x + (r.ext.w - width()) / 2,
-            r.pos.y + (r.ext.h - height()) / 2
+            r.pos.x - x_min + (r.ext.w - width()) / 2,
+        #ifdef CPPGUI_Y_AXIS_DOWN
+            r.pos.y + y_max + (r.ext.h - height()) / 2
+        #else
+        #error Unsupported Y axis orientation
+        #endif
         };
     }
 

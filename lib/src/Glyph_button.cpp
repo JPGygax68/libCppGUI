@@ -88,7 +88,7 @@ namespace cppgui {
     {
         Inline_layouter l; // TODO: make a member ?
 
-        l.set_default_spacing(_label_font.rasterized);
+        if (_label_font.rasterized) l.set_default_spacing(_label_font.rasterized);
 
         l.append_text(_label_font.rasterized, _label.data(), _label.size());
         l.append_space(); // necessary to make room for stippled "focus" rectangle

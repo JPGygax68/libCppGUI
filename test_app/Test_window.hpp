@@ -17,7 +17,7 @@ public:
 protected:
 
     void create_ui() override;
-    void adjust_ui_layout() override;
+    void adjust_layout() override;
 
 private:
     cppgui::Label                   _label;

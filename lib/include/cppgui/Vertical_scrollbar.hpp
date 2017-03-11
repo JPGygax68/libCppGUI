@@ -46,6 +46,17 @@ namespace cppgui {
         - "fraction":   move forward or backward by a fractional amount (this occurs when the user drags the thumb)
      */ 
 
+    class Scrollbar_box_styles // TODO: move to common base class
+    {
+    protected:
+        // TODO: make configurable:
+        static auto border_width    (Widget_states) -> Width { return 1; }
+        static auto padding_width   (Widget_states) -> Width { assert(false); return 0; } // TODO: not used at this time
+        static auto border_color    (Widget_states) -> RGBA { return { 0, 0, 0, 1 }; }
+        static auto background_color(Widget_states) -> RGBA { return { 0.9f, 0.9f, 0.9f, 1}; }
+    };
+
+
     // Base class ===================================================
 
     // Resources struct
@@ -77,7 +88,7 @@ namespace cppgui {
             position, under the control of the consumer.
      */
 
-    class Vertical_scrollbar_base: public Container, public Box<Button_box_styles> // TODO: specific box styles!
+    class Vertical_scrollbar_base: public Container, public Box<Scrollbar_box_styles>
     {
     public:
 
@@ -127,9 +138,9 @@ namespace cppgui {
         void clip_thumb_pos();
         void notify_drag_navigation(Position_delta);
 
-        RGBA                    _slide_bgcol;
-        RGBA                    _thumb_color;
-        RGBA                    _thumb_hovered_color;
+        RGBA                    _slide_bgcol;           // TODO: use styling
+        RGBA                    _thumb_color;           // ditto
+        RGBA                    _thumb_hovered_color;   // ditto
 
         Glyph_button            _up_btn, _down_btn;
         Length                  _full_range = 0;    // the range represented by the full length of the track 
@@ -137,7 +148,7 @@ namespace cppgui {
         Length                  _shown_range = 0;   // the range represented by the length of the thumb
 
         Range<Position>         _track;             // starting and ending position of the track (as pixel positions)
-        Rectangle               _thumb_rect;
+        Rectangle               _thumb_rect;        // TODO: replace with bounding box ?
 
         bool                    _thumb_hovered = false;
         Position                _drag_anchor_pos;
@@ -145,8 +156,7 @@ namespace cppgui {
         bool                    _dragging_thumb = false;
 
     #ifndef CPPGUI_EXCLUDE_LAYOUTING
-
-        // Layouter contract
+    public:
 
         //void init_layout() override;
         auto get_minimal_bounds() -> Bounding_box override;

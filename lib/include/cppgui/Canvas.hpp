@@ -61,7 +61,7 @@ namespace cppgui {
     struct Font_resource
     {
         // TODO: it might be possible to put these two fields into a union
-        const Rasterized_font  *rasterized;
+        const Rasterized_font  *rasterized = nullptr;
         Font_handle             handle = 0;
 
         void assign(const Rasterized_font *font);
@@ -79,7 +79,7 @@ namespace cppgui {
 
     inline auto Font_resource::get() const -> Font_handle
     {
-        assert(handle);
+        assert(!rasterized || handle);
         return handle;
     }
 

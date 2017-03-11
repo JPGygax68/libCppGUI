@@ -40,13 +40,17 @@ namespace cppgui {
         void remove_child(Widget *);
         void remove_all_children();
 
+        void init(Canvas *) override;
+
+        void mouse_motion(const Point &) override;
+
         /** Called when a key_down event could not be handled by the child it was sent to
             (from container_key_down()) and needs to "bubble" back up.
          */
-        virtual void child_key_down(const Keycode &) = 0;
+        virtual void child_key_down(const Keycode &);
 
-        virtual bool container_has_focus() = 0;       
-        virtual auto container_absolute_position() -> Point = 0;
+        virtual bool container_has_focus() { return has_focus(); }
+        virtual auto container_absolute_position() -> Point ;
         virtual void switch_focused_child(Widget *);
         auto focused_child() const -> Widget * { return _focused_child; }
 
@@ -70,6 +74,11 @@ namespace cppgui {
 
         /** The container_xxxx() methods are intended as "delegate" event handlers, to be 
             called from "real" containers (i.e. descendants of Container<>).            
+
+            TODO: those methods where defined in Abstract_container, which no longer
+                exists. Unless such a parent class is reintroduced, the container_xxx()
+                methods can be merged back into the corresponding event handlers defined
+                in the Widget class.
         */
         void container_mouse_motion(const Point &);
         void container_mouse_button(const Point &, int button, Key_state, Count clicks);
@@ -88,8 +97,8 @@ namespace cppgui {
 
     public:
 
-        virtual void child_invalidated(Widget *) = 0;
-        virtual auto container_root_widget() -> Root_widget * = 0;
+        virtual void child_invalidated(Widget *);
+        virtual auto container_root_widget() -> Root_widget * { return root_widget(); }
 
     // END of Container Updater aspect
     //-----------------------------------------------------

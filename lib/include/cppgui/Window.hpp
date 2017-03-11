@@ -31,10 +31,11 @@ namespace cppgui {
         void key_down(Keycode key) override;
         void mouse_motion(const Point &) override;
         void mouse_button(const Point &p, uint btn, Key_state, uint clicks) override;
+        void mouse_wheel(const Point &) override;
 
         // Further specialization
         virtual void create_ui() {}
-        virtual void adjust_ui_layout() {}  // in case something needs to be laid out manually
+        virtual void adjust_layout() {}
 
     private:
         RGBA                        _bkg_color;

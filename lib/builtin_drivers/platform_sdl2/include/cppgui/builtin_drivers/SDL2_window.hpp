@@ -8,8 +8,6 @@
 #include <SDL2/SDL.h>
 #include <cppgui_config.hpp>
 #include <cppgui/basic_types.hpp>
-#include "platform_sdl2.hpp"
-#include <cppgui/Widget.hpp>
 
 
 struct SDL_Window;
@@ -102,9 +100,9 @@ namespace cppgui
         virtual void size_changed(const Extents &) {}
         virtual void mouse_motion(const Point &) {}
         virtual void mouse_button(const Point &p, uint btn, Key_state, uint clicks) {}
-        virtual void mouse_wheel(int x, int y) {}
+        virtual void mouse_wheel(const Point&) {}
         virtual void text_input(const char32_t *text, size_t cp_count) {}
-        virtual void key_down(Keycode key) {}
+        virtual void key_down(SDL_Keysym key) {}
 
     private:
         // Event handling

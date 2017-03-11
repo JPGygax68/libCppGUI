@@ -213,10 +213,10 @@ namespace cppgui {
         mouse_button({ev.x, ev.y}, ev.button, state, ev.clicks);
     }
 
-    void SDL2_window::handle_mousewheel_event(SDL_MouseWheelEvent & ev)
+    void SDL2_window::handle_mousewheel_event(SDL_MouseWheelEvent &ev)
     {
         // TODO: handle ev.direction
-        mouse_wheel(ev.x, ev.y);
+        mouse_wheel({ev.x, ev.y});
     }
 
     void SDL2_window::handle_textinput_event(SDL_TextInputEvent & ev)
