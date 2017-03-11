@@ -44,6 +44,8 @@ namespace cppgui {
 
         void mouse_motion(const Point &) override;
 
+        void mouse_exit() override;
+
         /** Called when a key_down event could not be handled by the child it was sent to
             (from container_key_down()) and needs to "bubble" back up.
          */

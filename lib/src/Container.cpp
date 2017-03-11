@@ -102,6 +102,19 @@ namespace cppgui {
         container_mouse_motion(p);
     }
 
+    void Container::mouse_exit()
+    {
+        // If the mouse leaves the container, it also leaves the children
+
+        if (_hovered_child)
+        {
+            _hovered_child->mouse_exit();
+            _hovered_child = nullptr;
+        }
+
+        Widget::mouse_exit();
+    }
+
     void Container::child_key_down(const Keycode &key)
     {
         if (!handle_key_down(key))
