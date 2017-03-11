@@ -113,6 +113,14 @@ namespace cppgui {
             // Recomputes and updates the thumb position according to the specified value.
 
     protected:
+        // Specialization hooks
+
+        virtual void move_by_page(int delta) = 0;
+        virtual void move_by_elements(int delta) = 0;
+        //void move_by_fraction(Position initial_pos, const Fraction<int> &delta) = 0;
+        virtual void move_by_fraction(const Fraction<int> &delta) = 0;
+
+    protected:
 
         //void move_thumb_to(Position);
         void recalc_thumb();
@@ -163,10 +171,10 @@ namespace cppgui {
     protected:
         friend class Vertical_scrollbar_base;
 
-        void move_by_page(int delta);
-        void move_by_elements(int delta);
-        //void move_by_fraction(Position initial_pos, const Fraction<int> &delta);
-        void move_by_fraction(const Fraction<int> &delta);
+        void move_by_page(int delta) override;
+        void move_by_elements(int delta) override;
+        //void move_by_fraction(Position initial_pos, const Fraction<int> &delta) override;
+        void move_by_fraction(const Fraction<int> &delta) override;
 
         Navigation_handler      _nav_handler;
     };
@@ -183,10 +191,10 @@ namespace cppgui {
 
         void on_position_change(Position_change_handler);
 
-        void move_by_page(int delta);
-        void move_by_elements(int delta);
-        //void move_by_fraction(Position initial_pos, const Fraction<int> &delta);
-        void move_by_fraction(const Fraction<int> &delta);
+        void move_by_page(int delta) override;
+        void move_by_elements(int delta) override;
+        //void move_by_fraction(Position initial_pos, const Fraction<int> &delta) override;
+        void move_by_fraction(const Fraction<int> &delta) override;
 
     protected:
         void notify_position_change();

@@ -25,7 +25,7 @@ namespace cppgui {
 
     // Forward declaractions
 
-    struct Icon_glyph;
+    struct Glyph_specifier;
 
     // Glyph_button declaration 
 
@@ -41,7 +41,7 @@ namespace cppgui {
 
         void set_label(const std::u32string &label) { _label = label; }
 
-        void set_glyph(const Rasterized_font *, char32_t codepoint);
+        void set_glyph(const Glyph_specifier &);
 
         //void enable_border(bool enabled) { _border_enabled = enabled; }
 

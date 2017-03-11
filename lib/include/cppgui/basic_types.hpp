@@ -89,6 +89,8 @@ namespace cppgui {
         Extents() = default;
     };
 
+    struct Rectangle;
+
     class Bounding_box: public fonts::Bounding_box {
     public:
         
@@ -142,24 +144,44 @@ namespace cppgui {
             return *this;
         }
 
-        auto& remove_from_top(Length h)
+        auto& append_at_bottom(Length h)
         {
-            y_max -= h;
+            x_min -= h;
             return *this;
         }
 
-        auto& remove_from_bottom(Length h)
+        auto cut_from_top(Length h) -> Bounding_box
         {
-            y_min += h;
-            return *this;
+            auto cutoff{ *this };
+            y_max -= h;
+            cutoff.y_min = y_max;
+            return cutoff;
+
+            //y_max -= h;
+            //return *this;
         }
+
+        auto cut_from_bottom(Length h) -> Bounding_box
+        {
+            auto cutoff{ *this };
+            y_min += h;
+            cutoff.y_max = y_min;
+            return cutoff;
+            //y_min += h;
+            //return *this;
+        }
+
+        /*
+         * TODO: support specifying horizontal and vertical alignment
+         */
+        auto position_inside_rectangle(const Rectangle &r) const -> Point;
     };
 
     struct Rectangle {
         Point           pos;
         Extents         ext;
 
-        explicit Rectangle(const Bounding_box &b)
+        Rectangle(const Bounding_box &b)
         {
             #ifdef CPPGUI_Y_AXIS_DOWN
             pos.x = b.x_min, pos.y = - b.y_max; // TODO: adapt to support positive-up Y axis
@@ -172,6 +194,7 @@ namespace cppgui {
 
         Rectangle(const Rectangle &) = default;
         Rectangle(Rectangle &&) = default;
+        Rectangle() = default;
 
         explicit Rectangle(const Point &p, const Extents &e): pos{p}, ext{e} {}
         explicit Rectangle(Point &&p, Extents &&e): pos{p}, ext{e} {}
@@ -186,10 +209,11 @@ namespace cppgui {
             return r;
         }
 
-        void inflate(Width x, Width y)
+        auto& inflate(Width x, Width y)
         {
             pos.x -= x, ext.w += 2 * x;
             pos.y -= y, ext.h += 2 * y;
+            return *this;
         }
 
         bool contains(const Point &p) const
@@ -198,6 +222,14 @@ namespace cppgui {
                 && p.y >= pos.y && p.y < (pos.y + ext.h);
         }
     };
+
+    inline auto Bounding_box::position_inside_rectangle(const Rectangle &r) const -> Point
+    {
+        return {
+            r.pos.x + (r.ext.w - width()) / 2,
+            r.pos.y + (r.ext.h - height()) / 2
+        };
+    }
 
     using Padding = std::array<Width, 4>;
 

@@ -20,7 +20,18 @@
 #include <algorithm>
 #include <basic_types.hpp>
 #include <Icon_resources.hpp>
-#include "./Vertical_scrollbar.hpp"
+#include <Root_widget.hpp>
+#include <Vertical_scrollbar.hpp>
+
+
+// Utility functions  TODO: move into module
+
+template<class T> T clamp(T value, T min_val, T max_val)
+{
+    if (value < min_val) return min_val;
+    if (value > max_val) return max_val;
+    return value;
+}
 
 
 namespace cppgui {
@@ -42,8 +53,8 @@ namespace cppgui {
         _up_btn  .set_focussable(false);
         _down_btn.set_focussable(false);
 
-        _up_btn  .on_pushed([this]() { static_cast<Impl*>(this)->move_by_elements(-1); });
-        _down_btn.on_pushed([this]() { static_cast<Impl*>(this)->move_by_elements( 1); });
+        _up_btn  .on_pushed([this]() { move_by_elements(-1); });
+        _down_btn.on_pushed([this]() { move_by_elements( 1); });
 
         add_child(&_up_btn  );
         add_child(&_down_btn);
@@ -77,12 +88,13 @@ namespace cppgui {
 
     void Vertical_scrollbar_base::render(Canvas *c, const Point &offset)
     {
-        // Background
-        // TODO: only draw the part not covered by the buttons ?
-        fill(c, offset, _slide_bgcol.get() ); 
+        auto p = offset + position();
+
+        draw_background_and_border(c, p, bounds(), visual_states());
 
         // Thumb
-        fill_rect(c, _thumb_rect, offset + position(), _thumb_hovered ? _thumb_hovered_color.get() : _thumb_color.get() );
+        //fill_rect(c, _thumb_rect, offset + position(), _thumb_hovered ? _thumb_hovered_color : _thumb_color);
+        c->fill_rect(_thumb_rect + p, _thumb_hovered ? _thumb_hovered_color : _thumb_color);
 
         // Children: up and down buttons
         Container::render(c, offset);
@@ -108,12 +120,12 @@ namespace cppgui {
                 // Above thumb ?
                 if (y_rel < 0)
                 {
-                    static_cast<Impl*>(this)->move_by_page(-1);
+                    move_by_page(-1);
                 }
                 // Below thumb ?
-                else if (y_rel > _thumb_rect.ext.bottom())
+                else if (y_rel > _thumb_rect.ext.h)
                 {
-                    static_cast<Impl*>(this)->move_by_page(1);
+                    move_by_page(1);
                 }
                 else // On thumb
                 {
@@ -162,7 +174,7 @@ namespace cppgui {
 
     void Vertical_scrollbar_base::mouse_wheel(const Vector &delta)
     {
-        static_cast<Impl*>(this)->move_by_elements(-delta.y);
+        move_by_elements(-delta.y);
     }
 
     void Vertical_scrollbar_base::mouse_exit()
@@ -236,7 +248,7 @@ namespace cppgui {
 
     void Vertical_scrollbar_base::clip_thumb_pos()
     {
-        if (_thumb_rect.bottom() > _track.to)
+        if (_thumb_rect.pos.y + _thumb_rect.ext.h > _track.to)
         {
             _thumb_rect.pos.y = _track.to - static_cast<Position>(_thumb_rect.ext.h);
         }
@@ -252,7 +264,7 @@ namespace cppgui {
         {
             //std::cerr << "delta = " << delta << std::endl;
             //static_cast<Impl*>(this)->move_by_fraction(_drag_start_pos, { delta, static_cast<int>(_sliding_range.l - _thumb_rect.ext.h) });
-            static_cast<Impl*>(this)->move_by_fraction({ delta, _track.length() - _thumb_rect.ext.h });
+            move_by_fraction({ delta, _track.length() - _thumb_rect.ext.h });
         }
     }
 
@@ -260,15 +272,38 @@ namespace cppgui {
 
     auto Vertical_scrollbar_base::get_minimal_bounds() -> Bounding_box
     {
-        // Width: based on up/down buttons, height: 3 times button height
+        // Height: based on up/down buttons, height: 3 times button height
+        //auto btn_minsz = _up_btn.get_minimal_bounds();
+        //return { btn_minsz.w, 3 * btn_minsz.h };
 
-        auto btn_minsz = _up_btn.get_minimal_bounds();
+        Bounding_box bbox;
+        bbox.append_at_bottom( _up_btn.get_minimal_bounds() );
+        bbox.append_at_bottom( 3 * _up_btn.get_minimal_bounds().height() );
+        bbox.append_at_bottom( _down_btn.get_minimal_bounds() );
 
-        return { btn_minsz.w, 3 * btn_minsz.h };
+        return bbox;
     }
 
     void Vertical_scrollbar_base::set_bounds(const Point &p, const Bounding_box &b)
     {
+        Widget::set_bounds(p, b); // direct parent is Container, which however does no layouting of its own
+
+        auto bbox{ b };
+        Bounding_box bbmin;
+
+        bbmin = _up_btn.get_minimal_bounds();
+        _up_btn.set_bounds(bbmin.position_inside_rectangle(bbox.cut_from_top(bbmin.height())), bbmin);
+
+        bbmin = _down_btn.get_minimal_bounds();
+        _down_btn.set_bounds(bbmin.position_inside_rectangle(bbox.cut_from_bottom(bbmin.height())), bbmin);
+
+        auto r = Rectangle{ bbox }.inflate(0, -2);
+        _track.define(r.pos.y, r.pos.y + r.ext.h);
+
+        // TODO...
+
+    #ifdef NOT_DEFINED
+
         auto ext = extents();
 
         auto minsz_up_btn   = _up_btn  .get_minimal_size();
@@ -285,6 +320,7 @@ namespace cppgui {
 
         _up_btn  .layout();
         _down_btn.layout();
+    #endif
     }
 
     // Customizable specialization ==================================

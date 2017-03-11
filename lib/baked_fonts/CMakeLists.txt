@@ -2,6 +2,7 @@
 
 project(cppgui_baked_fonts)
 
+# TODO: this might actually belong with the font rasterizer project
 include("${CMAKE_CURRENT_SOURCE_DIR}/BakeFontFile.cmake")
 
 

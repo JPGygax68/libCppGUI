@@ -18,9 +18,9 @@
 */
 
 #include <fonts/store.hpp>
-//#include <Icon_resources.hpp>
-#include "./Glyph_button.hpp"
-#include "layouting.hpp"
+#include <Icon_resources.hpp>
+#include <layouting.hpp>
+#include <Glyph_button.hpp>
 
 
 namespace cppgui {
@@ -32,10 +32,10 @@ namespace cppgui {
         _on_pushed = handler;
     }
 
-    void Glyph_button::set_glyph(const Rasterized_font *f, char32_t codepoint)
+    void Glyph_button::set_glyph(const Glyph_specifier &g)
     {
-        _glyph_font.assign(f);
-        _glyph_cp  = codepoint;
+        _glyph_font.assign(g.font);
+        _glyph_cp  = g.code_point;
     }
 
     void Glyph_button::init(Canvas *c)

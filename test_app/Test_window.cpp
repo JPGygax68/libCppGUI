@@ -53,7 +53,7 @@ void Test_window::create_ui()
 
     _glyphbutton.set_font(&cppgui::baked_fonts::default_font());
     _glyphbutton.set_label(U"Click me too!");
-    _glyphbutton.set_glyph(&cppgui::baked_fonts::default_symbol_font(), 0x3E); // TODO: refer to font by other, more specific name
+    _glyphbutton.set_glyph(, 0x3E); // TODO: refer to font by other, more specific name
     root_widget().add_child(&_glyphbutton);
 
     #ifdef NOT_DEFINED

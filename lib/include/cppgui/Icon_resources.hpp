@@ -40,15 +40,20 @@ namespace cppgui {
 
 #endif // NOT_DEFINED
 
-    struct Icon_glyph {
+    /*
+     * TODO: move this to the fonts:: component
+     */
+    struct Glyph_specifier {
         const Rasterized_font  *font;
         char32_t                code_point;
     };
 
     struct Icon_resources {
 
-        static auto up_arrow    () -> Icon_glyph { return { fonts::get({modernpics_24}), 0x5D }; }
-        static auto downup_arrow() -> Icon_glyph { return { fonts::get({modernpics_24}), 0x5B }; }
+        // TODO: make configurable from CMake ?
+
+        static auto up_arrow  () -> Glyph_specifier { return { fonts::get({modernpics_24}), 0x5D }; }
+        static auto down_arrow() -> Glyph_specifier { return { fonts::get({modernpics_24}), 0x5B }; }
 
     #ifdef NOT_DEFINED
 
