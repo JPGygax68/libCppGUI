@@ -75,7 +75,7 @@ namespace cppgui {
             position, under the control of the consumer.
      */
 
-    class Vertical_scrollbar_base: public Container
+    class Vertical_scrollbar_base: public Container_base
     {
     public:
 
@@ -206,7 +206,7 @@ namespace cppgui {
     protected:
         // TODO: make configurable:
         static auto border_width    (Widget_states) -> Width { return 1; }
-        static auto padding_width   (Widget_states) -> Width { assert(false); return 0; } // TODO: not used at this time
+        static auto padding_width   (Widget_states) -> Width { return 0; }
         static auto border_color    (Widget_states) -> RGBA { return { 0, 0, 0, 1 }; }
         static auto background_color(Widget_states) -> RGBA { return { 0.9f, 0.9f, 0.9f, 1}; }
     };

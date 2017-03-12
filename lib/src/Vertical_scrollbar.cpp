@@ -73,7 +73,7 @@ namespace cppgui {
 
     void Vertical_scrollbar_base::init(Canvas *c)
     {
-        Container::init(c);
+        Container_base::init(c);
 
         //_slide_bgcol        .translate(c);
         //_thumb_color        .translate(c);
@@ -145,13 +145,13 @@ namespace cppgui {
                 _dragging_thumb = false;
                 // We bypass Container_t::mouse_button() here and call Widget_t::mouse_button() instead,
                 // because Container_t does not (at the moment - TODO) pass thru to Widget<>
-                Container::mouse_button(pos, button, state, clicks); //root_widget()->release_mouse();
+                Container_base::mouse_button(pos, button, state, clicks); //root_widget()->release_mouse();
                 invalidate();
                 return;
             }
         }
 
-        Container::mouse_button(pos, button, state, clicks);
+        Container_base::mouse_button(pos, button, state, clicks);
     }
 
     void Vertical_scrollbar_base::mouse_motion(const Point &pos)
@@ -171,7 +171,7 @@ namespace cppgui {
             notify_drag_navigation(pos.y - _drag_anchor_pos); // TODO: rename method ?
         }
         else
-            Container::mouse_motion(pos);
+            Container_base::mouse_motion(pos);
     }
 
     void Vertical_scrollbar_base::mouse_wheel(const Vector &delta)
@@ -187,7 +187,7 @@ namespace cppgui {
             _thumb_hovered = false;
         }
 
-        Container::mouse_exit();
+        Container_base::mouse_exit();
     }
 
     auto Vertical_scrollbar_base::current_value_from_thumb_position() -> Fraction<Length>
@@ -284,22 +284,22 @@ namespace cppgui {
 
     void Vertical_scrollbar_base::compute_layout(const Bounding_box &b)
     {
-        Widget::compute_layout(b); // direct parent is Container, which however does no layouting of its own
+        Widget::compute_layout(b); // direct parent is Container_base, which however does no layouting of its own
 
         auto bbox{ b };
 
         {
             auto bbmin = _up_btn.get_minimal_bounds();
             auto bb = bbox.cut_from_top(bbmin.height());
-            //auto pp = bbmin.position_inside_rectangle(bb);
-            _up_btn.compute_layout(bbmin);
+            auto pp = bbmin.position_inside_rectangle(bb);
+            _up_btn.set_bounds(pp, bbmin);
         }
 
         {
             auto bbmin = _down_btn.get_minimal_bounds();
             auto bb = bbox.cut_from_bottom(bbmin.height());
-            //auto pp = bbmin.position_inside_rectangle(bb);
-            _down_btn.compute_layout(bbmin);
+            auto pp = bbmin.position_inside_rectangle(bb);
+            _down_btn.set_bounds(pp, bbmin);
         }
 
         auto r = Rectangle{ bbox }.inflate(0, -2);

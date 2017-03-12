@@ -29,7 +29,7 @@
 namespace cppgui {
 
     class Root_widget;
-    class Container;
+    class Container_base;
 
     // Widget 
 
@@ -85,8 +85,8 @@ namespace cppgui {
         void set_focussable(bool state = true) { _focussable = state; }
         bool focussable() const { return _focussable; } // TODO: replace with can_take_focus() that takes other factors into consideration ?
 
-        void added_to_container(Container *);
-        void removed_from_container(Container *);
+        void added_to_container(Container_base *);
+        void removed_from_container(Container_base *);
 
         // TODO: should the following be protected ?
         bool hovered() const { return _hovered; }
@@ -139,7 +139,7 @@ namespace cppgui {
 
         // Misc 
 
-        auto container() const -> Container * { return _container; }
+        auto container() const -> Container_base * { return _container; }
 
     protected:
 
@@ -196,7 +196,7 @@ namespace cppgui {
         auto button_border_color() -> RGBA;
         auto button_border_width() -> int;
 
-        Container                  *_container = nullptr;
+        Container_base             *_container = nullptr;
 
         //Rectangle               _inner_rect;
 

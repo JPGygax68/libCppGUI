@@ -69,12 +69,12 @@ namespace cppgui {
         _visible = vis;
     }
 
-    void Widget::added_to_container(Container *cont)
+    void Widget::added_to_container(Container_base *cont)
     {
         _container = cont;
     }
 
-    void Widget::removed_from_container(Container *)
+    void Widget::removed_from_container(Container_base *)
     {
         _container = nullptr;
     }

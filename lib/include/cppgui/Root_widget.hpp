@@ -30,7 +30,7 @@
 
 namespace cppgui {
 
-    class Root_widget: public Container
+    class Root_widget: public Container_base
     {
     public:
 

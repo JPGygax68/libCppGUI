@@ -23,6 +23,8 @@
 
 namespace cppgui {
 
+#ifdef NOT_DEFINED
+
     class Container_box_styles
     {
     protected:
@@ -33,9 +35,11 @@ namespace cppgui {
         static auto background_color(Widget_states) -> RGBA { return { 0.7f, 0.7f, 0.7f, 1}; }
     };
 
+#endif // NOT_DEFINED
+
     /** Container functionality (ability to contain Widgets).
      */
-    class Container: public Widget, public Box<Container_box_styles>
+    class Container_base: public Widget
     {
     public:
 
