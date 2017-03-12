@@ -226,17 +226,14 @@ namespace cppgui {
         //-----------------------------------------------------------
 
     #ifndef CPPGUI_EXCLUDE_LAYOUTING
-
     public:
         
+        void set_bounds(const Layout_box &lb) { set_bounds(lb.orig, lb.bbox); }
         void set_bounds(const Point &, const Bounding_box &);
 
+        // To be provided by concrete classes
         virtual void init_layout() = 0;
         virtual auto get_minimal_bounds() -> Bounding_box = 0;
-
-        /*
-         * The bounding box specified 
-         */
         virtual void compute_layout(const Bounding_box &b) {}
 
     protected:

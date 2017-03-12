@@ -63,6 +63,7 @@ namespace cppgui {
         
         // Geometrically defined
         horizontal_middle,
+        vertical_baseline,
         // TODO: more...
 
         _end
@@ -108,6 +109,20 @@ namespace cppgui {
 
         Bounding_box() = default;
 
+        /*
+        * Returns a bounding box that is completely collapsed, i.e. the boundaries of
+        * which are all negative with respect to their orientatio (e.g. x_min is the
+        * maximum positive value, x_max the maximum negative value, etc.).
+        * The purpose of such a box is to serve as the starting point to find the
+        * smallest containing box for a series of contained boxes.
+        */
+        static auto empty() -> Bounding_box 
+        {
+            using limits = std::numeric_limits<decltype(Bounding_box::x_min)>;
+
+            return Bounding_box{ limits::max(), limits::min(), limits::max(), limits::min() };
+        }
+
         auto expand(Width w) const -> Bounding_box
         {
             auto d = static_cast<Position_delta>(w);
@@ -152,6 +167,15 @@ namespace cppgui {
             return *this;
         }
 
+        auto& append_to_right(const Bounding_box &b)
+        {
+            x_max += - b.x_min + b.x_max;
+            // TODO: define an operation merge_vertical() ?
+            if (b.y_max > y_max) y_max = b.y_max;
+            if (b.y_min < y_min) y_min = b.y_min;
+            return *this;
+        }
+
         auto cut_from_top(Length h) -> Bounding_box
         {
             auto cutoff{ *this };
@@ -173,10 +197,41 @@ namespace cppgui {
             //return *this;
         }
 
+        auto cut_from_right(Length w) -> Bounding_box
+        {
+            auto cutoff{*this};
+            x_max -= w;
+            cutoff.x_min = x_max;
+            return cutoff;
+        }
+
+        auto& merge(const Bounding_box &b)
+        {
+            if (b.x_min < x_min) x_min = b.x_min;
+            if (b.x_max > x_max) x_max = b.x_max;
+            if (b.y_min < y_min) y_min = b.y_min;
+            if (b.y_max > y_max) y_max = b.y_max;
+            return *this;
+        }
+
         /*
          * TODO: support specifying horizontal and vertical alignment
          */
         auto position_inside_rectangle(const Rectangle &r) const -> Point;
+
+    };
+
+    using Bbox_ref = Bounding_box &;
+    using Bbox_cref = const Bounding_box &;
+
+    /*
+     * Can be used to specify both the position (of the origin point) and the bounds of a 
+     * Widget as a combined parameter.
+     */
+    struct Layout_box
+    {
+        Point        orig;
+        Bounding_box bbox;
     };
 
     struct Rectangle {

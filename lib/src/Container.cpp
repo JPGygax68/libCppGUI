@@ -99,12 +99,12 @@ namespace cppgui {
 
     void Container_base::render(Canvas *c, const Point &offs)
     {
-        // auto p = offs + position();
+        auto p = offs + position();
         // c->fill_rect(Rectangle{bounds()} + p, background_color(visual_states()));
 
         // This base implementation just renders the children, without border or background
 
-        render_children(c, offs);
+        render_children(c, p);
     }
 
     void Container_base::mouse_motion(const Point &p)

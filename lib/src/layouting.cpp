@@ -69,4 +69,57 @@ namespace cppgui
         }
     }
 
+    /*
+     * Computes the layouting box of an element that is to be placed to the right side of a container.
+     * Updates the container bounding box (subtracting the element's width from x_max), and returns
+     * the layout box of the element, containing the computed position of the origin point and the
+     * vertically extended bounding box to apply to the element.
+     */
+    auto layout_element_at_right_edge(Bbox_ref cont, Bbox_cref elem, Alignment valign) -> Layout_box
+    {
+        // Compute position of element origin point
+        auto x = cont.x_max - elem.x_max;
+    #ifdef CPPGUI_Y_AXIS_DOWN
+        auto y =  elem.y_max - cont.y_max;
+    #else
+    #error Positive up Y axis not supported yet.
+    #endif
+
+        // Align element (vertically)
+        assert(valign == Alignment::vertical_baseline);
+        auto b{ elem };
+        b.y_min = - (cont.y_max + (-cont.y_min) - elem.y_max);
+
+        // Cut slice off from the right edge of the container
+        cont.x_max -= elem.width();
+
+        // Return layout box for the element
+        return { { x, y }, b };
+    }
+
+    auto layout_element_at_top_edge(Bbox_ref cont, Bbox_cref elem, Alignment halign) -> Layout_box
+    {
+        // Compute position of element origin point
+    #ifdef CPPGUI_Y_AXIS_DOWN
+        auto y =  elem.y_max - cont.y_max;
+    #else
+    #error Positive up Y axis not supported yet.
+    #endif
+
+        // Horizontal alignment
+        assert(halign == horizontal_middle);
+        auto x = (cont.width() - elem.width()) / 2 + (-elem.x_min) - (-cont.x_min);
+
+        // Stretch element
+        auto b{ elem };
+        b.x_min = cont.x_min - x;
+        b.x_max = cont.x_max - x;
+
+        // Cut slice off from top
+        cont.y_max -= elem.height();
+
+        // Return layout box for the element
+        return { { x, y }, b };
+    }
+
 } // ns cppgui

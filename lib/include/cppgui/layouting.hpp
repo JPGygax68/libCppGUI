@@ -47,4 +47,8 @@ namespace cppgui {
 
 #endif // NOT_DEFINED
 
+    auto layout_element_at_right_edge(Bbox_ref container, Bbox_cref elem, Alignment valign = vertical_baseline) -> Layout_box;
+
+    auto layout_element_at_top_edge(Bbox_ref container, Bbox_cref elem, Alignment halign = horizontal_middle) -> Layout_box;
+
 } // ns cppgui

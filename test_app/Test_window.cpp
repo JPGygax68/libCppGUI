@@ -7,6 +7,7 @@
 //#include "./Fonts.hpp"
 #include "./Test_window.hpp"
 #include "cppgui/Icon_resources.hpp"
+#include "cppgui/unicode.hpp"
 
 
 // Class implementation  --------------------------------------------
@@ -21,6 +22,8 @@ Test_window::Test_window():
 
 void Test_window::create_ui()
 {
+    using namespace std::string_literals;
+
     // TODO: 
     //auto tick_font_data = cppgui::Icon_resources<Default_font::size>::tick_font_data();
     //glyph_font = gpc::fonts::load(tick_font_data.first, tick_font_data.second);
@@ -60,15 +63,17 @@ void Test_window::create_ui()
     _vscrollbar.define_sizes(100, 20);
     root_widget().add_child(&_vscrollbar);
 
-    #ifdef NOT_DEFINED
-
-    _button_list.resize(8);
+    _button_list.resize(15);
     for (auto i = 0U; i < _button_list.size(); i ++)
     {
-        _button_list[i].set_font(&dflt_font);
-        _button_list[i].set_label(std::u32string{U"This is button #"} + char32_t(U'1' + i));
-        _stack.add_child(&_button_list[i]);
+        _button_list[i].set_font(&cppgui::baked_fonts::default_font());
+        _button_list[i].set_label(cppgui::utf8_to_utf32("Button #"s + std::to_string(i)));
+        _button_list[i].set_glyph(cppgui::Icon_resources::bell());
+        _listbox.add_item(&_button_list[i]);
     }
+    root_widget().add_child(&_listbox);
+
+#ifdef NOT_DEFINED
 
     _menu_header.set_font(&dflt_font);
     _menu_header.set_text(U"Look at this:");
@@ -90,17 +95,23 @@ void Test_window::create_ui()
     root_widget().add_child(&_menu);
     root_widget().add_child(&_input_dlg);
 
-    #endif
+#endif
 
     root_widget().switch_focused_child(&_textbox);
 }
 
 void Test_window::adjust_layout()
 {
-    _label.set_bounds({ 50, 50 }, _label.get_minimal_bounds());
-    _textbox.set_bounds({ 150, 50 }, _textbox.get_minimal_bounds());
-    _button.set_bounds({300, 50}, _button.get_minimal_bounds());
-    _checkbox.set_bounds({450, 50}, _checkbox.get_minimal_bounds());
-    _glyphbutton.set_bounds({50, 100}, _glyphbutton.get_minimal_bounds());
-    _vscrollbar.set_bounds({50, 150}, _vscrollbar.get_minimal_bounds());
+    _label      .set_bounds({  50,  50 }, _label      .get_minimal_bounds());
+    _textbox    .set_bounds({ 150,  50 }, _textbox    .get_minimal_bounds());
+    _button     .set_bounds({ 300,  50 }, _button     .get_minimal_bounds());
+    _checkbox   .set_bounds({ 450,  50 }, _checkbox   .get_minimal_bounds());
+    _glyphbutton.set_bounds({  50, 100 }, _glyphbutton.get_minimal_bounds());
+    _vscrollbar .set_bounds({  50, 150 }, _vscrollbar .get_minimal_bounds());
+
+    {
+        auto bbox = _listbox.get_minimal_bounds();
+        bbox.y_min = -120;
+        _listbox    .set_bounds({ 150, 150 }, bbox);
+    }
 }

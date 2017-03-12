@@ -158,7 +158,6 @@ namespace cppgui {
 
     /* Use this specialization when you need to control navigation directly, with the scrollbar widget acting as both input (arrows, thumb dragging, keyboard) and output (thumb position), but not as the direct controller of the interaction.
      */
-
     class Custom_vertical_scrollbar: public Vertical_scrollbar_base
     {
     public:

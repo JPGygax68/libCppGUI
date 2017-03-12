@@ -7,6 +7,7 @@
 #include <cppgui/Checkbox.hpp>
 #include <cppgui/Glyph_button.hpp>
 #include <cppgui/Vertical_scrollbar.hpp>
+#include <cppgui/Listbox.hpp>
 
 
 class Test_window: public cppgui::Window
@@ -20,10 +21,13 @@ protected:
     void adjust_layout() override;
 
 private:
+    std::vector<cppgui::Glyph_button>   _button_list;
+
     cppgui::Label                       _label;
     cppgui::Textbox                     _textbox;
     cppgui::Button                      _button;
     cppgui::Checkbox                    _checkbox;
     cppgui::Glyph_button                _glyphbutton;
     cppgui::Boxed_vertical_scrollbar    _vscrollbar;
+    cppgui::Listbox                     _listbox;
 };
