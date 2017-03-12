@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 #include <string>
-#include <SDL_error.h>
+#include <SDL2/SDL_error.h>
 
 
 class SDL2_exception : public std::exception {

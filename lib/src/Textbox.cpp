@@ -580,7 +580,7 @@ namespace cppgui {
     {
         _font.assign(font);
         compute_text_extents();
-        set_bounds(position(), bounds());
+        compute_layout(bounds());
     }
 
     void Textbox::compute_text_extents()
@@ -610,13 +610,9 @@ namespace cppgui {
         return adjust_box_bounds(b);
     }
 
-    void Textbox::set_bounds(const Point &p, const Bounding_box &b)
+    void Textbox::compute_layout(const Bounding_box &b)
     {
         _inner_bbox = adjust_box_bounds(b, -1);
-        
-        Widget::set_bounds(p, b);
-
-        //_txpos = { _inner_rect.p.x, _inner_rect.p.y + _ascent };
     }
 
 } // ns cppgui

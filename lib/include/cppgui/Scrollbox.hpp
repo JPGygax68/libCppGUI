@@ -2,7 +2,7 @@
 
 /*  libCppGUI - A GUI library for C++11/14
     
-    Copyright 2016 Hans-Peter Gygax
+    Copyright 2016, 2017 Hans-Peter Gygax
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ namespace cppgui {
         Navigation_handler      _on_navigation;
         Scrollable_pane         *_content = nullptr;
 
-        #ifndef CPPGUI_EXCLUDE_LAYOUTING
+    #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
     public:
         auto get_minimal_bounds() -> Bounding_box override;
@@ -78,21 +78,16 @@ namespace cppgui {
 
         protected:
             //auto content_rect() -> Rectangle;
-        };
 
-        #endif // CPPGUI_EXCLUDE_LAYOUTING
-    };
+    #endif // CPPGUI_EXCLUDE_LAYOUTING
+
+    }; // class Scrollbox
 
     // Scrollable pane ==============================================
 
-    // Forward declarations
-
-    template<class Config, bool With_layout, class Parent> struct Scrollable_pane__Layouter;
-
     // Base class
 
-    template<class Config, bool With_layout>
-    class Scrollable_pane_base: public Container_base<Config, With_layout>
+    class Scrollable_pane_base: public Container
     {
     public:
         //using Navigation_handler = Custom_vertical_scrollbar<Config, With_layout>;
@@ -101,7 +96,7 @@ namespace cppgui {
 
         // TODO: the interface should probably be reduced to the single scroll() method; however initial_pos 
         //      should be handled by the scrollbar
-        void scroll(Navigation_unit unit, /* Position initial_pos, */ Fraction<int> delta) { static_assert(false, "Scrollable_pane::navigate()"); }
+        virtual void scroll(Navigation_unit, /* Position initial_pos, */ Fraction<int> delta) = 0;
 
         /** TODO: inform container scrollbox that the extents of the pane have changed,
             and to update the scrollbar(s) accordingly
@@ -111,30 +106,23 @@ namespace cppgui {
 
     // Main class template
 
-    template<class Config, bool With_layout>
-    class Scrollable_pane: 
-        public Scrollable_pane__Layouter<Config, With_layout, Scrollable_pane_base<Config, With_layout> >
+    class Scrollable_pane: public Scrollable_pane_base
     {
     protected:
-        static constexpr auto element_background_color() { return Color{ 1, 1, 1, 1 }; }
-    };
+        static constexpr auto element_background_color() { return RGBA{ 1, 1, 1, 1 }; }
 
-    // Layouter aspect
-
-    template<class Config, class Parent>
-    struct Scrollable_pane__Layouter<Config, true, Parent>: public Parent
-    {
-        struct Scrollable_pane_t: public Scrollable_pane<Config, true> { friend struct Scrollable_pane__Layouter; };
-        auto p() { return static_cast<Scrollable_pane_t*>(static_cast<Scrollable_pane<Config, true>*>(this)); }
+    #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
         /** Because the size of a scrollable pane can by definition exceed that of its container,
-            this additional (CRTP) entry point is provided as an occasion for the pane implementation
+            this additional entry point is provided as an occasion for the pane implementation
             to adapt (in whatever way) to the size of the content rectangle of the scrollbox.
             */
-        void compute_and_set_extents(const Extents &content_rect) { static_assert(false, "CRPT"); }
+        virtual void compute_and_set_extents(const Extents &content_rect) = 0;
 
         //auto get_minimal_size() -> Extents override;
         //void layout() override;
+
+    #endif // !CPPGUI_EXCLUDE_LAYOUTING
     };
 
 } // ns cppgui

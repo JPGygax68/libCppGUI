@@ -53,6 +53,7 @@ STATIC
     include/cppgui/Application.hpp          src/Application.cpp
     include/cppgui/Resource.hpp
     include/cppgui/Box.hpp                  src/Box.cpp
+    include/cppgui/Boxed.hpp
     include/cppgui/Canvas.hpp               src/Canvas.cpp
     include/cppgui/Widget.hpp               src/Widget.cpp
     include/cppgui/Container.hpp            src/Container.cpp

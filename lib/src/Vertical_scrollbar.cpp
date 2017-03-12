@@ -92,8 +92,6 @@ namespace cppgui {
     {
         auto p = offset + position();
 
-        draw_background_and_border(c, p, bounds(), visual_states());
-
         // Thumb
         //auto hilite = _thumb_hovered || _dragging_thumb; // does not work well with mouse wheel
         auto hilite = hovered() || _dragging_thumb;
@@ -276,10 +274,6 @@ namespace cppgui {
 
     auto Vertical_scrollbar_base::get_minimal_bounds() -> Bounding_box
     {
-        // Height: based on up/down buttons, height: 3 times button height
-        //auto btn_minsz = _up_btn.get_minimal_bounds();
-        //return { btn_minsz.w, 3 * btn_minsz.h };
-
         Bounding_box bbox{};
         bbox.append_at_bottom( _up_btn.get_minimal_bounds() );
         bbox.append_at_bottom( 3 * _up_btn.get_minimal_bounds().height() );
@@ -288,24 +282,24 @@ namespace cppgui {
         return bbox;
     }
 
-    void Vertical_scrollbar_base::set_bounds(const Point &p, const Bounding_box &b)
+    void Vertical_scrollbar_base::compute_layout(const Bounding_box &b)
     {
-        Widget::set_bounds(p, b); // direct parent is Container, which however does no layouting of its own
+        Widget::compute_layout(b); // direct parent is Container, which however does no layouting of its own
 
         auto bbox{ b };
 
         {
             auto bbmin = _up_btn.get_minimal_bounds();
             auto bb = bbox.cut_from_top(bbmin.height());
-            auto pp = bbmin.position_inside_rectangle(bb);
-            _up_btn.set_bounds(pp, bbmin);
+            //auto pp = bbmin.position_inside_rectangle(bb);
+            _up_btn.compute_layout(bbmin);
         }
 
         {
             auto bbmin = _down_btn.get_minimal_bounds();
             auto bb = bbox.cut_from_bottom(bbmin.height());
-            auto pp = bbmin.position_inside_rectangle(bb);
-            _down_btn.set_bounds(pp, bbmin);
+            //auto pp = bbmin.position_inside_rectangle(bb);
+            _down_btn.compute_layout(bbmin);
         }
 
         auto r = Rectangle{ bbox }.inflate(0, -2);

@@ -97,9 +97,9 @@ namespace cppgui {
         return adjust_box_bounds(l.minimal_bounds());
     }
 
-    void Glyph_button::set_bounds(const Point &p, const Bounding_box &b)
+    void Glyph_button::compute_layout(const Bounding_box &b)
     {
-        Widget::set_bounds(p, b);
+        Widget::compute_layout(b);
 
         auto inner_bbox = adjust_box_bounds(b, -1);
 

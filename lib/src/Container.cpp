@@ -97,6 +97,13 @@ namespace cppgui {
         init_child_resources(c);
     }
 
+    void Container::render(Canvas *c, const Point &offs)
+    {
+        auto p = offs + position();
+
+        c->fill_rect(Rectangle{bounds()} + p, background_color(visual_states()));
+    }
+
     void Container::mouse_motion(const Point &p)
     {
         container_mouse_motion(p);

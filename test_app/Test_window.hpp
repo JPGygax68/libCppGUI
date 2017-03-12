@@ -20,10 +20,10 @@ protected:
     void adjust_layout() override;
 
 private:
-    cppgui::Label                   _label;
-    cppgui::Textbox                 _textbox;
-    cppgui::Button                  _button;
-    cppgui::Checkbox                _checkbox;
-    cppgui::Glyph_button            _glyphbutton;
-    cppgui::Vertical_scrollbar      _vscrollbar;
+    cppgui::Label                       _label;
+    cppgui::Textbox                     _textbox;
+    cppgui::Button                      _button;
+    cppgui::Checkbox                    _checkbox;
+    cppgui::Glyph_button                _glyphbutton;
+    cppgui::Boxed_vertical_scrollbar    _vscrollbar;
 };

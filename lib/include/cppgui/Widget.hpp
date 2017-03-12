@@ -60,8 +60,8 @@ namespace cppgui {
         //void set_position(const Point &);
         //void set_bounds(const Bounding_box &);
 
-        void set_background_color(const RGBA &);
-        auto background_color() const -> RGBA;
+        //void set_background_color(const RGBA &);
+        //auto background_color() const -> RGBA;
 
         void on_click(Click_handler);
 
@@ -209,7 +209,7 @@ namespace cppgui {
 
         Point                   _position = {};
         Bounding_box            _bounds = {};
-        RGBA                    _bkgnd_clr = {0, 0, 0, 0};
+        //RGBA                    _bkgnd_clr = {0, 0, 0, 0};
         Click_handler           _click_hndlr;
         bool                    _visible = true;
         bool                    _focussable = true;
@@ -229,13 +229,15 @@ namespace cppgui {
 
     public:
         
+        void set_bounds(const Point &, const Bounding_box &);
+
         virtual void init_layout() = 0;
         virtual auto get_minimal_bounds() -> Bounding_box = 0;
 
         /*
          * The bounding box specified 
          */
-        virtual void set_bounds(const Point &p, const Bounding_box &b);
+        virtual void compute_layout(const Bounding_box &b) {}
 
     protected:
         // TODO: this really belongs to a utility module

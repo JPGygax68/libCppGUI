@@ -89,9 +89,9 @@ namespace cppgui {
         return adjust_box_bounds(_label_bbox);
     }
 
-    void Button::set_bounds(const Point &p, const Bounding_box &b)
+    void Button::compute_layout(const Bounding_box &b)
     {        
-        Widget::set_bounds(p, b);
+        Widget::compute_layout(b);
 
         //auto inner_bounds = adjust_box_bounds(b, -1);
 
@@ -108,14 +108,14 @@ namespace cppgui {
     void Button::font_changed()
     {
         compute_label_bounds();
-        set_bounds(position(), bounds());
+        compute_layout(bounds());
         invalidate();
     }
 
     void Button::text_changed()
     {
         compute_label_bounds();
-        set_bounds(position(), bounds());
+        compute_layout(bounds());
         invalidate();
     }
 

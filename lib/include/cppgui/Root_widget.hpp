@@ -123,7 +123,7 @@ namespace cppgui {
 
         void init_layout() override;
         auto get_minimal_bounds() -> Bounding_box override;
-        void set_bounds(const Point & p, const Bounding_box & b) override;
+        void compute_layout(const Bounding_box & b) override;
 
     #endif // CPPGUI_EXCLUDE_LAYOUTING
 

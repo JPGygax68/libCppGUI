@@ -2,7 +2,7 @@
 
 /*  libCppGUI - A GUI library for C++11/14
     
-    Copyright 2016 Hans-Peter Gygax
+    Copyright 2016, 2017 Hans-Peter Gygax
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,18 +18,26 @@
 */
 
 #include "./Widget.hpp"
-//#include "./layout_managers.hpp"
+#include "./Box.hpp"
 
 
 namespace cppgui {
 
+    class Container_box_styles
+    {
+    protected:
+        // TODO: make configurable:
+        static auto border_width    (Widget_states) -> Width { return 1; }
+        static auto padding_width   (Widget_states) -> Width { return 4; }
+        static auto border_color    (Widget_states) -> RGBA { return { 0, 0, 0, 1 }; }
+        static auto background_color(Widget_states) -> RGBA { return { 0.7f, 0.7f, 0.7f, 1}; }
+    };
+
     /** Container functionality (ability to contain Widgets).
      */
-    class Container: public Widget
+    class Container: public Widget, public Box<Container_box_styles>
     {
     public:
-        
-        Container(): _hovered_child { nullptr } {}
 
         void set_initial_focus(Widget *);
 
@@ -42,8 +50,9 @@ namespace cppgui {
 
         void init(Canvas *) override;
 
-        void mouse_motion(const Point &) override;
+        void render(Canvas *, const Point &offs) override;
 
+        void mouse_motion(const Point &) override;
         void mouse_exit() override;
 
         /** Called when a key_down event could not be handled by the child it was sent to
@@ -112,6 +121,7 @@ namespace cppgui {
 
     protected:
         void init_children_layout();
+        //auto get_minimal_bounds() -> Bounding_box override;
 
     #endif // CPPGUI_EXCLUDE_LAYOUTING
 

@@ -124,7 +124,7 @@ namespace cppgui {
 
         void init_layout() override;
         auto get_minimal_bounds() -> Bounding_box override;
-        void set_bounds(const Point &, const Bounding_box &) override;
+        void compute_layout(const Bounding_box &) override;
 
         // "Stylesheet"
         //static constexpr auto default_padding() -> Padding { return { 3, 3, 3, 3 }; }

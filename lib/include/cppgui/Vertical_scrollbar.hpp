@@ -19,9 +19,7 @@
 
 #include "./Container.hpp"
 #include "./Glyph_button.hpp"
-#include "./Resource.hpp"
-//#include "./Drag_controller.hpp"
-//#include "./Box_model.hpp"
+#include "./Boxed.hpp"
 
 
 namespace cppgui {
@@ -45,17 +43,6 @@ namespace cppgui {
         - "page":       move forward or backward by N pages [Note: currently N is always = 1 for page navigation]
         - "fraction":   move forward or backward by a fractional amount (this occurs when the user drags the thumb)
      */ 
-
-    class Scrollbar_box_styles // TODO: move to common base class
-    {
-    protected:
-        // TODO: make configurable:
-        static auto border_width    (Widget_states) -> Width { return 1; }
-        static auto padding_width   (Widget_states) -> Width { assert(false); return 0; } // TODO: not used at this time
-        static auto border_color    (Widget_states) -> RGBA { return { 0, 0, 0, 1 }; }
-        static auto background_color(Widget_states) -> RGBA { return { 0.9f, 0.9f, 0.9f, 1}; }
-    };
-
 
     // Base class ===================================================
 
@@ -88,7 +75,7 @@ namespace cppgui {
             position, under the control of the consumer.
      */
 
-    class Vertical_scrollbar_base: public Container, public Box<Scrollbar_box_styles>
+    class Vertical_scrollbar_base: public Container
     {
     public:
 
@@ -131,13 +118,12 @@ namespace cppgui {
         //void move_by_fraction(Position initial_pos, const Fraction<int> &delta) = 0;
         virtual void move_by_fraction(const Fraction<int> &delta) = 0;
 
-    protected:
-
         //void move_thumb_to(Position);
         void recalc_thumb();
         void clip_thumb_pos();
         void notify_drag_navigation(Position_delta);
 
+    private:
         RGBA                    _slide_bgcol;           // TODO: use styling
         RGBA                    _thumb_color;           // ditto
         RGBA                    _thumb_hovered_color;   // ditto
@@ -160,7 +146,7 @@ namespace cppgui {
 
         //void init_layout() override;
         auto get_minimal_bounds() -> Bounding_box override;
-        void set_bounds(const Point &, const Bounding_box &) override;
+        void compute_layout(const Bounding_box &) override;
 
         // Extra capabilities coming with layouting
         // TODO
@@ -211,5 +197,20 @@ namespace cppgui {
 
         Position_change_handler _on_pos_chng;
     };
+
+
+    // "Boxed" version --------------------------------------------------------
+
+    class Scrollbar_box_styles // TODO: move to header common to vertical and horizontal
+    {
+    protected:
+        // TODO: make configurable:
+        static auto border_width    (Widget_states) -> Width { return 1; }
+        static auto padding_width   (Widget_states) -> Width { assert(false); return 0; } // TODO: not used at this time
+        static auto border_color    (Widget_states) -> RGBA { return { 0, 0, 0, 1 }; }
+        static auto background_color(Widget_states) -> RGBA { return { 0.9f, 0.9f, 0.9f, 1}; }
+    };
+
+    using Boxed_vertical_scrollbar = Boxed<Vertical_scrollbar, Scrollbar_box_styles>;
 
 } // ns cppgui

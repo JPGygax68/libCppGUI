@@ -51,7 +51,7 @@ namespace cppgui {
     {
         auto p = offs + this->position();
 
-        c->fill_rect(Rectangle{bounds()} + p, background_color());
+        //c->fill_rect(Rectangle{bounds()} + p, background_color(visual_states()));
 
         if (!_text.empty())
         {

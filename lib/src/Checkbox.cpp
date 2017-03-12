@@ -123,9 +123,9 @@ namespace cppgui {
         #endif
     }
 
-    void Checkbox::set_bounds(const Point &p, const Bounding_box &b)
+    void Checkbox::compute_layout(const Bounding_box &b)
     {
-        Widget::set_bounds(p, b);
+        Widget::compute_layout(b);
 
         // Label position is defined as 0, 0
 

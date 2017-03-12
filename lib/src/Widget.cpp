@@ -22,9 +22,6 @@
 #include <Widget.hpp>
 #include <Container.hpp>
 #include <Root_widget.hpp>
-//#include <cppgui/Abstract_container.hpp>
-//#include <cppgui/Container_base.hpp>
-//#include <cppgui/Canvas.hpp>
 
 
 namespace cppgui {
@@ -48,6 +45,7 @@ namespace cppgui {
         _bounds = bounds;
     } */
 
+    /*
     void Widget::set_background_color(const RGBA &color)
     {
         _bkgnd_clr = color;
@@ -58,6 +56,7 @@ namespace cppgui {
         // TODO: stylesheets!
         return _bkgnd_clr;
     }
+    */
 
     void Widget::on_click(Click_handler handler)
     {
@@ -267,6 +266,14 @@ namespace cppgui {
         _container->child_invalidated(this);
     }
 
+    void Widget::set_bounds(const Point &p, const Bounding_box &b)
+    {
+        compute_layout(b);
+
+        _position = p;
+        _bounds = b;
+    }
+
     /*
      * TODO: this function should be moved to the fonts namespace
      */
@@ -325,12 +332,6 @@ namespace cppgui {
     #endif // NOT_DEFINED
 
     #ifndef CPPGUI_EXCLUDE_LAYOUT
-
-    void Widget::set_bounds(const Point & p, const Bounding_box & b)
-    {
-        _position = p;
-        _bounds = b;
-    }
 
     auto Widget::align_cultural_minor(const Bounding_box &inner, const Bounding_box &outer, Alignment align) -> Position_delta
     {
