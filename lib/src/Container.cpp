@@ -112,6 +112,11 @@ namespace cppgui {
         container_mouse_motion(p);
     }
 
+    void Container_base::mouse_button(const Point &p, int button, Key_state state, Count clicks)
+    {
+        container_mouse_button(p, button, state, clicks);
+    }
+
     void Container_base::mouse_exit()
     {
         // If the mouse leaves the container, it also leaves the children

@@ -23,20 +23,6 @@
 
 namespace cppgui {
 
-#ifdef NOT_DEFINED
-
-    class Container_box_styles
-    {
-    protected:
-        // TODO: make configurable:
-        static auto border_width    (Widget_states) -> Width { return 1; }
-        static auto padding_width   (Widget_states) -> Width { return 4; }
-        static auto border_color    (Widget_states) -> RGBA { return { 0, 0, 0, 1 }; }
-        static auto background_color(Widget_states) -> RGBA { return { 0.7f, 0.7f, 0.7f, 1}; }
-    };
-
-#endif // NOT_DEFINED
-
     /** Container functionality (ability to contain Widgets).
      */
     class Container_base: public Widget
@@ -57,6 +43,8 @@ namespace cppgui {
         void render(Canvas *, const Point &offs) override;
 
         void mouse_motion(const Point &) override;
+        void mouse_button(const Point &, int /*button*/, Key_state, Count clicks) override;
+        // TODO: other events ?
         void mouse_exit() override;
 
         /** Called when a key_down event could not be handled by the child it was sent to
@@ -130,5 +118,20 @@ namespace cppgui {
     #endif // CPPGUI_EXCLUDE_LAYOUTING
 
     };
+
+
+#ifdef NOT_DEFINED
+
+    class Container_box_styles
+    {
+    protected:
+        // TODO: make configurable:
+        static auto border_width    (Widget_states) -> Width { return 1; }
+        static auto padding_width   (Widget_states) -> Width { return 4; }
+        static auto border_color    (Widget_states) -> RGBA { return { 0, 0, 0, 1 }; }
+        static auto background_color(Widget_states) -> RGBA { return { 0.7f, 0.7f, 0.7f, 1}; }
+    };
+
+#endif // NOT_DEFINED
 
 } // ns cppgui
