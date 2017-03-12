@@ -128,7 +128,7 @@ namespace cppgui {
         RGBA                    _thumb_color;           // ditto
         RGBA                    _thumb_hovered_color;   // ditto
 
-        Glyph_button            _up_btn, _down_btn;
+        Borderless_glyph_button _up_btn, _down_btn;
         Length                  _full_range = 0;    // the range represented by the full length of the track 
                                                     // (= strip on which the thumb moves)
         Length                  _shown_range = 0;   // the range represented by the length of the thumb

@@ -37,9 +37,6 @@ namespace cppgui
         static auto background_color(Widget_states) -> RGBA { return { 1, 1, 1, 1 }; }
     };
 
-    /*
-     * TODO: move to Button.hpp ?
-     */
     class Button_box_styles
     {
     protected:
@@ -49,6 +46,13 @@ namespace cppgui
         static auto border_color    (Widget_states) -> RGBA { return { 0, 0, 0, 1 }; }
         static auto background_color(Widget_states) -> RGBA;
     };
+
+    class Borderless_button_box_styles: public Button_box_styles
+    {
+    protected:
+        static auto border_width    (Widget_states) -> Width { return 0; }
+    };
+
 
     template<class Styles>
     class Box: protected Styles

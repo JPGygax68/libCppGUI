@@ -89,8 +89,8 @@ private:
 
     cppgui::Label<GUI_config, true, cppgui::Box_model_definition::run_time>                 _label;
     cppgui::Button<GUI_config, true, cppgui::Box_model_definition::run_time>                _button;
-    cppgui::Glyph_button<GUI_config, true, cppgui::Box_model_definition::run_time>          _glyph_btn;
-    cppgui::Glyph_button<GUI_config, true, cppgui::Box_model_definition::run_time>          _button2;
+    cppgui::Glyph_button_base<GUI_config, true, cppgui::Box_model_definition::run_time>          _glyph_btn;
+    cppgui::Glyph_button_base<GUI_config, true, cppgui::Box_model_definition::run_time>          _button2;
     cppgui::Textbox<GUI_config, true, cppgui::Box_model_definition::run_time>               _textbox;
     cppgui::Checkbox<GUI_config, true, cppgui::Box_model_definition::run_time>              _checkbox;
     cppgui::Label<GUI_config, true, cppgui::Box_model_definition::run_time>                 _menu_header;

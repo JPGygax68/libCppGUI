@@ -27,28 +27,26 @@ namespace cppgui {
 
     // Main class implementation ------------------------------------
 
-    void Glyph_button::on_pushed(Pushed_handler handler)
+    void Glyph_button_base::on_pushed(Pushed_handler handler)
     {
         _on_pushed = handler;
     }
 
-    void Glyph_button::set_glyph(const Glyph_specifier &g)
+    void Glyph_button_base::set_glyph(const Glyph_specifier &g)
     {
         _glyph_font.assign(g.font);
         _glyph_cp  = g.code_point;
     }
 
-    void Glyph_button::init(Canvas *c)
+    void Glyph_button_base::init(Canvas *c)
     {
         if (_label_font.rasterized) _label_font.translate(c);
         if (_glyph_cp) _glyph_font.translate(c);
     }
 
-    void Glyph_button::render(Canvas *c, const Point & offset)
+    void Glyph_button_base::render(Canvas *c, const Point & offset)
     {
         auto p = offset + this->position();
-
-        draw_background_and_border(c, p, bounds(), visual_states());
 
         // Label
         if (!_label.empty())
@@ -70,7 +68,7 @@ namespace cppgui {
         }
     }
 
-    void Glyph_button::mouse_click(const Point & /*point*/, int button, Count /*count*/)
+    void Glyph_button_base::mouse_click(const Point & /*point*/, int button, Count /*count*/)
     {
         if (_on_pushed && button == 1) _on_pushed();
     }
@@ -79,12 +77,12 @@ namespace cppgui {
 
  #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
-    void Glyph_button::init_layout()
+    void Glyph_button_base::init_layout()
     {
         compute_bounds();
     }
 
-    auto Glyph_button::get_minimal_bounds() -> Bounding_box
+    auto Glyph_button_base::get_minimal_bounds() -> Bounding_box
     {
         Inline_layouter l; // TODO: make a member ?
 
@@ -94,22 +92,20 @@ namespace cppgui {
         l.append_space(); // necessary to make room for stippled "focus" rectangle
         l.append_glyph(_glyph_font.rasterized, _glyph_cp);
 
-        return adjust_box_bounds(l.minimal_bounds());
+        return l.minimal_bounds();
     }
 
-    void Glyph_button::compute_layout(const Bounding_box &b)
+    void Glyph_button_base::compute_layout(const Bounding_box &b)
     {
         Widget::compute_layout(b);
-
-        auto inner_bbox = adjust_box_bounds(b, -1);
 
         // Label position is defined as 0, 0
 
         // Glyph origin
-        _glyph_orig = inner_bbox.x_max - _glyph_bbox.x_max; // TODO: better way ? x_max contains anti-aliasing pixels
+        _glyph_orig = b.x_max - _glyph_bbox.x_max; // TODO: better way ? x_max contains anti-aliasing pixels
     }
 
-    void Glyph_button::compute_bounds()
+    void Glyph_button_base::compute_bounds()
     {
         _label_bbox = _label_font.rasterized->compute_text_extents(0, _label.data(), _label.size());
         _glyph_bbox = _glyph_font.rasterized->compute_text_extents(0, &_glyph_cp, 1);

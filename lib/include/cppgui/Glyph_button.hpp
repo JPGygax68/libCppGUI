@@ -17,7 +17,7 @@
     limitations under the License.
 */
 
-#include "./Box.hpp"
+#include "./Boxed.hpp"
 #include "./Widget.hpp"
 
 
@@ -29,7 +29,7 @@ namespace cppgui {
 
     // Glyph_button declaration 
 
-    class Glyph_button: public Widget, public Box<Button_box_styles>
+    class Glyph_button_base: public Widget
     {
     public:
 
@@ -85,5 +85,13 @@ namespace cppgui {
 
         #endif // CPPGUI_EXCLUDE_LAYOUTING
     };
+
+
+    // "Boxed versions
+
+    using Glyph_button = Boxed<Glyph_button_base, Button_box_styles>;
+
+    using Borderless_glyph_button = Boxed<Glyph_button_base, Borderless_button_box_styles>;
+
 
 } // ns cppui
