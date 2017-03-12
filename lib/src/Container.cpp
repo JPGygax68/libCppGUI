@@ -115,6 +115,7 @@ namespace cppgui {
     void Container_base::mouse_button(const Point &p, int button, Key_state state, Count clicks)
     {
         container_mouse_button(p, button, state, clicks);
+        //Widget::mouse_button(p, button, state, clicks);
     }
 
     void Container_base::mouse_exit()

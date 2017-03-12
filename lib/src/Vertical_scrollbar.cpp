@@ -143,9 +143,7 @@ namespace cppgui {
             if (_dragging_thumb)
             {
                 _dragging_thumb = false;
-                // We bypass Container_t::mouse_button() here and call Widget_t::mouse_button() instead,
-                // because Container_t does not (at the moment - TODO) pass thru to Widget<>
-                Container_base::mouse_button(pos, button, state, clicks); //root_widget()->release_mouse();
+                root_widget()->release_mouse();
                 invalidate();
                 return;
             }

@@ -57,6 +57,7 @@ STATIC
     include/cppgui/Canvas.hpp               src/Canvas.cpp
     include/cppgui/Widget.hpp               src/Widget.cpp
     include/cppgui/Container.hpp            src/Container.cpp
+    include/cppgui/Scrolling_container.hpp  src/Scrolling_container.cpp
     include/cppgui/Root_widget.hpp          src/Root_widget.cpp
     include/cppgui/Label.hpp                src/Label.cpp
     include/cppgui/Textbox.hpp              src/Textbox.cpp

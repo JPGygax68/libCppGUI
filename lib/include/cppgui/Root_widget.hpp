@@ -2,7 +2,7 @@
 
 /*  libCppGUI - A GUI library for C++11/14
     
-    Copyright 2016 Hans-Peter Gygax
+    Copyright 2016, 2017 Hans-Peter Gygax
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -19,14 +19,9 @@
 
 #include <functional>
 #include <stack>
-
 #include "./Widget.hpp"
 #include "./Container.hpp"
-//#include "./Container_layouter.hpp"
-//#include "./Box_model.hpp"
 
-
-#pragma warning(disable: 4505)
 
 namespace cppgui {
 
@@ -61,12 +56,12 @@ namespace cppgui {
         void pop_cursor();
 
         // TODO: replace the following event override with standalone methods that inject to container_xxxx()
-        void mouse_motion(const Point &);
-        void mouse_button(const Point &, int button, Key_state, Count clicks);
+        void mouse_motion(const Point &) override;
+        void mouse_button(const Point &, int button, Key_state, Count clicks) override;
         //void mouse_click(const Point &, int button, int count);
-        void mouse_wheel(const Vector &);
-        void text_input(const char32_t *, size_t);
-        void key_down(const Keycode &);
+        void mouse_wheel(const Vector &) override;
+        void text_input(const char32_t *, size_t) override;
+        void key_down(const Keycode &) override;
         //void key_up(const Keycode &);
 
         void render(Canvas *c, const Point &p) override;

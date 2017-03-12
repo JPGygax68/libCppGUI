@@ -114,7 +114,7 @@ namespace cppgui {
         unlock();
     }
 
-    void Root_widget::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
+    void Root_widget::mouse_button(const Point &p, int button, Key_state state, Count clicks)
     {
         lock();
 
@@ -122,11 +122,11 @@ namespace cppgui {
 
         if (_mouse_holder)
         {
-            _mouse_holder->mouse_button(pos - _capture_offset, button, state, clicks);
+            _mouse_holder->mouse_button(p - _capture_offset, button, state, clicks);
         }
         else
         {
-            this->container_mouse_button(pos, button, state, clicks); // Abstract_container TODO: better name ?
+            container_mouse_button(p, button, state, clicks);
         }
 
         #else
@@ -139,8 +139,7 @@ namespace cppgui {
     }
 
     /*
-    template<class Config, bool With_layout>
-    void Root_widget<Config, With_layout>::mouse_click(const Point &pos, int button, int count)
+    void Root_widget::mouse_click(const Point &pos, int button, int count)
     {
         this->lock();
         container_mouse_click(pos, button, count);
@@ -191,7 +190,7 @@ namespace cppgui {
 
     void Root_widget::capture_mouse(Widget *holder)
     {
-        // assert(!_mouse_holder);
+        assert(!_mouse_holder);
 
         if (!_mouse_holder)
         {
@@ -247,7 +246,7 @@ namespace cppgui {
         _on_invalidated();
     }
 
-    // Layouter aspect ----------------------------------------------
+#ifndef CPPGUI_EXCLUDE_LAYOUTING
 
     void Root_widget::init_layout()
     {
@@ -286,6 +285,8 @@ namespace cppgui {
 
         invalidate();
     }
+
+#endif // CPPGUI_EXCLUDE_LAYOUTING
 
 } // ns cppgui
 
