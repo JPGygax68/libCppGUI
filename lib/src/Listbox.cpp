@@ -23,8 +23,10 @@ namespace cppgui {
     {
         auto bbmin = Bounding_box::empty();
 
-        for (auto child: children()) 
+        for (auto child: children())
+        {
             bbmin.merge(child->get_minimal_bounds());
+        }
 
         return bbmin;
     }
@@ -47,7 +49,7 @@ namespace cppgui {
     {
     }
 
-    void Listbox_base::add_item(Widget *item)
+    void Listbox_base::add_item(Widget *item) const
     {
         content_pane()->add_child(item);
     }
@@ -82,9 +84,7 @@ namespace cppgui {
 
     bool Listbox_base::item_fully_visible(Index index) const
     {
-        Rectangle r{ content_window() };
-
-        return r.contains_full_height_of(items()[index]->rectangle() + content_pane()->position());
+        return content_window().contains_full_height_of( item_rectangle(item(index)) );
     }
 
     bool Listbox_base::first_item_fully_visible() const
@@ -98,7 +98,7 @@ namespace cppgui {
     {
         assert(!items().empty());
 
-        return item_fully_visible(items().size() - 1);
+        return item_fully_visible(item_count() - 1);
     }
 
     auto Listbox_base::first_partially_visible_item_index() const -> Index
@@ -107,7 +107,7 @@ namespace cppgui {
 
         for (Index i = 0; i < static_cast<Index>(items().size()); i ++)
         {
-            auto r_item = items()[i]->rectangle() + content_pane()->position();
+            auto r_item = item_rectangle(item(i));
 
             if (r_win.intersects_vertically_with(r_item))
                 return i;
@@ -118,47 +118,60 @@ namespace cppgui {
 
     auto Listbox_base::first_partially_visible_item() const -> Widget *
     {
-        return items()[first_partially_visible_item_index()];
+        return item( first_partially_visible_item_index() );
     }
 
     auto Listbox_base::hidden_height_of_first_visible_item() const -> Length
     {
-        auto r_item = first_partially_visible_item()->rectangle();
+        auto r_item = item_rectangle(first_partially_visible_item());
 
-        //return Rectangle{content_pane()->bounds()}.y1() - r_item.y1();
         return content_window().y1() - r_item.y1();
+    }
+
+    auto Listbox_base::item_rectangle(Widget *item) const -> Rectangle
+    {
+        return item->rectangle() + content_pane()->position();    
+    }
+
+    void Listbox_base::bring_item_into_view(Index index)
+    {
+        // Find relative position of item to bring into full view
+        auto r = item_rectangle( item(index) );
+        // TODO: limit to try and prevent uncovering empty space at the bottom
+        auto dy = r.y1() - content_window().y1();
+
+        // Shift
+        content_pane()->shift_by({0, -dy});
     }
 
     void Listbox_base::scroll_down()
     {
+        // "scroll down" = content pane moves up relative to content window
+
         if (!last_item_fully_visible())
         {
-            auto dy = hidden_height_of_first_visible_item();
+            auto i = first_partially_visible_item_index();
+            auto r = item_rectangle( item(i) );
 
-            if (dy > 0)
-            {
-                // TODO: the following two should go to a shift() method, where they could be optimized
-                content_pane()->move_by({0, -dy});
-                invalidate();
-            }
-            else
-            {
-                // TODO: separator
-                content_pane()->move_by({0, - first_partially_visible_item()->height()});
-                invalidate();
-            }
+            // If item fully visible, pick the successor
+            if (r.y1() >= content_window().y1()) i ++;
+
+            bring_item_into_view(i);
         }
     }
 
     void Listbox_base::scroll_up()  
     {
-        // "scroll up" = content pane moves down relative to content window
+        // "scroll up" = content pane moves down relative to content window, uncovering predecessor items
 
-        if (!first_item_fully_visible())
+        auto i = first_partially_visible_item_index();
+
+        // If item fully visible, pick predecessor
+        if (item_fully_visible(i)) i --;
+
+        if (i >= 0)
         {
-            auto dy = hidden_height_of_first_visible_item();
-
-
+            bring_item_into_view(i);
         }
     }
 

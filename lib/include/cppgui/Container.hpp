@@ -32,6 +32,8 @@ namespace cppgui {
         void set_initial_focus(Widget *);
 
         auto& children() { return _children; }
+        auto child(Index i) { return _children[i]; }
+        auto child_count() const -> Index { return static_cast<Index>(_children.size()); }
 
         void add_child(Widget *);
         // TODO: should removal methods be moved to optional aspect ?

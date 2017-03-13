@@ -63,6 +63,7 @@ namespace cppgui {
         auto height() const { return rectangle().height(); }
 
         void move_by(const Point &);
+        void shift_by(const Point &);
 
         //void set_background_color(const RGBA &);
         //auto background_color() const -> RGBA;

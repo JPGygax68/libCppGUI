@@ -65,6 +65,13 @@ namespace cppgui {
         // NOTE: this does not invalidate - must be done by caller!
     }
 
+    void Widget::shift_by(const Point &d)
+    {
+        // TODO: this can be optimized using renderer/platform specific features ("2d acceleration", textures, etc.)
+        move_by(d);
+        invalidate();
+    }
+
     void Widget::on_click(Click_handler handler)
     {
         assert(!_click_hndlr);

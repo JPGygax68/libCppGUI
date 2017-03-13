@@ -12,7 +12,7 @@ namespace cppgui {
 
         Listbox_base();
         
-        void add_item(Widget *);
+        void add_item(Widget *) const;
 
     protected:
 
@@ -27,6 +27,10 @@ namespace cppgui {
         auto first_partially_visible_item_index() const -> Index;
         auto first_partially_visible_item() const -> Widget *;
         auto hidden_height_of_first_visible_item() const -> Length;
+        auto item_rectangle(Widget *) const -> Rectangle; 
+
+        void bring_item_into_view(Index);
+
         void scroll_up  ();
         void scroll_down();
 
