@@ -22,10 +22,13 @@ namespace cppgui {
     private:
 
         bool item_fully_visible(Index) const;
+        bool first_item_fully_visible() const;
         bool last_item_fully_visible() const;
         auto first_partially_visible_item_index() const -> Index;
         auto first_partially_visible_item() const -> Widget *;
         auto hidden_height_of_first_visible_item() const -> Length;
+        void scroll_up  ();
+        void scroll_down();
 
         Index           _first_vis_idx = 0;
     }; 

@@ -20,7 +20,7 @@ namespace cppgui {
 
     protected:
 
-        auto& content_rectangle() const { return _content_rect; }
+        auto content_window() const { return Rectangle{ _content_bbox }; }
         auto content_pane() const { return _content_pane; }
         auto items() const { return content_pane()->children(); }
 
@@ -30,7 +30,7 @@ namespace cppgui {
 
         Custom_vertical_scrollbar   _vscrollbar;
         Content_pane               *_content_pane;
-        Rectangle                   _content_rect;
+        Bounding_box                _content_bbox;
 
     #ifndef CPPGUI_EXCLUDE_LAYOUTING
     public:

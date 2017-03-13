@@ -69,25 +69,12 @@ namespace cppgui {
         {
             if (d < 0)
             {
+                scroll_up();    // content pane moves down relative to window
                 d ++;
             }
             else
             {
-                // Scroll up
-                if (last_item_fully_visible()) break;
-                auto dy = hidden_height_of_first_visible_item();
-                if (dy > 0)
-                {
-                    // TODO: the following two should go to a shift() method, where they could be optimized
-                    content_pane()->move_by({0, -dy});
-                    invalidate();
-                }
-                else
-                {
-                    // TODO: separator
-                    content_pane()->move_by({0, - first_partially_visible_item()->height()});
-                    invalidate();
-                }
+                scroll_down();  // content pane moves up relative to window
                 d --;
             }
         }
@@ -95,7 +82,16 @@ namespace cppgui {
 
     bool Listbox_base::item_fully_visible(Index index) const
     {
-        return content_rectangle().contains_full_height_of(items()[index]->rectangle() + content_pane()->position());
+        Rectangle r{ content_window() };
+
+        return r.contains_full_height_of(items()[index]->rectangle() + content_pane()->position());
+    }
+
+    bool Listbox_base::first_item_fully_visible() const
+    {
+        assert(!items().empty());
+
+        return item_fully_visible(0);
     }
 
     bool Listbox_base::last_item_fully_visible() const
@@ -107,12 +103,13 @@ namespace cppgui {
 
     auto Listbox_base::first_partially_visible_item_index() const -> Index
     {
-        auto r_pane = Rectangle{content_pane()->bounds()};
+        auto r_win = content_window();
 
         for (Index i = 0; i < static_cast<Index>(items().size()); i ++)
         {
-            auto r_item = items()[i]->rectangle();
-            if (r_pane.intersects_vertically_with(r_item))
+            auto r_item = items()[i]->rectangle() + content_pane()->position();
+
+            if (r_win.intersects_vertically_with(r_item))
                 return i;
         }
 
@@ -128,7 +125,41 @@ namespace cppgui {
     {
         auto r_item = first_partially_visible_item()->rectangle();
 
-        return Rectangle{content_pane()->bounds()}.y1() - r_item.y1();
+        //return Rectangle{content_pane()->bounds()}.y1() - r_item.y1();
+        return content_window().y1() - r_item.y1();
+    }
+
+    void Listbox_base::scroll_down()
+    {
+        if (!last_item_fully_visible())
+        {
+            auto dy = hidden_height_of_first_visible_item();
+
+            if (dy > 0)
+            {
+                // TODO: the following two should go to a shift() method, where they could be optimized
+                content_pane()->move_by({0, -dy});
+                invalidate();
+            }
+            else
+            {
+                // TODO: separator
+                content_pane()->move_by({0, - first_partially_visible_item()->height()});
+                invalidate();
+            }
+        }
+    }
+
+    void Listbox_base::scroll_up()  
+    {
+        // "scroll up" = content pane moves down relative to content window
+
+        if (!first_item_fully_visible())
+        {
+            auto dy = hidden_height_of_first_visible_item();
+
+
+        }
     }
 
 } // ns cppgui

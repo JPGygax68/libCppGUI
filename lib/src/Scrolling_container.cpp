@@ -37,7 +37,7 @@ namespace cppgui {
         _content_pane->set_bounds({0, 0}, b);
 
         // We store the content window so we can check item visibility
-        _content_rect = Rectangle{ b };
+        _content_bbox = b;
 
     #ifdef NOT_DEFINED
         {

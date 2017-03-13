@@ -266,6 +266,7 @@ namespace cppgui {
 
         Rectangle(const Rectangle &) = default;
         Rectangle(Rectangle &&) = default;
+        Rectangle(const Extents &ext_): pos{0, 0}, ext{ext_} {}
         Rectangle() = default;
         Rectangle & operator = (const Rectangle &) = default;
 
@@ -277,7 +278,7 @@ namespace cppgui {
         auto height() const { return ext.h; }
 
         auto x1() const { return pos.x; }
-        auto x2() const { return pos.x + ext.h; }
+        auto x2() const { return pos.x + ext.w; }
         auto y1() const { return pos.y; }
         auto y2() const { return pos.y + ext.h; }
 
@@ -321,8 +322,8 @@ namespace cppgui {
         bool intersects_vertically_with(const Rectangle &r) const
         {
             // Is either edge within our borders ?
-            return r.y1() >= y1() && r.y1() < y2()
-                || r.y2() >= y1() && r.y2() < y2();
+            return r.y1() > y1() && r.y1() < y2()
+                || r.y2() > y1() && r.y2() < y2();
         }
 
     };
