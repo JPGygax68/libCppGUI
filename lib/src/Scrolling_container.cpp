@@ -15,6 +15,12 @@ namespace cppgui {
         add_child(&_vscrollbar);
     }
 
+    void Scrolling_container::compute_view_from_data()
+    {
+        // TODO: use items counts (visible, total) instead ?
+        _vscrollbar.define_sizes(_content_pane->height(), _content_bbox.height());
+    }
+
 #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
     auto Scrolling_container::get_minimal_bounds() -> Bounding_box
@@ -38,13 +44,6 @@ namespace cppgui {
 
         // We store the content window so we can check item visibility
         _content_bbox = b;
-
-    #ifdef NOT_DEFINED
-        {
-            auto mbs = _vscrollbar.get_minimal_bounds();
-            auto bs = b.cut_from_right(_vscrollbar.get_minimal_bounds().width());
-        }
-    #endif
     }
 
 #endif // !CPPGUI_EXCLUDE_LAYOUTING

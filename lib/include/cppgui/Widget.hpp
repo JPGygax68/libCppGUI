@@ -50,13 +50,14 @@ namespace cppgui {
         }
 
         //auto& rectangle() { return _rect; }
-        auto rectangle() const -> Rectangle; 
+        auto rectangle() const -> Rectangle { return Rectangle{_bounds} + _position; }; 
         auto& position() { return _position; }
         auto& position() const { return _position; }
         //auto& extents() { return _rect.ext; }
         //auto& extents() const { return _rect.ext; }
         auto& bounds() { return _bounds; }
         auto& bounds() const { return _bounds; }
+        auto positioned_bounds() const { return _bounds + _position; }
         //void set_position(const Point &);
         //void set_bounds(const Bounding_box &);
         auto width () const { return rectangle().width (); }

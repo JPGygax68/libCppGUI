@@ -8,7 +8,6 @@ namespace cppgui {
     
     class Content_pane: public Container_base
     {
-        
     };
 
 
@@ -17,6 +16,8 @@ namespace cppgui {
     public:
 
         explicit Scrolling_container(Content_pane *);
+
+        void compute_view_from_data() override;
 
     protected:
 

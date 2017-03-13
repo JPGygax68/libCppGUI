@@ -21,23 +21,36 @@ namespace cppgui {
 
     auto Listbox_content_pane::get_minimal_bounds() -> Bounding_box
     {
-        auto bbmin = Bounding_box::empty();
+        auto bb_min = Bounding_box::empty();
 
         for (auto child: children())
         {
-            bbmin.merge(child->get_minimal_bounds());
+            //bb_min.merge(child->get_minimal_bounds());
+            bb_min.append_at_bottom(child->get_minimal_bounds());
+            // TODO: margin
         }
 
-        return bbmin;
+        // TODO: minimal bounds if there are no children ?
+
+        return bb_min;
     }
 
     void Listbox_content_pane::compute_layout(const Bounding_box &b_)
     {
-        auto b{ b_ };
-
-        for (auto child: children())
+        if (child_count() > 0)
         {
-            child->set_bounds(layout_element_at_top_edge(b, child->get_minimal_bounds(), horizontal_middle));
+            auto bb_rem{ b_ };      // remaining bounding box
+
+            // Layout vertically into the provided bounding box (can exceed at bottom)
+            for (auto child: children())
+            {
+                auto lb = layout_element_at_top_edge(bb_rem, child->get_minimal_bounds(), horizontal_middle);
+                child->set_bounds(lb);
+                // TODO: separator
+            }
+
+            // Compute actual bounds
+            //auto bb_all = first_child()->positioned_bounds() | last_child()->positioned_bounds();
         }
     }
 

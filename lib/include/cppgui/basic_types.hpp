@@ -112,6 +112,8 @@ namespace cppgui {
         Bounding_box() = default;
 
         auto extents() const { return Extents{ - x_min + x_max, y_max + - y_min }; }
+        
+        static auto empty() -> Bounding_box { return Bounding_box{ 0, 0, 0, 0 }; }
 
         /*
         * Returns a bounding box that is completely collapsed, i.e. the boundaries of
@@ -120,11 +122,23 @@ namespace cppgui {
         * The purpose of such a box is to serve as the starting point to find the
         * smallest containing box for a series of contained boxes.
         */
-        static auto empty() -> Bounding_box 
+        static auto collapsed() -> Bounding_box 
         {
             using limits = std::numeric_limits<decltype(Bounding_box::x_min)>;
 
             return Bounding_box{ limits::max(), limits::min(), limits::max(), limits::min() };
+        }
+
+        auto operator + (const Point &d) const -> Bounding_box
+        {
+            auto r{ *this };
+            r.x_min -= d.x;
+        #ifdef CPPGUI_Y_AXIS_DOWN
+            r.y_max += d.y;
+        #else
+        #error Upward Y axis not supported yet
+        #endif
+            return r;
         }
 
         auto expand(Width w) const -> Bounding_box
@@ -136,7 +150,7 @@ namespace cppgui {
 
         bool is_point_inside(const Point &p) const
         {
-            #ifdef CPPGUI_Y_AXIS_DOWN
+        #ifdef CPPGUI_Y_AXIS_DOWN
 
             // Important: by convention, Y is positive-down in the CppGUI coordinate system; but 
             // Y is positive-up in typography, which means that y_min extends *below* the baseline
@@ -144,9 +158,9 @@ namespace cppgui {
             // numbers.
             return p.x >= x_min && p.x < x_max && p.y >= - y_max && p.y < - y_min;
 
-            #else
-            #error Upward Y axis not supported yet
-            #endif
+        #else
+        #error Upward Y axis not supported yet
+        #endif
         }
 
         auto& append_at_bottom(const Bounding_box &bbox, Alignment align = horizontal_middle)
@@ -227,6 +241,19 @@ namespace cppgui {
             if (b.y_min < y_min) y_min = b.y_min;
             if (b.y_max > y_max) y_max = b.y_max;
             return *this;
+        }
+
+        auto& operator |= (const Bounding_box &b)
+        {
+            merge(b);
+            return *this;
+        }
+
+        auto operator | (const Bounding_box &b)
+        {
+            auto r{*this};
+            r.merge(b);
+            return r;
         }
 
         /*

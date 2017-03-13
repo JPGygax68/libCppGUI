@@ -33,13 +33,6 @@ namespace cppgui {
     {
     }
 
-    auto Widget::rectangle() const -> Rectangle
-    {
-        Rectangle r{_bounds};
-        r += _position;
-        return r;
-    }
-
     /* void Widget::set_bounds(const Bounding_box &bounds)
     {
         _bounds = bounds;
