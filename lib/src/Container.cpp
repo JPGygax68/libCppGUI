@@ -140,7 +140,15 @@ namespace cppgui {
     {
         if (!handle_key_down(key))
         {
-            this->container()->child_key_down(key);
+            if (this->container()) this->container()->child_key_down(key);
+        }
+    }
+
+    void Container_base::child_mouse_wheel(const Vector &v)
+    {
+        if (!handle_mouse_wheel(v))
+        {
+            if (this->container()) this->container()->child_mouse_wheel(v);
         }
     }
 

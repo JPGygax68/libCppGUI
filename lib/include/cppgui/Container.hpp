@@ -55,6 +55,7 @@ namespace cppgui {
             (from container_key_down()) and needs to "bubble" back up.
          */
         virtual void child_key_down(const Keycode &);
+        virtual void child_mouse_wheel(const Vector &);
 
         virtual bool container_has_focus() { return has_focus(); }
         virtual auto container_absolute_position() -> Point ;

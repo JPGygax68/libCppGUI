@@ -35,8 +35,6 @@ namespace cppgui {
 
         void scroll_up  ();
         void scroll_down();
-
-        Index           _first_vis_idx = 0;
     }; 
     
 

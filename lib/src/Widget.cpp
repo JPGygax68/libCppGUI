@@ -198,6 +198,17 @@ namespace cppgui {
         if (_click_hndlr) _click_hndlr(pos, button, count);
     }
 
+    void Widget::mouse_wheel(const Vector &v)
+    {
+        // Fallback behavior: try to handle locally, else let it "bubble up"
+
+        if (!handle_mouse_wheel(v))
+        {
+            // Let the event "bubble" up
+            container()->child_mouse_wheel(v);
+        }
+    }
+
     void Widget::change_visible(bool state)
     {
         if (state != visible())

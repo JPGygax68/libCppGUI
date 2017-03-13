@@ -47,6 +47,12 @@ namespace cppgui {
         return false;
     }
 
+    bool Scrolling_container::handle_mouse_wheel(const Vector &v)
+    {
+        navigate(element, -v.y);
+        return true;
+    }
+
 #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
     void Scrolling_container::shift_content_by(const Point &d)

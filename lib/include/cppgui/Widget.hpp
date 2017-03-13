@@ -118,7 +118,7 @@ namespace cppgui {
         virtual void mouse_motion(const Point &) {}
         virtual void mouse_button(const Point &, int /*button*/, Key_state, Count clicks);
         virtual void mouse_click(const Point &, int button, Count count);
-        virtual void mouse_wheel(const Vector &) {}
+        virtual void mouse_wheel(const Vector &);
         virtual void text_input(const char32_t *, size_t) {}
         virtual void key_down(const Keycode &);
         //void key_up(const Keycode &);
@@ -139,9 +139,10 @@ namespace cppgui {
 
         virtual void render(Canvas *, const Point &offset) = 0;
 
-        // Event handling chains
+        // Event handling chains for events that can bubble up
 
         virtual bool handle_key_down(const Keycode &) { return false; }
+        virtual bool handle_mouse_wheel(const Vector &) { return false; }
 
         // Misc 
 

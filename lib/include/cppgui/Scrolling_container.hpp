@@ -24,6 +24,7 @@ namespace cppgui {
     protected:
 
         bool handle_key_down(const Keycode &) override;
+        bool handle_mouse_wheel(const Vector &) override;
 
         auto content_window() const { return Rectangle{ _window_bbox }; }
         auto content_pane() const { return _content_pane; }
