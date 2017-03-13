@@ -29,6 +29,7 @@ namespace cppgui {
         auto first_partially_visible_item() const -> Widget *;
         auto hidden_height_of_first_visible_item() const -> Length;
         auto item_rectangle(Widget *) const -> Rectangle; 
+        auto visible_item_count() const -> Count;
 
         void bring_item_into_view(Index);
 

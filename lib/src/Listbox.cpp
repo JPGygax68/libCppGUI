@@ -93,17 +93,17 @@ namespace cppgui {
         }
         else if (unit == fraction)
         {
-            std::cout << "delta (fraction): " << delta.num << "/" << delta.den << std::endl;
+            //std::cout << "delta (fraction): " << delta.num << "/" << delta.den << std::endl;
             auto d = delta.num * item_count() / delta.den;
             if (d != 0)
             {
                 scroll_by_items(d);
             }
         }
-        else if (unit == Navigation_unit::page)
+        else if (unit == page)
         {
             assert(delta.den == 1);
-            //scroll_by_pages(delta.num);
+            scroll_by_items(delta.num * visible_item_count());
         }
     }
 
@@ -173,6 +173,14 @@ namespace cppgui {
     auto Listbox_base::item_rectangle(Widget *item) const -> Rectangle
     {
         return item->rectangle() + content_pane()->position();    
+    }
+
+    auto Listbox_base::visible_item_count() const -> Count
+    {
+        auto i = first_partially_visible_item_index();
+        auto j = i;
+        while (j < item_count() && item_fully_visible(j)) j ++;
+        return j - i;
     }
 
     void Listbox_base::bring_item_into_view(Index index)
