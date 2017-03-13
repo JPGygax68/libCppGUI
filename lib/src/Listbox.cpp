@@ -168,7 +168,7 @@ namespace cppgui {
         auto dy = r.y1() - content_window().y1();
 
         // Shift
-        content_pane()->shift_by({0, -dy});
+        shift_content_by({ 0, -dy });
     }
 
     void Listbox_base::scroll_down()

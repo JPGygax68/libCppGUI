@@ -19,6 +19,8 @@ namespace cppgui {
     {
         // TODO: use items counts (visible, total) instead ?
         _vscrollbar.define_sizes(_content_pane->height(), _window_bbox.height());
+
+        Parent::compute_view_from_data();
     }
 
     bool Scrolling_container::handle_key_down(const Keycode &key)
@@ -47,6 +49,19 @@ namespace cppgui {
 
 #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
+    void Scrolling_container::shift_content_by(const Point &d)
+    {
+        content_pane()->shift_by(d);
+        _content_offset += d;
+        update_scrollbar();
+    }
+
+    void Scrolling_container::update_scrollbar()
+    {
+        // We only handle the vertical scrollbar for now
+        _vscrollbar.update_thumb_position(-_content_offset.y);
+    }
+
     auto Scrolling_container::get_minimal_bounds() -> Bounding_box
     {
         // TODO: this is probably wrong, because it will try to align the baseline of the "up" button of the scrollbar
@@ -68,6 +83,7 @@ namespace cppgui {
 
         // Align content pane with top left of content window
         _content_pane->set_bounds(align_top_left(_window_bbox, _content_pane->get_minimal_bounds()));
+        _content_offset = { 0, 0 };
     }
 
 #endif // !CPPGUI_EXCLUDE_LAYOUTING

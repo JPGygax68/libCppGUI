@@ -31,6 +31,9 @@ namespace cppgui {
         auto item(Index i) const { return content_pane()->child(i); }
         auto item_count() const -> Index { return content_pane()->child_count(); }
 
+        void shift_content_by(const Point &);
+        void update_scrollbar();
+
     private:
         using Parent = Container_base;
 
@@ -39,6 +42,8 @@ namespace cppgui {
         Custom_vertical_scrollbar   _vscrollbar;
         Content_pane               *_content_pane;
         Bounding_box                _window_bbox;
+        Point                       _content_offset;    // keeps track of content pane relative position
+
 
     #ifndef CPPGUI_EXCLUDE_LAYOUTING
     public:

@@ -92,6 +92,11 @@ namespace cppgui {
         }
     }
 
+    void Container_base::compute_view_from_data()
+    {
+        compute_child_views();
+    }
+
     void Container_base::init(Canvas *c)
     {
         init_child_resources(c);

@@ -40,6 +40,8 @@ namespace cppgui {
         void remove_child(Widget *);
         void remove_all_children();
 
+        void compute_view_from_data() override;
+
         void init(Canvas *) override;
 
         void render(Canvas *, const Point &offs) override;
