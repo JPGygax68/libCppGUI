@@ -9,11 +9,15 @@ namespace cppgui {
 
     class Listbox_content_pane: public Content_pane
     {
+    public:
+        // TODO: optimized implementation that only draw visible items
+        //void render(Canvas *, const Point &offs) override;
 
     #ifndef CPPGUI_EXCLUDE_LAYOUTING
     public:
         auto get_minimal_bounds() -> Bounding_box override;
         void compute_layout(const Bounding_box &b) override;
+        auto get_minimal_window() -> Extents override;
 
     #endif // !CPPGUI_EXCLUDE_LAYOUTING
 
@@ -26,7 +30,7 @@ namespace cppgui {
         for (auto child: children())
         {
             //bb_min.merge(child->get_minimal_bounds());
-            bb_min.append_at_bottom(child->get_minimal_bounds());
+            bb_min.append_at_bottom(child->get_minimal_bounds(), horizontal_origin);
             // TODO: margin
         }
 
@@ -48,12 +52,22 @@ namespace cppgui {
                 child->set_bounds(lb);
                 // TODO: separator
             }
-
-            // Compute actual bounds
-            //auto bb_all = first_child()->positioned_bounds() | last_child()->positioned_bounds();
         }
     }
 
+    auto Listbox_content_pane::get_minimal_window() -> Extents
+    {
+        Extents ext;
+
+        for (auto child: children())
+        {
+            ext |= Extents{child->get_minimal_bounds()};
+        }
+
+        // TODO: support a dummy item bounding box in case the list can be initially empty
+
+        return ext;
+    }
 
     // Listbox_base implementation --------------------------------------------
 

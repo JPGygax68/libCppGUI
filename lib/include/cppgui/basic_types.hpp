@@ -64,6 +64,7 @@ namespace cppgui {
         
         // Geometrically defined
         horizontal_middle,
+        horizontal_origin,
         top,
         vertical_baseline,
         // TODO: more...
@@ -84,12 +85,22 @@ namespace cppgui {
 
     using Vector = Point;
 
+    class Bounding_box;
+
     struct Extents
     {
         Length w, h;
 
         explicit Extents(Length w_, Length h_): w{w_}, h{h_} {}
         Extents() = default;
+        Extents(const Bounding_box &);
+
+        auto& operator |= (const Extents &e) 
+        {
+            if (e.w > w) w = e.w;
+            if (e.h > h) h = e.h;
+            return *this;
+        }
     };
 
     struct Rectangle;
@@ -167,13 +178,20 @@ namespace cppgui {
         {
             y_min -= bbox.height();
 
-            assert(align == horizontal_middle); // No other option supported at this time
-            if (bbox.width() > width())
+            if (align == horizontal_middle)
             {
-                auto dw = bbox.width() - width();
-                auto dl = dw / 2;
-                auto dr = dw - dl;
-                x_min -= dl, x_max += dr;
+                if (bbox.width() > width())
+                {
+                    auto dw = bbox.width() - width();
+                    auto dl = dw / 2;
+                    auto dr = dw - dl;
+                    x_min -= dl, x_max += dr;
+                }
+            }
+            else if (align == horizontal_origin)
+            {
+                if (bbox.x_min < x_min) x_min = bbox.x_min;
+                if (bbox.x_max > x_max) x_max = bbox.x_max;
             }
 
             return *this;
@@ -269,6 +287,8 @@ namespace cppgui {
     /*
      * Can be used to specify both the position (of the origin point) and the bounds of a 
      * Widget as a combined parameter.
+     * 
+     * TODO: rename to Positioned_bbox ?
      */
     struct Layout_box
     {
@@ -355,6 +375,12 @@ namespace cppgui {
 
     };
 
+    inline Extents::Extents(const Bounding_box &b)
+    {
+        w = -b.x_min + b.x_max;
+        h = b.y_max - b.y_min;
+    }
+
     inline auto Bounding_box::position_inside_rectangle(const Rectangle &r) const -> Point
     {
         return {
@@ -439,6 +465,8 @@ namespace cppgui {
     template<typename T = unsigned int>
     struct Fraction {
         T num, den;
+
+        Fraction(T n, T d = static_cast<T>(1)): num{n}, den{d} {}
 
         template<typename ResT>
         constexpr operator ResT() const

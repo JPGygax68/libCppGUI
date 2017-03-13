@@ -18,7 +18,31 @@ namespace cppgui {
     void Scrolling_container::compute_view_from_data()
     {
         // TODO: use items counts (visible, total) instead ?
-        _vscrollbar.define_sizes(_content_pane->height(), _content_bbox.height());
+        _vscrollbar.define_sizes(_content_pane->height(), _window_bbox.height());
+    }
+
+    bool Scrolling_container::handle_key_down(const Keycode &key)
+    {
+        if (is_down(key))
+        {
+            navigate(element, {1});
+            return true;
+        }
+        else if (is_up(key))
+        {
+            navigate(element, {-1});
+            return true;
+        }
+        else if (is_page_down(key))
+        {
+            // TODO
+        }
+        else if (is_page_up(key))
+        {
+            // TODO
+        }
+
+        return false;
     }
 
 #ifndef CPPGUI_EXCLUDE_LAYOUTING
@@ -27,7 +51,7 @@ namespace cppgui {
     {
         // TODO: this is probably wrong, because it will try to align the baseline of the "up" button of the scrollbar
         //  with the baseline of the first list item
-        auto bbox = _content_pane->get_minimal_bounds();
+        auto bbox = Bounding_box{ _content_pane->get_minimal_window() };
         bbox.append_to_right(_vscrollbar.get_minimal_bounds(), top);
         return bbox;
     }
@@ -39,11 +63,11 @@ namespace cppgui {
         // Scrollbar at right edge
         _vscrollbar.set_bounds(layout_element_at_right_edge(b, _vscrollbar.get_minimal_bounds(), vertical_baseline));
 
-        // Content pane gets the rest
-        _content_pane->set_bounds({0, 0}, b);
+        // The remainder of the bounding box becomes the window box
+        _window_bbox = b;
 
-        // We store the content window so we can check item visibility
-        _content_bbox = b;
+        // Align content pane with top left of content window
+        _content_pane->set_bounds(align_top_left(_window_bbox, _content_pane->get_minimal_bounds()));
     }
 
 #endif // !CPPGUI_EXCLUDE_LAYOUTING

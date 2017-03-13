@@ -122,4 +122,13 @@ namespace cppgui
         return { { x, y }, b };
     }
 
+    auto align_top_left(Bbox_cref cont, Bbox_cref elem) -> Layout_box
+    {
+    #ifdef CPPGUI_Y_AXIS_DOWN
+        return { { - (-cont.x_min - (-elem.x_min)), - (cont.y_max - elem.y_max) }, elem };
+    #else
+    #error Upward Y axis not supported yet
+    #endif
+    }
+
 } // ns cppgui

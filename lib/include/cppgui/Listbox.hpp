@@ -20,6 +20,7 @@ namespace cppgui {
         void scroll_by_items(int d);
 
     private:
+        using Parent = Scrolling_container;
 
         bool item_fully_visible(Index) const;
         bool first_item_fully_visible() const;

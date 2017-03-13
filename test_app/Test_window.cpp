@@ -12,9 +12,6 @@
 
 // Class implementation  --------------------------------------------
 
-//static cppgui::Rasterized_font  dflt_font;
-//static cppgui::Rasterized_font  glyph_font;     // TODO: move this to a reusable module in cppgui itself
-
 Test_window::Test_window():
     cppgui::Window{"Test window"}
 {
@@ -97,7 +94,7 @@ void Test_window::create_ui()
 
 #endif
 
-    root_widget().switch_focused_child(&_textbox);
+    root_widget().switch_focused_child(&_listbox);
 }
 
 void Test_window::adjust_layout()
