@@ -148,7 +148,8 @@ namespace cppgui {
 
     void SDL2_window::dispatch_mousebutton_event(SDL_MouseButtonEvent & ev)
     {
-        window_map()[ev.windowID]->handle_mousebutton_event(ev);
+        // TODO: log if windowID == 0 ?
+        if (ev.windowID != 0) window_map()[ev.windowID]->handle_mousebutton_event(ev);
     }
 
     void SDL2_window::dispatch_mousewheel_event(SDL_MouseWheelEvent & ev)

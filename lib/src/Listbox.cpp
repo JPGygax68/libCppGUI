@@ -1,6 +1,7 @@
 #include <cassert>
 #include <layouting.hpp>
 #include <Listbox.hpp>
+#include <iostream>
 
 
 namespace cppgui {
@@ -89,6 +90,20 @@ namespace cppgui {
         {
             assert(delta.den == 1);
             scroll_by_items(delta.num);
+        }
+        else if (unit == fraction)
+        {
+            std::cout << "delta (fraction): " << delta.num << "/" << delta.den << std::endl;
+            auto d = delta.num * item_count() / delta.den;
+            if (d != 0)
+            {
+                scroll_by_items(d);
+            }
+        }
+        else if (unit == Navigation_unit::page)
+        {
+            assert(delta.den == 1);
+            //scroll_by_pages(delta.num);
         }
     }
 
