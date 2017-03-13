@@ -58,6 +58,13 @@ namespace cppgui {
     }
     */
 
+    void Widget::move_by(const Point &d)
+    {
+        _position += d;
+
+        // NOTE: this does not invalidate - must be done by caller!
+    }
+
     void Widget::on_click(Click_handler handler)
     {
         assert(!_click_hndlr);

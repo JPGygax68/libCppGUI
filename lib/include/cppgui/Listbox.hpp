@@ -13,6 +13,21 @@ namespace cppgui {
         Listbox_base();
         
         void add_item(Widget *);
+
+    protected:
+
+        void navigate(Navigation_unit, const Fraction<int> &delta) override;
+        void scroll_by_items(int d);
+
+    private:
+
+        bool item_fully_visible(Index) const;
+        bool last_item_fully_visible() const;
+        auto first_partially_visible_item_index() const -> Index;
+        auto first_partially_visible_item() const -> Widget *;
+        auto hidden_height_of_first_visible_item() const -> Length;
+
+        Index           _first_vis_idx = 0;
     }; 
     
 

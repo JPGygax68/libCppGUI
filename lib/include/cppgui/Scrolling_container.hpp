@@ -20,14 +20,17 @@ namespace cppgui {
 
     protected:
 
-        auto content_pane() { return _content_pane; }
+        auto& content_rectangle() const { return _content_rect; }
+        auto content_pane() const { return _content_pane; }
+        auto items() const { return content_pane()->children(); }
 
     private:
 
-        void navigate(Navigation_unit, const Fraction<int> &delta);
+        virtual void navigate(Navigation_unit, const Fraction<int> &delta) = 0;
 
         Custom_vertical_scrollbar   _vscrollbar;
         Content_pane               *_content_pane;
+        Rectangle                   _content_rect;
 
     #ifndef CPPGUI_EXCLUDE_LAYOUTING
     public:

@@ -15,30 +15,29 @@ namespace cppgui {
         add_child(&_vscrollbar);
     }
 
-    void Scrolling_container::navigate(Navigation_unit, const Fraction<int> &delta)
-    {
-        // TODO
-    }
-
 #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
     auto Scrolling_container::get_minimal_bounds() -> Bounding_box
     {
+        // TODO: this is probably wrong, because it will try to align the baseline of the "up" button of the scrollbar
+        //  with the baseline of the first list item
         auto bbox = _content_pane->get_minimal_bounds();
-        bbox.append_to_right(_vscrollbar.get_minimal_bounds());
+        bbox.append_to_right(_vscrollbar.get_minimal_bounds(), top);
         return bbox;
     }
 
     void Scrolling_container::compute_layout(const Bounding_box &b_)
     {
-        auto b {b_ };
+        auto b{ b_ };
 
         // Scrollbar at right edge
         _vscrollbar.set_bounds(layout_element_at_right_edge(b, _vscrollbar.get_minimal_bounds(), vertical_baseline));
 
         // Content pane gets the rest
-        _content_pane->compute_layout(b);
+        _content_pane->set_bounds({0, 0}, b);
 
+        // We store the content window so we can check item visibility
+        _content_rect = Rectangle{ b };
 
     #ifdef NOT_DEFINED
         {

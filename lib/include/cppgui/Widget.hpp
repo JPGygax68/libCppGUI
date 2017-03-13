@@ -59,6 +59,10 @@ namespace cppgui {
         auto& bounds() const { return _bounds; }
         //void set_position(const Point &);
         //void set_bounds(const Bounding_box &);
+        auto width () const { return rectangle().width (); }
+        auto height() const { return rectangle().height(); }
+
+        void move_by(const Point &);
 
         //void set_background_color(const RGBA &);
         //auto background_color() const -> RGBA;

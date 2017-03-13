@@ -24,6 +24,7 @@
 #include "./fonts/Bounding_box.hpp"
 #include "./fonts/Rasterized_glyph_cbox.hpp"
 #include "cppgui_config.hpp"
+#include <stdlib.h>
 
 
 namespace cppgui {
@@ -63,6 +64,7 @@ namespace cppgui {
         
         // Geometrically defined
         horizontal_middle,
+        top,
         vertical_baseline,
         // TODO: more...
 
@@ -108,6 +110,8 @@ namespace cppgui {
             fonts::Bounding_box{x_min, x_max, y_min, y_max} {}
 
         Bounding_box() = default;
+
+        auto extents() const { return Extents{ - x_min + x_max, y_max + - y_min }; }
 
         /*
         * Returns a bounding box that is completely collapsed, i.e. the boundaries of
@@ -167,12 +171,23 @@ namespace cppgui {
             return *this;
         }
 
-        auto& append_to_right(const Bounding_box &b)
+        auto& append_to_right(const Bounding_box &b, Alignment valign = vertical_baseline)
         {
             x_max += - b.x_min + b.x_max;
             // TODO: define an operation merge_vertical() ?
-            if (b.y_max > y_max) y_max = b.y_max;
-            if (b.y_min < y_min) y_min = b.y_min;
+            if (valign == vertical_baseline)
+            {
+                if (b.y_max > y_max) y_max = b.y_max;
+                if (b.y_min < y_min) y_min = b.y_min;
+            }
+            else if (valign == top)
+            {
+                auto h = std::max(height(), b.height());
+                y_min = - (h - y_max);
+            } 
+            else 
+                assert(false);
+            
             return *this;
         }
 
@@ -252,10 +267,19 @@ namespace cppgui {
         Rectangle(const Rectangle &) = default;
         Rectangle(Rectangle &&) = default;
         Rectangle() = default;
+        Rectangle & operator = (const Rectangle &) = default;
 
         explicit Rectangle(const Point &p, const Extents &e): pos{p}, ext{e} {}
         explicit Rectangle(Point &&p, Extents &&e): pos{p}, ext{e} {}
         explicit Rectangle(Position x, Position y, Length w, Length h): pos{x, y}, ext{w, h} {}
+
+        auto width () const { return ext.w; }
+        auto height() const { return ext.h; }
+
+        auto x1() const { return pos.x; }
+        auto x2() const { return pos.x + ext.h; }
+        auto y1() const { return pos.y; }
+        auto y2() const { return pos.y + ext.h; }
 
         auto& operator += (const Point &p) { pos += p; return *this; }
 
@@ -275,9 +299,32 @@ namespace cppgui {
 
         bool contains(const Point &p) const
         {
-            return p.x >= pos.x && p.x < (pos.x + ext.w)
-                && p.y >= pos.y && p.y < (pos.y + ext.h);
+            return p.x >= x1() && p.x < x2()
+                && p.y >= y1() && p.y < y2();
         }
+
+        bool fully_contains(const Rectangle &r) const
+        {
+            return contains_full_width_of(r) && contains_full_height_of(r);
+        }
+
+        bool contains_full_width_of(const Rectangle &r) const
+        {
+            return r.x1() >= x1() && r.x2() < x2();
+        }
+
+        bool contains_full_height_of(const Rectangle &r) const
+        {
+            return r.y1() >= y1() && r.y2() < y2();
+        }
+
+        bool intersects_vertically_with(const Rectangle &r) const
+        {
+            // Is either edge within our borders ?
+            return r.y1() >= y1() && r.y1() < y2()
+                || r.y2() >= y1() && r.y2() < y2();
+        }
+
     };
 
     inline auto Bounding_box::position_inside_rectangle(const Rectangle &r) const -> Point
