@@ -20,7 +20,7 @@ namespace cppgui {
         // TODO: use items counts (visible, total) instead ?
         _vscrollbar.define_sizes(_content_pane->height(), _window_bbox.height());
 
-        Parent::compute_view_from_data();
+        Super::compute_view_from_data();
     }
 
     bool Scrolling_container::key_down(const Keycode &key)
@@ -46,7 +46,7 @@ namespace cppgui {
             return true;
         }
 
-        return false;
+        return Super::key_down(key);
     }
 
     bool Scrolling_container::mouse_wheel(const Vector &v)

@@ -70,6 +70,14 @@ namespace cppgui {
         r.inflate(-tick_border(), -tick_border());
         c->fill_rect(r + p, {1, 1, 1, 1}); // TODO: make configurable
 
+        if (has_focus() && !_label.empty())
+        {
+            auto r = Rectangle{bounds()};
+            r.inflate(3, 2); // TODO: make this configurable somewhere
+            c->draw_stippled_rectangle_outline(p.x + r.pos.x, p.y + r.pos.y, r.ext.w, r.ext.h, {0, 0, 0.5f, 1});
+        }
+        // TODO: else ...
+
         // Tick
         if (_checked)
         {
@@ -91,9 +99,8 @@ namespace cppgui {
 
             return true;
         }
-        else {
-            return Super::mouse_click(p, button, count);
-        }
+
+        return Super::mouse_click(p, button, count);
     }
 
     #ifndef CPPGUI_EXCLUDE_LAYOUTING

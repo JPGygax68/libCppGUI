@@ -40,7 +40,7 @@ namespace cppgui {
         void update_scrollbar();
 
     private:
-        using Parent = Container_base;
+        using Super = Container_base;
 
         virtual void navigate(Navigation_unit, const Fraction<int> &delta) = 0;
 

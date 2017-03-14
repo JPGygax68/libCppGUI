@@ -101,7 +101,7 @@ namespace cppgui {
             if (_focussable)
             {
                 container()->switch_focused_child(this);
-                gained_focus();
+                //gained_focus();
             }
             else {
                 container()->switch_focused_child(nullptr);
@@ -199,6 +199,8 @@ namespace cppgui {
     bool Widget::mouse_click(const Point &pos, int button, Count count)
     {
         if (_click_hndlr) return _click_hndlr(pos, button, count);
+
+        take_focus();
 
         return false;
     }

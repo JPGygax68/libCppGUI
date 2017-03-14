@@ -79,6 +79,7 @@ namespace cppgui {
 
     protected:
         using Super = Widget;
+        using Child_list = std::vector<Widget*>;
 
         bool contains_widget(Widget *);
         auto child_at(const Point &) -> Widget *;
@@ -88,7 +89,7 @@ namespace cppgui {
 
         void render_children(Canvas *, const Point &offs);
 
-        std::vector<Widget*>    _children;
+        Child_list              _children;
         Widget                 *_hovered_child = nullptr;
         Widget                 *_focused_child = nullptr;
 

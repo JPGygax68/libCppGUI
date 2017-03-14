@@ -200,13 +200,15 @@ namespace cppgui {
             return false; // cannot cycle, report back to sender
         }
 
-        decltype(std::rbegin(children())) it;
+        //decltype(std::rbegin(children())) it;
+        Child_list::reverse_iterator it;
 
         // Does one of the children have focus ?
         if (focused_child())
         {
             // Yes: move to the predecessor
-            it = std::find(std::rbegin(children()), std::rend(children()), focused_child());  
+            auto target = focused_child();
+            it = std::find(std::rbegin(children()), std::rend(children()), target); // focused_child());  
             ++it;
         }
         else {
@@ -300,20 +302,15 @@ namespace cppgui {
 
     bool Container_base::key_down(const Keycode &key)
     {
-        bool consumed = false;
-
         if (_focused_child)
         {
-            consumed = _focused_child->key_down(key);
+            if (_focused_child->key_down(key)) return true;
         }
 
-        if (!consumed)
-        {
-            if (is_tab(key)                   ) consumed = cycle_focus_forward();
-            if (is_tab(key) && is_shift_down()) consumed = cycle_focus_backward();
-        }
+        if (is_tab(key) && !is_shift_down()) return cycle_focus_forward();
+        if (is_tab(key) &&  is_shift_down()) return cycle_focus_backward();
 
-        return consumed;
+        return false;
     }
 
     template<class Pred>

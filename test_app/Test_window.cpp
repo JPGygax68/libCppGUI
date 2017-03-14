@@ -95,7 +95,8 @@ void Test_window::create_ui()
 
 #endif
 
-    root_widget().switch_focused_child(&_listbox);
+    //root_widget().switch_focused_child(&_listbox);
+    root_widget().set_initial_focus(&_listbox);
 }
 
 void Test_window::adjust_layout()
