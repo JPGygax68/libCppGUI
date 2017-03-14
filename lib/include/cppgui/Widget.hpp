@@ -88,8 +88,8 @@ namespace cppgui {
 
         bool disabled() const { return false; } // TODO!!!
 
-        void set_focussable(bool state = true) { _focussable = state; }
-        bool focussable() const { return _focussable; } // TODO: replace with can_take_focus() that takes other factors into consideration ?
+        //void set_focussable(bool state = true) { _focussable = state; }
+        virtual bool focussable() const { return true; }
 
         void added_to_container(Container_base *);
         void removed_from_container(Container_base *);
@@ -230,7 +230,7 @@ namespace cppgui {
         //RGBA                    _bkgnd_clr = {0, 0, 0, 0};
         Click_handler           _click_hndlr;
         bool                    _visible = true;
-        bool                    _focussable = true;
+        //bool                    _focussable = true;
         bool                    _hovered = false;
 
         //-----------------------------------------------------------
@@ -270,5 +270,15 @@ namespace cppgui {
     #endif // CPPGUI_EXCLUDE_LAYOUTING
 
     }; // class Widget
+
+
+    // Decorators
+
+    template<class WidgetC>
+    class Non_focussable: public WidgetC
+    {
+    public:
+        bool focussable() const override { return false; }
+    };
 
 } // ns cppgui

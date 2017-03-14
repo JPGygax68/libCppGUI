@@ -44,16 +44,11 @@ namespace cppgui {
         _thumb_color        ({ 0.6f, 0.6f, 0.6f, 1 }),
         _thumb_hovered_color({ 0.4f, 0.4f, 0.4f, 1 })
     {
-        //_up_btn  .enable_border(false);
-        //_down_btn.enable_border(false);
-        //_up_btn  .set_border({0});
-        //_down_btn.set_border({0});
-
         _up_btn  .set_glyph(Icon_resources::up_arrow  ());
         _down_btn.set_glyph(Icon_resources::down_arrow());
 
-        _up_btn  .set_focussable(false);
-        _down_btn.set_focussable(false);
+        //_up_btn  .set_focussable(false);  // TODO: use override
+        //_down_btn.set_focussable(false);  // ditto
 
         _up_btn  .on_pushed([this]() { move_by_elements(-1); return true; });
         _down_btn.on_pushed([this]() { move_by_elements( 1); return true; });
@@ -74,10 +69,6 @@ namespace cppgui {
     void Vertical_scrollbar_base::init(Canvas *c)
     {
         Container_base::init(c);
-
-        //_slide_bgcol        .translate(c);
-        //_thumb_color        .translate(c);
-        //_thumb_hovered_color.translate(c);
     }
 
     void Vertical_scrollbar_base::compute_view_from_data()
@@ -93,8 +84,7 @@ namespace cppgui {
         auto p = offset + position();
 
         // Thumb
-        //auto hilite = _thumb_hovered || _dragging_thumb; // does not work well with mouse wheel
-        auto hilite = hovered() || _dragging_thumb;
+        auto hilite = has_focus() || hovered() || _dragging_thumb;
         c->fill_rect(_thumb_rect + p, hilite ? _thumb_hovered_color : _thumb_color);
 
         // Children: up and down buttons

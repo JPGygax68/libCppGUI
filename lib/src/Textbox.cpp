@@ -200,7 +200,8 @@ namespace cppgui {
     void Textbox::gained_focus()
     {
         // TODO: more...
-        this->invalidate();
+
+        Super::gained_focus();
     }
 
     void Textbox::loosing_focus()

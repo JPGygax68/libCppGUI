@@ -17,19 +17,18 @@
     limitations under the License.
 */
 
-#include <iostream> // TODO: REMOVE!!
-
+#include <string>
 #include <Widget.hpp>
 #include <Container.hpp>
 #include <Root_widget.hpp>
+#include <iostream>
 
 
 namespace cppgui {
 
     // Widget<> implementation --------------------------------------
 
-    Widget::Widget():
-        _focussable{ true }
+    Widget::Widget(): _id{nullptr}
     {
     }
 
@@ -91,26 +90,29 @@ namespace cppgui {
         pass_up_and_notify_focus();
     }
 
-    auto Widget::root_widget() -> ::cppgui::Root_widget*
-        { return _container->container_root_widget(); }
+    auto Widget::root_widget() -> Root_widget * 
+    { 
+        return _container->container_root_widget(); 
+    }
 
     void Widget::pass_up_and_notify_focus()
     {
         if (!has_focus())
         {
-            if (_focussable)
-            {
-                container()->switch_focused_child(this);
+            //if (focussable())
+            //{
+                container()->set_focus_on_child(this);
                 //gained_focus();
-            }
-            else {
-                container()->switch_focused_child(nullptr);
-            }
+            //}
+            //else {
+            //    container()->switch_focused_child(nullptr);
+            //}
         }
     }
 
     void Widget::gained_focus()
     {
+        std::cout << typeid(*this).name() << " gained focus" << std::endl;
         invalidate();
     }
 
@@ -121,7 +123,7 @@ namespace cppgui {
 
     bool Widget::has_focus()
     {
-        return container()->container_has_focus() && container()->focused_child() == this;
+        return container()->has_focus() && container()->focused_child() == this;
     }
 
     bool Widget::is_first_child()
@@ -198,7 +200,10 @@ namespace cppgui {
 
     bool Widget::mouse_click(const Point &pos, int button, Count count)
     {
-        if (_click_hndlr) return _click_hndlr(pos, button, count);
+        if (_click_hndlr)
+        {
+            if (_click_hndlr(pos, button, count)) return true;
+        }
 
         take_focus();
 

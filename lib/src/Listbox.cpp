@@ -11,6 +11,7 @@ namespace cppgui {
     class Listbox_content_pane: public Content_pane
     {
     public:
+
         // TODO: optimized implementation that only draw visible items
         //void render(Canvas *, const Point &offs) override;
 

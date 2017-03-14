@@ -59,14 +59,13 @@ namespace cppgui {
 
         // Actions
 
-        bool cycle_focus_forward ();
-        bool cycle_focus_backward();
+        virtual bool cycle_focus(int steps);
+
+        void set_focus_on_child(Widget *);
 
         // Queries
 
-        virtual bool container_has_focus() { return has_focus(); }
         virtual auto container_absolute_position() -> Point ;
-        virtual void switch_focused_child(Widget *);
         auto focused_child() const -> Widget * { return _focused_child; }
 
         auto first_child() -> Widget * { assert(!_children.empty()); return _children.front(); }
@@ -88,6 +87,9 @@ namespace cppgui {
         void compute_child_views();
 
         void render_children(Canvas *, const Point &offs);
+
+        bool cycle_focus_forward ();
+        bool cycle_focus_backward();
 
         Child_list              _children;
         Widget                 *_hovered_child = nullptr;

@@ -3,7 +3,7 @@
 
 
 namespace cppgui {
-
+    
     Scrolling_container::Scrolling_container(Content_pane *p):
         _content_pane(p)
     {
@@ -13,6 +13,8 @@ namespace cppgui {
 
         add_child(_content_pane);
         add_child(&_vscrollbar);
+
+        set_initial_focus(_content_pane);
     }
 
     void Scrolling_container::compute_view_from_data()
@@ -54,6 +56,14 @@ namespace cppgui {
         navigate(element, -v.y);
         return true;
     }
+
+    /*
+    void Scrolling_container::gained_focus()
+    {
+        Super::gained_focus();
+        set_focus_on_child(content_pane());
+    }
+    */
 
 #ifndef CPPGUI_EXCLUDE_LAYOUTING
 

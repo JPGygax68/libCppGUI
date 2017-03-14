@@ -60,14 +60,8 @@ namespace cppgui {
         char32_t                        _glyph_cp = 0;
         Bounding_box                    _label_bbox = {};
         Position_delta                  _glyph_orig = 0;
-        //bool                            _border_enabled = true;
 
-        //Point                           _label_pos;
-        //Rectangle                       _label_rect;
-        //Rectangle                       _focus_rect;
-        //Point                           _glyph_pos;
-
-        #ifndef CPPGUI_EXCLUDE_LAYOUTING
+    #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
     public:
         void init_layout() override;
@@ -75,15 +69,13 @@ namespace cppgui {
         void compute_layout(const Bounding_box &) override;
 
     private:
+        using Super = Widget;
+
         void compute_bounds();
 
-        //Text_bounding_box           _glyph_bounds;
-        //Text_bounding_box           _label_bbox;
-        //Length                      _glyph_min_edge;
-        //Length                      _spacing; // spacing between label and glyph
         Bounding_box                    _glyph_bbox = {};
 
-        #endif // CPPGUI_EXCLUDE_LAYOUTING
+    #endif // CPPGUI_EXCLUDE_LAYOUTING
     };
 
 
@@ -91,7 +83,7 @@ namespace cppgui {
 
     using Glyph_button = Boxed<Glyph_button_base, Button_box_styles>;
 
-    using Borderless_glyph_button = Boxed<Glyph_button_base, Borderless_button_box_styles>;
+    using Embedded_glyph_button = Non_focussable< Boxed<Glyph_button_base, Borderless_button_box_styles> >;
 
 
 } // ns cppui

@@ -130,7 +130,7 @@ namespace cppgui {
         RGBA                    _thumb_color;           // ditto
         RGBA                    _thumb_hovered_color;   // ditto
 
-        Borderless_glyph_button _up_btn, _down_btn;
+        Embedded_glyph_button _up_btn, _down_btn;
         Length                  _full_range = 0;    // the range represented by the full length of the track 
                                                     // (= strip on which the thumb moves)
         Length                  _shown_range = 0;   // the range represented by the length of the thumb
@@ -213,5 +213,9 @@ namespace cppgui {
     };
 
     using Boxed_vertical_scrollbar = Boxed<Vertical_scrollbar, Scrollbar_box_styles>;
+
+    // Other variants ---------------------------------------------------------
+
+    using Embedded_vertical_scrollbar = Non_focussable<Custom_vertical_scrollbar>;
 
 } // ns cppgui

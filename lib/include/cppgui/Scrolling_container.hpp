@@ -9,6 +9,9 @@ namespace cppgui {
     class Content_pane: public Container_base
     {
     public:
+
+        bool focussable() const override { return false; }
+
         virtual auto get_minimal_window() -> Extents = 0;
     };
 
@@ -28,6 +31,8 @@ namespace cppgui {
         bool key_down(const Keycode &) override;
         bool mouse_wheel(const Vector &) override;
 
+        bool cycle_focus(int) override { return false; } // prevent from cycling away from content pane
+
     protected:
 
         auto content_window() const { return Rectangle{ _window_bbox }; }
@@ -36,15 +41,17 @@ namespace cppgui {
         auto item(Index i) const { return content_pane()->child(i); }
         auto item_count() const -> Index { return content_pane()->child_count(); }
 
+        //void gained_focus() override;
+
         void shift_content_by(const Point &);
         void update_scrollbar();
 
     private:
         using Super = Container_base;
 
-        virtual void navigate(Navigation_unit, const Fraction<int> &delta) = 0;
+        virtual void navigate(Navigation_unit, const Fraction<int> &d) = 0;
 
-        Custom_vertical_scrollbar   _vscrollbar;
+        Embedded_vertical_scrollbar _vscrollbar;
         Content_pane               *_content_pane;
         Bounding_box                _window_bbox;
         Point                       _content_offset;    // keeps track of content pane relative position

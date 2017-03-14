@@ -33,7 +33,7 @@ namespace cppgui {
         return container()->container_absolute_position() + position();
     }
 
-    void Container_base::switch_focused_child(Widget *child)
+    void Container_base::set_focus_on_child(Widget *child)
     {
         if (child != _focused_child)
         {
@@ -47,6 +47,7 @@ namespace cppgui {
             if (_focused_child)
             {
                 _focused_child->gained_focus();
+                pass_up_and_notify_focus();
             }
         }
     }
@@ -157,6 +158,18 @@ namespace cppgui {
         Super::mouse_exit();
     }
 
+    bool Container_base::cycle_focus(int steps)
+    {
+        if (steps > 0)
+        {
+            while (steps-- > 0) return cycle_focus_forward();
+        }
+        else if (steps < 0)
+        {
+            while (steps++ < 0) return cycle_focus_backward();
+        }
+    }
+
     bool Container_base::cycle_focus_forward()
     {
         assert(has_focus());
@@ -168,9 +181,10 @@ namespace cppgui {
         
         std::vector<Widget*>::iterator it;
 
-        if (focused_child())
+        auto target = focused_child();
+        if (target)
         {
-            it = std::find(std::begin(children()), std::end(children()), focused_child());  
+            it = std::find(std::begin(children()), std::end(children()), target);  
             ++it;
         }
         else {
@@ -181,14 +195,13 @@ namespace cppgui {
 
         if (it != std::end(children()))
         {
-            (*it)->gained_focus();
-            switch_focused_child(*it);
+            //(*it)->gained_focus();
+            set_focus_on_child(*it);
             return true;
         }
 
-        switch_focused_child(nullptr);
-
-        return false;
+        set_focus_on_child(nullptr);
+        return false; // we could not (quite) cycle, caller try again
     }
 
     bool Container_base::cycle_focus_backward()
@@ -223,14 +236,13 @@ namespace cppgui {
         if (it != std::rend(children()))
         {
             // Inform child it gained focus
-            (*it)->gained_focus();
-            // 
-            switch_focused_child(*it);
+            //(*it)->gained_focus();
+            set_focus_on_child(*it);
             return true;
         }
 
-        switch_focused_child(nullptr);
-        return false;
+        set_focus_on_child(nullptr);
+        return false; // we could not (quite) cycle, caller try again
     }
 
     auto Container_base::child_at(const Point &pos) -> Widget*
@@ -307,8 +319,8 @@ namespace cppgui {
             if (_focused_child->key_down(key)) return true;
         }
 
-        if (is_tab(key) && !is_shift_down()) return cycle_focus_forward();
-        if (is_tab(key) &&  is_shift_down()) return cycle_focus_backward();
+        if (is_tab(key) && !is_shift_down()) return cycle_focus( 1);
+        if (is_tab(key) &&  is_shift_down()) return cycle_focus(-1);
 
         return false;
     }
