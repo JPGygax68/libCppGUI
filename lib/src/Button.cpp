@@ -62,14 +62,16 @@ namespace cppgui {
         }
     }
 
-    void Button::mouse_click(const Point &p, int button, Count count)
+    bool Button::mouse_click(const Point &p, int button, Count count)
     {
         Widget::mouse_click(p, button, count); // will take focus
 
         if (button == 1 && count == 1)
         {
-            if (_on_pushed) _on_pushed();
+            if (_on_pushed) return _on_pushed();
         }
+
+        return false;
     }
 
     #ifndef CPPGUI_EXCLUDE_LAYOUTING

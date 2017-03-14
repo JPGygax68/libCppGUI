@@ -112,15 +112,36 @@ namespace cppgui {
         render_children(c, p);
     }
 
-    void Container_base::mouse_motion(const Point &p)
+    bool Container_base::mouse_motion(const Point &p)
     {
-        container_mouse_motion(p);
+        auto hovered = child_at(p);
+
+        if (hovered != _hovered_child)
+        {
+            /** TODO: this does not account for situations where the pointer enters a
+            widget, then moves on to a zone on a higher Z-level (Z levels not being 
+            implemented yet at the time of writing).
+            */
+            if (_hovered_child) _hovered_child->mouse_exit();
+            if (hovered) hovered->mouse_enter();
+            _hovered_child = hovered;
+        }
+
+        if (_hovered_child)
+        {
+            return _hovered_child->mouse_motion(p - _hovered_child->position());
+        }
+
+        return false;
     }
 
-    void Container_base::mouse_button(const Point &p, int button, Key_state state, Count clicks)
+    bool Container_base::mouse_button(const Point &p, int button, Key_state state, Count clicks)
     {
-        container_mouse_button(p, button, state, clicks);
-        //Widget::mouse_button(p, button, state, clicks);
+        auto child = child_at(p);
+
+        if (child) return child->mouse_button(p - child->position(), button, state, clicks);
+
+        return false;
     }
 
     void Container_base::mouse_exit()
@@ -133,23 +154,7 @@ namespace cppgui {
             _hovered_child = nullptr;
         }
 
-        Widget::mouse_exit();
-    }
-
-    void Container_base::child_key_down(const Keycode &key)
-    {
-        if (!handle_key_down(key))
-        {
-            if (this->container()) this->container()->child_key_down(key);
-        }
-    }
-
-    void Container_base::child_mouse_wheel(const Vector &v)
-    {
-        if (!handle_mouse_wheel(v))
-        {
-            if (this->container()) this->container()->child_mouse_wheel(v);
-        }
+        Super::mouse_exit();
     }
 
     auto Container_base::child_at(const Point &pos) -> Widget*
@@ -192,34 +197,6 @@ namespace cppgui {
         }
     }
 
-    void Container_base::container_mouse_motion(const Point &pos)
-    {
-        auto hovered = child_at(pos);
-
-        if (hovered != _hovered_child)
-        {
-            /** TODO: this does not account for situations where the pointer enters a
-                widget, then moves on to a zone on a higher Z-level (Z levels not being 
-                implemented yet at the time of writing).
-            */
-            if (_hovered_child) _hovered_child->mouse_exit();
-            if (hovered) hovered->mouse_enter();
-            _hovered_child = hovered;
-        }
-
-        if (_hovered_child)
-        {
-            _hovered_child->mouse_motion(pos - _hovered_child->position());
-        }
-    }
-
-    void Container_base::container_mouse_button(const Point &pos, int button, Key_state state, Count clicks)
-    {
-        auto child = child_at(pos);
-
-        if (child) child->mouse_button(pos - child->position(), button, state, clicks);
-    }
-
     /*
     template<class Config, bool With_layout>
     void Abstract_container<Config, With_layout>::container_mouse_click(const Point &pos, int button, Count count)
@@ -230,34 +207,28 @@ namespace cppgui {
     }
     */
 
-    void Container_base::container_mouse_wheel(const Vector & dist)
+    bool Container_base::mouse_wheel(const Vector &v)
     {
-        if (_hovered_child) _hovered_child->mouse_wheel(dist);
+        if (_hovered_child) return _hovered_child->mouse_wheel(v);
+
+        return false;
     }
 
-    void Container_base::container_mouse_exit()
-    {
-        // We must propagate the exit to any currently hovered child
-        if (_hovered_child)
-        {
-            _hovered_child->mouse_exit();
-            _hovered_child = nullptr;
-        }
-    }
-
-    void Container_base::container_text_input(const char32_t *text, size_t size)
+    bool Container_base::text_input(const char32_t *text, size_t size)
     {
         if (_focused_child)
         {
-            _focused_child->text_input(text, size);
+            return _focused_child->text_input(text, size);
         }
+
+        return Super::text_input(text, size);
     }
 
-    bool Container_base::container_key_down(const Keycode &key)
+    bool Container_base::key_down(const Keycode &key)
     {
         if (_focused_child)
         {
-            return _focused_child->handle_key_down(key);
+            return _focused_child->key_down(key);
         }
 
         return true;

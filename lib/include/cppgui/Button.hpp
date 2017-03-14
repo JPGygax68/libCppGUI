@@ -42,11 +42,11 @@ namespace cppgui {
 
         void render(Canvas *, const Point &) override;
 
+        bool mouse_click(const Point &pos, int button, Count count) override;
+
         // TODO: visual feedback on mouse down / up
 
     protected:
-
-        void mouse_click(const Point &pos, int button, Count count) override;
 
         Pushed_handler          _on_pushed;
         Font_resource           _font;

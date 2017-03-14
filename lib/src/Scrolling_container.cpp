@@ -23,7 +23,7 @@ namespace cppgui {
         Parent::compute_view_from_data();
     }
 
-    bool Scrolling_container::handle_key_down(const Keycode &key)
+    bool Scrolling_container::key_down(const Keycode &key)
     {
         if (is_down(key))
         {
@@ -49,7 +49,7 @@ namespace cppgui {
         return false;
     }
 
-    bool Scrolling_container::handle_mouse_wheel(const Vector &v)
+    bool Scrolling_container::mouse_wheel(const Vector &v)
     {
         navigate(element, -v.y);
         return true;

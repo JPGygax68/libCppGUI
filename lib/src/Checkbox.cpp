@@ -79,7 +79,7 @@ namespace cppgui {
         // TODO: stippled rectangle when focused ?
     }
 
-    void Checkbox::mouse_click(const Point &p, int button, Count count)
+    bool Checkbox::mouse_click(const Point &p, int button, Count count)
     {
         auto r = Rectangle{_tick_bbox} + Point{_tick_orig, 0};
 
@@ -88,9 +88,11 @@ namespace cppgui {
             _checked = ! _checked;
             if (_state_change_handler) _state_change_handler(_checked);
             invalidate();
+
+            return true;
         }
         else {
-            Widget::mouse_click(p, button, count);
+            return Super::mouse_click(p, button, count);
         }
     }
 

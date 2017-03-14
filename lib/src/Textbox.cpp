@@ -100,7 +100,7 @@ namespace cppgui {
         internal_select_all();
     }
 
-    void Textbox::mouse_motion(const Point &pos)
+    bool Textbox::mouse_motion(const Point &pos)
     {
         if (is_mouse_button_down(1))
         {
@@ -124,13 +124,14 @@ namespace cppgui {
                 }
                 invalidate();
             }
+            return true;
         }
         else {
-            Widget::mouse_motion(pos);
+            return Super::mouse_motion(pos);
         }
     }
 
-    void Textbox::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
+    bool Textbox::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
     {
         if (state == pressed)
         {
@@ -141,17 +142,21 @@ namespace cppgui {
 
             move_caret_to_pointer_position(pos);
             collapse_selection_to_caret();
+
+            return true;
         }
 
-        Widget::mouse_button(pos, button, state, clicks);
+        return Super::mouse_button(pos, button, state, clicks);
     }
 
-    void Textbox::mouse_click(const Point &, int /*button*/, Count count)
+    bool Textbox::mouse_click(const Point &, int /*button*/, Count count)
     {
         if (count == 2) // double-click
         {
             select_all();
         }
+
+        return true;
     }
 
     /*
@@ -173,11 +178,13 @@ namespace cppgui {
     }
     */
 
-    void Textbox::text_input(const char32_t *text, size_t count)
+    bool Textbox::text_input(const char32_t *text, size_t count)
     {
         delete_selected(); // TODO: make optional
         insert_characters(text, count);
         invalidate();
+
+        return true;
     }
 
     void Textbox::mouse_enter()
@@ -238,7 +245,7 @@ namespace cppgui {
         c->pop_clipping_rect();
     }
 
-    bool Textbox::handle_key_down(const Keycode &key)
+    bool Textbox::key_down(const Keycode &key)
     {
         if (is_left     (key)) { move_cursor_left    (is_shift_down()); return true; }
         if (is_right    (key)) { move_cursor_right   (is_shift_down()); return true; }

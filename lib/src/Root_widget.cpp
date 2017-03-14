@@ -97,36 +97,42 @@ namespace cppgui {
         _cursor_stack.pop();
     }
 
-    void Root_widget::mouse_motion(const Point &pos)
+    bool Root_widget::mouse_motion(const Point &pos)
     {
         lock();
 
+        bool consumed = false;
+
         if (_mouse_holder)
         {
-            _mouse_holder->mouse_motion(pos - _capture_offset);
+            consumed = _mouse_holder->mouse_motion(pos - _capture_offset);
         }
 
         // Note: there should be no harm in repeating a mouse motion event (contrary to e.g. mouse button events)
         //  (we need to repeat the event so as to support drag-and-drop, e.g. highlighting potential targets)
         // TODO: this will trigger mouse_exit() even if the mouse was captured - is that correct/acceptable ?
-        container_mouse_motion(pos);
+        consumed = consumed || Super::mouse_motion(pos);
 
         unlock();
+
+        return consumed;
     }
 
-    void Root_widget::mouse_button(const Point &p, int button, Key_state state, Count clicks)
+    bool Root_widget::mouse_button(const Point &p, int button, Key_state state, Count clicks)
     {
         lock();
+
+        bool consumed = false;
 
         #ifndef NOT_DEFINED
 
         if (_mouse_holder)
         {
-            _mouse_holder->mouse_button(p - _capture_offset, button, state, clicks);
+            consumed = _mouse_holder->mouse_button(p - _capture_offset, button, state, clicks);
         }
         else
         {
-            container_mouse_button(p, button, state, clicks);
+            consumed = Super::mouse_button(p, button, state, clicks);
         }
 
         #else
@@ -136,6 +142,8 @@ namespace cppgui {
         #endif
 
         unlock();
+        
+        return consumed;
     }
 
     /*
@@ -147,24 +155,30 @@ namespace cppgui {
     }
     */
 
-    void Root_widget::mouse_wheel(const Vector &dir)
+    bool Root_widget::mouse_wheel(const Vector &dir)
     {
         lock();
-        container_mouse_wheel(dir);
+        auto consumed = Super::mouse_wheel(dir);
         unlock();
+
+        return consumed;
     }
 
-    void Root_widget::text_input(const char32_t *text, size_t size)
+    bool Root_widget::text_input(const char32_t *text, size_t size)
     {
+        bool consumed = false;
+
         if (focused_child())
         {
             lock();
-            focused_child()->text_input(text, size);
+            consumed = focused_child()->text_input(text, size);
             unlock();
         }
+
+        return consumed;
     }
 
-    void Root_widget::key_down(const Keycode &key)
+    bool Root_widget::key_down(const Keycode &key)
     {
         lock();
 
@@ -174,18 +188,12 @@ namespace cppgui {
             focused_child()->key_down(key);
         }
         */
-        container_key_down( key );
+        auto consumed = Super::key_down(key);
 
         // TODO: ensure this is called in case of an exception
         unlock();
-    }
 
-    void Root_widget::child_key_down(const Keycode &key)
-    {
-        if (!handle_key_down(key))
-        {
-            std::cerr << "Root_widget_base::child_key_down(): could not handle key event" << std::endl;
-        }
+        return consumed;
     }
 
     void Root_widget::capture_mouse(Widget *holder)

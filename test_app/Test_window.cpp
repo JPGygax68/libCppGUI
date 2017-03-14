@@ -35,6 +35,7 @@ void Test_window::create_ui()
     _label.on_click([](const cppgui::Point &pos, int button, int clicks) {
         std::cout << "Label was clicked! (pos = " << pos.x << ", " << pos.y 
             << ", button = " << button << ", clicks = " << clicks << ")" << std::endl;
+        return true;
     });
     root_widget().add_child(&_label);
 

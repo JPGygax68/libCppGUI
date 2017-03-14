@@ -134,15 +134,14 @@ namespace cppgui {
         return container()->children().back() == this;
     }
 
-    void Widget::key_down(const Keycode &key)
+    bool Widget::mouse_motion(const Point &p)
     {
-        // Fallback behavior: try to handle locally, else let it "bubble up"
+        return false;
+    }
 
-        if (!handle_key_down(key))
-        {
-            // Let the event "bubble" up
-            container()->child_key_down(key);
-        }
+    bool Widget::key_down(const Keycode &key)
+    {
+        return false;
     }
 
     void Widget::mouse_enter()
@@ -171,7 +170,7 @@ namespace cppgui {
         return _bounds.is_point_inside(point - _position);
     }
 
-    void Widget::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
+    bool Widget::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
     {
         if (state == Key_state::pressed)
         {
@@ -188,25 +187,30 @@ namespace cppgui {
 
             if (button == 1 && holder == this)
             {
-                mouse_click(pos, button, clicks);
+                return mouse_click(pos, button, clicks);
+                    // -> if the click was consumed, we consider the mouse button event
+                    //      to be consumed as well
             }
         }
+
+        return false; // the event was not consumed
     }
 
-    void Widget::mouse_click(const Point &pos, int button, Count count)
+    bool Widget::mouse_click(const Point &pos, int button, Count count)
     {
-        if (_click_hndlr) _click_hndlr(pos, button, count);
+        if (_click_hndlr) return _click_hndlr(pos, button, count);
+
+        return false;
     }
 
-    void Widget::mouse_wheel(const Vector &v)
+    bool Widget::mouse_wheel(const Vector &v)
     {
-        // Fallback behavior: try to handle locally, else let it "bubble up"
+        return false;
+    }
 
-        if (!handle_mouse_wheel(v))
-        {
-            // Let the event "bubble" up
-            container()->child_mouse_wheel(v);
-        }
+    bool Widget::text_input(const char32_t *, size_t)
+    {
+        return false;
     }
 
     void Widget::change_visible(bool state)

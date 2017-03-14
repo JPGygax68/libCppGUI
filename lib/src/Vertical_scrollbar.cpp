@@ -55,8 +55,8 @@ namespace cppgui {
         _up_btn  .set_focussable(false);
         _down_btn.set_focussable(false);
 
-        _up_btn  .on_pushed([this]() { move_by_elements(-1); });
-        _down_btn.on_pushed([this]() { move_by_elements( 1); });
+        _up_btn  .on_pushed([this]() { move_by_elements(-1); return true; });
+        _down_btn.on_pushed([this]() { move_by_elements( 1); return true; });
 
         add_child(&_up_btn  );
         add_child(&_down_btn);
@@ -110,7 +110,7 @@ namespace cppgui {
         invalidate();
     }
 
-    void Vertical_scrollbar_base::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
+    bool Vertical_scrollbar_base::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
     {
         if (button == 1 && state == Key_state::pressed)
         {
@@ -135,7 +135,7 @@ namespace cppgui {
                     root_widget()->capture_mouse(this); // called here because Widget::mouse_button() will not be called
                 }
 
-                return; // done with this event
+                return true; // done with this event
             }
         }
         else if (button == 1 && state == released)
@@ -145,18 +145,18 @@ namespace cppgui {
                 _dragging_thumb = false;
                 root_widget()->release_mouse();
                 invalidate();
-                return;
+                return true;
             }
         }
 
-        Container_base::mouse_button(pos, button, state, clicks);
+        return Super::mouse_button(pos, button, state, clicks);
     }
 
-    void Vertical_scrollbar_base::mouse_motion(const Point &pos)
+    bool Vertical_scrollbar_base::mouse_motion(const Point &p)
     {
         // std::cout << "mouse_motion: " << pos.x << ", " << pos.y << std::endl;
 
-        bool on_thumb = _thumb_rect.contains(pos);
+        bool on_thumb = _thumb_rect.contains(p);
         if (on_thumb != _thumb_hovered)
         {
             _thumb_hovered = on_thumb;
@@ -166,15 +166,18 @@ namespace cppgui {
         if (is_mouse_button_down(1) && _dragging_thumb)
         {
             //std::cerr << "delta = " << (pos.y - _drag_anchor_pos) << std::endl;
-            notify_drag_navigation(pos.y - _drag_anchor_pos); // TODO: rename method ?
+            notify_drag_navigation(p.y - _drag_anchor_pos); // TODO: rename method ?
+            return true;
         }
-        else
-            Container_base::mouse_motion(pos);
+        
+        return Super::mouse_motion(p);
     }
 
-    void Vertical_scrollbar_base::mouse_wheel(const Vector &delta)
+    bool Vertical_scrollbar_base::mouse_wheel(const Vector &delta)
     {
         move_by_elements(-delta.y);
+
+        return true; // TODO: report false if already at end ?
     }
 
     void Vertical_scrollbar_base::mouse_exit()

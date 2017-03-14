@@ -56,17 +56,15 @@ namespace cppgui {
         void pop_cursor();
 
         // TODO: replace the following event override with standalone methods that inject to container_xxxx()
-        void mouse_motion(const Point &) override;
-        void mouse_button(const Point &, int button, Key_state, Count clicks) override;
-        //void mouse_click(const Point &, int button, int count);
-        void mouse_wheel(const Vector &) override;
-        void text_input(const char32_t *, size_t) override;
-        void key_down(const Keycode &) override;
-        //void key_up(const Keycode &);
+        bool mouse_motion(const Point &) override;
+        bool mouse_button(const Point &, int button, Key_state, Count clicks) override;
+        //bool mouse_click(const Point &, int button, int count);
+        bool mouse_wheel(const Vector &) override;
+        bool text_input(const char32_t *, size_t) override;
+        bool key_down(const Keycode &) override;
+        //bool key_up(const Keycode &);
 
         void render(Canvas *c, const Point &p) override;
-
-        void child_key_down(const Keycode &) override;
 
         void capture_mouse(Widget *);
         void release_mouse();
@@ -78,6 +76,8 @@ namespace cppgui {
         void drop_child(Widget * child);
 
     private:
+        using Super = Container_base;
+
         RGBA                        _bkgnd_clr = { 0, 0, 0, 0 };
         //Canvas                     *_canvas = nullptr;
         std::stack<Cursor_handle>   _cursor_stack;

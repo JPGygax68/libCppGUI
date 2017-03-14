@@ -89,9 +89,9 @@ namespace cppgui {
 
         void compute_view_from_data() override;
 
-        void mouse_button(const Point &, int button, Key_state, Count clicks) override;
-        void mouse_motion(const Point &) override;
-        void mouse_wheel(const Vector & ) override;
+        bool mouse_button(const Point &, int button, Key_state, Count clicks) override;
+        bool mouse_motion(const Point &) override;
+        bool mouse_wheel(const Vector & ) override;
         void mouse_exit() override;
 
         void render(Canvas *, const Point &offset) override;
@@ -111,6 +111,8 @@ namespace cppgui {
             // Recomputes and updates the thumb position according to the specified value.
 
     protected:
+        using Super = Container_base;
+
         // Specialization hooks
 
         virtual void move_by_page(int delta) = 0;

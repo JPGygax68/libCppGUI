@@ -50,10 +50,11 @@ namespace cppgui {
 
         void render(Canvas *, const Point &offset) override;
 
-        void mouse_click(const Point &, int button, Count count) override;
+        bool mouse_click(const Point &, int button, Count count) override;
 
     protected: // for access by Layouter aspect
-        
+        using Super = Widget;
+
         Font_resource           _label_font;
         Font_resource           _glyph_font;    // TODO: rename to _tick_font ?
         //char32_t                _tick_codepoint;

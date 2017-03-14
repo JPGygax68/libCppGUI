@@ -49,7 +49,7 @@ namespace cppgui {
 
         void render(Canvas *, const Point &offset) override;
 
-        void mouse_click(const Point &, int button, Count clicks) override;
+        bool mouse_click(const Point &, int button, Count clicks) override;
 
     protected:
         //Click_handler                   _on_click;

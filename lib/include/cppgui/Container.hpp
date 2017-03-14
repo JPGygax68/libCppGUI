@@ -46,16 +46,21 @@ namespace cppgui {
 
         void render(Canvas *, const Point &offs) override;
 
-        void mouse_motion(const Point &) override;
-        void mouse_button(const Point &, int /*button*/, Key_state, Count clicks) override;
+        // Event handling
+
+        bool mouse_motion(const Point &) override;
+        bool mouse_button(const Point &, int /*button*/, Key_state, Count clicks) override;
         // TODO: other events ?
+        bool mouse_wheel(const Vector &v) override;
+        bool text_input(const char32_t *, size_t) override;
+        bool key_down(const Keycode &) override;
+
         void mouse_exit() override;
 
-        /** Called when a key_down event could not be handled by the child it was sent to
-            (from container_key_down()) and needs to "bubble" back up.
-         */
-        virtual void child_key_down(const Keycode &);
-        virtual void child_mouse_wheel(const Vector &);
+        // Event "bubbling" (events passed back "up" from child widgets)
+
+        //virtual void child_key_down(const Keycode &);
+        //virtual void child_mouse_wheel(const Vector &);
 
         virtual bool container_has_focus() { return has_focus(); }
         virtual auto container_absolute_position() -> Point ;
@@ -71,6 +76,7 @@ namespace cppgui {
         template<class Pred> auto scan_children_backward(Index from, Pred) -> Index;
 
     protected:
+        using Super = Widget;
 
         bool contains_widget(Widget *);
         auto child_at(const Point &) -> Widget *;
@@ -79,22 +85,6 @@ namespace cppgui {
         void compute_child_views();
 
         void render_children(Canvas *, const Point &offs);
-
-        /** The container_xxxx() methods are intended as "delegate" event handlers, to be 
-            called from "real" containers (i.e. descendants of Container<>).            
-
-            TODO: those methods where defined in Abstract_container, which no longer
-                exists. Unless such a parent class is reintroduced, the container_xxx()
-                methods can be merged back into the corresponding event handlers defined
-                in the Widget class.
-        */
-        void container_mouse_motion(const Point &);
-        void container_mouse_button(const Point &, int button, Key_state, Count clicks);
-        //void container_mouse_click(const Point &, int button, int count);
-        void container_mouse_wheel(const Vector & dist);
-        void container_mouse_exit();
-        void container_text_input(const char32_t *, size_t);
-        bool container_key_down(const Keycode &);
 
         std::vector<Widget*> _children;
         Widget *_hovered_child = nullptr;

@@ -25,10 +25,10 @@ namespace cppgui {
 
         void compute_view_from_data() override;
 
-    protected:
+        bool key_down(const Keycode &) override;
+        bool mouse_wheel(const Vector &) override;
 
-        bool handle_key_down(const Keycode &) override;
-        bool handle_mouse_wheel(const Vector &) override;
+    protected:
 
         auto content_window() const { return Rectangle{ _window_bbox }; }
         auto content_pane() const { return _content_pane; }

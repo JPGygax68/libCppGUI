@@ -36,8 +36,8 @@ namespace cppgui {
     class Widget
     {
     public:
-        using Click_handler     = std::function<void(const Point &, int button, Count clicks)>; // TODO: support return value ?
-        using Pushed_handler    = std::function<void()>; // for buttons TODO: renamed event to "Push" (as in "a push happened") ?
+        using Click_handler     = std::function<bool(const Point &, int button, Count clicks)>; // TODO: support return value ?
+        using Pushed_handler    = std::function<bool()>; // for buttons TODO: renamed event to "Push" (as in "a push happened") ?
 
         Widget();
         virtual ~Widget() {}
@@ -108,23 +108,29 @@ namespace cppgui {
         bool is_first_child();
         bool is_last_child();
 
-        // Input event injection
+        // Input handling
 
-        /** By convention, mouse positions are passed to a widget as relative to
+        /*
+            By convention, mouse positions are passed to a widget as relative to
             their own origin (meaning that it falls to the caller, i.e. usually
             the container, to subtract the child widget's position() from the
             coordinates it gets from yet higher up).
+
+            TODO: event injection methods should report whether or not the event
+                was consumed.
          */
-        virtual void mouse_motion(const Point &) {}
-        virtual void mouse_button(const Point &, int /*button*/, Key_state, Count clicks);
-        virtual void mouse_click(const Point &, int button, Count count);
-        virtual void mouse_wheel(const Vector &);
-        virtual void text_input(const char32_t *, size_t) {}
-        virtual void key_down(const Keycode &);
+        virtual bool mouse_motion(const Point &);
+        virtual bool mouse_button(const Point &, int /*button*/, Key_state, Count clicks);
+        virtual bool mouse_click(const Point &, int button, Count count);
+        virtual bool mouse_wheel(const Vector &);
+        virtual bool text_input(const char32_t *, size_t);
+        virtual bool key_down(const Keycode &);
         //void key_up(const Keycode &);
 
+        // Derived ("secondary") events, purely informational
+
         virtual void mouse_enter();
-        virtual void mouse_exit ();
+        virtual void mouse_exit();
 
         // Queries
 
@@ -139,16 +145,21 @@ namespace cppgui {
 
         virtual void render(Canvas *, const Point &offset) = 0;
 
-        // Event handling chains for events that can bubble up
-
-        virtual bool handle_key_down(const Keycode &) { return false; }
-        virtual bool handle_mouse_wheel(const Vector &) { return false; }
-
         // Misc 
 
         auto container() const -> Container_base * { return _container; }
 
     protected:
+
+        // Event handling
+    #ifdef NOT_DEFINED
+        virtual bool handle_mouse_motion(const Point &) { return false; }
+        virtual bool handle_mouse_button(const Point &, int /*button*/, Key_state, Count clicks) { return false; }
+        virtual bool handle_mouse_click(const Point &, int button, Count count) { return false; }
+        virtual bool handle_mouse_wheel(const Vector &) { return false; }
+        virtual bool handle_text_input(const char32_t *, size_t) { return false; }
+        virtual bool handle_key_down(const Keycode &) { return false; }
+    #endif
 
         virtual auto root_widget() -> Root_widget*;
 
