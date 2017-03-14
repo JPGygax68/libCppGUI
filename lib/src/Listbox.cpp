@@ -13,7 +13,12 @@ namespace cppgui {
     public:
 
         // TODO: optimized implementation that only draw visible items
-        //void render(Canvas *, const Point &offs) override;
+        void render(Canvas *, const Point &offs) override;
+
+    private:
+        
+        auto separator_width() const { return 1; }
+        auto separator_color(Widget_states) const -> RGBA { return { 0.6f, 0.6f, 0.6f, 1 }; }
 
     #ifndef CPPGUI_EXCLUDE_LAYOUTING
     public:
@@ -25,15 +30,38 @@ namespace cppgui {
 
     };
 
+    void Listbox_content_pane::render(Canvas *c, const Point &offs)
+    {
+        auto p = offs + position();
+
+        for (auto child: children())
+        {
+            child->render(c, p);
+
+            auto r = child->rectangle();
+            r.pos.y += r.ext.h;
+            r.ext.h = separator_width();
+            c->fill_rect(r + p, separator_color(visual_states()));
+        }
+    }
+
+
+#ifndef CPPGUI_EXCLUDE_LAYOUTING
+
     auto Listbox_content_pane::get_minimal_bounds() -> Bounding_box
     {
         auto bb_min = Bounding_box::empty();
 
-        for (auto child: children())
+        if (child_count() > 0)
         {
-            //bb_min.merge(child->get_minimal_bounds());
-            bb_min.append_at_bottom(child->get_minimal_bounds(), horizontal_origin);
-            // TODO: margin
+            for (auto child: children())
+            {
+                //bb_min.merge(child->get_minimal_bounds());
+                bb_min.append_at_bottom(child->get_minimal_bounds(), horizontal_origin);
+                // TODO: margin
+            }
+
+            bb_min.y_min -= child_count() * separator_width();
         }
 
         // TODO: minimal bounds if there are no children ?
@@ -52,7 +80,7 @@ namespace cppgui {
             {
                 auto lb = layout_element_at_top_edge(bb_rem, child->get_minimal_bounds(), horizontal_middle);
                 child->set_bounds(lb);
-                // TODO: separator
+                layout_gap_at_top_edge(bb_rem, separator_width());
             }
         }
     }
@@ -70,6 +98,9 @@ namespace cppgui {
 
         return ext;
     }
+
+#endif !CPPGUI_EXCLUDE_LAYOUTING
+
 
     // Listbox_base implementation --------------------------------------------
 

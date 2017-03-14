@@ -127,6 +127,11 @@ namespace cppgui
         return { { x, y }, b };
     }
 
+    void layout_gap_at_top_edge(Bbox_ref cont, Length h)
+    {
+        cont.y_max -= h;
+    }
+
     auto align_top_left(Bbox_cref cont, Bbox_cref elem) -> Layout_box
     {
     #ifdef CPPGUI_Y_AXIS_DOWN
