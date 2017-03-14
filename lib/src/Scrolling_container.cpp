@@ -30,18 +30,20 @@ namespace cppgui {
             navigate(element, {1});
             return true;
         }
-        else if (is_up(key))
+        if (is_up(key))
         {
             navigate(element, {-1});
             return true;
         }
-        else if (is_page_down(key))
+        if (is_page_down(key))
         {
-            // TODO
+            navigate(page, {1});
+            return true;
         }
-        else if (is_page_up(key))
+        if (is_page_up(key))
         {
-            // TODO
+            navigate(page, {-1});
+            return true;
         }
 
         return false;

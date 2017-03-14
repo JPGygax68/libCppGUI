@@ -13,6 +13,10 @@ namespace cppgui {
     };
 
 
+    /*
+     * TODO: update the hovered states after the content has been scrolled - perhaps
+     *  send a dummy mouse_move() event to itself ?
+     */
     class Scrolling_container: public Container_base
     {
     public:
