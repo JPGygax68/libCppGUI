@@ -28,6 +28,8 @@ namespace cppgui {
 
         void compute_view_from_data() override;
 
+        void render(Canvas *, const Point &offs) override;
+
         bool key_down(const Keycode &) override;
         bool mouse_wheel(const Vector &) override;
 

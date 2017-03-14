@@ -21,7 +21,9 @@ protected:
     void adjust_layout() override;
 
 private:
-    std::vector<cppgui::Glyph_button>   _button_list;
+    using Test_button = cppgui::Boxed<cppgui::Glyph_button_base, cppgui::Borderless_button_box_styles>;
+
+    std::vector<Test_button>            _button_list;
 
     cppgui::Label                       _label;
     cppgui::Textbox                     _textbox;

@@ -25,6 +25,17 @@ namespace cppgui {
         Super::compute_view_from_data();
     }
 
+    void Scrolling_container::render(Canvas *c, const Point &offs)
+    {
+        auto p = offs + position();
+
+        _vscrollbar.render(c, p);
+        
+        c->push_clipping_rect(Rectangle{_window_bbox} + p);
+        _content_pane->render(c, p);
+        c->pop_clipping_rect();
+    }
+
     bool Scrolling_container::key_down(const Keycode &key)
     {
         if (is_down(key))
