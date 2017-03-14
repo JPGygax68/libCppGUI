@@ -49,6 +49,8 @@ namespace cppgui {
 
     auto layout_element_at_right_edge(Bbox_ref container, Bbox_cref elem, Alignment valign = vertical_baseline) -> Layout_box;
 
+    void leave_gap_at_right_edge(Bbox_ref container, Length w);
+
     auto layout_element_at_top_edge(Bbox_ref container, Bbox_cref elem, Alignment halign = horizontal_middle) -> Layout_box;
 
     auto align_top_left(Bbox_cref cont, Bbox_cref elem) -> Layout_box;

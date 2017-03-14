@@ -29,8 +29,16 @@ namespace cppgui {
     {
         auto p = offs + position();
 
+        // Scrollbar
         _vscrollbar.render(c, p);
         
+        // Separator
+        auto r = Rectangle{_window_bbox};
+        r.pos.x += r.ext.w;
+        r.ext.w = separator_width();
+        c->fill_rect(r + p, separator_color(visual_states()));
+
+        // Content pane (clipped)
         c->push_clipping_rect(Rectangle{_window_bbox} + p);
         _content_pane->render(c, p);
         c->pop_clipping_rect();
@@ -76,8 +84,6 @@ namespace cppgui {
     }
     */
 
-#ifndef CPPGUI_EXCLUDE_LAYOUTING
-
     void Scrolling_container::shift_content_by(const Point &d)
     {
         content_pane()->shift_by(d);
@@ -91,11 +97,19 @@ namespace cppgui {
         _vscrollbar.update_thumb_position(-_content_offset.y);
     }
 
+    auto Scrolling_container::separator_color(Widget_states) const -> RGBA
+    {
+        return { 0.5f, 0.5f, 0.5f, 1 };
+    }
+
+#ifndef CPPGUI_EXCLUDE_LAYOUTING
+
     auto Scrolling_container::get_minimal_bounds() -> Bounding_box
     {
         // TODO: this is probably wrong, because it will try to align the baseline of the "up" button of the scrollbar
         //  with the baseline of the first list item
         auto bbox = Bounding_box{ _content_pane->get_minimal_window() };
+        bbox.append_to_right( separator_width() );
         bbox.append_to_right(_vscrollbar.get_minimal_bounds(), top);
         return bbox;
     }
@@ -106,6 +120,9 @@ namespace cppgui {
 
         // Scrollbar at right edge
         _vscrollbar.set_bounds(layout_element_at_right_edge(b, _vscrollbar.get_minimal_bounds(), vertical_baseline));
+
+        // Separator (gap for now - TODO)
+        leave_gap_at_right_edge(b, separator_width());
 
         // The remainder of the bounding box becomes the window box
         _window_bbox = b;

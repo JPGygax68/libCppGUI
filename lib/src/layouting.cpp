@@ -97,6 +97,11 @@ namespace cppgui
         return { { x, y }, b };
     }
 
+    void leave_gap_at_right_edge(Bbox_ref cont, Length w)
+    {
+        cont.x_max -= w;
+    }
+
     auto layout_element_at_top_edge(Bbox_ref cont, Bbox_cref elem, Alignment halign) -> Layout_box
     {
         // Compute position of element origin point

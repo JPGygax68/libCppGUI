@@ -19,6 +19,8 @@ namespace cppgui {
     /*
      * TODO: update the hovered states after the content has been scrolled - perhaps
      *  send a dummy mouse_move() event to itself ?
+     *  
+     * TODO: automatic scrollbar(s) with adapting content pane
      */
     class Scrolling_container: public Container_base
     {
@@ -52,6 +54,9 @@ namespace cppgui {
         using Super = Container_base;
 
         virtual void navigate(Navigation_unit, const Fraction<int> &d) = 0;
+
+        auto separator_color(Widget_states) const -> RGBA;
+        static auto separator_width() { return 1; }
 
         Embedded_vertical_scrollbar _vscrollbar;
         Content_pane               *_content_pane;

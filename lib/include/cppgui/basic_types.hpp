@@ -223,6 +223,12 @@ namespace cppgui {
             return *this;
         }
 
+        auto& append_to_right(Length w)
+        {
+            x_max += w;
+            return *this;
+        }
+
         auto cut_from_top(Length h) -> Bounding_box
         {
             auto cutoff{ *this };
