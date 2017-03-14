@@ -57,10 +57,12 @@ namespace cppgui {
 
         void mouse_exit() override;
 
-        // Event "bubbling" (events passed back "up" from child widgets)
+        // Actions
 
-        //virtual void child_key_down(const Keycode &);
-        //virtual void child_mouse_wheel(const Vector &);
+        bool cycle_focus_forward ();
+        bool cycle_focus_backward();
+
+        // Queries
 
         virtual bool container_has_focus() { return has_focus(); }
         virtual auto container_absolute_position() -> Point ;
@@ -86,9 +88,9 @@ namespace cppgui {
 
         void render_children(Canvas *, const Point &offs);
 
-        std::vector<Widget*> _children;
-        Widget *_hovered_child = nullptr;
-        Widget *_focused_child = nullptr;
+        std::vector<Widget*>    _children;
+        Widget                 *_hovered_child = nullptr;
+        Widget                 *_focused_child = nullptr;
 
     //-----------------------------------------------------
     // Container Updater "aspect"

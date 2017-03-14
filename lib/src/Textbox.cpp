@@ -254,7 +254,8 @@ namespace cppgui {
         if (is_backspace(key)) { delete_before_caret ()               ; return true; }
         if (is_delete   (key)) { delete_after_caret  ()               ; return true; }
         if (is_return   (key)) { done                ()               ; return true; }                
-        return false;
+
+        return Super::key_down(key);
     }
 
     void Textbox::move_cursor_left(bool extend_sel)

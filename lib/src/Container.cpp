@@ -119,8 +119,8 @@ namespace cppgui {
         if (hovered != _hovered_child)
         {
             /** TODO: this does not account for situations where the pointer enters a
-            widget, then moves on to a zone on a higher Z-level (Z levels not being 
-            implemented yet at the time of writing).
+                widget, then moves on to a zone on a higher Z-level (Z levels not being 
+                implemented yet at the time of writing).
             */
             if (_hovered_child) _hovered_child->mouse_exit();
             if (hovered) hovered->mouse_enter();
@@ -155,6 +155,80 @@ namespace cppgui {
         }
 
         Super::mouse_exit();
+    }
+
+    bool Container_base::cycle_focus_forward()
+    {
+        assert(has_focus());
+
+        if (children().empty())
+        {
+            return false; // cannot cycle, report back to sender
+        }
+        
+        std::vector<Widget*>::iterator it;
+
+        if (focused_child())
+        {
+            it = std::find(std::begin(children()), std::end(children()), focused_child());  
+            ++it;
+        }
+        else {
+            it = std::begin(children());
+        }
+
+        while (it != std::end(children()) && !(*it)->focussable()) ++it;
+
+        if (it != std::end(children()))
+        {
+            (*it)->gained_focus();
+            switch_focused_child(*it);
+            return true;
+        }
+
+        switch_focused_child(nullptr);
+
+        return false;
+    }
+
+    bool Container_base::cycle_focus_backward()
+    {
+        assert(has_focus());
+
+        if (children().empty())
+        {
+            return false; // cannot cycle, report back to sender
+        }
+
+        decltype(std::rbegin(children())) it;
+
+        // Does one of the children have focus ?
+        if (focused_child())
+        {
+            // Yes: move to the predecessor
+            it = std::find(std::rbegin(children()), std::rend(children()), focused_child());  
+            ++it;
+        }
+        else {
+            // No: select the last child
+            it = std::rbegin(children());
+        }
+
+        // Skip non-focussable children
+        while (it != std::rend(children()) && !(*it)->focussable()) ++it;
+
+        // Ended up on a child ?
+        if (it != std::rend(children()))
+        {
+            // Inform child it gained focus
+            (*it)->gained_focus();
+            // 
+            switch_focused_child(*it);
+            return true;
+        }
+
+        switch_focused_child(nullptr);
+        return false;
     }
 
     auto Container_base::child_at(const Point &pos) -> Widget*
@@ -226,12 +300,20 @@ namespace cppgui {
 
     bool Container_base::key_down(const Keycode &key)
     {
+        bool consumed = false;
+
         if (_focused_child)
         {
-            return _focused_child->key_down(key);
+            consumed = _focused_child->key_down(key);
         }
 
-        return true;
+        if (!consumed)
+        {
+            if (is_tab(key)                   ) consumed = cycle_focus_forward();
+            if (is_tab(key) && is_shift_down()) consumed = cycle_focus_backward();
+        }
+
+        return consumed;
     }
 
     template<class Pred>
