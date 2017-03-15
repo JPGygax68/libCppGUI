@@ -6,6 +6,9 @@
 
 namespace cppgui {
     
+    class Scrolling_container;
+
+
     class Content_pane: public Container_base
     {
     public:
@@ -13,6 +16,9 @@ namespace cppgui {
         bool focussable() const override { return false; }
 
         virtual auto get_minimal_window() -> Extents = 0;
+
+    protected:
+        auto container() const -> Scrolling_container *;
     };
 
 
@@ -37,6 +43,8 @@ namespace cppgui {
 
         bool cycle_focus(int) override { return false; } // prevent from cycling away from content pane
 
+        void bring_item_into_view(Widget *);
+
     protected:
 
         auto content_window() const { return Rectangle{ _window_bbox }; }
@@ -44,6 +52,7 @@ namespace cppgui {
         auto items() const { return content_pane()->children(); }
         auto item(Index i) const { return content_pane()->child(i); }
         auto item_count() const -> Index { return content_pane()->child_count(); }
+        auto item_rectangle(Widget *) const -> Rectangle; 
 
         //void gained_focus() override;
 

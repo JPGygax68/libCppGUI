@@ -12,11 +12,13 @@ namespace cppgui {
     {
     public:
 
-        // TODO: optimized implementation that only draw visible items
         void render(Canvas *, const Point &offs) override;
 
+        void set_focus_on_child(Widget *) override;
+
     private:
-        
+        using Super = Content_pane;
+
         auto separator_width() const { return 1; }
         auto separator_color(Widget_states) const -> RGBA { return { 0.6f, 0.6f, 0.6f, 1 }; }
 
@@ -32,17 +34,28 @@ namespace cppgui {
 
     void Listbox_content_pane::render(Canvas *c, const Point &offs)
     {
+        // TODO: optimize implementation to only draw visible items
+
         auto p = offs + position();
 
         for (auto child: children())
         {
+            // List item
             child->render(c, p);
 
+            // Separator
             auto r = child->rectangle();
             r.pos.y += r.ext.h;
             r.ext.h = separator_width();
             c->fill_rect(r + p, separator_color(visual_states()));
         }
+    }
+
+    void Listbox_content_pane::set_focus_on_child(Widget *c)
+    {
+        Super::set_focus_on_child(c);
+
+        if (c) container()->bring_item_into_view(c);
     }
 
 
@@ -200,11 +213,6 @@ namespace cppgui {
         auto r_item = item_rectangle(first_partially_visible_item());
 
         return content_window().y1() - r_item.y1();
-    }
-
-    auto Listbox_base::item_rectangle(Widget *item) const -> Rectangle
-    {
-        return item->rectangle() + content_pane()->position();    
     }
 
     auto Listbox_base::visible_item_count() const -> Count

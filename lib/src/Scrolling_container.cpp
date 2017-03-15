@@ -4,6 +4,11 @@
 
 namespace cppgui {
     
+    auto Content_pane::container() const -> Scrolling_container *
+    {
+        return dynamic_cast<Scrolling_container*>(Container_base::container());
+    }
+
     Scrolling_container::Scrolling_container(Content_pane *p):
         _content_pane(p)
     {
@@ -76,6 +81,28 @@ namespace cppgui {
         return true;
     }
 
+    void Scrolling_container::bring_item_into_view(Widget *c)
+    {
+        auto r_item = c->rectangle() + content_pane()->position();
+        auto r_win = Rectangle{_window_bbox};
+
+        if (! r_win.fully_contains(r_item))
+        {
+            // Top-left (with standard coordinate system)
+            // Define rectangle operation(s) to handle this
+            Point d{ 0, 0 };
+        #ifdef CPPGUI_Y_AXIS_DOWN
+            if      (r_item.x2() > r_win.x2()) d.x = r_win.x2() - r_item.x2();
+            else if (r_item.x1() < r_win.x1()) d.x = r_win.x1() - r_item.x1();
+            if      (r_item.y2() > r_win.y2()) d.y = r_win.y2() - r_item.y2();
+            else if (r_item.y1() < r_win.y1()) d.y = r_win.y1() - r_item.y1();
+            shift_content_by(d);
+        #else
+        #error Upward Y axis not supported yet
+        #endif
+        }
+    }
+
     /*
     void Scrolling_container::gained_focus()
     {
@@ -83,6 +110,11 @@ namespace cppgui {
         set_focus_on_child(content_pane());
     }
     */
+
+    auto Scrolling_container::item_rectangle(Widget *item) const -> Rectangle
+    {
+        return item->rectangle() + content_pane()->position();    
+    }
 
     void Scrolling_container::shift_content_by(const Point &d)
     {

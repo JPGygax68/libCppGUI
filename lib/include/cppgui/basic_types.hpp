@@ -364,12 +364,12 @@ namespace cppgui {
 
         bool contains_full_width_of(const Rectangle &r) const
         {
-            return r.x1() >= x1() && r.x2() < x2();
+            return r.x1() >= x1() && r.x2() <= x2();
         }
 
         bool contains_full_height_of(const Rectangle &r) const
         {
-            return r.y1() >= y1() && r.y2() < y2();
+            return r.y1() >= y1() && r.y2() <= y2();
         }
 
         bool intersects_vertically_with(const Rectangle &r) const

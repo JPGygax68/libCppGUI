@@ -16,11 +16,11 @@ namespace cppgui {
 
     protected:
 
-        void navigate(Navigation_unit, const Fraction<int> &delta) override;
+        void navigate(Navigation_unit, const Fraction<int> &d) override;
         void scroll_by_items(int d);
 
     private:
-        using Parent = Scrolling_container;
+        using Super = Scrolling_container;
 
         bool item_fully_visible(Index) const;
         bool first_item_fully_visible() const;
@@ -28,7 +28,6 @@ namespace cppgui {
         auto first_partially_visible_item_index() const -> Index;
         auto first_partially_visible_item() const -> Widget *;
         auto hidden_height_of_first_visible_item() const -> Length;
-        auto item_rectangle(Widget *) const -> Rectangle; 
         auto visible_item_count() const -> Count;
 
         void bring_item_into_view(Index);

@@ -168,6 +168,8 @@ namespace cppgui {
         {
             while (steps++ < 0) return cycle_focus_backward();
         }
+
+        return false;
     }
 
     bool Container_base::cycle_focus_forward()

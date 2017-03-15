@@ -59,8 +59,7 @@ namespace cppgui {
         // Actions
 
         virtual bool cycle_focus(int steps);
-
-        void set_focus_on_child(Widget *);
+        virtual void set_focus_on_child(Widget *);
 
         // Queries
 
