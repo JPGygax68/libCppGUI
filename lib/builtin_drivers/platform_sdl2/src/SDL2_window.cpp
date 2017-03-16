@@ -7,7 +7,7 @@
 #include "platform_sdl2.hpp"
 #include "SDL2_window.hpp"
 #include "SDL2_exception.hpp"
-#include "custom_events.hpp"
+#include "sdl2_custom_events.hpp"
 
 
 namespace cppgui {
@@ -20,7 +20,7 @@ namespace cppgui {
             if (SDL_VideoInit(nullptr) < 0) throw std::runtime_error("trying to initialize SDL video subsystem");
             atexit(&SDL_VideoQuit);
 
-            redraw_window = register_custom_event([](const SDL_UserEvent &ev) {
+            redraw_window = sdl::register_custom_event([](const SDL_UserEvent &ev) {
 
                 SDL2_window::dispatch_redraw(ev.windowID);
             });

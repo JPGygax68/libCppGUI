@@ -85,15 +85,17 @@ namespace cppgui {
 
     using Vector = Point;
 
-    class Bounding_box;
+    class Bbox;
+    using Bbox_ref = Bbox &;
+    using Bbox_cref = const Bbox &;
 
     struct Extents
     {
         Length w, h;
 
-        explicit Extents(Length w_, Length h_): w{w_}, h{h_} {}
+        Extents(Length w_, Length h_): w{w_}, h{h_} {}
         Extents() = default;
-        Extents(const Bounding_box &);
+        Extents(Bbox_cref );
 
         auto& operator |= (const Extents &e) 
         {
@@ -105,7 +107,7 @@ namespace cppgui {
 
     struct Rectangle;
 
-    class Bounding_box: public fonts::Bounding_box {
+    class Bbox: public Text_bounding_box {
     public:
         
         /*
@@ -113,18 +115,18 @@ namespace cppgui {
          * the width is assigned to x_max, and the height to y_max - the ascendent - while
          * the descendent is set to 0.
          */
-        explicit Bounding_box(const Extents &e): fonts::Bounding_box{0, e.w, 0, e.h} {}
+        explicit Bbox(const Extents &e): Text_bounding_box{0, e.w, 0, e.h} {}
 
-        Bounding_box(const Text_bounding_box &from): Text_bounding_box{from} {}
+        Bbox(const Text_bounding_box &from): Text_bounding_box{from} {}
 
-        explicit Bounding_box(Position x_min, Position x_max, Position y_min, Position y_max):
+        Bbox(Position x_min, Position x_max, Position y_min, Position y_max):
             fonts::Bounding_box{x_min, x_max, y_min, y_max} {}
 
-        Bounding_box() = default;
+        Bbox() = default;
 
         auto extents() const { return Extents{ - x_min + x_max, y_max + - y_min }; }
         
-        static auto empty() -> Bounding_box { return Bounding_box{ 0, 0, 0, 0 }; }
+        static auto empty() -> Bbox { return { 0, 0, 0, 0 }; }
 
         /*
         * Returns a bounding box that is completely collapsed, i.e. the boundaries of
@@ -133,14 +135,14 @@ namespace cppgui {
         * The purpose of such a box is to serve as the starting point to find the
         * smallest containing box for a series of contained boxes.
         */
-        static auto collapsed() -> Bounding_box 
+        static auto collapsed() -> Bbox 
         {
-            using limits = std::numeric_limits<decltype(Bounding_box::x_min)>;
+            using limits = std::numeric_limits<decltype(x_min)>;
 
-            return Bounding_box{ limits::max(), limits::min(), limits::max(), limits::min() };
+            return { limits::max(), limits::min(), limits::max(), limits::min() };
         }
 
-        auto operator + (const Point &d) const -> Bounding_box
+        auto operator + (const Point &d) const -> Bbox
         {
             auto r{ *this };
             r.x_min -= d.x;
@@ -152,11 +154,11 @@ namespace cppgui {
             return r;
         }
 
-        auto expand(Width w) const -> Bounding_box
+        auto expand(Width w) const -> Bbox
         {
             auto d = static_cast<Position_delta>(w);
 
-            return Bounding_box{fonts::Bounding_box{ x_min - d, x_max + d, y_min - d, y_max + d }};
+            return { x_min - d, x_max + d, y_min - d, y_max + d };
         }
 
         bool is_point_inside(const Point &p) const
@@ -174,7 +176,7 @@ namespace cppgui {
         #endif
         }
 
-        auto& append_at_bottom(const Bounding_box &bbox, Alignment align = horizontal_middle)
+        auto& append_at_bottom(Bbox_cref bbox, Alignment align = horizontal_middle)
         {
             y_min -= bbox.height();
 
@@ -203,7 +205,7 @@ namespace cppgui {
             return *this;
         }
 
-        auto& append_to_right(const Bounding_box &b, Alignment valign = vertical_baseline)
+        auto& append_to_right(Bbox_cref b, Alignment valign = vertical_baseline)
         {
             x_max += - b.x_min + b.x_max;
             // TODO: define an operation merge_vertical() ?
@@ -229,7 +231,7 @@ namespace cppgui {
             return *this;
         }
 
-        auto cut_from_top(Length h) -> Bounding_box
+        auto cut_from_top(Length h) -> Bbox
         {
             auto cutoff{ *this };
             y_max -= h;
@@ -240,7 +242,7 @@ namespace cppgui {
             //return *this;
         }
 
-        auto cut_from_bottom(Length h) -> Bounding_box
+        auto cut_from_bottom(Length h) -> Bbox
         {
             auto cutoff{ *this };
             y_min += h;
@@ -250,7 +252,7 @@ namespace cppgui {
             //return *this;
         }
 
-        auto cut_from_right(Length w) -> Bounding_box
+        auto cut_from_right(Length w) -> Bbox
         {
             auto cutoff{*this};
             x_max -= w;
@@ -258,7 +260,7 @@ namespace cppgui {
             return cutoff;
         }
 
-        auto& merge(const Bounding_box &b)
+        auto& merge(Bbox_cref b)
         {
             if (b.x_min < x_min) x_min = b.x_min;
             if (b.x_max > x_max) x_max = b.x_max;
@@ -267,13 +269,13 @@ namespace cppgui {
             return *this;
         }
 
-        auto& operator |= (const Bounding_box &b)
+        auto& operator |= (Bbox_cref b)
         {
             merge(b);
             return *this;
         }
 
-        auto operator | (const Bounding_box &b)
+        auto operator | (Bbox_cref b)
         {
             auto r{*this};
             r.merge(b);
@@ -287,9 +289,6 @@ namespace cppgui {
 
     };
 
-    using Bbox_ref = Bounding_box &;
-    using Bbox_cref = const Bounding_box &;
-
     /*
      * Can be used to specify both the position (of the origin point) and the bounds of a 
      * Widget as a combined parameter.
@@ -298,15 +297,15 @@ namespace cppgui {
      */
     struct Layout_box
     {
-        Point        orig;
-        Bounding_box bbox;
+        Point   orig;
+        Bbox    bbox;
     };
 
     struct Rectangle {
         Point           pos;
         Extents         ext;
 
-        Rectangle(const Bounding_box &b)
+        Rectangle(Bbox_cref b)
         {
             #ifdef CPPGUI_Y_AXIS_DOWN
             pos.x = b.x_min, pos.y = - b.y_max; // TODO: adapt to support positive-up Y axis
@@ -381,13 +380,13 @@ namespace cppgui {
 
     };
 
-    inline Extents::Extents(const Bounding_box &b)
+    inline Extents::Extents(Bbox_cref b)
     {
         w = -b.x_min + b.x_max;
         h = b.y_max - b.y_min;
     }
 
-    inline auto Bounding_box::position_inside_rectangle(const Rectangle &r) const -> Point
+    inline auto Bbox::position_inside_rectangle(const Rectangle &r) const -> Point
     {
         return {
             r.pos.x - x_min + (r.ext.w - width()) / 2,

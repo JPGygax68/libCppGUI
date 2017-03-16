@@ -65,6 +65,14 @@ namespace cppgui
         static auto background_color(Widget_states) -> RGBA { return { 0.8f, 0.8f, 0.8f, 1}; }
     };
 
+    class Text_field_box_styles
+    {
+    protected:
+        static auto border_width    (Widget_states) -> Width { return 0; }
+        static auto padding_width   (Widget_states) -> Width { return 3; }
+        static auto border_color    (Widget_states) -> RGBA { return { 0, 0, 0, 1 }; }
+        static auto background_color(Widget_states) -> RGBA { return { 1, 1, 1, 1}; }
+    };
 
     class Borderless_button_box_styles: public Button_box_styles
     {
@@ -78,7 +86,7 @@ namespace cppgui
     {
     public:
         
-        void draw_background_and_border(Canvas *c, const Point &p, const Bounding_box &b, const Widget_states &s)
+        void draw_background_and_border(Canvas *c, const Point &p, Bbox_cref b, const Widget_states &s)
         {
             /*
             * We draw two solid rectangles over each other, the first in the border color, then a second,
@@ -86,16 +94,16 @@ namespace cppgui
             * TODO: better approach ? define a ready-made method in Canvas, or even in Renderer ?
             */
             auto r = Rectangle{b};
-            c->fill_rect(r + p, border_color(s));
-            r.inflate(-border_width(s), -border_width(s));
-            c->fill_rect(r + p, background_color(s));
+            c->fill_rect(r + p, this->border_color(s));
+            r.inflate(- this->border_width(s), - this->border_width(s));
+            c->fill_rect(r + p, this->background_color(s));
         }
 
         #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
-        auto adjust_box_bounds(const Bounding_box &b, int sign = 1) -> Bounding_box
+        auto adjust_box_bounds(Bbox_cref b, int sign = 1) -> Bbox
         {
-            return b.expand(sign * (border_width({}) + padding_width({})));
+            return b.expand(sign * (this->border_width({}) + this->padding_width({})));
         }
 
         #endif // CPPGUI_EXCLUDE_LAYOUTING

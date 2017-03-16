@@ -59,6 +59,13 @@ namespace cppgui {
         return distance(begin(_children), find(begin(_children), end(_children), child) );
     }
 
+    auto Container_base::child_index(Widget *c) const -> Index
+    {
+        using namespace std;
+
+        return find(begin(children()), end(children()), c) - begin(children());
+    }
+
     void Container_base::add_child(Widget *child)
     {
         _children.push_back(child);
@@ -181,7 +188,7 @@ namespace cppgui {
             return false; // cannot cycle, report back to sender
         }
         
-        std::vector<Widget*>::iterator it;
+        std::vector<Widget*>::const_iterator it;
 
         auto target = focused_child();
         if (target)
@@ -216,7 +223,7 @@ namespace cppgui {
         }
 
         //decltype(std::rbegin(children())) it;
-        Child_list::reverse_iterator it;
+        Child_list::const_reverse_iterator it;
 
         // Does one of the children have focus ?
         if (focused_child())

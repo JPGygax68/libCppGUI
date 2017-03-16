@@ -2,6 +2,8 @@
 
 project(cppgui_baked_fonts)
 
+# TODO: split this component between actual fonts (optional), and icon font resources (mandatory, with configurable size)
+
 # TODO: this might actually belong with the font rasterizer project
 include("${CMAKE_CURRENT_SOURCE_DIR}/BakeFontFile.cmake")
 
@@ -29,13 +31,20 @@ target_bake_font(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/data/fonts/Liberat
 
 target_bake_font(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/data/fonts/modernpics.otf"             
     SIZES 18 24 
-    CODEPOINTS $39 $25 $3C $3E $5B $5D
+    CODEPOINTS $39 $25 $3C $3E $5B $5D $58
+)
+
+# TODO: these symbols are not needed (yet) by libCppGUI itself -> move to LSInstruktor
+target_bake_font(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/data/fonts/Symbola_hint.ttf"             
+    SIZES 24 
+    CODEPOINTS $25A1 $25A3 $25CB $25C9
 )
 
 # TODO: auto-generate from list of sizes
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/generated/fonts/all_baked_icon_fonts.h 
     "#include <modernpics-18.h>\n"
     "#include <modernpics-24.h>\n"
+    "#include <symbola_hint-24.h>\n"
 )
 target_include_directories(${PROJECT_NAME} PUBLIC  ${CMAKE_CURRENT_BINARY_DIR}/generated/fonts)
 

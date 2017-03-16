@@ -147,8 +147,8 @@ namespace cppgui {
     public:
 
         //void init_layout() override;
-        auto get_minimal_bounds() -> Bounding_box override;
-        void compute_layout(const Bounding_box &) override;
+        auto get_minimal_bounds() -> Bbox override;
+        void compute_layout(Bbox_cref) override;
 
         // Extra capabilities coming with layouting
         // TODO

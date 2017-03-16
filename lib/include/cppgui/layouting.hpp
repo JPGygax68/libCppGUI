@@ -13,19 +13,19 @@ namespace cppgui {
     public:
         void set_default_spacing(const Rasterized_font *);
         void append_text(const Rasterized_font *, const char32_t *text, Count size);
-        void append_bounding_box(const Bounding_box &, bool has_border);
+        void append_bounding_box(Bbox_cref, bool has_border);
         void append_glyph(const Rasterized_font *, char32_t codepoint);
         void append_space();
         void separate_here();
 
-        auto minimal_bounds() const -> Bounding_box;
+        auto minimal_bounds() const -> Bbox;
 
     protected:
         void insert_separation_if_needed();
 
     private:
         Position_delta  _spacing = 0;
-        Bounding_box    _bbox = {};
+        Bbox            _bbox = {};
         Position        _orig = 0;
         bool            _separate = false;
     };
@@ -39,10 +39,10 @@ namespace cppgui {
     class Stack_layouter
     {
     public:
-        void append(const Bounding_box &);
+        void append(Bbox_cref );
         void separate(Position_delta d);
 
-        auto minimal_bounds() const -> Bounding_box;
+        auto minimal_bounds() const -> Bbox;
     };
 
 #endif // NOT_DEFINED

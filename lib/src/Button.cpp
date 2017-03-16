@@ -86,12 +86,12 @@ namespace cppgui {
         compute_label_bounds();
     }
 
-    auto Button::get_minimal_bounds() -> Bounding_box
+    auto Button::get_minimal_bounds() -> Bbox
     {
         return adjust_box_bounds(_label_bbox);
     }
 
-    void Button::compute_layout(const Bounding_box &b)
+    void Button::compute_layout(Bbox_cref b)
     {        
         Widget::compute_layout(b);
 

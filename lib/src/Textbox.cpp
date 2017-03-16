@@ -541,7 +541,7 @@ namespace cppgui {
 
         if (_sel_start_char_idx > 0)
         {
-            cbox = advance_to_glyph_at(font().rasterized, _text, 0, _sel_start_char_idx, pos);
+            //cbox = advance_to_glyph_at(font().rasterized, _text, 0, _sel_start_char_idx, pos);
             //_sel_start_pixel_pos = p.x + cbox->bounds.x_min;
             _sel_start_pixel_pos = pos.x;
         }
@@ -612,14 +612,14 @@ namespace cppgui {
         compute_text_extents();
     }
 
-    auto Textbox::get_minimal_bounds() -> Bounding_box
+    auto Textbox::get_minimal_bounds() -> Bbox
     {
-        Bounding_box b{ 0, size() * _mean_char_width, _descent, _ascent };
+        Bbox b{ 0, size() * _mean_char_width, _descent, _ascent };
 
         return adjust_box_bounds(b);
     }
 
-    void Textbox::compute_layout(const Bounding_box &b)
+    void Textbox::compute_layout(Bbox_cref b)
     {
         _inner_bbox = adjust_box_bounds(b, -1);
     }

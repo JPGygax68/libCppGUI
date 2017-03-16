@@ -59,7 +59,7 @@ namespace cppgui {
         auto& bounds() const { return _bounds; }
         auto positioned_bounds() const { return _bounds + _position; }
         //void set_position(const Point &);
-        //void set_bounds(const Bounding_box &);
+        //void set_bounds(Bbox_cref );
         auto width () const { return rectangle().width (); }
         auto height() const { return rectangle().height(); }
 
@@ -226,7 +226,7 @@ namespace cppgui {
         #endif
 
         Point                   _position = {};
-        Bounding_box            _bounds = {};
+        Bbox                    _bounds = {};
         //RGBA                    _bkgnd_clr = {0, 0, 0, 0};
         Click_handler           _click_hndlr;
         bool                    _visible = true;
@@ -238,6 +238,7 @@ namespace cppgui {
         // TODO: make configurable by preprocessor
 
     public:
+        // TODO: make this virtual ?
         void invalidate();
 
         // END of Updater aspect
@@ -247,16 +248,16 @@ namespace cppgui {
     public:
         
         void set_bounds(const Layout_box &lb) { set_bounds(lb.orig, lb.bbox); }
-        void set_bounds(const Point &, const Bounding_box &);
+        void set_bounds(const Point &, Bbox_cref );
 
         // To be provided by concrete classes
         virtual void init_layout() = 0;
-        virtual auto get_minimal_bounds() -> Bounding_box = 0;
-        virtual void compute_layout(const Bounding_box &b) {}
+        virtual auto get_minimal_bounds() -> Bbox = 0;
+        virtual void compute_layout(Bbox_cref) {}
 
     protected:
         // TODO: this really belongs to a utility module
-        static auto align_cultural_minor(const Bounding_box &inner, const Bounding_box &outer, Alignment align) -> Position_delta;
+        static auto align_cultural_minor(Bbox_cref inner, Bbox_cref outer, Alignment align) -> Position_delta;
         
         //void set_padding(Width);
         //void set_padding(const std::initializer_list<Width> &);

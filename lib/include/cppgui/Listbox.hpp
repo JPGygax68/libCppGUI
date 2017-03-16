@@ -14,6 +14,8 @@ namespace cppgui {
         
         void add_item(Widget *) const;
 
+        void bring_item_into_view(Index);
+
     protected:
 
         void navigate(Navigation_unit, const Fraction<int> &d) override;
@@ -29,8 +31,6 @@ namespace cppgui {
         auto first_partially_visible_item() const -> Widget *;
         auto hidden_height_of_first_visible_item() const -> Length;
         auto visible_item_count() const -> Count;
-
-        void bring_item_into_view(Index);
 
         void scroll_up  ();
         void scroll_down();

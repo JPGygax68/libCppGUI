@@ -261,17 +261,17 @@ namespace cppgui {
         init_children_layout();
     }
 
-    auto Root_widget::get_minimal_bounds() -> Bounding_box
+    auto Root_widget::get_minimal_bounds() -> Bbox
     {
         return {}; // TODO: better solution ?
     }
 
-    void Root_widget::compute_layout(const Bounding_box & b)
+    void Root_widget::compute_layout(Bbox_cref  b)
     {
         Container_base::compute_layout(b);
     }
 
-    void Root_widget::insert_child(Widget *child, const Point & p, const Bounding_box & b, Canvas *c)
+    void Root_widget::insert_child(Widget *child, const Point & p, Bbox_cref  b, Canvas *c)
     {
         add_child(child);
 

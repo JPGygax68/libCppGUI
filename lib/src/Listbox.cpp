@@ -24,8 +24,8 @@ namespace cppgui {
 
     #ifndef CPPGUI_EXCLUDE_LAYOUTING
     public:
-        auto get_minimal_bounds() -> Bounding_box override;
-        void compute_layout(const Bounding_box &b) override;
+        auto get_minimal_bounds() -> Bbox override;
+        void compute_layout(Bbox_cref b) override;
         auto get_minimal_window() -> Extents override;
 
     #endif // !CPPGUI_EXCLUDE_LAYOUTING
@@ -61,9 +61,9 @@ namespace cppgui {
 
 #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
-    auto Listbox_content_pane::get_minimal_bounds() -> Bounding_box
+    auto Listbox_content_pane::get_minimal_bounds() -> Bbox
     {
-        auto bb_min = Bounding_box::empty();
+        auto bb_min = Bbox::empty();
 
         if (child_count() > 0)
         {
@@ -82,7 +82,7 @@ namespace cppgui {
         return bb_min;
     }
 
-    void Listbox_content_pane::compute_layout(const Bounding_box &b_)
+    void Listbox_content_pane::compute_layout(Bbox_cref b_)
     {
         if (child_count() > 0)
         {

@@ -41,7 +41,7 @@ namespace cppgui
         _separate = true;
     }
 
-    void Inline_layouter::append_bounding_box(const Bounding_box &b, bool has_border)
+    void Inline_layouter::append_bounding_box(Bbox_cref b, bool has_border)
     {
         if (has_border) insert_separation_if_needed();
 
@@ -54,7 +54,7 @@ namespace cppgui
         if (has_border) separate_here();
     }
 
-    auto Inline_layouter::minimal_bounds() const -> Bounding_box
+    auto Inline_layouter::minimal_bounds() const -> Bbox
     {
         return _bbox;
     }

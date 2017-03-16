@@ -32,7 +32,7 @@ namespace cppgui {
     {
     }
 
-    /* void Widget::set_bounds(const Bounding_box &bounds)
+    /* void Widget::set_bounds(Bbox_cref bounds)
     {
         _bounds = bounds;
     } */
@@ -295,7 +295,7 @@ namespace cppgui {
         _container->child_invalidated(this);
     }
 
-    void Widget::set_bounds(const Point &p, const Bounding_box &b)
+    void Widget::set_bounds(const Point &p, Bbox_cref b)
     {
         compute_layout(b);
 
@@ -362,7 +362,7 @@ namespace cppgui {
 
     #ifndef CPPGUI_EXCLUDE_LAYOUT
 
-    auto Widget::align_cultural_minor(const Bounding_box &inner, const Bounding_box &outer, Alignment align) -> Position_delta
+    auto Widget::align_cultural_minor(Bbox_cref inner, Bbox_cref outer, Alignment align) -> Position_delta
     {
         #ifndef CPPGUI_CULTURE_WESTERN
         #error Non-western cultures not supported yet!

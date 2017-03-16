@@ -10,10 +10,12 @@ extern "C" {
 //#include "generated/headers/MaterialIcons-Regular-18.h"
 #include <modernpics-18.h>
 #include <modernpics-24.h>
+//#include <symbola_hint-18.h>
+#include <symbola_hint-24.h>
 }
 
 // TODO: make this configurable
 #define CPPGUI_STANDARD_FONT_ARRAY_NAME liberationsans_regular_16
 // TODO: the array name should indicate that it contains symbols rather than regular characters
 //#define CPPGUI_SYMBOLS_FONT_ARRAY_NAME materialicons_regular_18
-#define CPPGUI_SYMBOLS_FONT_ARRAY_NAME modernpics_24
+//#define CPPGUI_SYMBOLS_FONT_ARRAY_NAME modernpics_24

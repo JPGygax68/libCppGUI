@@ -104,7 +104,7 @@ namespace cppgui {
         int                     _size;
         Font_resource           _font;
 
-        Bounding_box            _inner_bbox;
+        Bbox                    _inner_bbox;
         int                     _ascent, _descent; // TODO: support vertical writing
         int                     _mean_char_width;
         //Point                   _txpos;
@@ -124,8 +124,8 @@ namespace cppgui {
         void compute_text_extents();
 
         void init_layout() override;
-        auto get_minimal_bounds() -> Bounding_box override;
-        void compute_layout(const Bounding_box &) override;
+        auto get_minimal_bounds() -> Bbox override;
+        void compute_layout(Bbox_cref) override;
 
         // "Stylesheet"
         //static constexpr auto default_padding() -> Padding { return { 3, 3, 3, 3 }; }

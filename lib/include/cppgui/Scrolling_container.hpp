@@ -45,14 +45,17 @@ namespace cppgui {
 
         void bring_item_into_view(Widget *);
 
+        auto content_pane() const { return _content_pane; }
+
+        auto& items() const { return content_pane()->children(); }
+        auto item(Index i) const { return content_pane()->child(i); }
+        auto item_count() const -> Index { return content_pane()->child_count(); }
+        auto item_index(Widget *c) const { return content_pane()->child_index(c); }
+        auto item_rectangle(Widget *) const -> Rectangle; 
+
     protected:
 
         auto content_window() const { return Rectangle{ _window_bbox }; }
-        auto content_pane() const { return _content_pane; }
-        auto items() const { return content_pane()->children(); }
-        auto item(Index i) const { return content_pane()->child(i); }
-        auto item_count() const -> Index { return content_pane()->child_count(); }
-        auto item_rectangle(Widget *) const -> Rectangle; 
 
         //void gained_focus() override;
 
@@ -69,15 +72,15 @@ namespace cppgui {
 
         Embedded_vertical_scrollbar _vscrollbar;
         Content_pane               *_content_pane;
-        Bounding_box                _window_bbox;
+        Bbox                        _window_bbox;
         Point                       _content_offset;    // keeps track of content pane relative position
 
 
     #ifndef CPPGUI_EXCLUDE_LAYOUTING
     public:
 
-        auto get_minimal_bounds() -> Bounding_box override;
-        void compute_layout(const Bounding_box &) override;
+        auto get_minimal_bounds() -> Bbox override;
+        void compute_layout(Bbox_cref) override;
 
     #endif // !CPPGUI_EXCLUDE_LAYOUTING
     };

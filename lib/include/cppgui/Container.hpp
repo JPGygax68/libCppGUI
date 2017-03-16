@@ -30,9 +30,10 @@ namespace cppgui {
 
         void set_initial_focus(Widget *);
 
-        auto& children() { return _children; }
+        auto& children() const { return _children; }
         auto child(Index i) { return _children[i]; }
         auto child_count() const -> Index { return static_cast<Index>(_children.size()); }
+        auto child_index(Widget *c) const -> Index;
 
         void add_child(Widget *);
         // TODO: should removal methods be moved to optional aspect ?
@@ -111,9 +112,9 @@ namespace cppgui {
 
     protected:
         void init_children_layout();
-        //auto get_minimal_bounds() -> Bounding_box override;
+        //auto get_minimal_bounds() -> Bbox override;
 
-    #endif // CPPGUI_EXCLUDE_LAYOUTING
+    #endif // !CPPGUI_EXCLUDE_LAYOUTING
 
     };
 

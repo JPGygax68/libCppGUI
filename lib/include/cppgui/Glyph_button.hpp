@@ -58,22 +58,22 @@ namespace cppgui {
         std::u32string                  _label;
         Font_resource                   _glyph_font;
         char32_t                        _glyph_cp = 0;
-        Bounding_box                    _label_bbox = {};
+        Bbox                            _label_bbox = {};
         Position_delta                  _glyph_orig = 0;
 
     #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
     public:
         void init_layout() override;
-        auto get_minimal_bounds() -> Bounding_box override;
-        void compute_layout(const Bounding_box &) override;
+        auto get_minimal_bounds() -> Bbox override;
+        void compute_layout(Bbox_cref) override;
 
     private:
         using Super = Widget;
 
         void compute_bounds();
 
-        Bounding_box                    _glyph_bbox = {};
+        Bbox                            _glyph_bbox = {};
 
     #endif // CPPGUI_EXCLUDE_LAYOUTING
     };

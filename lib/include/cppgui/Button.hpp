@@ -51,14 +51,14 @@ namespace cppgui {
         Pushed_handler          _on_pushed;
         Font_resource           _font;
         std::u32string          _label;
-        Bounding_box            _label_bbox;
+        Bbox                    _label_bbox;
 
         #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
     public:
         void init_layout() override;
-        auto get_minimal_bounds() -> Bounding_box override;
-        void compute_layout(const Bounding_box &) override;
+        auto get_minimal_bounds() -> Bbox override;
+        void compute_layout(Bbox_cref) override;
 
         // Extra capabilities coming with layouting
         // TODO

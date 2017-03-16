@@ -263,9 +263,9 @@ namespace cppgui {
 
 #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
-    auto Vertical_scrollbar_base::get_minimal_bounds() -> Bounding_box
+    auto Vertical_scrollbar_base::get_minimal_bounds() -> Bbox
     {
-        Bounding_box bbox{};
+        Bbox bbox{};
         bbox.append_at_bottom( _up_btn.get_minimal_bounds() );
         bbox.append_at_bottom( 3 * _up_btn.get_minimal_bounds().height() );
         bbox.append_at_bottom( _down_btn.get_minimal_bounds() );
@@ -273,7 +273,7 @@ namespace cppgui {
         return bbox;
     }
 
-    void Vertical_scrollbar_base::compute_layout(const Bounding_box &b)
+    void Vertical_scrollbar_base::compute_layout(Bbox_cref b)
     {
         Widget::compute_layout(b); // direct parent is Container_base, which however does no layouting of its own
 

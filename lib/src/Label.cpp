@@ -74,17 +74,17 @@ namespace cppgui {
         // TODO ?
     }
 
-    auto Label::get_minimal_bounds() -> Bounding_box
+    auto Label::get_minimal_bounds() -> Bbox
     {
         if (!text().empty())
         {
-            return Bounding_box{_font.rasterized->compute_text_extents(0, _text.data(), _text.size())};
+            return {_font.rasterized->compute_text_extents(0, _text.data(), _text.size())};
         }
 
         return {};
     }
 
-    /* void Label::set_bounds(const Point & p, const Bounding_box & b)
+    /* void Label::set_bounds(const Point & p, Bbox_cref  b)
     {
         // Nothing to do for now
     } */

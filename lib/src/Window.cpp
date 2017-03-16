@@ -40,8 +40,10 @@ namespace cppgui {
     void Window::redraw(void * context)
     {
         begin_rendering();
-        _canvas->enter_context();
+        _canvas->enter_context(); // TODO: pass/check context ?
         _canvas->clear(_bkg_color);
+        // TODO: pass context to canvas / check if matches / etc ?
+        before_redraw(_canvas.get());
         _root_widget.render(_canvas.get(), {0, 0});
         _canvas->leave_context();
         done_rendering();
@@ -53,7 +55,7 @@ namespace cppgui {
         _canvas->define_viewport(0, 0, e.w, e.h);
         // (Re-)do layout
         _root_widget.init_layout();
-        _root_widget.set_bounds({0, 0}, Bounding_box{e});
+        _root_widget.set_bounds({0, 0}, Bbox{e});
         adjust_layout();
         _root_widget.compute_view_from_data();
         adjust_layout();

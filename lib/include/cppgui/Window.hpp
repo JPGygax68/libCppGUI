@@ -36,6 +36,7 @@ namespace cppgui {
         // Further specialization
         virtual void create_ui() {}
         virtual void adjust_layout() {}
+        virtual void before_redraw(Canvas *) {}
 
     private:
         RGBA                        _bkg_color;

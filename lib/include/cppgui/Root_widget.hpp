@@ -71,7 +71,7 @@ namespace cppgui {
 
         // Specific functionality
 
-        void insert_child(Widget * child, const Point &p, const Bounding_box &b, Canvas *c);
+        void insert_child(Widget * child, const Point &p, Bbox_cref b, Canvas *c);
         void drop_child(Widget * child);
 
     private:
@@ -116,8 +116,8 @@ namespace cppgui {
     public:
 
         void init_layout() override;
-        auto get_minimal_bounds() -> Bounding_box override;
-        void compute_layout(const Bounding_box & b) override;
+        auto get_minimal_bounds() -> Bbox override;
+        void compute_layout(Bbox_cref b) override;
 
     #endif // CPPGUI_EXCLUDE_LAYOUTING
 

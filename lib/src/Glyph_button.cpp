@@ -87,7 +87,7 @@ namespace cppgui {
         compute_bounds();
     }
 
-    auto Glyph_button_base::get_minimal_bounds() -> Bounding_box
+    auto Glyph_button_base::get_minimal_bounds() -> Bbox
     {
         Inline_layouter l; // TODO: make a member ?
 
@@ -100,7 +100,7 @@ namespace cppgui {
         return l.minimal_bounds();
     }
 
-    void Glyph_button_base::compute_layout(const Bounding_box &b)
+    void Glyph_button_base::compute_layout(Bbox_cref b)
     {
         Widget::compute_layout(b);
 

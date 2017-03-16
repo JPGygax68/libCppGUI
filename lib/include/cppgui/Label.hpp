@@ -47,13 +47,13 @@ namespace cppgui {
         std::u32string          _text;
         RGBA                    _color;
 
+    #ifndef CPPGUI_EXCLUDE_LAYOUTING
     public:
-    // Layouter aspect ----------------------------------------------
 
         // Contract
 
         void init_layout() override;
-        auto get_minimal_bounds() -> Bounding_box override;
+        auto get_minimal_bounds() -> Bbox override;
 
         // Own methods
 
@@ -68,7 +68,7 @@ namespace cppgui {
         Alignment               _minor_alignment = Alignment::cultural_minor_middle;
         Alignment               _major_alignment = Alignment::cultural_major_middle;
 
-    // END of layouter aspect ---------------------------------------
+    #endif // !CPPGUI_EXCLUDE_LAYOUTING
 
     };
 

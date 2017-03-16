@@ -136,17 +136,17 @@ namespace cppgui {
 
 #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
-    auto Scrolling_container::get_minimal_bounds() -> Bounding_box
+    auto Scrolling_container::get_minimal_bounds() -> Bbox
     {
         // TODO: this is probably wrong, because it will try to align the baseline of the "up" button of the scrollbar
         //  with the baseline of the first list item
-        auto bbox = Bounding_box{ _content_pane->get_minimal_window() };
+        auto bbox = Bbox{ _content_pane->get_minimal_window() };
         bbox.append_to_right( separator_width() );
         bbox.append_to_right(_vscrollbar.get_minimal_bounds(), top);
         return bbox;
     }
 
-    void Scrolling_container::compute_layout(const Bounding_box &b_)
+    void Scrolling_container::compute_layout(Bbox_cref b_)
     {
         auto b{ b_ };
 

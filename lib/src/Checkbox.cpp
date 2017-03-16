@@ -42,7 +42,7 @@ namespace cppgui {
 
     Checkbox::Checkbox()
     {
-        _glyph_font.assign(&baked_fonts::default_symbol_font());
+        _glyph_font.assign(&baked_fonts::modernpics_18_font());
     }
 
     void Checkbox::on_state_change(State_change_handler handler)
@@ -112,7 +112,7 @@ namespace cppgui {
         get_tick_bounds();
     }
 
-    auto Checkbox::get_minimal_bounds() -> Bounding_box
+    auto Checkbox::get_minimal_bounds() -> Bbox
     {
         Inline_layouter l; // TODO: make a member ?
 
@@ -122,17 +122,9 @@ namespace cppgui {
         l.append_bounding_box(_tick_bbox.expand(tick_padding() + tick_border()), tick_border() > 0);
 
         return l.minimal_bounds();
-
-        #ifdef NOT_DEFINED
-        // TODO: spacing between label and tick
-        return { 
-            _label_bbox.width() + /* spacing() + */ _tick_extents.w + 2, 
-            std::max(_label_bbox.height(), _em_bounds.height() + 2 * padding() + 2 * p()->stroke_width())
-        };
-        #endif
     }
 
-    void Checkbox::compute_layout(const Bounding_box &b)
+    void Checkbox::compute_layout(Bbox_cref b)
     {
         Widget::compute_layout(b);
 
@@ -140,29 +132,6 @@ namespace cppgui {
 
         // Tick box origin is origin of tick glyph
         _tick_orig = b.x_max - tick_border() - tick_padding() - _tick_bbox.x_max;
-
-        #ifdef NOT_DEFINED
-
-        auto baseline = std::max(_label_bbox.y_max, _em_bounds.y_max + this->stroke_width() + padding() );
-        auto h = static_cast<Length>(baseline + std::max(- _label_bbox.y_min, - _em_bounds.y_min + this->stroke_width() + padding()));
-        baseline += static_cast<Position>((extents().h - h) / 2);
-
-        _label_pos = { 0,  baseline };
-
-        // TODO: non-static glyph adjustment
-        auto x = static_cast<Position>(extents().w - _box_edge);
-        auto dx = static_cast<Position>((_box_edge - _tick_extents.w) / 2);
-
-        _tick_pos  = { 
-            x + dx,
-            baseline + _tick_descr.origin_delta.y
-        };
-        _box_rect = { 
-            x, baseline - _em_bounds.y_max - padding() - this->stroke_width(),
-            _box_edge, _box_edge
-        };
-
-        #endif
     }
 
     #ifdef NOT_DEFINED

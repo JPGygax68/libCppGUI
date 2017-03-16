@@ -73,8 +73,8 @@ namespace cppgui {
 
     public:
         void init_layout() override;
-        auto get_minimal_bounds() -> Bounding_box override;
-        void compute_layout(const Bounding_box &) override;
+        auto get_minimal_bounds() -> Bbox override;
+        void compute_layout(Bbox_cref) override;
 
         auto tick_padding() const { return 1; }
         auto tick_border() const { return 1; }
@@ -93,7 +93,7 @@ namespace cppgui {
         //Extents                 _tick_extents;
         //Length                  _box_edge;
         //Text_bounding_box       _label_bbox;
-        Bounding_box            _tick_bbox;
+        Bbox                    _tick_bbox;
 
         #endif // CPPGUI_EXCLUDE_LAYOUTING
     };

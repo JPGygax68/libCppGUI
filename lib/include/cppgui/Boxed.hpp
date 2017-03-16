@@ -23,19 +23,19 @@ namespace cppgui {
 
         //void init_layout() override;
 
-        auto get_minimal_bounds() -> Bounding_box override
+        auto get_minimal_bounds() -> Bbox override
         {
             auto bbox = WidgetC::get_minimal_bounds();
 
             return this->adjust_box_bounds(bbox);
         }
 
-        void compute_layout(const Bounding_box &b)
+        void compute_layout(Bbox_cref b)
         {
             WidgetC::compute_layout(this->adjust_box_bounds(b, -1));
         }
 
-    #endif // CPPGUI_EXCLUDE_LAYOUTING
+    #endif // !CPPGUI_EXCLUDE_LAYOUTING
     };
 
 } // ns cppui

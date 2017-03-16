@@ -3,7 +3,7 @@
 #include <SDL2/SDL_events.h>
 #include "./SDL2_exception.hpp"
 #include "./SDL2_window.hpp"
-#include "./custom_events.hpp"
+#include "./sdl2_custom_events.hpp"
 
 
 namespace cppgui
@@ -14,8 +14,8 @@ namespace cppgui
     static bool handle_event(SDL_Event &ev)
     {
         // Custom event ?
-        auto it = custom_events().find(ev.type);
-        if (it != custom_events().end())
+        auto it = sdl::custom_events().find(ev.type);
+        if (it != sdl::custom_events().end())
         {
             it->second(ev.user);
         }
