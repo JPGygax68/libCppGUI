@@ -122,6 +122,7 @@ namespace cppgui {
 
         struct Managed_font: fonts::Rasterized_font {
             
+            //Managed_font(Rasterized_font &&font_) : Rasterized_font{ font_ } {}
             Managed_font(const Rasterized_font &font_) : Rasterized_font{ font_ } {}
             
             void store_pixels();
@@ -129,7 +130,7 @@ namespace cppgui {
 
             std::vector<GLuint> buffer_textures;
             std::vector<GLuint> textures; // one 1D texture per variant
-            GLuint vertex_buffer;
+            GLuint vertex_buffer = 0;
         };
 
         //static const std::string vertex_code, fragment_code;

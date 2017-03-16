@@ -18,7 +18,8 @@ namespace cppgui {
             size_t          size;
 
             // Initialize from fixed-sized array
-            template<typename T, int Size> Store(T(&arr)[Size]): data{&arr[0]}, size{Size} {}
+            //template<typename T, int Size> Store(T(&arr)[Size]): data{&arr[0]}, size{Size} {}
+            template<int Size> Store(const uint8_t(&arr)[Size]): data{&arr[0]}, size{Size} {}
         };
 
         // TODO?: put this into its own header file "load.hpp" ?
@@ -27,8 +28,9 @@ namespace cppgui {
         {
             Rasterized_font rastfont;
             
-            std::stringstream is{ std::string{ reinterpret_cast<const char *>(store.data), store.size } };
-            cereal::BinaryInputArchive archive(is);
+            auto bs = std::string{ reinterpret_cast<const char *>(store.data), store.size };
+            std::istringstream is{ bs, std::ios::binary };
+            cereal::BinaryInputArchive archive{is};
             archive(rastfont);
             
             return rastfont;

@@ -1,1 +1,3 @@
 - Some of these projects need to be renamed (remove "GPC", replace with "Cpp")
+
+- Remove libGPCGUIRenderer, libGPCGUIGLRenderer (have been replaced)

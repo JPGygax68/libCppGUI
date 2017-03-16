@@ -29,6 +29,10 @@ namespace cppgui {
         struct Rasterized_font {
         public:
 
+            //Rasterized_font() = default;
+            //Rasterized_font(Rasterized_font &&) = default;
+            //Rasterized_font(const Rasterized_font &) = default;
+
             struct glyph_record {
                 Rasterized_glyph_cbox cbox;
                 size_t pixel_base;      // offset in pixel buffer where this glyph starts

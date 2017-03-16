@@ -49,21 +49,15 @@ source_group("Shader files" FILES ${SHADER_FILES}) # REGULAR_EXPRESSION "(.*\.gl
 
 # External dependencies
 
-# GLEW
+# OpenGL 
+find_package(OpenGL REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
+
+# GLEW (= more OpenGL!)
 # TODO: make optional (or one of several choices)
 find_package(GLEW REQUIRED)
 if (GLEW_FOUND)
     target_include_directories(${PROJECT_NAME} PRIVATE ${GLEW_INCLUDE_DIRS})
-    target_link_libraries(${PROJECT_NAME} ${GLEW_LIBRARIES})
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${GLEW_LIBRARIES})
 endif()
-
-if (0)
-if (NOT TARGET libGPCFonts)
-    message(FATAL_ERROR "libGPCFonts not defined as a target")
-endif()
-target_link_libraries(${PROJECT_NAME} PUBLIC libGPCFonts)
-endif(0)
-
-
-
 

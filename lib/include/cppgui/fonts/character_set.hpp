@@ -26,8 +26,8 @@
 
 #include <cassert>
 #include <algorithm>
-
 #include "./character_range.hpp"
+
 
 namespace cppgui {
 

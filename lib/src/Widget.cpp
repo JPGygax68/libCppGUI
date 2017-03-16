@@ -28,7 +28,10 @@ namespace cppgui {
 
     // Widget<> implementation --------------------------------------
 
-    Widget::Widget(): _id{nullptr}
+    Widget::Widget()
+    #ifdef DEBUG
+        : _id{nullptr}
+    #endif
     {
     }
 
