@@ -298,77 +298,17 @@ namespace cppgui {
         _container->child_invalidated(this);
     }
 
-    void Widget::set_bounds(const Point &p, Bbox_cref bb, Alignment v_ref, Alignment h_ref)
+    void Widget::set_bounds(const Point &p, Bbox_cref b, Alignment horz_ref, Alignment vert_ref)
     {
-        // TODO: move this algorithm to Bbox class
+        auto bb{get_minimal_bounds().expand_to(b, horz_ref, vert_ref)};
 
-        Vector v;
+        compute_layout(bb);
 
-        auto bb_min = get_minimal_bounds();
-        auto w_ext = bb.width()  - bb_min.width ();
-        auto h_ext = bb.height() - bb_min.height();
-
-        auto bb_adj{bb_min};
-
-        if (h_ref == left)
-        {
-            v.x = - bb_min.x_min;
-            bb_adj.x_max += w_ext;
-        }
-        else if (h_ref == right)
-        {
-            bb_adj.x_min -= w_ext;
-            v.x = - bb_adj.x_max;
-        }
-        else if (h_ref == center)
-        {
-            v.x = w_ext / 2;
-            bb_adj.x_min -= w_ext / 2;
-            bb_adj.x_max += bb.width() - bb_adj.width();
-        }
-        else if (h_ref == origin)
-        {
-            v.x = 0;
-            bb_adj.x_min -= w_ext / 2;
-            bb_adj.x_max += bb.width() - bb_adj.width();
-        }
-
-        // TODO: wrap manipulations of y_min & y_max so that it becomes independent  of Y axis!
     #ifdef CPPGUI_Y_AXIS_DOWN
-        if (v_ref == top)
-        {
-            v.y = bb_min.y_max;
-            bb_adj.y_min -= w_ext;
-        }
-        else if (v_ref == bottom)
-        {
-            bb_adj.y_max += h_ext;
-            v.y = bb_adj.y_min;
-        }
-        else if (v_ref == middle)
-        {
-            v.y = h_ext / 2;
-            bb_adj.y_max += h_ext / 2;
-            bb_adj.y_min -= bb.height() - bb_adj.height();
-        }
-        else if (v_ref == baseline)
-        {
-            v.y = 0;
-            bb_adj.y_max += h_ext / 2;
-            bb_adj.y_min -= bb.height() - bb_adj.height();
-        }
+        _position = p + Point{ - b.x_min, b.y_max };
     #else
     #error Upward Y axis not supported yet
     #endif
-
-        set_bounds(p + v, bb_adj);
-    }
-
-    void Widget::set_bounds(const Point &p, Bbox_cref b)
-    {
-        compute_layout(b);
-
-        _position = p;
         _bounds = b;
     }
 

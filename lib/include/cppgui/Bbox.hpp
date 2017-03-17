@@ -19,7 +19,7 @@ namespace cppgui {
         * the descendent is set to 0.
         */
     #ifdef CPPGUI_Y_AXIS_DOWN
-        explicit Bbox(const Extents &e);
+        Bbox(const Extents &e, Alignment v_ref);
     #else
     #error Upward Y axis not supported yet
     #endif
@@ -37,163 +37,45 @@ namespace cppgui {
 
         /*
         * Returns a bounding box that is completely collapsed, i.e. the boundaries of
-        * which are all negative with respect to their orientatio (e.g. x_min is the
+        * which are all negative with respect to their orientation (e.g. x_min is the
         * maximum positive value, x_max the maximum negative value, etc.).
         * The purpose of such a box is to serve as the starting point to find the
         * smallest containing box for a series of contained boxes.
         */
-        static auto collapsed() -> Bbox 
-        {
-            using limits = std::numeric_limits<decltype(x_min)>;
+        static auto collapsed() -> Bbox;
 
-            return { limits::max(), limits::min(), limits::max(), limits::min() };
-        }
+        auto operator +(const Point &d) const -> Bbox;
 
-        auto operator + (const Point &d) const -> Bbox
-        {
-            auto r{ *this };
-            r.x_min -= d.x;
-        #ifdef CPPGUI_Y_AXIS_DOWN
-            r.y_max += d.y;
-        #else
-        #error Upward Y axis not supported yet
-        #endif
-            return r;
-        }
+        auto expand(Width w) const -> Bbox;
 
-        auto expand(Width w) const -> Bbox
-        {
-            auto d = static_cast<Position_delta>(w);
+        bool is_point_inside(const Point &p) const;
 
-            return { x_min - d, x_max + d, y_min - d, y_max + d };
-        }
+        auto append_at_bottom(Bbox_cref bbox, Alignment align = horizontal_middle) -> Bbox_ref;
 
-        bool is_point_inside(const Point &p) const
-        {
-        #ifdef CPPGUI_Y_AXIS_DOWN
+        auto append_at_bottom(Length h) -> Bbox_ref;
 
-            // Important: by convention, Y is positive-down in the CppGUI coordinate system; but 
-            // Y is positive-up in typography, which means that y_min extends *below* the baseline
-            // with negative numbers while y_max goes grows up from the baseline with positive
-            // numbers.
-            return p.x >= x_min && p.x < x_max && p.y >= - y_max && p.y < - y_min;
+        auto append_to_right(Bbox_cref b, Alignment valign = vertical_baseline) -> Bbox_ref;
 
-        #else
-        #error Upward Y axis not supported yet
-        #endif
-        }
+        auto append_to_right(Length w) -> Bbox_ref;
 
-        auto& append_at_bottom(Bbox_cref bbox, Alignment align = horizontal_middle)
-        {
-            y_min -= bbox.height();
+        auto cut_from_top(Length h) -> Bbox;
 
-            if (align == horizontal_middle)
-            {
-                if (bbox.width() > width())
-                {
-                    auto dw = bbox.width() - width();
-                    auto dl = dw / 2;
-                    auto dr = dw - dl;
-                    x_min -= dl, x_max += dr;
-                }
-            }
-            else if (align == horizontal_origin)
-            {
-                if (bbox.x_min < x_min) x_min = bbox.x_min;
-                if (bbox.x_max > x_max) x_max = bbox.x_max;
-            }
+        auto cut_from_bottom(Length h) -> Bbox;
 
-            return *this;
-        }
+        auto cut_from_right(Length w) -> Bbox;
 
-        auto& append_at_bottom(Length h)
-        {
-            y_min -= h;
-            return *this;
-        }
+        auto merge(Bbox_cref b) -> Bbox;
 
-        auto& append_to_right(Bbox_cref b, Alignment valign = vertical_baseline)
-        {
-            x_max += - b.x_min + b.x_max;
-            // TODO: define an operation merge_vertical() ?
-            if (valign == vertical_baseline)
-            {
-                if (b.y_max > y_max) y_max = b.y_max;
-                if (b.y_min < y_min) y_min = b.y_min;
-            }
-            else if (valign == top)
-            {
-                auto h = std::max(height(), b.height());
-                y_min = - (h - y_max);
-            } 
-            else 
-                assert(false);
+        auto operator |=(Bbox_cref b) -> Bbox_ref;
 
-            return *this;
-        }
-
-        auto& append_to_right(Length w)
-        {
-            x_max += w;
-            return *this;
-        }
-
-        auto cut_from_top(Length h) -> Bbox
-        {
-            auto cutoff{ *this };
-            y_max -= h;
-            cutoff.y_min = y_max;
-            return cutoff;
-
-            //y_max -= h;
-            //return *this;
-        }
-
-        auto cut_from_bottom(Length h) -> Bbox
-        {
-            auto cutoff{ *this };
-            y_min += h;
-            cutoff.y_max = y_min;
-            return cutoff;
-            //y_min += h;
-            //return *this;
-        }
-
-        auto cut_from_right(Length w) -> Bbox
-        {
-            auto cutoff{*this};
-            x_max -= w;
-            cutoff.x_min = x_max;
-            return cutoff;
-        }
-
-        auto& merge(Bbox_cref b)
-        {
-            if (b.x_min < x_min) x_min = b.x_min;
-            if (b.x_max > x_max) x_max = b.x_max;
-            if (b.y_min < y_min) y_min = b.y_min;
-            if (b.y_max > y_max) y_max = b.y_max;
-            return *this;
-        }
-
-        auto& operator |= (Bbox_cref b)
-        {
-            merge(b);
-            return *this;
-        }
-
-        auto operator | (Bbox_cref b)
-        {
-            auto r{*this};
-            r.merge(b);
-            return r;
-        }
+        auto operator |(Bbox_cref b) const -> Bbox;
 
         /*
         * TODO: support specifying horizontal and vertical alignment
         */
         auto position_inside_rectangle(const Rectangle &r) const -> Point;
 
+        auto expand_to(Bbox_cref cont, Alignment h_ref = center, Alignment v_ref = middle) -> Bbox_ref;
     };
 
 } // ns cppgui
