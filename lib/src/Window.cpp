@@ -41,6 +41,7 @@ namespace cppgui {
     {
         begin_rendering();
         _canvas->enter_context(); // TODO: pass/check context ?
+        // TODO: must be made optional!
         _canvas->clear(_bkg_color);
         // TODO: pass context to canvas / check if matches / etc ?
         before_redraw(_canvas.get());
