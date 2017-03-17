@@ -59,7 +59,6 @@ namespace cppgui {
         _root_widget.set_bounds({0, 0}, Bbox{e});
         adjust_layout();
         _root_widget.compute_view_from_data();
-        adjust_layout();
     }
 
     void Window::text_input(const char32_t *text, size_t cp_count)

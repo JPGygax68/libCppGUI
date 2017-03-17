@@ -63,11 +63,14 @@ namespace cppgui {
         cultural_major_end,         // = bottom in western culture
         
         // Geometrically defined
-        horizontal_middle,
-        horizontal_origin,
+        left,
+        horizontal_origin, origin = horizontal_origin,
+        horizontal_middle, center = horizontal_middle,
+        right,
         top,
-        vertical_baseline,
-        // TODO: more...
+        vertical_baseline, baseline = vertical_baseline,
+        vertical_middle, middle = vertical_middle,
+        bottom,
 
         _end
     };
@@ -115,7 +118,11 @@ namespace cppgui {
          * the width is assigned to x_max, and the height to y_max - the ascendent - while
          * the descendent is set to 0.
          */
+    #ifdef CPPGUI_Y_AXIS_DOWN
         explicit Bbox(const Extents &e): Text_bounding_box{0, e.w, 0, e.h} {}
+    #else
+    #error Upward Y axis not supported yet
+    #endif
 
         Bbox(const Text_bounding_box &from): Text_bounding_box{from} {}
 

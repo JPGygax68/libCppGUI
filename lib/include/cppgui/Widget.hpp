@@ -152,17 +152,7 @@ namespace cppgui {
     protected:
 
         // Event handling
-    #ifdef NOT_DEFINED
-        virtual bool handle_mouse_motion(const Point &) { return false; }
-        virtual bool handle_mouse_button(const Point &, int /*button*/, Key_state, Count clicks) { return false; }
-        virtual bool handle_mouse_click(const Point &, int button, Count count) { return false; }
-        virtual bool handle_mouse_wheel(const Vector &) { return false; }
-        virtual bool handle_text_input(const char32_t *, size_t) { return false; }
-        virtual bool handle_key_down(const Keycode &) { return false; }
-    #endif
-
         virtual auto root_widget() -> Root_widget*;
-
         void pass_up_and_notify_focus();
 
         // Graphics system integration
@@ -210,7 +200,7 @@ namespace cppgui {
 
         // Styling
         // TODO: move to new class Abstract_button<> ?
-        auto button_face_color() -> RGBA;
+        auto button_face_color  () -> RGBA;
         auto button_border_color() -> RGBA;
         auto button_border_width() -> int;
 
@@ -248,7 +238,8 @@ namespace cppgui {
     public:
         
         void set_bounds(const Layout_box &lb) { set_bounds(lb.orig, lb.bbox); }
-        void set_bounds(const Point &, Bbox_cref );
+        void set_bounds(const Point &, Bbox_cref);
+        void set_bounds(const Point &, Bbox_cref, Alignment valign, Alignment halign);
 
         // To be provided by concrete classes
         virtual void init_layout() = 0;
