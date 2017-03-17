@@ -19,8 +19,8 @@
 
 #include <stack>
 #include <cppgui_config.hpp>
-#include "./basic_types.hpp"
-#include "./Resource.hpp"
+//#include "./basic_types.hpp"
+#include "./Rectangle.hpp"
 #include CPPGUI_RENDERER_HEADER
 #include "./Full_resource_mapper.hpp" // TODO: replace with auto-selecting Resource_mapper.hpp as soon as ready
 

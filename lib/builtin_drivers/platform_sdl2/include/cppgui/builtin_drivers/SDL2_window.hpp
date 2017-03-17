@@ -7,7 +7,8 @@
 #include <functional>
 #include <SDL2/SDL.h>
 #include <cppgui_config.hpp>
-#include <cppgui/basic_types.hpp>
+//#include <cppgui/basic_types.hpp>
+#include <cppgui/Extents.hpp>
 
 
 struct SDL_Window;

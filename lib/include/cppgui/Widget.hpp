@@ -19,9 +19,10 @@
 
 #include <functional>
 #include <cppgui_config.hpp>
-#include "./basic_types.hpp"
+//#include "./basic_types.hpp"
+#include "./Bbox.hpp"
 #include "./Canvas.hpp"
-#include "./Resource.hpp"
+#include "./layouting.hpp"
 #include CPPGUI_RENDERER_HEADER
 #include CPPGUI_PLATFORM_ADAPTER_HEADER
 

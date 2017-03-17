@@ -1,10 +1,23 @@
 #pragma once
 
 #include "./basic_types.hpp"
+#include "./Bbox.hpp"
 
 
 namespace cppgui {
     
+    /*
+    * Can be used to specify both the position (of the origin point) and the bounds of a 
+    * Widget as a combined parameter.
+    * 
+    * TODO: rename to Positioned_bbox ?
+    */
+    struct Layout_box
+    {
+        Point   orig;
+        Bbox    bbox;
+    };
+
     /*
      * TODO: so far, this only serves to compute the minimal bounding box. We need actual layouting options.
      */
