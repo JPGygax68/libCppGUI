@@ -4,9 +4,9 @@
 #include <cstdint>
 #include <algorithm>
 
-#include "rasterized_glyph_cbox.hpp"
-#include "character_range.hpp"
-#include "bounding_box.hpp"
+#include "Rasterized_glyph_cbox.hpp"
+#include "Character_range.hpp"
+#include "Bounding_box.hpp"
 
 namespace cppgui {
 

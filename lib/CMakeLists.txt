@@ -80,6 +80,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_BINARY_DIR})
 # Make public header files available to consumers
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
+
 #-----------------------------------------------------------------------------
 # Sub-libraries (= library components)
 #
