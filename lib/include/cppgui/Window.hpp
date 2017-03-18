@@ -36,9 +36,14 @@ namespace cppgui {
         // Further specialization
         virtual void create_ui() {}
         virtual void adjust_layout() {}
-        virtual void before_redraw(Canvas *) {}
+        virtual void before_redraw(void *context) {}
+        virtual void before_draw_ui(Canvas *) {}
+
+        // Drawing details (use when overloading redraw())
+        void draw_ui();
 
     private:
+
         RGBA                        _bkg_color;
         std::unique_ptr<Canvas>     _canvas;
         Root_widget                 _root_widget;

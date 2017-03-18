@@ -37,17 +37,23 @@ namespace cppgui {
         _canvas.release();
     }
 
-    void Window::redraw(void * context)
+    void Window::redraw(void *context)
     {
         begin_rendering();
+        before_redraw(context);
+        draw_ui();
+        done_rendering();
+    }
+
+    void Window::draw_ui()
+    {
+        //_canvas->clear(_bkg_color);
         _canvas->enter_context(); // TODO: pass/check context ?
-        // TODO: must be made optional!
-        _canvas->clear(_bkg_color);
+                                  // TODO: must be made optional!
         // TODO: pass context to canvas / check if matches / etc ?
-        before_redraw(_canvas.get());
+        before_draw_ui(_canvas.get());
         _root_widget.render(_canvas.get(), {0, 0});
         _canvas->leave_context();
-        done_rendering();
     }
 
     void Window::size_changed(const Extents &e)
