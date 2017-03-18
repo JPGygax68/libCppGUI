@@ -239,7 +239,8 @@ namespace cppgui {
     public:
         
         void set_bounds(const Layout_box &lb) { set_bounds(lb.orig, lb.bbox); }
-        void set_bounds(const Point &, Bbox_cref, Alignment h_ref = center, Alignment v_ref = middle);
+        void set_bounds(const Point &, Bbox_cref);
+        void set_rectangle(const Point &, const Extents &, Alignment h_ref = center, Alignment v_ref = middle);
 
         // To be provided by concrete classes
         virtual void init_layout() = 0;

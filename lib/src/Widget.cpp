@@ -298,11 +298,9 @@ namespace cppgui {
         _container->child_invalidated(this);
     }
 
-    void Widget::set_bounds(const Point &p, Bbox_cref b, Alignment horz_ref, Alignment vert_ref)
+    void Widget::set_bounds(const Point &p, Bbox_cref b)
     {
-        auto bb{get_minimal_bounds().expand_to(b, horz_ref, vert_ref)};
-
-        compute_layout(bb);
+        compute_layout(b);
 
     #ifdef CPPGUI_Y_AXIS_DOWN
         _position = p + Point{ - b.x_min, b.y_max };
@@ -310,6 +308,29 @@ namespace cppgui {
     #error Upward Y axis not supported yet
     #endif
         _bounds = b;
+    }
+
+    void Widget::set_rectangle(const Point &p, const Extents &e, Alignment h_ref, Alignment v_ref)
+    {
+        auto b = get_minimal_bounds().expand_to(e, center, middle);
+
+        Vector d;
+
+        if      (h_ref == left  ) { d.x = 0; }
+        else if (h_ref == center) { assert(false); }
+        else if (h_ref == right ) { d.x = - e.w; }
+        else                      assert(false);
+
+    #ifdef CPPGUI_Y_AXIS_DOWN
+        if      (v_ref == top   ) { d.y = 0; }
+        else if (v_ref == middle) { assert(false); }
+        else if (v_ref == bottom) { d.y = - e.h; }
+        else                      assert(false);
+    #else
+    #error Upward Y axis not supported yet
+    #endif
+
+        set_bounds(p + d, b);
     }
 
     /*

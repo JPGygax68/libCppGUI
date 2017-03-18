@@ -5,10 +5,23 @@
 
 namespace cppgui {
     
-    Bbox::Bbox(const Extents &e, Alignment v_ref)
+    Bbox::Bbox(const Extents &e, Alignment h_ref, Alignment v_ref)
     {
         x_min = 0;
         x_max = e.w;
+
+        if (h_ref == left)
+        {
+            x_min = 0;
+            x_max = e.w;
+        }
+        else if (h_ref == right)
+        {
+            x_min = - e.w;
+            x_max = 0;
+        }
+        else
+            assert(false);
 
         if (v_ref == bottom)
         {
@@ -31,7 +44,7 @@ namespace cppgui {
         return {limits::max(), limits::min(), limits::max(), limits::min()};
     }
 
-    auto Bbox::operator+(const Point &d) const -> Bbox
+    auto Bbox::operator + (const Point &d) const -> Bbox
     {
         auto r{*this};
         r.x_min -= d.x;
@@ -183,6 +196,8 @@ namespace cppgui {
         };
     }
 
+#ifdef SILLY_IDEA
+
     auto Bbox::expand_to(Bbox_cref cont, Alignment h_ref, Alignment v_ref) -> Bbox_ref
     {
         auto w_ext = cont.width()  - width ();
@@ -200,5 +215,26 @@ namespace cppgui {
 
         return *this;
     }
+
+#else
+
+    auto Bbox::expand_to(const Extents &ext, Alignment h_ref, Alignment v_ref) -> Bbox_ref
+    {
+        auto w_ext = ext.w - width ();
+        auto h_ext = ext.h - height();
+
+        if      (h_ref == left    ) { x_max += w_ext; }
+        else if (h_ref == center  ) { x_min -= w_ext / 2; x_max += ext.w - width(); }
+        else if (h_ref == right   ) { x_min -= w_ext; }
+        else                        { assert(false); }
+
+        if      (v_ref == top     ) { y_min -= h_ext; }
+        else if (v_ref == middle  ) { y_min -= h_ext / 2; y_max += ext.h - height(); }
+        else if (v_ref == bottom  ) { y_max += h_ext; }
+        else                        { assert(false); }
+
+        return *this;
+    }
+#endif
 
 } // ns cppgui

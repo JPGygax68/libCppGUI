@@ -56,7 +56,7 @@ namespace cppgui {
         _canvas->define_viewport(0, 0, e.w, e.h);
         // (Re-)do layout
         _root_widget.init_layout();
-        _root_widget.set_bounds({0, 0}, Bbox{e, top});
+        _root_widget.set_bounds({0, 0}, Bbox{e, left, top});
         adjust_layout();
         _root_widget.compute_view_from_data();
     }

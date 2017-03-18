@@ -19,7 +19,7 @@ namespace cppgui {
         * the descendent is set to 0.
         */
     #ifdef CPPGUI_Y_AXIS_DOWN
-        Bbox(const Extents &e, Alignment v_ref);
+        Bbox(const Extents &e, Alignment h_ref, Alignment v_ref);
     #else
     #error Upward Y axis not supported yet
     #endif
@@ -75,7 +75,8 @@ namespace cppgui {
         */
         auto position_inside_rectangle(const Rectangle &r) const -> Point;
 
-        auto expand_to(Bbox_cref cont, Alignment h_ref = center, Alignment v_ref = middle) -> Bbox_ref;
+        //auto expand_to(Bbox_cref cont, Alignment h_ref = center, Alignment v_ref = middle) -> Bbox_ref;
+        auto expand_to(const Extents &, Alignment h_ref = center, Alignment v_ref = middle) -> Bbox_ref;
     };
 
 } // ns cppgui
