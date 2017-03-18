@@ -44,6 +44,8 @@ namespace cppgui {
         */
         static auto collapsed() -> Bbox;
 
+        auto origin() const -> Vector;
+
         auto operator +(const Point &d) const -> Bbox;
 
         auto expand(Width w) const -> Bbox;

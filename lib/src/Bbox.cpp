@@ -44,6 +44,18 @@ namespace cppgui {
         return {limits::max(), limits::min(), limits::max(), limits::min()};
     }
 
+    /*
+     * Vector from top-left corner (with CPPGUI_Y_AXIS_DOWN) to origin of bounding box.
+     */
+    auto Bbox::origin() const -> Vector
+    {
+    #ifdef CPPGUI_Y_AXIS_DOWN
+        return {- x_min, y_max };
+    #else
+    #error Upward Y axis not supported yet
+    #endif
+    }
+
     auto Bbox::operator + (const Point &d) const -> Bbox
     {
         auto r{*this};

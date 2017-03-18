@@ -79,6 +79,8 @@ namespace cppgui {
     {
         Position        x, y;
 
+        auto operator - () const -> Point { return { -x, -y }; }
+
         auto operator + (const Point &delta) const -> Point { return { x + delta.x, y + delta.y }; }
         auto operator - (const Point &delta) const -> Point { return { x - delta.x, y - delta.y }; }
 

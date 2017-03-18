@@ -45,6 +45,6 @@ add_subdirectory(lib)
 
 #add_subdirectory(sdl)
 
-#add_subdirectory(test_app)
+add_subdirectory(test_app)
 
 #add_subdirectory(designer)

@@ -302,11 +302,14 @@ namespace cppgui {
     {
         compute_layout(b);
 
+    #ifdef ERRONEOUS_CODE
     #ifdef CPPGUI_Y_AXIS_DOWN
         _position = p + Point{ - b.x_min, b.y_max };
     #else
     #error Upward Y axis not supported yet
     #endif
+    #endif
+        _position = p;
         _bounds = b;
     }
 
@@ -316,15 +319,15 @@ namespace cppgui {
 
         Vector d;
 
-        if      (h_ref == left  ) { d.x = 0; }
+        if      (h_ref == left  ) { d.x = - b.x_min; }
         else if (h_ref == center) { assert(false); }
-        else if (h_ref == right ) { d.x = - e.w; }
+        else if (h_ref == right ) { d.x = - b.x_max; }
         else                      assert(false);
 
     #ifdef CPPGUI_Y_AXIS_DOWN
-        if      (v_ref == top   ) { d.y = 0; }
+        if      (v_ref == top   ) { d.y = b.y_max; }
         else if (v_ref == middle) { assert(false); }
-        else if (v_ref == bottom) { d.y = - e.h; }
+        else if (v_ref == bottom) { d.y = b.y_min; }
         else                      assert(false);
     #else
     #error Upward Y axis not supported yet

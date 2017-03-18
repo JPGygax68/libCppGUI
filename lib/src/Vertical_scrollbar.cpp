@@ -73,7 +73,7 @@ namespace cppgui {
 
     void Vertical_scrollbar_base::compute_view_from_data()
     {
-        _thumb_rect.pos = { 2, _track.from };
+        _thumb_rect.pos.y = _track.from;
         // TODO: position from style
 
         recalc_thumb();
@@ -281,16 +281,18 @@ namespace cppgui {
 
         {
             auto bbmin = _up_btn.get_minimal_bounds();
-            auto bb = bbox.cut_from_top(bbmin.height());
-            auto pp = bbmin.position_inside_rectangle(bb);
-            _up_btn.set_bounds(pp, bbmin);
+            /*auto bb = */ bbox.cut_from_top(bbmin.height());
+            //auto pp = bbmin.position_inside_rectangle(bb);
+            //_up_btn.set_bounds(pp, bbmin);
+            _up_btn.set_rectangle({b.x_min, 0}, bbmin.extents(), left, top);
         }
 
         {
             auto bbmin = _down_btn.get_minimal_bounds();
-            auto bb = bbox.cut_from_bottom(bbmin.height());
-            auto pp = bbmin.position_inside_rectangle(bb);
-            _down_btn.set_bounds(pp, bbmin);
+            /* auto bb = */ bbox.cut_from_bottom(bbmin.height());
+            //auto pp = bbmin.position_inside_rectangle(bb);
+            //_down_btn.set_bounds(pp, bbmin);
+            _down_btn.set_rectangle({b.x_min, b.height()}, bbmin.extents(), left, bottom);
         }
 
         auto r = Rectangle{ bbox }.inflate(0, -2);
