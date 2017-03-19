@@ -254,10 +254,10 @@ namespace cppgui {
         return false; // we could not (quite) cycle, caller try again
     }
 
-    auto Container_base::child_at(const Point &pos) -> Widget*
+    auto Container_base::child_at(const Point &p) -> Widget*
     {
         auto child = std::find_if(begin(_children), end(_children), [&](auto ch) { 
-            return ch->visible() && ch->contains_point(pos); 
+            return ch->visible() && ch->bounds().is_point_inside(p - ch->position()); 
         });
 
         return child != end(_children) ? *child : nullptr;

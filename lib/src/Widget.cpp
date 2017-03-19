@@ -115,7 +115,7 @@ namespace cppgui {
 
     void Widget::gained_focus()
     {
-        std::cout << typeid(*this).name() << " gained focus" << std::endl;
+        //std::cout << typeid(*this).name() << " gained focus" << std::endl;
         invalidate();
     }
 
@@ -168,11 +168,6 @@ namespace cppgui {
         assert( container() ); // must not query before inserted into widget tree
 
         return container()->container_absolute_position() + position();
-    }
-
-    bool Widget::contains_point(const Point & point)
-    {
-        return _bounds.is_point_inside(point - _position);
     }
 
     bool Widget::mouse_button(const Point &pos, int button, Key_state state, Count clicks)

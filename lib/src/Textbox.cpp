@@ -131,7 +131,7 @@ namespace cppgui {
         }
     }
 
-    bool Textbox::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
+    bool Textbox::mouse_button(const Point &p, int button, Key_state state, Count clicks)
     {
         if (state == pressed)
         {
@@ -140,13 +140,13 @@ namespace cppgui {
                 take_focus();
             }
 
-            move_caret_to_pointer_position(pos);
+            move_caret_to_pointer_position(p);
             collapse_selection_to_caret();
 
             return true;
         }
 
-        return Super::mouse_button(pos, button, state, clicks);
+        return Super::mouse_button(p, button, state, clicks);
     }
 
     bool Textbox::mouse_click(const Point &, int /*button*/, Count count)

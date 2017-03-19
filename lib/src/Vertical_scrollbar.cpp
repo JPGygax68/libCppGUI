@@ -100,13 +100,13 @@ namespace cppgui {
         invalidate();
     }
 
-    bool Vertical_scrollbar_base::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
+    bool Vertical_scrollbar_base::mouse_button(const Point &p, int button, Key_state state, Count clicks)
     {
         if (button == 1 && state == Key_state::pressed)
         {
-            if (pos.y > _track.from && pos.y < _track.to)
+            if (p.y > _track.from && p.y < _track.to)
             {
-                auto y_rel = pos.y - _thumb_rect.pos.y;
+                auto y_rel = p.y - _thumb_rect.pos.y;
 
                 // Above thumb ?
                 if (y_rel < 0)
@@ -120,7 +120,7 @@ namespace cppgui {
                 }
                 else // On thumb
                 {
-                    /*_cur_drag_pos = */ _drag_anchor_pos = pos.y;
+                    /*_cur_drag_pos = */ _drag_anchor_pos = p.y;
                     _dragging_thumb = true;
                     root_widget()->capture_mouse(this); // called here because Widget::mouse_button() will not be called
                 }
@@ -139,7 +139,7 @@ namespace cppgui {
             }
         }
 
-        return Super::mouse_button(pos, button, state, clicks);
+        return Super::mouse_button(p, button, state, clicks);
     }
 
     bool Vertical_scrollbar_base::mouse_motion(const Point &p)
@@ -155,7 +155,7 @@ namespace cppgui {
 
         if (is_mouse_button_down(1) && _dragging_thumb)
         {
-            std::cout << "delta = " << (p.y - _drag_anchor_pos) << " (drag anchor: " << _drag_anchor_pos << ")" << std::endl;
+            //std::cout << "delta = " << (p.y - _drag_anchor_pos) << " (drag anchor: " << _drag_anchor_pos << ")" << std::endl;
             notify_drag_navigation(p.y - _drag_anchor_pos); // TODO: rename method ?
             return true;
         }
@@ -255,7 +255,7 @@ namespace cppgui {
     {
         if (d != 0)
         {
-            std::cout << "notify_drag_navigation: delta = " << d << std::endl;
+            //std::cout << "notify_drag_navigation: delta = " << d << std::endl;
             move_by_fraction({ d, _track.length() });
         }
     }

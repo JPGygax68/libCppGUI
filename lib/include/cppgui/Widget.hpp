@@ -136,7 +136,6 @@ namespace cppgui {
         // Queries
 
         virtual auto absolute_position() -> Point;
-        bool contains_point(const Point &point);
 
         // Run-time manipulations
 

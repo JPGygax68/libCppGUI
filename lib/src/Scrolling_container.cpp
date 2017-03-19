@@ -173,10 +173,13 @@ namespace cppgui {
         // The remainder of the bounding box becomes the window box
         _window_bbox = b;
 
-        // Align content pane with top left of content window
-        //_content_pane->set_bounds(align_top_left(_window_bbox, _content_pane->get_optimal_bounds()));
+        // Expand vertically (but not horizontall) to obtain the content pane dimensions
+        // (i.e.: the content window and content pane have same width, but the content
+        // pane may be higher)
         b.expand_to({0, _content_pane->get_optimal_bounds().height()}, left, top);
-        _content_pane->set_bounds(-b.origin(), b);
+
+        // Align content pane with top left of content window
+        _content_pane->set_bounds(-b.origin(), b, left, top);
         _content_offset = { 0, 0 };
     }
 
