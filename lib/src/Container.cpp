@@ -257,7 +257,7 @@ namespace cppgui {
     auto Container_base::child_at(const Point &p) -> Widget*
     {
         auto child = std::find_if(begin(_children), end(_children), [&](auto ch) { 
-            return ch->visible() && ch->bounds().is_point_inside(p - ch->position()); 
+            return ch->visible() && ch->bounds().contains_point(p - ch->position()); 
         });
 
         return child != end(_children) ? *child : nullptr;

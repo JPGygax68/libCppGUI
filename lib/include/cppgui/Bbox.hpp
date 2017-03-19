@@ -50,7 +50,7 @@ namespace cppgui {
 
         auto expand(Width w) const -> Bbox;
 
-        bool is_point_inside(const Point &p) const;
+        bool contains_point(const Point &p) const;
 
         auto append_at_bottom(Bbox_cref bbox, Alignment align = horizontal_middle) -> Bbox_ref;
 

@@ -65,6 +65,15 @@ namespace cppgui
         static auto background_color(Widget_states) -> RGBA { return { 0.8f, 0.8f, 0.8f, 1}; }
     };
 
+    class Text_padding_box_styles
+    {
+    protected:
+        static auto border_width    (Widget_states) -> Width { return 0; }
+        static auto padding_width   (Widget_states) -> Width { return 3; }
+        static auto border_color    (Widget_states) -> RGBA { return { 0, 0, 0, 0 }; }
+        static auto background_color(Widget_states) -> RGBA { return { 0, 0, 0, 0 }; }
+    };
+
     class Text_field_box_styles
     {
     protected:

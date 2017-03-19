@@ -102,6 +102,8 @@ namespace cppgui
         cont.x_max -= w;
     }
 
+    // TODO: inelegant, replace
+
     auto layout_element_at_top_edge(Bbox_ref cont, Bbox_cref elem, Alignment halign) -> Layout_box
     {
         // Compute position of element origin point
@@ -122,6 +124,33 @@ namespace cppgui
 
         // Cut slice off from top
         cont.y_max -= elem.height();
+
+        // Return layout box for the element
+        return { { x, y }, b };
+    }
+
+    // TODO: inelegant, replace
+
+    auto layout_element_at_bottom_edge(Bbox_ref cont, Bbox_cref elem, Alignment halign) -> Layout_box
+    {
+        // Compute position of element origin point
+    #ifdef CPPGUI_Y_AXIS_DOWN
+        auto y =  cont.height() + elem.y_min - cont.y_max;
+    #else
+    #error Positive up Y axis not supported yet.
+    #endif
+
+        // Horizontal alignment
+        assert(halign == horizontal_middle);
+        auto x = (cont.width() - elem.width()) / 2 + (-elem.x_min) - (-cont.x_min);
+
+        // Stretch element
+        auto b{ elem };
+        b.x_min = cont.x_min - x;
+        b.x_max = cont.x_max - x;
+
+        // Cut slice off from bottom
+        cont.y_min += elem.height();
 
         // Return layout box for the element
         return { { x, y }, b };

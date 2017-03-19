@@ -75,7 +75,7 @@ namespace cppgui {
         return {x_min - d, x_max + d, y_min - d, y_max + d};
     }
 
-    bool Bbox::is_point_inside(const Point &p) const
+    bool Bbox::contains_point(const Point &p) const
     {
 #ifdef CPPGUI_Y_AXIS_DOWN
 
