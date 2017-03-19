@@ -92,7 +92,7 @@ namespace cppgui {
             for (auto child: children())
             {
                 auto bc = child->get_minimal_bounds().expand_to({b.width(), 0}, left, baseline);
-                child->set_bounds(p, bc);
+                child->set_bounds(p, bc, left, top);
                 p.y += child->height();
                 p.y += separator_width();
             }
