@@ -237,7 +237,7 @@ namespace cppgui {
             auto w_ext = ext.w - width ();
             
             if      (h_ref == left    ) { x_max += w_ext; }
-            else if (h_ref == center  ) { x_min -= w_ext / 2; x_max += ext.w - width(); }
+            else if (h_ref == horigin ) { x_min -= w_ext / 2; x_max += ext.w - width(); }
             else if (h_ref == right   ) { x_min -= w_ext; }
             else                        { assert(false); }
         }
@@ -247,7 +247,7 @@ namespace cppgui {
             auto h_ext = ext.h - height();
 
             if      (v_ref == top     ) { y_min -= h_ext; }
-            else if (v_ref == middle  ) { y_min -= h_ext / 2; y_max += ext.h - height(); }
+            else if (v_ref == baseline) { y_min -= h_ext / 2; y_max += ext.h - height(); }
             else if (v_ref == bottom  ) { y_max += h_ext; }
             else                        { assert(false); }
         }

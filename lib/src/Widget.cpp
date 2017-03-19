@@ -305,7 +305,7 @@ namespace cppgui {
         Vector d;
 
         if      (h_ref == left    ) { d.x = - b.x_min; }
-        else if (h_ref == origin  ) { d.x = 0;         }
+        else if (h_ref == horigin ) { d.x = 0;         }
         else if (h_ref == right   ) { d.x = - b.x_max; }
         else                        assert(false);
 
@@ -332,7 +332,7 @@ namespace cppgui {
      */
     void Widget::set_rectangle(const Point &p, const Extents &e, Alignment h_ref, Alignment v_ref)
     {
-        auto b = get_minimal_bounds().expand_to(e, center, middle);
+        auto b = get_minimal_bounds().expand_to(e, horigin /*center*/, baseline /*middle*/);
 
         set_bounds(p, b, h_ref, v_ref);
     }

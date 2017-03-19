@@ -64,7 +64,7 @@ namespace cppgui {
         
         // Geometrically defined
         left,
-        horizontal_origin, origin = horizontal_origin,
+        horizontal_origin, horigin = horizontal_origin,
         horizontal_middle, center = horizontal_middle,
         right,
         top,
