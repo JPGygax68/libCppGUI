@@ -298,42 +298,48 @@ namespace cppgui {
         _container->child_invalidated(this);
     }
 
-    void Widget::set_bounds(const Point &p, Bbox_cref b)
+    void Widget::set_bounds(const Layout_box &lb, Alignment h_align, Alignment v_align)
+    {
+        set_bounds(lb.orig, lb.bbox, h_align, v_align);
+    }
+
+    void Widget::set_bounds(const Point &p, Bbox_cref b, Alignment h_ref, Alignment v_ref)
     {
         compute_layout(b);
 
-    #ifdef ERRONEOUS_CODE
+        Vector d;
+
+        if      (h_ref == left    ) { d.x = - b.x_min; }
+        else if (h_ref == origin  ) { d.x = 0;         }
+        else if (h_ref == right   ) { d.x = - b.x_max; }
+        else                        assert(false);
+
     #ifdef CPPGUI_Y_AXIS_DOWN
-        _position = p + Point{ - b.x_min, b.y_max };
+        if      (v_ref == top     ) { d.y = b.y_max;   }
+        else if (v_ref == baseline) { d.y = 0;         }
+        else if (v_ref == bottom  ) { d.y = b.y_min;   }
+        else                        assert(false);
     #else
     #error Upward Y axis not supported yet
     #endif
-    #endif
-        _position = p;
+
+        _position = p + d;
         _bounds = b;
     }
 
+    /*
+     * Expands the widget to fit the specified rectangle, then places it in the specified corner.
+     * 
+     * This code is EXPERIMENTAL. The widget expansion is hardcoded to be centered on the origin 
+     * point, which is useful in some situations and less so in others. Time must tell whether
+     * this method is sufficiently useful, or it it should be dropped, or replaced by something
+     * else.
+     */
     void Widget::set_rectangle(const Point &p, const Extents &e, Alignment h_ref, Alignment v_ref)
     {
         auto b = get_minimal_bounds().expand_to(e, center, middle);
 
-        Vector d;
-
-        if      (h_ref == left  ) { d.x = - b.x_min; }
-        else if (h_ref == center) { assert(false); }
-        else if (h_ref == right ) { d.x = - b.x_max; }
-        else                      assert(false);
-
-    #ifdef CPPGUI_Y_AXIS_DOWN
-        if      (v_ref == top   ) { d.y = b.y_max; }
-        else if (v_ref == middle) { assert(false); }
-        else if (v_ref == bottom) { d.y = b.y_min; }
-        else                      assert(false);
-    #else
-    #error Upward Y axis not supported yet
-    #endif
-
-        set_bounds(p + d, b);
+        set_bounds(p, b, h_ref, v_ref);
     }
 
     /*

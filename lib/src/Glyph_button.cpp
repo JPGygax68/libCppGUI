@@ -38,6 +38,11 @@ namespace cppgui {
         _glyph_cp  = g.code_point;
     }
 
+    void Glyph_button_base::set_horizontal_alignment(Alignment a)
+    {
+        _horz_align = a;
+    }
+
     void Glyph_button_base::init(Canvas *c)
     {
         if (_label_font.rasterized) _label_font.translate(c);
@@ -95,7 +100,7 @@ namespace cppgui {
 
         l.append_text(_label_font.rasterized, _label.data(), _label.size());
         l.append_space(); // necessary to make room for stippled "focus" rectangle
-        l.append_glyph(_glyph_font.rasterized, _glyph_cp);
+        if (_glyph_cp != 0) l.append_glyph(_glyph_font.rasterized, _glyph_cp);
 
         return l.minimal_bounds();
     }
@@ -113,7 +118,10 @@ namespace cppgui {
     void Glyph_button_base::compute_bounds()
     {
         _label_bbox = _label_font.rasterized->compute_text_extents(0, _label.data(), _label.size());
-        _glyph_bbox = _glyph_font.rasterized->compute_text_extents(0, &_glyph_cp, 1);
+        if (_glyph_cp != 0)
+            _glyph_bbox = _glyph_font.rasterized->compute_text_extents(0, &_glyph_cp, 1);
+        else
+            _glyph_bbox = Bbox::empty();
     }
     
     #endif // CPPGUI_EXCLUDE_LAYOUTING

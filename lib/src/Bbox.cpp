@@ -232,18 +232,25 @@ namespace cppgui {
 
     auto Bbox::expand_to(const Extents &ext, Alignment h_ref, Alignment v_ref) -> Bbox_ref
     {
-        auto w_ext = ext.w - width ();
-        auto h_ext = ext.h - height();
+        if (ext.w > 0)
+        {
+            auto w_ext = ext.w - width ();
+            
+            if      (h_ref == left    ) { x_max += w_ext; }
+            else if (h_ref == center  ) { x_min -= w_ext / 2; x_max += ext.w - width(); }
+            else if (h_ref == right   ) { x_min -= w_ext; }
+            else                        { assert(false); }
+        }
 
-        if      (h_ref == left    ) { x_max += w_ext; }
-        else if (h_ref == center  ) { x_min -= w_ext / 2; x_max += ext.w - width(); }
-        else if (h_ref == right   ) { x_min -= w_ext; }
-        else                        { assert(false); }
+        if (ext.h > 0)
+        {
+            auto h_ext = ext.h - height();
 
-        if      (v_ref == top     ) { y_min -= h_ext; }
-        else if (v_ref == middle  ) { y_min -= h_ext / 2; y_max += ext.h - height(); }
-        else if (v_ref == bottom  ) { y_max += h_ext; }
-        else                        { assert(false); }
+            if      (v_ref == top     ) { y_min -= h_ext; }
+            else if (v_ref == middle  ) { y_min -= h_ext / 2; y_max += ext.h - height(); }
+            else if (v_ref == bottom  ) { y_max += h_ext; }
+            else                        { assert(false); }
+        }
 
         return *this;
     }

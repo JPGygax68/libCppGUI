@@ -50,7 +50,7 @@ namespace cppgui {
             auto find_glyph(uint32_t cp) const -> int {
 
                 size_t base = 0; // base glyph index for current range
-                for (auto range_it = ranges.begin(); range_it != ranges.end(); base += (*range_it).count, range_it++)
+                for (auto range_it = begin(ranges); range_it != end(ranges); base += (*range_it).count, ++range_it)
                     if (cp >= (*range_it).starting_codepoint && cp < ((*range_it).starting_codepoint + (*range_it).count))
                         return base + (cp - (*range_it).starting_codepoint);
                 return -1;

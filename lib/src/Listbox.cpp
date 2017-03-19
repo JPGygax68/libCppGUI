@@ -82,18 +82,19 @@ namespace cppgui {
         return bb_min;
     }
 
-    void Listbox_content_pane::compute_layout(Bbox_cref b_)
+    void Listbox_content_pane::compute_layout(Bbox_cref b)
     {
         if (child_count() > 0)
         {
-            auto bb_rem{ b_ };      // remaining bounding box
+            auto p = Point{0, 0};
 
             // Layout vertically into the provided bounding box (can exceed at bottom)
             for (auto child: children())
             {
-                auto lb = layout_element_at_top_edge(bb_rem, child->get_minimal_bounds(), horizontal_middle);
-                child->set_bounds(lb);
-                layout_gap_at_top_edge(bb_rem, separator_width());
+                auto bc = child->get_minimal_bounds().expand_to({b.width(), 0}, left, baseline);
+                child->set_bounds(p, bc);
+                p.y += child->height();
+                p.y += separator_width();
             }
         }
     }

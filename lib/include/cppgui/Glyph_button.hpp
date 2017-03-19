@@ -38,10 +38,9 @@ namespace cppgui {
         void on_pushed(Pushed_handler);
 
         void set_font(const Rasterized_font *font) { _label_font.assign(font); }
-
         void set_label(const std::u32string &label) { _label = label; }
-
         void set_glyph(const Glyph_specifier &);
+        void set_horizontal_alignment(Alignment);
 
         //void enable_border(bool enabled) { _border_enabled = enabled; }
 
@@ -73,6 +72,7 @@ namespace cppgui {
 
         void compute_bounds();
 
+        Alignment                       _horz_align = center;
         Bbox                            _glyph_bbox = {};
 
     #endif // CPPGUI_EXCLUDE_LAYOUTING

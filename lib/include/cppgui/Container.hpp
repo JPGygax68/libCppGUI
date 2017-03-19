@@ -22,7 +22,8 @@
 
 namespace cppgui {
 
-    /** Container functionality (ability to contain Widgets).
+    /*
+     *  Container functionality (ability to contain Widgets).
      */
     class Container_base: public Widget
     {

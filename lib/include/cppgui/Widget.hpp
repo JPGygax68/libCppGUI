@@ -237,15 +237,18 @@ namespace cppgui {
 
     #ifndef CPPGUI_EXCLUDE_LAYOUTING
     public:
-        
-        void set_bounds(const Layout_box &lb) { set_bounds(lb.orig, lb.bbox); }
-        void set_bounds(const Point &, Bbox_cref);
+
+        void set_bounds(const Layout_box &lb, Alignment h_align = origin, Alignment v_align = baseline);
+        void set_bounds(const Point &, Bbox_cref, Alignment h_align = origin, Alignment v_align = baseline);
         void set_rectangle(const Point &, const Extents &, Alignment h_ref=left, Alignment v_ref=top);
 
         // To be provided by concrete classes
         virtual void init_layout() = 0;
         virtual auto get_minimal_bounds() -> Bbox = 0;
         virtual void compute_layout(Bbox_cref) {}
+
+        // Overridable for specialization
+        virtual auto get_optimal_bounds() -> Bbox { return get_minimal_bounds(); }
 
     protected:
         // TODO: this really belongs to a utility module

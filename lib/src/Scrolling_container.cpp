@@ -148,7 +148,7 @@ namespace cppgui {
 
     void Scrolling_container::compute_layout(Bbox_cref b_)
     {
-        auto b{ b_ };
+        auto b{b_};
 
         // Scrollbar at right edge
         _vscrollbar.set_bounds(layout_element_at_right_edge(b, _vscrollbar.get_minimal_bounds(), vertical_baseline));
@@ -160,8 +160,18 @@ namespace cppgui {
         _window_bbox = b;
 
         // Align content pane with top left of content window
-        _content_pane->set_bounds(align_top_left(_window_bbox, _content_pane->get_minimal_bounds()));
+        //_content_pane->set_bounds(align_top_left(_window_bbox, _content_pane->get_optimal_bounds()));
+        b.expand_to({0, _content_pane->get_optimal_bounds().height()}, left, top);
+        _content_pane->set_bounds(-b.origin(), b);
         _content_offset = { 0, 0 };
+    }
+
+    auto Scrolling_container::get_optimal_bounds() -> Bbox
+    {
+        auto bbox = Bbox{ _content_pane->get_optimal_bounds().extents(), left, top };
+        bbox.append_to_right( separator_width() );
+        bbox.append_to_right(_vscrollbar.get_minimal_bounds(), top);
+        return bbox;
     }
 
 #endif // !CPPGUI_EXCLUDE_LAYOUTING

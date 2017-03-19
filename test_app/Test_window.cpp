@@ -101,16 +101,16 @@ void Test_window::create_ui()
 
 void Test_window::adjust_layout()
 {
-    _label      .set_bounds({  50,  50 }, _label      .get_minimal_bounds());
-    _textbox    .set_bounds({ 150,  50 }, _textbox    .get_minimal_bounds());
-    _button     .set_bounds({ 300,  50 }, _button     .get_minimal_bounds());
-    _checkbox   .set_bounds({ 450,  50 }, _checkbox   .get_minimal_bounds());
-    _glyphbutton.set_bounds({  50, 100 }, _glyphbutton.get_minimal_bounds());
-    _vscrollbar .set_bounds({  50, 150 }, _vscrollbar .get_minimal_bounds());
+    _label      .set_bounds({  50,  50 }, _label      .get_minimal_bounds(),,);
+    _textbox    .set_bounds({ 150,  50 }, _textbox    .get_minimal_bounds(),,);
+    _button     .set_bounds({ 300,  50 }, _button     .get_minimal_bounds(),,);
+    _checkbox   .set_bounds({ 450,  50 }, _checkbox   .get_minimal_bounds(),,);
+    _glyphbutton.set_bounds({  50, 100 }, _glyphbutton.get_minimal_bounds(),,);
+    _vscrollbar .set_bounds({  50, 150 }, _vscrollbar .get_minimal_bounds(),,);
 
     {
         auto bbox = _listbox.get_minimal_bounds();
         bbox.y_min = -120;
-        _listbox    .set_bounds({ 150, 150 }, bbox);
+        _listbox    .set_bounds({ 150, 150 }, bbox,,);
     }
 }

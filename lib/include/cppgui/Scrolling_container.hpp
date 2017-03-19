@@ -81,6 +81,7 @@ namespace cppgui {
 
         auto get_minimal_bounds() -> Bbox override;
         void compute_layout(Bbox_cref) override;
+        auto get_optimal_bounds() -> Bbox override;
 
     #endif // !CPPGUI_EXCLUDE_LAYOUTING
     };
