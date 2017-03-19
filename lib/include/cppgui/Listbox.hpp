@@ -14,7 +14,7 @@ namespace cppgui {
         
         void add_item(Widget *) const;
 
-        void bring_item_into_view(Index);
+        //void bring_item_into_view(Index);
 
     protected:
 
@@ -29,6 +29,7 @@ namespace cppgui {
         bool last_item_fully_visible() const;
         auto first_partially_visible_item_index() const -> Index;
         auto first_partially_visible_item() const -> Widget *;
+        auto last_partially_visible_item_index() const -> Index;
         auto hidden_height_of_first_visible_item() const -> Length;
         auto visible_item_count() const -> Count;
 

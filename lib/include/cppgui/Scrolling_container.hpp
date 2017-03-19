@@ -43,6 +43,7 @@ namespace cppgui {
 
         bool cycle_focus(int) override { return false; } // prevent from cycling away from content pane
 
+        void bring_item_into_view(Index);
         void bring_item_into_view(Widget *);
 
         auto content_pane() const { return _content_pane; }

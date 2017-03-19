@@ -155,7 +155,7 @@ namespace cppgui {
 
         if (is_mouse_button_down(1) && _dragging_thumb)
         {
-            //std::cerr << "delta = " << (pos.y - _drag_anchor_pos) << std::endl;
+            std::cout << "delta = " << (p.y - _drag_anchor_pos) << " (drag anchor: " << _drag_anchor_pos << ")" << std::endl;
             notify_drag_navigation(p.y - _drag_anchor_pos); // TODO: rename method ?
             return true;
         }
@@ -202,7 +202,7 @@ namespace cppgui {
         {
             value = clamp(value, 0, _full_range - _shown_range);
 
-            auto new_y = _track.from + (value * (_track.length() - _thumb_rect.ext.h) / (_full_range - _shown_range));
+            auto new_y = _track.from + value * (_track.length() - _thumb_rect.ext.h) / (_full_range - _shown_range);
 
             if (_dragging_thumb)
             {
@@ -251,13 +251,12 @@ namespace cppgui {
         }
     }
 
-    void Vertical_scrollbar_base::notify_drag_navigation(Position_delta delta)
+    void Vertical_scrollbar_base::notify_drag_navigation(Position_delta d)
     {
-        if (delta != 0)
+        if (d != 0)
         {
-            //std::cerr << "delta = " << delta << std::endl;
-            //static_cast<Impl*>(this)->move_by_fraction(_drag_start_pos, { delta, static_cast<int>(_sliding_range.l - _thumb_rect.ext.h) });
-            move_by_fraction({ delta, _track.length() - _thumb_rect.ext.h });
+            std::cout << "notify_drag_navigation: delta = " << d << std::endl;
+            move_by_fraction({ d, _track.length() });
         }
     }
 

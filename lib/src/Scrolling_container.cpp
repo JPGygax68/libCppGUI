@@ -81,11 +81,24 @@ namespace cppgui {
         return true;
     }
 
+    void Scrolling_container::bring_item_into_view(Index i)
+    {
+        bring_item_into_view(content_pane()->child(i));
+    }
+
     void Scrolling_container::bring_item_into_view(Widget *c)
     {
         auto r_item = c->rectangle() + content_pane()->position();
         auto r_win = Rectangle{_window_bbox};
 
+        Vector d{0, 0};
+
+        if      (r_item.y1() < r_win.y1()) d.y = r_win.y1() - r_item.y1();
+        else if (r_item.y2() > r_win.y2()) d.y = r_win.y2() - r_item.y2();
+
+        if (d.x != 0 || d.y != 0) shift_content_by(d);
+
+        #ifdef NOT_DEFINED
         if (! r_win.fully_contains(r_item))
         {
             // Top-left (with standard coordinate system)
@@ -101,6 +114,7 @@ namespace cppgui {
         #error Upward Y axis not supported yet
         #endif
         }
+        #endif // NOT_DEFINED
     }
 
     /*

@@ -105,6 +105,8 @@ namespace cppgui {
 
         if (_mouse_holder)
         {
+            std::cout << "captured mouse motion: " << pos.x << ", " << pos.y 
+                      << " (offset: " << _capture_offset.x << ", " << _capture_offset.y << ")" << std::endl;
             consumed = _mouse_holder->mouse_motion(pos - _capture_offset);
         }
 

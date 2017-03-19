@@ -209,6 +209,21 @@ namespace cppgui {
         return item( first_partially_visible_item_index() );
     }
 
+    auto Listbox_base::last_partially_visible_item_index() const -> Index
+    {
+        auto r_win = content_window();
+
+        for (Index i = item_count(); i-- > 0; )
+        {
+            auto r_item = item_rectangle(item(i));
+
+            if (r_win.intersects_vertically_with(r_item))
+                return i;
+        }
+
+        return -1;
+    }
+
     auto Listbox_base::hidden_height_of_first_visible_item() const -> Length
     {
         auto r_item = item_rectangle(first_partially_visible_item());
@@ -219,11 +234,13 @@ namespace cppgui {
     auto Listbox_base::visible_item_count() const -> Count
     {
         auto i = first_partially_visible_item_index();
+        if (!item_fully_visible(i)) i ++;
         auto j = i;
         while (j < item_count() && item_fully_visible(j)) j ++;
         return j - i;
     }
 
+    /*
     void Listbox_base::bring_item_into_view(Index index)
     {
         // Find relative position of item to bring into full view
@@ -234,18 +251,17 @@ namespace cppgui {
         // Shift
         shift_content_by({ 0, -dy });
     }
+    */
 
     void Listbox_base::scroll_down()
     {
-        // "scroll down" = content pane moves up relative to content window
+        // "scroll down" = content pane moves up relative to content window, uncovering items at bottom
 
         if (!last_item_fully_visible())
         {
-            auto i = first_partially_visible_item_index();
-            auto r = item_rectangle( item(i) );
-
-            // If item fully visible, pick the successor
-            if (r.y1() >= content_window().y1()) i ++;
+            // Find first item that is not fully visible
+            auto i = last_partially_visible_item_index();
+            while (i < (item_count()-1) && item_fully_visible(i)) i ++;
 
             bring_item_into_view(i);
         }
@@ -255,10 +271,9 @@ namespace cppgui {
     {
         // "scroll up" = content pane moves down relative to content window, uncovering predecessor items
 
+        // Find the item that we need to uncover
         auto i = first_partially_visible_item_index();
-
-        // If item fully visible, pick predecessor
-        if (item_fully_visible(i)) i --;
+        while (i > 0 && item_fully_visible(i)) i --;
 
         if (i >= 0)
         {
