@@ -1,3 +1,5 @@
 - Specification on how to extend existing widgets, e.g. how to add position marks to a scrollbar
 
 - Test tab focus cycling with nested containers
+
+- Make it possible to customize the root widget (with/without background color, others ?)
