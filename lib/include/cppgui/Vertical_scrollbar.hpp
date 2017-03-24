@@ -46,23 +46,6 @@ namespace cppgui {
 
     // Base class ===================================================
 
-    // Resources struct
-
-    /*
-    namespace {
-
-        namespace {
-            // TODO: make this adaptive in case color does need translating
-            struct slide_bgcol        : Non_mapped_resource<Color> {};
-            struct thumb_color        : Non_mapped_resource<Color> {};
-            struct thumb_hovered_color: Non_mapped_resource<Color> {};
-        }
-
-        template<class Config>
-        using Resources = Resource_struct<slide_bgcol, thumb_color, thumb_hovered_color>;
-    }
-    */
-
     // Class declaration
 
     /** TODO: the current implementation works by maintaining a bidirectional, "locked"
@@ -130,7 +113,7 @@ namespace cppgui {
         RGBA                    _thumb_color;           // ditto
         RGBA                    _thumb_hovered_color;   // ditto
 
-        Embedded_glyph_button _up_btn, _down_btn;
+        Embedded_glyph_button   _up_btn, _down_btn;
         Length                  _full_range = 0;    // the range represented by the full length of the track 
                                                     // (= strip on which the thumb moves)
         Length                  _shown_range = 0;   // the range represented by the length of the thumb

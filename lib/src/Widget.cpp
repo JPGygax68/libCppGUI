@@ -90,6 +90,8 @@ namespace cppgui {
 
     void Widget::take_focus()
     {
+        assert(focussable());
+
         pass_up_and_notify_focus();
     }
 
@@ -172,13 +174,13 @@ namespace cppgui {
 
     bool Widget::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
     {
-        if (state == Key_state::pressed)
+        if (state == pressed)
         {
-            take_focus();
+            //if (focussable()) take_focus();
 
             root_widget()->capture_mouse(this);
         }
-        else if (state == Key_state::released)
+        else if (state == released)
         {
             auto holder = root_widget()->mouse_holder();
 
@@ -203,7 +205,10 @@ namespace cppgui {
             if (_click_hndlr(pos, button, count)) return true;
         }
 
-        take_focus();
+        if (focussable())
+        {
+            take_focus();
+        }
 
         return false;
     }
