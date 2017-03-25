@@ -29,7 +29,7 @@ void Test_window::create_ui()
     set_background_color({0, 0.5, 1, 1});
 
     _label.set_font(&cppgui::baked_fonts::default_font());
-    _label.set_color({1, 1, 1, 1});
+    //_label.set_color({1, 1, 1, 1});
     //_label.set_background_color({1, 1, 1, 1});
     _label.set_text(U"Hello World!");
     _label.on_click([](const cppgui::Point &pos, int button, int clicks) {

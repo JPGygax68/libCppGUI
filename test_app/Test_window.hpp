@@ -29,7 +29,7 @@ private:
 
     cppgui::Label                       _label;
     cppgui::Textbox                     _textbox;
-    cppgui::Button_base                      _button;
+    cppgui::Button                      _button;
     cppgui::Checkbox                    _checkbox;
     cppgui::Glyph_button                _glyphbutton;
     cppgui::Boxed_vertical_scrollbar    _vscrollbar;
