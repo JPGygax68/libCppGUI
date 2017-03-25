@@ -56,12 +56,14 @@ namespace cppgui {
         // Label
         if (!_label.empty())
         {
+            c->set_text_color({0, 0, 0, 1}); // TODO: make stylable
             c->render_text(_label_font.get(), p.x, p.y, _label.data(), _label.size());
         }
 
         // Glyph
         if (_glyph_cp)
         {
+            c->set_text_color({0, 0, 0, 1}); // TODO: make stylable
             c->render_text(_glyph_font.get(), p.x + _glyph_orig, p.y, &_glyph_cp, 1);
         }
 

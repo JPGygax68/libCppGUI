@@ -19,6 +19,7 @@
 
 #include <string>
 #include "./Widget.hpp"
+#include "./Boxed.hpp"
 
 
 namespace cppgui {
@@ -45,7 +46,7 @@ namespace cppgui {
     protected:
         Font_resource           _font;
         std::u32string          _text;
-        RGBA                    _color;
+        RGBA                    _color = {0, 0, 0, 1};
 
     #ifndef CPPGUI_EXCLUDE_LAYOUTING
     public:
