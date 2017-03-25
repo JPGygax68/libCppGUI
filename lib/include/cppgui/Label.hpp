@@ -2,7 +2,7 @@
 
 /*  libCppGUI - A GUI library for C++11/14
     
-    Copyright 2016 Hans-Peter Gygax
+    Copyright 2016, 2017 Hans-Peter Gygax
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -44,6 +44,9 @@ namespace cppgui {
         // void change_text(const std::u32string &);
 
     protected:
+        bool focussable() const override { return false; }
+
+    private:
         Font_resource           _font;
         std::u32string          _text;
         RGBA                    _color = {0, 0, 0, 1};

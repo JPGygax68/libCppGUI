@@ -59,12 +59,12 @@ namespace cppgui {
             c->render_text(_font.get(), p.x, p.y, _text.data(), _text.size());
         }
 
-        if (this->has_focus())
+        /* if (this->has_focus())
         {
             auto r = Rectangle{bounds()};
             r.inflate(3, 2); // TODO: make this configurable somewhere
             c->draw_stippled_rectangle_outline(p.x + r.pos.x, p.y + r.pos.y, r.ext.w, r.ext.h, {0, 0, 0.5f, 1});
-        }
+        } */
     }
 
     // Layouter aspect ----------------------------------------------
