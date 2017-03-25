@@ -5,6 +5,12 @@
 
 namespace cppgui {
  
+    /*
+     * Note: the Boxed<> decorator MUST NOT be used on abstract classes - for example, it is not 
+     * possible to apply it to Container_base.
+     * (The reason for this is that Boxed<> modifieds the two main layouting methods by overriding
+     * and super-calling them.)
+     */
     template<class WidgetC, class BoxStyles>
     class Boxed: public WidgetC, public Box<BoxStyles>
     {

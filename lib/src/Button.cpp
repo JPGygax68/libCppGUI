@@ -52,6 +52,7 @@ namespace cppgui {
 
         //draw_background_and_border(c, p, bounds(), visual_states());
 
+        c->set_text_color(label_color(visual_states()));
         c->render_text(_font.get(), p.x /*+ _x_offs*/, p.y, _label.data(), _label.size());
 
         if (this->has_focus())

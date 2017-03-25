@@ -48,8 +48,11 @@ namespace cppgui {
 
     protected:
 
+        virtual auto label_color(Widget_states) -> RGBA const { return {0, 0, 0, 1}; }
+
         Pushed_handler          _on_pushed;
         Font_resource           _font;
+        RGBA                    _color = {0, 0, 0, 1};
         std::u32string          _label;
         Bbox                    _label_bbox;
 

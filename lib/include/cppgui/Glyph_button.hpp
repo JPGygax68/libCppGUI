@@ -85,5 +85,4 @@ namespace cppgui {
     using Borderless_glyph_button = Boxed<Glyph_button_base, Borderless_button_box_styles>;
     using Embedded_glyph_button = Non_focussable< Boxed<Glyph_button_base, Borderless_button_box_styles> >;
 
-
 } // ns cppui
