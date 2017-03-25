@@ -21,36 +21,36 @@
 
 namespace cppgui {
 
-    void Button::on_pushed(Pushed_handler handler)
+    void Button_base::on_pushed(Pushed_handler handler)
     {
         _on_pushed = handler;
     }
 
-    void Button::set_font(const Rasterized_font *font)
+    void Button_base::set_font(const Rasterized_font *font)
     {
         _font.assign(font);
     }
 
-    void Button::set_label(const std::u32string &label)
+    void Button_base::set_label(const std::u32string &label)
     {
         _label = label;
     }
 
-    void Button::set_label(const std::string &label)
+    void Button_base::set_label(const std::string &label)
     {
         set_label( utf8_to_utf32(label) );
     }
 
-    void Button::init(Canvas *c)
+    void Button_base::init(Canvas *c)
     {
         _font.translate(c);
     }
 
-    void Button::render(Canvas *c, const Point &offs)
+    void Button_base::render(Canvas *c, const Point &offs)
     {
         auto p = offs + position();
 
-        draw_background_and_border(c, p, bounds(), visual_states());
+        //draw_background_and_border(c, p, bounds(), visual_states());
 
         c->render_text(_font.get(), p.x /*+ _x_offs*/, p.y, _label.data(), _label.size());
 
@@ -62,7 +62,7 @@ namespace cppgui {
         }
     }
 
-    bool Button::mouse_click(const Point &p, int button, Count count)
+    bool Button_base::mouse_click(const Point &p, int button, Count count)
     {
         Widget::mouse_click(p, button, count); // will take focus
 
@@ -76,22 +76,23 @@ namespace cppgui {
 
     #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
-    void Button::compute_label_bounds()
+    void Button_base::compute_label_bounds()
     {
         _label_bbox = _font.rasterized->compute_text_extents(0, _label.data(), _label.size());
     }
 
-    void Button::init_layout()
+    void Button_base::init_layout()
     {
         compute_label_bounds();
     }
 
-    auto Button::get_minimal_bounds() -> Bbox
+    auto Button_base::get_minimal_bounds() -> Bbox
     {
-        return adjust_box_bounds(_label_bbox);
+        //return adjust_box_bounds(_label_bbox);
+        return _label_bbox;
     }
 
-    void Button::compute_layout(Bbox_cref b)
+    void Button_base::compute_layout(Bbox_cref b)
     {        
         Widget::compute_layout(b);
 
@@ -107,14 +108,14 @@ namespace cppgui {
     }
     #endif
 
-    void Button::font_changed()
+    void Button_base::font_changed()
     {
         compute_label_bounds();
         compute_layout(bounds());
         invalidate();
     }
 
-    void Button::text_changed()
+    void Button_base::text_changed()
     {
         compute_label_bounds();
         compute_layout(bounds());

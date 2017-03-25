@@ -2,7 +2,7 @@
 
 /*  libCppGUI - A GUI library for C++11/14
     
-    Copyright 2016 Hans-Peter Gygax
+    Copyright 2016, 2017 Hans-Peter Gygax
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 */
 
 #include "./Widget.hpp"
-#include "./Box.hpp"
+#include "./Boxed.hpp"
 
 
 namespace cppgui {
@@ -26,7 +26,7 @@ namespace cppgui {
     /** TODO: how to support changing label (and later on, icon) at runtime without mixing
             in the layouting aspect ?
      */
-    class Button: public Widget, public Box<Button_box_styles>
+    class Button_base: public Widget
     {
     public:
 
@@ -85,5 +85,8 @@ namespace cppgui {
         #endif // CPPGUI_EXCLUDE_LAYOUTING
 
     };
+
+
+    using Button = Boxed<Button_base, Button_box_styles>;
 
 } // ns cppgui
