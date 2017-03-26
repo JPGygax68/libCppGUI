@@ -43,6 +43,7 @@ namespace cppgui {
         void render(Canvas *, const Point &) override;
 
         bool mouse_click(const Point &pos, int button, Count count) override;
+        bool key_down(const Keycode &) override;
 
         // TODO: visual feedback on mouse down / up
 
@@ -78,15 +79,19 @@ namespace cppgui {
         void text_changed();
 
     protected:
+        
         void compute_label_bounds();
 
+        bool do_pushed();
+
     private:
+        using Super = Widget;
+
         //Alignment               _minor_align = cultural_minor_middle;
         //Alignment               _major_align = cultural_major_middle;
         //Text_bounding_box       _label_bbox;
         
         #endif // CPPGUI_EXCLUDE_LAYOUTING
-
     };
 
 

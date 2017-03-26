@@ -77,12 +77,32 @@ namespace cppgui {
 
     bool Glyph_button_base::mouse_click(const Point &p, int button, Count count)
     {
-        if (_on_pushed && button == 1)
+        if (button == 1)
         {
-            if (_on_pushed()) return true;
+            return do_pushed();
         }
 
         return Super::mouse_click(p, button, count);
+    }
+
+    bool Glyph_button_base::key_down(const Keycode &k)
+    {
+        if (is_return(k))
+        {
+            return do_pushed();
+        }
+
+        return Super::key_down(k);
+    }
+
+    bool Glyph_button_base::do_pushed()
+    {
+        if (_on_pushed)
+        {
+            return _on_pushed();
+        }
+
+        return false;
     }
 
     // Layouter aspect ----------------------------------------------

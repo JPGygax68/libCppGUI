@@ -49,8 +49,13 @@ namespace cppgui {
         void render(Canvas *, const Point &offset) override;
 
         bool mouse_click(const Point &, int button, Count clicks) override;
+        bool key_down(const Keycode &) override;
 
-    protected:
+    private:
+        using Super = Widget;
+
+        bool do_pushed();
+
         //Click_handler                   _on_click;
         Pushed_handler                  _on_pushed;
         Font_resource                   _label_font;

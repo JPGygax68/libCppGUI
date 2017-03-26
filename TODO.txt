@@ -8,3 +8,5 @@
     - eliminate focussable() - THIS IS A BREAKING CHANGE!
     - override to pass focus on to child (if original focus recipient is a container that cannot give optical/other feedback to user)
     - verify / reimplement cycle_focus() action
+    
+- Button and Glyph_button have too much in common to exist (on_pushed()!) for completely separate implementations

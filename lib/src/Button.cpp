@@ -69,13 +69,30 @@ namespace cppgui {
 
         if (button == 1 && count == 1)
         {
-            if (_on_pushed) return _on_pushed();
+            return do_pushed();
         }
 
         return false;
     }
 
-    #ifndef CPPGUI_EXCLUDE_LAYOUTING
+    bool Button_base::key_down(const Keycode &k)
+    {
+        if (is_return(k))
+        {
+            return do_pushed();
+        }
+
+        return Super::key_down(k);
+    }
+
+    bool Button_base::do_pushed()
+    {
+        if (_on_pushed) return _on_pushed();
+
+        return false;
+    }
+
+#ifndef CPPGUI_EXCLUDE_LAYOUTING
 
     void Button_base::compute_label_bounds()
     {
