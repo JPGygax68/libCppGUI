@@ -128,6 +128,16 @@ namespace cppgui {
         content_pane()->add_child(item);
     }
 
+    bool Listbox_base::key_down(const Keycode &k)
+    {
+        if (is_down     (k)) return selection_down     ();
+        if (is_up       (k)) return selection_up       ();
+        if (is_page_down(k)) return selection_page_down();
+        if (is_page_up  (k)) return selection_page_up  ();
+
+        return Super::key_down(k);
+    }
+
     void Listbox_base::navigate(Navigation_unit unit, const Fraction<int> &delta)
     {
         if (items().empty()) return;
@@ -265,6 +275,64 @@ namespace cppgui {
 
             bring_item_into_view(i);
         }
+    }
+
+    bool Listbox_base::selection_down()
+    {
+        auto i = focused_item_index();
+        if (i < (item_count() - 1))
+        {
+            ++ i;
+            bring_item_into_view(i);
+            item(i)->take_focus();
+            return true;
+        }
+        
+        return false;
+    }
+
+    bool Listbox_base::selection_up()
+    {
+        auto i = focused_item_index();
+        if (i > 0)
+        {
+            -- i;
+            bring_item_into_view(i);
+            item(i)->take_focus();
+            return true;
+        }
+
+        return false;
+    }
+
+    bool Listbox_base::selection_page_up()
+    {
+        if (focused_item_index() > 0)
+        {
+            auto d = - static_cast<Index>(visible_item_count());
+            auto i = std::max(0, focused_item_index() + d);
+            bring_item_into_view(i);
+            item(i)->take_focus();
+            return true;
+        }
+
+        return false;
+    }
+
+    bool Listbox_base::selection_page_down()
+    {
+        if (focused_item_index() < (item_count() - 1))
+        {
+            auto d = static_cast<Index>(visible_item_count());
+            auto i = focused_item_index();
+            if (i < 0) i = 0;
+            i = std::min(i + d, item_count() - 1);
+            bring_item_into_view(i);
+            item(i)->take_focus();
+            return true;
+        }
+
+        return false;
     }
 
     void Listbox_base::scroll_up()  

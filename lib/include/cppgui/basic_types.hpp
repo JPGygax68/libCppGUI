@@ -34,7 +34,7 @@ namespace cppgui {
     using ulong             = unsigned long;
 
     using Index             = int; // Index is signed so that -1 can be used to report "invalid" or "not found"
-    using Count             = unsigned int;
+    using Count             = int; // Signed to facilitate subtractions
 
     using Rasterized_font   = fonts::Rasterized_font;
     using Font_size         = unsigned int;

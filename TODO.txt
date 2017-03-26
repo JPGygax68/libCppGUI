@@ -3,3 +3,8 @@
 - Test tab focus cycling with nested containers
 
 - Make it possible to customize the root widget (with/without background color, others ?)
+
+- Focus: simplify by redefining take_focus() to return a boolean that reports whether or not focus was accepted or not:
+    - eliminate focussable() - THIS IS A BREAKING CHANGE!
+    - override to pass focus on to child (if original focus recipient is a container that cannot give optical/other feedback to user)
+    - verify / reimplement cycle_focus() action

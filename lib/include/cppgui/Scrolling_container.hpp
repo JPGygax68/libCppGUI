@@ -52,13 +52,12 @@ namespace cppgui {
         auto item(Index i) const { return content_pane()->child(i); }
         auto item_count() const -> Index { return content_pane()->child_count(); }
         auto item_index(Widget *c) const { return content_pane()->child_index(c); }
-        auto item_rectangle(Widget *) const -> Rectangle; 
+        auto item_rectangle(Widget *) const -> Rectangle;
+        auto focused_item_index() const -> Index;
 
     protected:
 
         auto content_window() const { return Rectangle{ _window_bbox }; }
-
-        //void gained_focus() override;
 
         void shift_content_by(const Point &);
         void update_scrollbar();

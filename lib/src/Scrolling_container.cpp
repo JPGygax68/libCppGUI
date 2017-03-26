@@ -130,6 +130,12 @@ namespace cppgui {
         return item->rectangle() + content_pane()->position();    
     }
 
+    auto Scrolling_container::focused_item_index() const -> Index
+    {
+        auto item = content_pane()->focused_child(); // TODO: replace with focused_item() 
+        return item != nullptr ? item_index(item) : -1;
+    }
+
     void Scrolling_container::shift_content_by(const Point &d)
     {
         content_pane()->shift_by(d);

@@ -14,7 +14,7 @@ namespace cppgui {
         
         void add_item(Widget *) const;
 
-        //void bring_item_into_view(Index);
+        bool key_down(const Keycode &) override;
 
     protected:
 
@@ -33,8 +33,14 @@ namespace cppgui {
         auto hidden_height_of_first_visible_item() const -> Length;
         auto visible_item_count() const -> Count;
 
-        void scroll_up  ();
-        void scroll_down();
+        // Specific actions (TODO: move to "public" area ?)
+
+        void scroll_up          ();
+        void scroll_down        ();
+        bool selection_down     ();
+        bool selection_up       ();
+        bool selection_page_down();
+        bool selection_page_up  ();
     }; 
     
 

@@ -93,6 +93,7 @@ namespace cppgui {
         assert(focussable());
 
         pass_up_and_notify_focus();
+        invalidate();
     }
 
     auto Widget::root_widget() -> Root_widget * 
