@@ -152,8 +152,6 @@ namespace cppgui {
 
     auto Scrolling_container::get_minimal_bounds() -> Bbox
     {
-        // TODO: this is probably wrong, because it will try to align the baseline of the "up" button of the scrollbar
-        //  with the baseline of the first list item
         auto bbox = Bbox{ _content_pane->get_minimal_window(), left, top };
         bbox.append_to_right( separator_width() );
         bbox.append_to_right(_vscrollbar.get_minimal_bounds(), top);
