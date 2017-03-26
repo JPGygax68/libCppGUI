@@ -7,7 +7,7 @@
 
 namespace cppgui {
 
-    Window::Window(const char * title):
+    Window::Window(const std::string &title):
         SDL2_window(title),
         _bkg_color{0, 0, 0, 0}
     {

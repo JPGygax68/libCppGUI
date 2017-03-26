@@ -13,7 +13,7 @@ namespace cppgui {
     {
     public:
         
-        explicit Window(const char *title);
+        explicit Window(const std::string &title);
 
         void set_background_color(const RGBA &);
 

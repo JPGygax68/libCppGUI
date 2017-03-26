@@ -90,7 +90,7 @@ namespace cppgui {
         bool disabled() const { return false; } // TODO!!!
 
         //void set_focussable(bool state = true) { _focussable = state; }
-        virtual bool focussable() const { return true; }
+        virtual bool focussable() const { return visible(); }
 
         void added_to_container(Container_base *);
         void removed_from_container(Container_base *);
