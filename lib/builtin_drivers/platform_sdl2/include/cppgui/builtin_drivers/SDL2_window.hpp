@@ -51,6 +51,7 @@ namespace cppgui
         void init();
         void cleanup();
 
+        auto sdl2_window() -> SDL_Window * { return _win.get(); }
         auto id() -> uint32_t;
 
         // Rendering management ---------------------------
