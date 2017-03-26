@@ -33,16 +33,12 @@ namespace cppgui {
     {
     public:
 
-        //static constexpr auto default_padding(int /*dir*/) { return 2; }
-
         void on_pushed(Pushed_handler);
 
         void set_font(const Rasterized_font *font) { _label_font.assign(font); }
         void set_label(const std::u32string &label) { _label = label; }
         void set_glyph(const Glyph_specifier &);
         void set_horizontal_alignment(Alignment);
-
-        //void enable_border(bool enabled) { _border_enabled = enabled; }
 
         void init(Canvas *) override;
 
@@ -56,7 +52,6 @@ namespace cppgui {
 
         bool do_pushed();
 
-        //Click_handler                   _on_click;
         Pushed_handler                  _on_pushed;
         Font_resource                   _label_font;
         std::u32string                  _label;

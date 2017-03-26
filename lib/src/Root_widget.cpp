@@ -2,7 +2,7 @@
 
 /*  libCppGUI - A GUI library for C++11/14
     
-    Copyright 2016 Hans-Peter Gygax
+    Copyright 2016, 2017 Hans-Peter Gygax
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -254,6 +254,11 @@ namespace cppgui {
     void Root_widget::invalidate()
     {
         _on_invalidated();
+    }
+
+    void Root_widget::child_invalidated(Widget *)
+    {
+        _must_update = true;
     }
 
 #ifndef CPPGUI_EXCLUDE_LAYOUTING

@@ -100,7 +100,7 @@ namespace cppgui {
     public:
 
         // Contract
-        void child_invalidated(Widget *) override { _must_update = true; }
+        void child_invalidated(Widget *) override;
         auto container_root_widget() -> Root_widget * override { return static_cast<Root_widget*>(this); }
 
         // Specific functionality 
