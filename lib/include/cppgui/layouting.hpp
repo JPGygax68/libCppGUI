@@ -70,6 +70,8 @@ namespace cppgui {
 
     void layout_gap_at_top_edge(Bbox_ref container, Length h);
 
+    void layout_gap_at_bottom_edge(Bbox_ref container, Length h);
+
     auto align_top_left(Bbox_cref cont, Bbox_cref elem) -> Layout_box;
 
 } // ns cppgui

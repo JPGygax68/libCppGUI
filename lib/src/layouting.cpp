@@ -161,6 +161,11 @@ namespace cppgui
         cont.y_max -= h;
     }
 
+    void layout_gap_at_bottom_edge(Bbox_ref cont, Length h)
+    {
+        cont.y_min -= h;
+    }
+
     auto align_top_left(Bbox_cref cont, Bbox_cref elem) -> Layout_box
     {
     #ifdef CPPGUI_Y_AXIS_DOWN
