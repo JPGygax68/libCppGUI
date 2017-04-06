@@ -204,13 +204,13 @@ namespace cppgui {
     void SDL2_window::handle_mousemotion_event(SDL_MouseMotionEvent &ev)
     {
         // std::cout << "Window::handle_mousemotion_event()" << std::endl;
-        std::cout << "Mouse motion at: " << ev.x << ", " << ev.y << std::endl;
+        //std::cout << "Mouse motion at: " << ev.x << ", " << ev.y << std::endl;
         mouse_motion({ev.x, ev.y});
     }
 
     void SDL2_window::handle_mousebutton_event(SDL_MouseButtonEvent &ev)
     {
-        std::cout << "Mouse button at: " << ev.x << ", " << ev.y << std::endl;
+        //std::cout << "Mouse button at: " << ev.x << ", " << ev.y << std::endl;
         Key_state state = ev.state == SDL_PRESSED ? pressed : released;
         mouse_button({ev.x, ev.y}, ev.button, state, ev.clicks);
     }
