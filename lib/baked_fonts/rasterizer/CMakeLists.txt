@@ -29,6 +29,9 @@ find_package(Boost REQUIRED COMPONENTS system filesystem)
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${Boost_INCLUDE_DIR})
 
+# FreeType
+
+if (0)
 # FreeType: get the one we built as part of our prereqs
 
 set(ENV{FREETYPE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../prereqs/install/freetype)
@@ -36,6 +39,14 @@ find_package(Freetype REQUIRED)
 target_link_libraries(${PROJECT_NAME} ${FREETYPE_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${FREETYPE_INCLUDE_DIRS})
 #target_link_libraries(${PROJECT_NAME} freetype)
+
+else()
+
+add_subdirectory(external/freetype2)
+include_directories(external/freetype2/include)
+target_link_libraries(${PROJECT_NAME} freetype)
+
+endif()
 
 # Also required for FreeType
 add_subdirectory("external/zlib")

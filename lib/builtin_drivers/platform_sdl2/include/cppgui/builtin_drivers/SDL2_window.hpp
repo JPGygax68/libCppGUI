@@ -5,7 +5,7 @@
 #include <memory>
 #include <map>
 #include <functional>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <cppgui_config.hpp>
 //#include <cppgui/basic_types.hpp>
 #include <cppgui/Extents.hpp>

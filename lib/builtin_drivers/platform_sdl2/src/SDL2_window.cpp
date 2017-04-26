@@ -2,8 +2,8 @@
 #include <locale>
 #include <codecvt>
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_events.h>
+#include <SDL.h>
+#include <SDL_events.h>
 #include "platform_sdl2.hpp"
 #include "SDL2_window.hpp"
 #include "SDL2_exception.hpp"

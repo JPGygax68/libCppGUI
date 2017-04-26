@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL2/SDL_events.h>
+#include <SDL_events.h>
 #include "./SDL2_exception.hpp"
 #include "./SDL2_window.hpp"
 #include "./sdl2_custom_events.hpp"
