@@ -15,11 +15,16 @@ target_include_directories(${PROJECT_NAME} BEFORE PUBLIC ${CMAKE_CURRENT_SOURCE_
 
 # External dependencies
 
+if (0)
 if (NOT TARGET SDL2-static)
     message(FATAL_ERROR "SDL2 not defined as a target")
     # TODO: fallback to looking for module ? or let conan handle it ?
 endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC SDL2-static)
+else()
+# TODO: support using the static build of SDL2
+target_link_libraries(${PROJECT_NAME} PUBLIC CONAN_PKG::SDL2)
+endif()
 
 
 

@@ -2,17 +2,26 @@ project (CppGUI)
 
 cmake_minimum_required(VERSION 3.4)
 
-#include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-#conan_basic_setup()
+# Download automatically, you can also just copy the conan.cmake file
+if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+   message(STATUS "Downloading conan.cmake from https://github.com/memsharded/cmake-conan")
+   file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/master/conan.cmake"
+                 "${CMAKE_BINARY_DIR}/conan.cmake")
+endif()
 
-#set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake")
-#include(cotire)
+include(${CMAKE_BINARY_DIR}/conan.cmake)
+
+conan_cmake_run(REQUIRES SDL2/2.0.5@lasote/stable
+                OPTIONS shared=True
+                BASIC_SETUP CMAKE_TARGETS
+                BUILD missing)
+
+add_executable(main main.cpp)
+target_link_libraries(main ${CONAN_LIBS})
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-
-#include(ConanDeps.cmake)
 
 find_path(CEREAL_DIR "cereal/cereal.hpp")
 if (NOT CEREAL_DIR)
@@ -23,8 +32,11 @@ else()
     include_directories(${CEREAL_DIR})
 endif()
 
+if (0)
 add_subdirectory(external/SDL2)
 include_directories(external/SDL2/include) # TODO: really necessary ?
+endif()
+
 
 #add_subdirectory(external/glbinding)
 #add_subdirectory(external/libGPCGLWrappers/lib)
