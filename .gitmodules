@@ -4,9 +4,6 @@
 [submodule "external/SDL2"]
 	path = external/SDL2
 	url = https://github.com/spurious/SDL-mirror.git
-[submodule "external/glbinding"]
-	path = external/glbinding
-	url = https://github.com/cginternals/glbinding.git
 [submodule "external/libGPCGLUtils"]
 	path = external/libGPCGLUtils
 	url = git@github.com:JPGygax68/libGPCGLUtils.git
