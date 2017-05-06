@@ -49,9 +49,13 @@ target_link_libraries(${PROJECT_NAME} freetype)
 endif()
 
 # Also required for FreeType
+if (0)
 add_subdirectory("external/zlib")
 if (NOT TARGET zlib)
     message(FATAL_ERROR "zlib is not defined as a target")
+endif()
+ExternalProject_Add(zlib URL http://www.zlib.net/zlib-1.2.11.tar.gz)
+else()
 endif()
 target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${ZLIB_INCLUDE_DIRS})
