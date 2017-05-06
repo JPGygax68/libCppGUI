@@ -23,9 +23,11 @@ else()
     include_directories(${CEREAL_DIR})
 endif()
 
+if (0)
 if (NOT TARGET SDL2)
     add_subdirectory(external/SDL2)
     include_directories(external/SDL2/include) # TODO: really necessary ?
+endif()
 endif()
 
 #add_subdirectory(external/glbinding)

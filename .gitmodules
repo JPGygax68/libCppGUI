@@ -10,9 +10,6 @@
 [submodule "external/libGPCGLWrappers"]
 	path = external/libGPCGLWrappers
 	url = git@github.com:JPGygax68/libGPCGLWrappers.git
-[submodule "external/libGPCFonts"]
-	path = external/libGPCFonts
-	url = git@github.com:JPGygax68/libGPCFonts.git
 [submodule "external/libGPCGLUtils"]
 	path = external/libGPCGLUtils
 	url = git@github.com:JPGygax68/libGPCGLUtils.git
