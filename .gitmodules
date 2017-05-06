@@ -4,9 +4,6 @@
 [submodule "external/SDL2"]
 	path = external/SDL2
 	url = https://github.com/spurious/SDL-mirror.git
-[submodule "external/libGPCGLUtils"]
-	path = external/libGPCGLUtils
-	url = git@github.com:JPGygax68/libGPCGLUtils.git
 [submodule "external/GPCBin2C"]
 	path = external/GPCBin2C
 	url = git@github.com:JPGygax68/gpcbin2c.git
