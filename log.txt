@@ -1,3 +1,26 @@
+2017-05-06
+==========
+
+The SDL2 dilemma
+----------------
+
+So far, I've use the git submodule functionality together with CMake's add_subdirectory() to provide libCppGUI with its dependency SDL2. This worked well, but has revealed a fundamental problem.
+
+That problem is that the targets defined by the SDL2 CMakeLists.txt are only valid "downstream" and on the same level or lower of the CMake project tree. More specifically, the CMake file of SDL2 uses include_directories() to add a path to the SDL2 include files directory, which makes that path available to libCppGUI because libCppGUI and SDL2 are siblings in the project tree; the consumer of libCppGUI (the application program) however does *not* get that directory added to its include file search path, being higher up in the project tree.
+
+This could, alternatively, be interpreted as a bug/deficiency in SDL2's CMakeLists.txt. Adding the line 
+
+  target_include_directories(SDL2-static PUBLIC $<BUILD_INTERFACE:${SDL2_SOURCE_DIR}/include>)
+
+to the definition of the SDL2 library (static version, but should work the same for the DLL) makes the include directory available to all consumers, no matter their position in the CMake project tree.
+
+I've proposed this change via a pull request to spurious/SDL-mirror - let's see what comes of it.
+
+I should note however that I'm rather unhappy with the way add_subproject() adds myriads of unwanted, internal targets to the Visual Studio solution. I'm going to have a closer look at ExternalProject_Add().
+
+
+
+
 2017-03-09
 ==========
 

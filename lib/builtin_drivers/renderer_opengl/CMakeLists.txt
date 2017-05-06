@@ -42,7 +42,7 @@ foreach(shader ${SHADER_FILES})
     COMMAND gpcbin2c --input=${CMAKE_CURRENT_SOURCE_DIR}/${shader} --output=${shader_header}
   )
   target_sources(${PROJECT_NAME} PRIVATE ${shader})
-  target_sources(${PROJECT_NAME} PUBLIC ${shader_header})
+  target_sources(${PROJECT_NAME} PRIVATE ${shader_header})
 endforeach()
 
 source_group("Shader files" FILES ${SHADER_FILES}) # REGULAR_EXPRESSION "(.*\.glsl)")  # for Visual Studio
