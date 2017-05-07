@@ -34,6 +34,13 @@ namespace cppgui {
     SDL2_window::SDL2_window(const std::string &title, int w, int h)
     {
         // TODO: make OpenGL optional (according to configuration)
+    #ifdef NOT_DEFINED
+        SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+        SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+        SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    #endif
         auto win = SDL_CreateWindow(title.c_str(),
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h,
             /* SDL_WINDOW_FULLSCREEN_DESKTOP | */ SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_OPENGL);
@@ -93,11 +100,11 @@ namespace cppgui {
         return SDL_GL_GetCurrentContext();
     }
 
-    auto SDL2_window::create_gl_context() -> SDL_GLContext
+    auto SDL2_window::create_additional_gl_context() -> SDL_GLContext
     {
         SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
         auto ctx = SDL_GL_CreateContext(_win.get());
-        if (!ctx) throw SDL2_exception("trying to create OpenGL context for a window");
+        if (!ctx) throw SDL2_exception("trying to create additional OpenGL context for a window");
         return ctx;
     }
 
@@ -120,6 +127,11 @@ namespace cppgui {
             SDL_Delay(1);
         }
         if (count > 1) std::cerr << "SDL2_window::make_gl_context_current() has required " << count << " attempts" << std::endl;
+    }
+
+    void SDL2_window::select_default_graphics_context()
+    {
+        make_gl_context_current(_gr_ctx);
     }
 
     void SDL2_window::gl_swap()

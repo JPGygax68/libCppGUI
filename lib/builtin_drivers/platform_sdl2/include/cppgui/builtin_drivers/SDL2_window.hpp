@@ -62,9 +62,10 @@ namespace cppgui
         // OpenGL-specific --------------------------------
 
         auto get_current_gl_context() -> SDL_GLContext;
-        auto create_gl_context() -> SDL_GLContext;           
+        auto create_additional_gl_context() -> SDL_GLContext;           
         static void delete_gl_context(SDL_GLContext);
         void make_gl_context_current(SDL_GLContext);
+        void select_default_graphics_context();
         void gl_swap();
 
         void invalidate();

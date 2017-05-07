@@ -87,6 +87,7 @@ namespace cppgui {
         static GLushort indices[] = { 0, 1, 3, 2 };
         GL(BindBuffer, GL_ELEMENT_ARRAY_BUFFER, index_buffer);
         GL(BufferData, GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLushort), indices, GL_STATIC_DRAW);
+        GL(BindBuffer, GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
     void OpenGL_renderer::cleanup()

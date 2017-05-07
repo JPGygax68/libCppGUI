@@ -52,6 +52,7 @@ namespace cppgui {
                                   // TODO: must be made optional!
         // TODO: pass context to canvas / check if matches / etc ?
         before_draw_ui(_canvas.get());
+        select_default_graphics_context();
         _root_widget.render(_canvas.get(), {0, 0});
         _canvas->leave_context();
     }
