@@ -37,6 +37,10 @@ namespace cppgui
     public:
         using Pointer = std::unique_ptr<SDL_Window, Deleter>;
 
+        // Configuration ----------------------------------
+
+        static void setup_for_3d();
+
         // Lifecycle --------------------------------------
 
         explicit SDL2_window(const std::string &title, int w = 800, int h = 600); // TODO: should probably be made protected

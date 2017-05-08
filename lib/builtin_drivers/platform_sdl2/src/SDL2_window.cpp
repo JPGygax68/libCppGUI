@@ -31,16 +31,21 @@ namespace cppgui {
 
     Static_init _initializer;
 
-    SDL2_window::SDL2_window(const std::string &title, int w, int h)
+    
+    void SDL2_window::setup_for_3d()
     {
-        // TODO: make OpenGL optional (according to configuration)
-    #ifdef NOT_DEFINED
         SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
         SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
         SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    #endif
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 32); // TODO: make configurable
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
+        // TODO: make multisampling optional!
+        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 2);
+        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+    }
+
+    SDL2_window::SDL2_window(const std::string &title, int w, int h)
+    {
         auto win = SDL_CreateWindow(title.c_str(),
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h,
             /* SDL_WINDOW_FULLSCREEN_DESKTOP | */ SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED | SDL_WINDOW_OPENGL);
