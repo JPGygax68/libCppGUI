@@ -60,6 +60,6 @@ if (GLEW_FOUND)
     target_include_directories(${PROJECT_NAME} PRIVATE ${GLEW_INCLUDE_DIRS})
     message("GLEW_LIBRARIES: ${GLEW_LIBRARIES}")
     target_link_libraries(${PROJECT_NAME} PUBLIC ${GLEW_LIBRARIES})
-    target_compile_definitions(${PROJECT_NAME} PRIVATE GLEW_STATIC)
+    #target_compile_definitions(${PROJECT_NAME} PRIVATE GLEW_STATIC)
 endif()
 
