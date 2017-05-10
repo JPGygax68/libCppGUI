@@ -16,9 +16,6 @@ conan_cmake_run(REQUIRES SDL2/2.0.5@lasote/stable
                 #OPTIONS SDL2:shared=True
                 BUILD missing)
 
-add_executable(main main.cpp)
-target_link_libraries(main ${CONAN_LIBS})
-
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
