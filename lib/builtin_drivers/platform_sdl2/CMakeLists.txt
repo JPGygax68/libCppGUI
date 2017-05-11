@@ -1,5 +1,19 @@
 project(cppgui_platform_sdl2)
 
+# Download automatically, you can also just copy the conan.cmake file
+if (NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+   message(STATUS "Downloading conan.cmake from https://github.com/memsharded/cmake-conan")
+   file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/master/conan.cmake"
+                 "${CMAKE_BINARY_DIR}/conan.cmake")
+endif()
+
+include(${CMAKE_BINARY_DIR}/conan.cmake)
+
+conan_cmake_run(REQUIRES SDL2/2.0.5@lasote/stable
+                BASIC_SETUP CMAKE_TARGETS
+                #OPTIONS SDL2:build_type=Debug
+                BUILD missing)
+
 add_library(${PROJECT_NAME} STATIC 
     src/platform_sdl2.cpp           include/cppgui/builtin_drivers/platform_sdl2.hpp
     src/SDL2_window.cpp             include/cppgui/builtin_drivers/SDL2_window.hpp
