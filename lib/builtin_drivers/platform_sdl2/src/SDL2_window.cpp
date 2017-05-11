@@ -38,7 +38,7 @@ namespace cppgui {
         SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
         SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 8);
-        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24); // TODO: make configurable
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16); // TODO: make configurable (24 may not be safe on all drivers)
         //SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
         SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
         // TODO: make multisampling optional!
