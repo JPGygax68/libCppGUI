@@ -40,7 +40,7 @@ namespace cppgui {
     void Window::redraw(void *context)
     {
         begin_rendering();
-        before_redraw(context);
+        before_draw_ui(context);
         draw_ui();
         done_rendering();
     }
@@ -50,9 +50,12 @@ namespace cppgui {
         //_canvas->clear(_bkg_color);
         _canvas->enter_context(); // TODO: pass/check context ?
                                   // TODO: must be made optional!
+
         // TODO: pass context to canvas / check if matches / etc ?
-        before_draw_ui(_canvas.get());
+        //before_draw_ui(_canvas.get());
+
         _root_widget.render(_canvas.get(), {0, 0});
+        
         _canvas->leave_context();
     }
 

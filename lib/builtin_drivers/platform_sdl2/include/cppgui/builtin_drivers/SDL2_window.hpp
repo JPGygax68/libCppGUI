@@ -37,6 +37,10 @@ namespace cppgui
     public:
         using Pointer = std::unique_ptr<SDL_Window, Deleter>;
 
+        // Configuration ----------------------------------
+
+        static void setup_for_3d();
+
         // Lifecycle --------------------------------------
 
         explicit SDL2_window(const std::string &title, int w = 800, int h = 600); // TODO: should probably be made protected
@@ -62,9 +66,10 @@ namespace cppgui
         // OpenGL-specific --------------------------------
 
         auto get_current_gl_context() -> SDL_GLContext;
-        auto create_gl_context() -> SDL_GLContext;           
+        auto create_additional_gl_context() -> SDL_GLContext;           
         static void delete_gl_context(SDL_GLContext);
         void make_gl_context_current(SDL_GLContext);
+        void select_default_graphics_context();
         void gl_swap();
 
         void invalidate();

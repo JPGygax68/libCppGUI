@@ -1,3 +1,33 @@
+2017-05-06
+==========
+
+The SDL2 dilemma
+----------------
+
+So far, I've use the git submodule functionality together with CMake's add_subdirectory() to provide libCppGUI with its dependency SDL2. This worked well, but has revealed a fundamental problem.
+
+That problem is that the targets defined by the SDL2 CMakeLists.txt are only valid "downstream" and on the same level or lower of the CMake project tree. More specifically, the CMake file of SDL2 uses include_directories() to add a path to the SDL2 include files directory, which makes that path available to libCppGUI because libCppGUI and SDL2 are siblings in the project tree; the consumer of libCppGUI (the application program) however does *not* get that directory added to its include file search path, being higher up in the project tree.
+
+This could, alternatively, be interpreted as a bug/deficiency in SDL2's CMakeLists.txt. Adding the line 
+
+  target_include_directories(SDL2-static PUBLIC $<BUILD_INTERFACE:${SDL2_SOURCE_DIR}/include>)
+
+to the definition of the SDL2 library (static version, but should work the same for the DLL) makes the include directory available to all consumers, no matter their position in the CMake project tree.
+
+I've proposed this change via a pull request to spurious/SDL-mirror - let's see what comes of it.
+
+I should note however that I'm rather unhappy with the way add_subproject() adds myriads of unwanted, internal targets to the Visual Studio solution. I'm going to have a closer look at ExternalProject_Add().
+
+------
+
+Well, having looked at ExternalProject_Add() for a bit, I can't say that I'm thrilled by it. It is apparently intended as a way for the build system to obtain dependencies on demand, but because those dependencies are only built when the project itself is built, CMake's file discovery mechanisms (config files and find modules) do not work, leaving a lot of manual work to the programmer - with potentially disastrous consequences for portability, since a programmer will typically only be able to make it work on his own machine.
+
+It seems to me that ExternalProject_Add() is a lower-key attempt at doing what Conan was created for. So, I'm now going to re-enable Conan and use that to satisfy the SDL2 dependency, and also perhaps freetype (with zlib) while I'm at it.
+
+As an exercise, I could also try to make Conan an option - but then I'd have to provide a find module for SDL2, freetype and zlib. 
+
+
+
 2017-03-09
 ==========
 

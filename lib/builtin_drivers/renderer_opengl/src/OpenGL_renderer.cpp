@@ -34,13 +34,17 @@ namespace cppgui {
     void OpenGL_renderer::init()
         // TODO: context parameter ?
     {
-        // User code is responsible for creating and/or selecting the proper GL context when calling init()
-        // TODO: somehow (optionally) make use of glbinding's (when used) context management facilities?
+        // User code is responsible for creating and/or selecting the proper GL context before calling init()
         static std::once_flag flag;
-        std::call_once(flag, []() { glewInit(); });
+        std::call_once(flag, []()
+        {
+            glewInit();
+        });
 
         // Upload and compile our shader program
         {
+            glewInit();
+
             assert(vertex_shader == 0);
             vertex_shader = GL(CreateShader, GL_VERTEX_SHADER);
             auto code = std::string(vertex_code, sizeof(vertex_code));
@@ -87,6 +91,7 @@ namespace cppgui {
         static GLushort indices[] = { 0, 1, 3, 2 };
         GL(BindBuffer, GL_ELEMENT_ARRAY_BUFFER, index_buffer);
         GL(BufferData, GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLushort), indices, GL_STATIC_DRAW);
+        GL(BindBuffer, GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
     void OpenGL_renderer::cleanup()

@@ -4,18 +4,6 @@
 [submodule "external/SDL2"]
 	path = external/SDL2
 	url = https://github.com/spurious/SDL-mirror.git
-[submodule "external/glbinding"]
-	path = external/glbinding
-	url = https://github.com/cginternals/glbinding.git
-[submodule "external/libGPCGLWrappers"]
-	path = external/libGPCGLWrappers
-	url = git@github.com:JPGygax68/libGPCGLWrappers.git
-[submodule "external/libGPCFonts"]
-	path = external/libGPCFonts
-	url = git@github.com:JPGygax68/libGPCFonts.git
-[submodule "external/libGPCGLUtils"]
-	path = external/libGPCGLUtils
-	url = git@github.com:JPGygax68/libGPCGLUtils.git
 [submodule "external/GPCBin2C"]
 	path = external/GPCBin2C
 	url = git@github.com:JPGygax68/gpcbin2c.git

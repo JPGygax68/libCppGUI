@@ -36,8 +36,7 @@ namespace cppgui {
         // Further specialization
         virtual void create_ui() {}
         virtual void adjust_layout() {}
-        virtual void before_redraw(void *context) {}
-        virtual void before_draw_ui(Canvas *) {}
+        virtual void before_draw_ui(void *context) {}
 
         // Drawing details (use when overloading redraw())
         void draw_ui();
