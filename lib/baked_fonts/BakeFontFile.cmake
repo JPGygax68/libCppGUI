@@ -85,8 +85,7 @@ function(target_bake_font target font_file)
         set(source_file "${CMAKE_CURRENT_BINARY_DIR}/generated/sources/${filename}-${size}.c")
 
         add_custom_command(
-            OUTPUT ${header_file}
-            OUTPUT ${source_file}
+            OUTPUT ${header_file} ${source_file}
             DEPENDS ${raster_file}
             # TODO: use "bin2c" instead of "gpcbin2c"
             COMMAND gpcbin2c ARGS
