@@ -12,8 +12,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/g
 
 target_link_libraries( ${PROJECT_NAME} 
 PRIVATE 
-    SDL2-static SDL2main glbinding 
+    #SDL2-static SDL2main glbinding 
     libCppGUI
-    #libGPCGLWrappers libGPCGUIRenderer libGPCGUIGLRenderer libCppGUI libCppGUI-SDL
 )
-target_include_directories( ${PROJECT_NAME} PRIVATE SDL2-static)
+#target_include_directories( ${PROJECT_NAME} PRIVATE SDL2-static)

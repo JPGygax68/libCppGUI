@@ -1,12 +1,6 @@
 [submodule "external/cereal"]
   path = external/cereal
   url = https://github.com/USCiLab/cereal.git
-[submodule "external/SDL2"]
-	path = external/SDL2
-	url = https://github.com/spurious/SDL-mirror.git
 [submodule "external/GPCBin2C"]
 	path = external/GPCBin2C
 	url = git@github.com:JPGygax68/gpcbin2c.git
-[submodule "lib/baked_fonts/rasterizer/external/freetype2"]
-	path = lib/baked_fonts/rasterizer/external/freetype2
-	url = git://git.sv.nongnu.org/freetype/freetype2.git

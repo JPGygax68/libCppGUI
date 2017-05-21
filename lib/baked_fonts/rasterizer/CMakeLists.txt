@@ -4,6 +4,21 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindFreetype.cmake)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
+# Conan
+
+# Download automatically, you can also just copy the conan.cmake file
+if (NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+   message(STATUS "Downloading conan.cmake from https://github.com/memsharded/cmake-conan")
+   file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/master/conan.cmake"
+                 "${CMAKE_BINARY_DIR}/conan.cmake")
+endif()
+
+include(${CMAKE_BINARY_DIR}/conan.cmake)
+
+conan_cmake_run(REQUIRES freetype/2.6.3@hilborn/stable
+                BASIC_SETUP CMAKE_TARGETS
+                BUILD missing)
+
 #------------------------------------------------
 # Target: executable
 #
@@ -30,6 +45,12 @@ target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${Boost_INCLUDE_DIR})
 
 # FreeType
+
+if (1)
+
+target_link_libraries(${PROJECT_NAME} CONAN_PKG::freetype)
+
+else()
 
 if (0)
 # FreeType: get the one we built as part of our prereqs
@@ -59,6 +80,7 @@ else()
 endif()
 target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${ZLIB_INCLUDE_DIRS})
+endif()
 
 #-----------------------------------------------
 # Testing

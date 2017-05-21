@@ -15,12 +15,6 @@ else()
     include_directories(${CEREAL_DIR})
 endif()
 
-# SDL2 now obtained with conan-cmake (see above)
-if (0)
-add_subdirectory(external/SDL2)
-include_directories(external/SDL2/include)
-endif()
-
 if (NOT TARGET gpcbin2c)
     add_subdirectory(external/GPCBin2C)
 endif()

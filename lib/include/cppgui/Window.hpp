@@ -15,7 +15,7 @@ namespace cppgui {
         
         explicit Window(const std::string &title);
 
-        void set_background_color(const RGBA &);
+        //void set_background_color(const RGBA &);
 
         auto& root_widget() { return _root_widget; }
 
@@ -43,7 +43,7 @@ namespace cppgui {
 
     private:
 
-        RGBA                        _bkg_color;
+        //RGBA                        _bkg_color;
         std::unique_ptr<Canvas>     _canvas;
         Root_widget                 _root_widget;
     };

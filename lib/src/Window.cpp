@@ -8,16 +8,18 @@
 namespace cppgui {
 
     Window::Window(const std::string &title):
-        SDL2_window(title),
-        _bkg_color{0, 0, 0, 0}
+        SDL2_window(title) //,
+        //_bkg_color{0, 0, 0, 0}
     {
         _root_widget.on_invalidated([this]() { invalidate(); });
     }
 
+    /*
     void Window::set_background_color(const RGBA &color)
     {
-        _bkg_color = color;
+        //_bkg_color = color;
     }
+    */
 
     void Window::init_window(void *context)
     {

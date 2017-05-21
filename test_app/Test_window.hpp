@@ -20,7 +20,7 @@ protected:
     void create_ui() override;
     void adjust_layout() override;
 
-    void before_draw_ui(cppgui::Canvas *) override;
+    void before_draw_ui(void *context) override;
 
 private:
     using Test_button = cppgui::Boxed<cppgui::Glyph_button_base, cppgui::Borderless_button_box_styles>;

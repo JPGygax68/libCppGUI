@@ -26,7 +26,7 @@ void Test_window::create_ui()
     //glyph_font = gpc::fonts::load(tick_font_data.first, tick_font_data.second);
     //auto tick_descr = cppgui::Icon_resources<Default_font::size>::tick_descr();
 
-    set_background_color({0, 0.5, 1, 1});
+    root_widget().set_background_color({0, 0.5, 1, 1});
 
     _label.set_font(&cppgui::baked_fonts::default_font());
     //_label.set_color({1, 1, 1, 1});
@@ -115,8 +115,8 @@ void Test_window::adjust_layout()
     }
 }
 
-void Test_window::before_draw_ui(cppgui::Canvas *c)
+void Test_window::before_draw_ui(void *context)
 {
     // TODO: in the future, this may be better done by choosign a correctly customized root widget
-    c->clear({1, 1, 0.8f, 1});
+    //c->clear({1, 1, 0.8f, 1});
 }
