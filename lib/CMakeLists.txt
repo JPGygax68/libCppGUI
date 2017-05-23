@@ -18,6 +18,20 @@ project (libCppGUI)
 #  limitations under the License.
 #-----------------------------------------------------------------------------
 
+# Conan-cmake: download automatically, you can also just copy the conan.cmake file
+
+if (NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+   message(STATUS "Downloading conan.cmake from https://github.com/memsharded/cmake-conan")
+   file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/master/conan.cmake"
+                 "${CMAKE_BINARY_DIR}/conan.cmake")
+endif()
+
+include(${CMAKE_BINARY_DIR}/conan.cmake)
+
+conan_cmake_run(REQUIRES cereal/1.2.2@Brunni/stable
+                BASIC_SETUP CMAKE_TARGETS
+                BUILD missing)
+
 # The core must be accessible to all components
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -109,3 +123,8 @@ add_subdirectory(builtin_drivers/platform_sdl2)
 target_link_libraries(${PROJECT_NAME} PUBLIC cppgui_platform_sdl2)
 
 
+#-----------------------------------------------------------------------------
+# Dependencies
+#
+
+target_link_libraries(${PROJECT_NAME} PUBLIC CONAN_PKG::cereal)
