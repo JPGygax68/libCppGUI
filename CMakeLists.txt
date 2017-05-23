@@ -21,7 +21,7 @@ endif()
 
 add_subdirectory(lib)
 
-option(LIBCPPGUI_BUILD_TESTAPP "Build libCppGUI test application" ${LIBCPPGUI_BUILD_TESTAPP})
+option(LIBCPPGUI_BUILD_TESTAPP "Build libCppGUI test application" ${LIBCPPGUI_BUILD_TESTAPP} ON)
 if (LIBCPPGUI_BUILD_TESTAPP)
     add_subdirectory(test_app)
 endif()
