@@ -1,3 +1,82 @@
+2017-05-25
+==========
+
+ComboBox
+--------
+
+As the next step of libCppGUI, I'm thinking about implementing a Combo Box.
+
+Combo boxes introduce a new requirement, the ability to overlay the drop-down listbox over the rest of the UI.
+
+A bit of research shows that, in the case of Windows, that capability goes so far that the drop-down box can go outside the containing window.
+While this would be doable via an extension to the platform driver, I'm not sure it's the right way to go, at least for now. I'm going to introduce instead a "popup" layer, which is going to be a function of the Root Widget.
+
+The Popup Layer overlays the root widget rectangle exactly, but the root widget ensures that it is drawn on top of the "default" layer.
+
+I'm unsure whether that layer should participate in input event handling though. If yes, that would mean that any kind of widget could be put there - which would beg the question of how that would work should someone put, for example,  a combo box there. That would almost inevitably mean multiple popup layers - added complexity that I have no enthusiasm for.
+
+But if the popup layer does not accept widgets, what does it accept ? Here are the possibilities:
+
+a) It does not accept anything at all and can in fact only be drawn upon.
+
+b) It accepts full widgets, with the requirement that those widgets will be "remote-controlled" by the creator widget and never handle input events on their own.
+
+c) It accepts display elements that are widget-like, but do not have the full interface of widgets.
+
+I initially liked option (a) most, because it seems the cleanest approach: everything stays under control of the widget that creates a popup. The popup interface could create extra rectangular regions, which would be overlayed over the root widget's default display rectangle and be painted via a separate method Widget::redraw_popup().
+
+It gets a bit more complicated because of input events. The root widget should forward any mouse events occurring over any popup region to the originating control, which would then have to keep track of the position and size of its popup(s) to determine how to interpret such events.
+
+This could be a bit of a bummer: in a future extension, popups could be implemented such that they are in fact extra, borderless windows (allowing them to extend beyond window confines). In such a scenario, the root widget would then need to "anonymize" mouse events before sending them to the widget - which would then most probably have to do the opposite, i.e. find out where they actually occurred. This could perhaps be tackled by introducing one or more extra parameters to input event handlers (breaking change, but at this point that doesn't matter so much).
+
+I realize now that the "popup layer" need not, in fact, be a single layer, as that may not actually make things simpler.
+
+It is an open question whether or not multiple controls should be allowed to use popup layers (perhaps popup "zones" would be a better term). I would tend to answer "no", because there would be no non-complex way to ensure that multiple popup zones do not overlap, which would probably be disastrous.
+
+EDIT: it occurs to me now that I forgot about "hint strip" - those floating rectangles of text that get overlayed over listbox items upon mouse hover when the items are too wide to display within the confines of the listbox (there are other varieties). In such cases, inter-popup overlaps are very unlikely.
+
+To sum up the reasoning so far:
+
+1: the interface does not expose a popup "layer", but allows creation and management of popup "zones" or "regions"
+2: popup regions can be rendered into, and they collect pointing device / touch input, but cannot contain widgets or other objects
+
+So, how are widgets going to work with these popup regions ?
+
+Usually, widgets will only have popup regions as long as they have keyboard focus - there may be exceptions, but regardless of such details, popups are intended to be transient. Their presence would otherwise disrupt the functioning of the rest of the UI because it hides parts of it. (This is just an introductory thought.)
+
+The switchboard for popup regions should most probably be the root widget, as planned. Its interface for that purpose should have the following capabilities:
+
+- Find a suitable position according to the size and alignment criteria of the requesting widget
+- Inform the widget of the bounds of the chosen rectangle (which should be specified relative to that widget's origin)
+- Redirect mouse / touch input events occurring on a widget's popup(s) to the widget [Container_base::child_at()!]
+- Cleanly remove the popup 
+
+Looking at the existing code, I now realize that trying to get the system to "pretend" that a popup is a part of the widget itself may not be a very good idea. The problem is that current code is relying on the fact that widgets are invariabley of rectangular shape. It would be possible to remove that restriction, but only at the expense of adding significant complexity.
+
+There is a better way: by defining an interface "IPopup" and having the root widget forward relevant input to that, we preserve the simplicity of the rectangles.
+
+IPopup entry points include:
+- redraw()
+- mouse_motion(), mouse_button(), mouse_click(), mouse_wheel() (similar to Widget)
+
+It is up to the classes implementing IPopup to appropriately coordinate with their owning widget to implement these entry points.
+
+The root widget offers the following facilities for popup creation and management:
+
+- show_popup(Widget *owner, IPopup *popup, Extents min_size, Positioning, Alignment, int margin, uint32_t flags) -> int id
+    
+    - "Positioning" specifies whether the popup should preferrably appear to the left, top, right, or bottom of the owner widget
+    - "Alignment" specifies how to align the non-constrained axis
+    - "margin" specifies the distance between the widget and its popup
+    - "flags" could be various options, like whether or not the root widget is allowed to "flip over" the other side if space is insufficient on the desired side (Positioning)
+    - "id" is an opaque, non-zero number by which the root widget knows the popup
+    
+- hide_popup(int id)
+
+Most probably, the abstract IPopup interface will be replaced with an abstract class called Popup that can take care of some housekeeping as a bonus.
+
+
+
 2017-05-06
 ==========
 

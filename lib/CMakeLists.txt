@@ -84,6 +84,7 @@ STATIC
     include/cppgui/Vertical_scrollbar.hpp   src/Vertical_scrollbar.cpp
     include/cppgui/Listbox.hpp              src/Listbox.cpp
     #include/cppgui/Scrollbox.hpp            src/Scrollbox.cpp
+    include/cppgui/Dropdown_button.hpp      src/Dropdown_button.cpp
 )
 
 # This will allow source files to include their contract header files without using paths
