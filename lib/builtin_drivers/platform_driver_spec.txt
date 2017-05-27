@@ -1,0 +1,27 @@
+This text file specifies the requirements on a libCppGUI platform driver.
+
+It is currently (2017-05-26) in embryo stage, but I will try to add to it until it can serve as a one-stop reference for implementing platform drivers.
+
+
+- The main thread of the application MUST periodically call the driver entry point cppgui::perform_pending_main_thread_tasks().
+    
+  - NOTE: this requirement may become optional in the future to support platforms that do not require message pumping (or at least not in the main thread); if that happens, a preprocessor definition will inform about whether or not the platform has that requirement.
+   
+- Windows provided by the platform driver MUST support being invalidated whole, which will trigger a redraw() callback.
+  
+  - NOTE: It is not specified whether or not that callback shall be called asynchronously or immediately from within the invalidate() method. Code that calls invalidate() therefore MUST NOT assume that a redraw has or has not occurred when the call returns.
+  
+  - NOTE 2: this requirement may be downgraded to MAY in the future, if and when other methods of updating window contents are introduced. Of course the requirement will then be that platform driver windows support at least one such method.
+
+
+FUTURE EXTENSIONS:
+   
+- The platform driver MAY support the creation of extra, borderless windows that float over the specified "parent" window. Such windows are called Popup Windows.
+
+- IF the platform driver does support popup windows, it must also fulfill the following requirements:
+
+  - The popup windows MUST support the same updating mechanism(s) that their "parent" window does.
+  
+  - The popup windows MUST support the same graphical features that the parent window does, UNLESS the requestor explicitly downgrades the requirements (e.g. no depth buffer, less bits per color, etc.)
+  
+- In debug builds, the platform driver SHOULD warn if a standard window is disposed before all associated popup windows have been disposed.

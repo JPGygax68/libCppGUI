@@ -10,6 +10,8 @@
 #include <cppgui/Listbox.hpp>
 #include <cppgui/Dropdown_button.hpp>
 
+#include "./Popup_test_button.hpp"
+
 
 class Test_window: public cppgui::Window
 {
@@ -35,5 +37,6 @@ private:
     cppgui::Glyph_button                _glyphbutton;
     cppgui::Boxed_vertical_scrollbar    _vscrollbar;
     cppgui::Listbox                     _listbox;
-    cppgui::Dropdown_button             _dropdownbtn;
+    //cppgui::Dropdown_button             _dropdownbtn;
+    cppgui::Popup_test_button           _popupbtn;
 };

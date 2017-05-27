@@ -10,3 +10,11 @@
     - verify / reimplement cycle_focus() action
     
 - Button and Glyph_button have too much in common to exist (on_pushed()!) for completely separate implementations
+  - Also, the background and border is provided by Boxed<>
+  -> the base class should probably be called something like Clickable_base (rather than "Button_base")
+  
+- Double-click text selection in Textbox is not working at this time
+
+- Mouse capture when selecting text in Textbox is not working at this time
+
+- Cannot click-select buttons in Listbox (tab selection works)

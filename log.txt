@@ -1,3 +1,103 @@
+2017-05-26
+==========
+
+Ruminating further on popup zones
+---------------------------------
+
+I haven't yet reached full clarity on how to implement popup zones, so I'm going to try and view the problem from all angles before starting with the coding.
+
+In the future, the default layer and the popup zones could be rendered independently and even concurrently, if the platform driver supports that by providing separate graphic contexts. -> It should not be assumed that the default layer and the popup zones will be rendered in a specific order, or that invalidating then one will also invalidate the other, even partially.
+    
+Popup zones may, in the future, be implemented on the basis of separate (borderless) windows, which would typically have their own message queues (which might even get pumped by a separate thread - though not on Windows). Such popup zones will be called "external".
+
+Regarding the main window, the (tentative) specification so far only stipulates that perform_pending_main_thread_tasks() must be called periodically. On some systems, that call may be a no-op (if the window system does not use a message queue and, for example, directly calls into the Window object).
+
+In theory, each popup zone might need its own message pumping, which could - again, in theory - have to take place in a separate thread. That however would be an implementation detail of the platform driver, and thus does not require specification.
+
+An open question is whether popup zones should be implemented by the platform adapter or the root widget. The intuitive answer is "both" - the root widget should be able to provide "internal" popup zones, whereas the platform adapter MAY (in the future) provide "external" popups.
+
+It is slightly more complicated though. Even internal popups could be based on overlays, which could be a (future, optional) feature provided by the platform adapter.
+
+What this means is that careful decoupling is required.
+
+Event handling for internal popups:
+
+- Input events arrive at the root widget as per usual
+
+- The root widget determines whether the event must be forwarded to a popup zone; if so, that is what it does then.
+    - Keyboard events are NOT forwarded to popup zones, at least for now (the ability for popup zones to obtain focus may be added later)
+    - Mouse events go to the popup zone when their coordinates are within the zone
+    - The popup zone is sent an "mouse enter" message when the mouse enters it, and a "mouse leave" message when it leaves the zone
+
+Rendering for internal popups:
+
+- Usually, internal popup zones invalidate like widgets do, i.e. they trigger a redraw (possibly a partial one in the future) of the window
+
+- In case the popups are implemented using platform-provided overlays (future extension ?), the invalidation is restricted to the overlay containing the popup. In such a scenario, it is up to the root widget to obtain and manage such overlay contexts, attach compatible canvas instances to them, and call the popup's render() method.
+
+- For popups implemented on the basis of additional platform windows, invalidation must be forwarded to those windows via the platform adapter. It is somewhat unlikely, though quite possible, that a platform-based popup will be drawn in a free or synced loop (this could be the case for example if the popup displays an animation). As per specification, it is then up to the platform adapter to ensure that the popup's render() method gets called continuously.
+
+--- cont'd 2017-05-27 ----
+
+It becomes obvious that popups have a powerful lot in common with normal widgets, so it may well make sense to implement them on that basis, i.e. as descendants of the Widget class.
+
+So let Popup be a direct descendant of Widget. An instance of Popup would then act as a separate root for the popup zone it represents, though it remains connected to the "real" root widget. I'll try to review the different angles for each likely situation:
+
+Internal popups (without overlays):
+  - Architecture: internal popups are implemented as descendants of the Widget class
+  - Rendering: Popup instances are rendered immediately after the "normal" children, within the same call to Root_widget::render()
+  - Invalidation: gets passed "up" to the root widget, which then triggers a re-rendering of everything (standard layer + popups)
+  - Input events: the root widget ensures that Popup instances get priority over widgets, but otherwise treats them the same way as widgets
+  
+Overlay-based popups (future):
+  - Architecture: overlay-based popups are implemented as descendants of the Widget class
+  - Rendering: popup instances are rendered separately, by the platform driver calling Root_widget::render_overlay()
+  - Invalidation: done by calling invalidate_overlay() on the root widget, which will forward to Window::invalidate_overlay()
+  - Input events: same as internal popups
+  
+"External" popups (future):
+  - Architecture: the client widget class derives from Popup_window (which derives from a class implementing the Platform_popup_window concept)
+  - Creation: the client widget passes itself to the constructor of its Popup_window descendent; the inherited constructor of the Platform_popup_window implementation registers the instance so it can pass events to it
+  - Rendering: the platform driver is responsible for calling the render() method on the Platform_popup_window-derived object
+  - Invalidation: via the invalidate() method of the Platform_popup_window implementation
+  - Input events: the platform driver injects events directly into its Platform_popup_window implementation, as it does for normal windows
+
+All these variations have in common that they are not functional (concrete) widgets, nor containers of such. The need for popups that can contain widgets is fulfilled in another step, one that abstracts away the differences between different popup types: Root_widget::create_container_popup(...), which returns an object that is derived from Container_base that serves as the root of a widget tree that is similar to, but separate from the root widget.
+
+---------------
+
+Implementation plan
+-------------------
+
+### Step 1
+
+- In the test application, create a custom widget called Popup_test_button, which will drop down (or up, depending on the position) a rectangle that will be filled with a uniform color (let's say light yellow).
+
+Implementation
+--------------
+
+Roadbump: trying to derive Internal_popup_zone from Widget revealed the problem that the layouting methods (init_layout(), get_minimal_bounds() and layout()) are not needed in popups; and in fact, there are quite a few more that are equally unneeded.
+
+This now needs careful thinking over. The first impulse would be to factor out the methods common to Widget and Internal_popup_zone into a base class that could be called GUI_element or similar, which offers only a minimal interface, consisting of init() / cleanup() (to manage graphical resources), render(), and the event injection methods.
+
+Thinking about it, this seems the right way to go. It does not stand in the way of the next step, the container popup; actually, it makes the design clearer.
+
+...
+
+Done. I've factored out about half the members of the Widget class into the new UI_element class. Some points of note:
+
+- UI_element can NOT be a child of a container (class Container_base) (no container() property, no is_first/last_child() methods)
+
+- Consequently, UI_element does not have a back reference to a container either, which also means it cannot find the root widget by walking that chain up.
+
+- As a further consequence, UI_element does NOT participate in the focus handling, since that is based on a container "chain" from the root widget on down.
+
+- All events are injected at the UI_element level, though the handlers are all empty and return false (= "event not consumed")
+
+- UI_element does introduce the invalidate() method, but as a contract only. It must be implemented by derived classes - in particular, the Internal_popup_zone class I had begun writing.
+
+
+
 2017-05-25
 ==========
 

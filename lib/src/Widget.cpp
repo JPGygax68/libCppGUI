@@ -53,29 +53,10 @@ namespace cppgui {
     }
     */
 
-    void Widget::move_by(const Point &d)
-    {
-        _position += d;
-
-        // NOTE: this does not invalidate - must be done by caller!
-    }
-
-    void Widget::shift_by(const Point &d)
-    {
-        // TODO: this can be optimized using renderer/platform specific features ("2d acceleration", textures, etc.)
-        move_by(d);
-        invalidate();
-    }
-
     void Widget::on_click(Click_handler handler)
     {
         assert(!_click_hndlr);
         _click_hndlr = handler;
-    }
-
-    void Widget::set_visible(bool vis)
-    {
-        _visible = vis;
     }
 
     void Widget::added_to_container(Container_base *cont)
@@ -88,6 +69,21 @@ namespace cppgui {
         _container = nullptr;
     }
 
+    bool Widget::is_first_child()
+    {
+        return container()->children().front() == this;
+    }
+
+    bool Widget::is_last_child()
+    {
+        return container()->children().back() == this;
+    }
+
+    auto Widget::root_widget() -> Root_widget * 
+    { 
+        return _container->container_root_widget(); 
+    }
+
     void Widget::take_focus()
     {
         assert(focussable());
@@ -96,19 +92,14 @@ namespace cppgui {
         invalidate();
     }
 
-    auto Widget::root_widget() -> Root_widget * 
-    { 
-        return _container->container_root_widget(); 
-    }
-
     void Widget::pass_up_and_notify_focus()
     {
         if (!has_focus())
         {
             //if (focussable())
             //{
-                container()->set_focus_on_child(this);
-                //gained_focus();
+            container()->set_focus_on_child(this);
+            //gained_focus();
             //}
             //else {
             //    container()->switch_focused_child(nullptr);
@@ -132,14 +123,11 @@ namespace cppgui {
         return container()->has_focus() && container()->focused_child() == this;
     }
 
-    bool Widget::is_first_child()
+    auto Widget::absolute_position() -> Point
     {
-        return container()->children().front() == this;
-    }
+        assert( container() ); // must not query before inserted into widget tree
 
-    bool Widget::is_last_child()
-    {
-        return container()->children().back() == this;
+        return container()->container_absolute_position() + position();
     }
 
     bool Widget::mouse_motion(const Point &p)
@@ -150,27 +138,6 @@ namespace cppgui {
     bool Widget::key_down(const Keycode &key)
     {
         return false;
-    }
-
-    void Widget::mouse_enter()
-    {
-        //std::cout << "Widget::mouse_enter()" << std::endl;
-        _hovered = true;
-        invalidate();
-    }
-
-    void Widget::mouse_exit()
-    {
-        //std::cout << "Widget::mouse_exit()" << std::endl;
-        _hovered = false;
-        invalidate();
-    }
-
-    auto Widget::absolute_position() -> Point
-    {
-        assert( container() ); // must not query before inserted into widget tree
-
-        return container()->container_absolute_position() + position();
     }
 
     bool Widget::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
@@ -231,32 +198,6 @@ namespace cppgui {
             set_visible(state);
             invalidate();
         }
-    }
-
-    void Widget::shift_horizontally(Position_delta delta)
-    {
-        // TODO: 
-        //set_position({ position().x + delta, position().y });
-        _position.x += delta;
-        invalidate();
-    }
-
-    void Widget::shift_vertically(Position_delta delta)
-    {
-        // TODO: 
-        //set_position({ position().x, position().y + delta });
-        _position.y += delta;
-        invalidate();
-    }
-
-    void Widget::shift_up(Length length)
-    {
-        shift_vertically( - static_cast<Position_delta>(length) );
-    }
-
-    void Widget::shift_down(Length length)
-    {
-        shift_vertically( static_cast<Position_delta>(length) );
     }
 
     // Style
@@ -324,8 +265,8 @@ namespace cppgui {
     #error Upward Y axis not supported yet
     #endif
 
-        _position = p + d;
-        _bounds = b;
+        position() = p + d;
+        bounds() = b;
     }
 
     /*

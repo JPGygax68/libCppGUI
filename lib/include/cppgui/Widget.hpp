@@ -17,24 +17,19 @@
     limitations under the License.
 */
 
-#include <functional>
-#include <cppgui_config.hpp>
-//#include "./basic_types.hpp"
-#include "./Bbox.hpp"
-#include "./Canvas.hpp"
+#include "./UI_element.hpp"
 #include "./layouting.hpp"
-#include CPPGUI_RENDERER_HEADER
-#include CPPGUI_PLATFORM_ADAPTER_HEADER
 
 
 namespace cppgui {
 
-    class Root_widget;
+    // Forward / undefined declarations
     class Container_base;
+    class Internal_popup_zone;
 
     // Widget 
 
-    class Widget
+    class Widget: public UI_element
     {
     public:
         using Click_handler     = std::function<bool(const Point &, int button, Count clicks)>; // TODO: support return value ?
@@ -50,66 +45,34 @@ namespace cppgui {
             #endif
         }
 
-        //auto& rectangle() { return _rect; }
-        auto rectangle() const -> Rectangle { return Rectangle{_bounds} + _position; }; 
-        auto& position() { return _position; }
-        auto& position() const { return _position; }
-        //auto& extents() { return _rect.ext; }
-        //auto& extents() const { return _rect.ext; }
-        auto& bounds() { return _bounds; }
-        auto& bounds() const { return _bounds; }
-        auto positioned_bounds() const { return _bounds + _position; }
-        //void set_position(const Point &);
-        //void set_bounds(Bbox_cref );
-        auto width () const { return rectangle().width (); }
-        auto height() const { return rectangle().height(); }
-
-        void move_by(const Point &);
-        void shift_by(const Point &);
-
-        //void set_background_color(const RGBA &);
-        //auto background_color() const -> RGBA;
-
         void on_click(Click_handler);
-
-        /** The init() entry point is where a widget "connects" to its backends (the most important of
-            which being the canvas).
-        */
-        virtual void init(Canvas *) {}
 
         /** The compute_view_from_data() entry point must be called after init(), and also after 
             layout() if run-time layouting is enabled.
         */
         virtual void compute_view_from_data() {}
 
-        // Run-time properties
-
-        void set_visible(bool visible = true);
-        bool visible() const { return _visible; }
-
-        bool disabled() const { return false; } // TODO!!!
-
-        //void set_focussable(bool state = true) { _focussable = state; }
-        virtual bool focussable() const { return visible(); }
-
         void added_to_container(Container_base *);
         void removed_from_container(Container_base *);
 
-        // TODO: should the following be protected ?
-        bool hovered() const { return _hovered; }
+        // State queries
 
-        virtual void take_focus();
-        /** Important: do not call gained_focus() from a child; call child_obtained_focus() instead,
-            to inform the container.
-         */
-        virtual void gained_focus();
-        virtual void loosing_focus();
-        virtual bool has_focus();
+        bool disabled() const { return false; } // TODO!!!
 
         bool is_first_child();
         bool is_last_child();
 
-        // Input handling
+        // Keyboard focus
+
+        virtual bool focussable() const { return visible(); }
+        virtual void take_focus();
+        virtual void gained_focus();
+            // Important: do not call gained_focus() from a child; call child_obtained_focus() instead,
+            // to inform the container.
+        virtual void loosing_focus();
+        virtual bool has_focus();
+
+        // Input event handling
 
         /*
             By convention, mouse positions are passed to a widget as relative to
@@ -120,30 +83,21 @@ namespace cppgui {
             TODO: event injection methods should report whether or not the event
                 was consumed.
          */
-        virtual bool mouse_motion(const Point &);
-        virtual bool mouse_button(const Point &, int /*button*/, Key_state, Count clicks);
-        virtual bool mouse_click(const Point &, int button, Count count);
-        virtual bool mouse_wheel(const Vector &);
-        virtual bool text_input(const char32_t *, size_t);
-        virtual bool key_down(const Keycode &);
-        //void key_up(const Keycode &);
-
-        // Derived ("secondary") events, purely informational
-
-        virtual void mouse_enter();
-        virtual void mouse_exit();
+        bool mouse_motion(const Point &) override;
+        bool mouse_button(const Point &, int /*button*/, Key_state, Count clicks) override;
+        bool mouse_click(const Point &, int button, Count count) override;
+        bool mouse_wheel(const Vector &) override;
+        bool text_input(const char32_t *, size_t) override;
+        bool key_down(const Keycode &) override;
+        //bool key_up(const Keycode &) override;
 
         // Queries
 
-        virtual auto absolute_position() -> Point;
+        auto absolute_position() -> Point override;
 
         // Run-time manipulations
 
         void change_visible(bool visible = true);
-
-        // Rendering
-
-        virtual void render(Canvas *, const Point &offset) = 0;
 
         // Misc 
 
@@ -151,15 +105,11 @@ namespace cppgui {
 
     protected:
 
-        // Event handling
         virtual auto root_widget() -> Root_widget*;
+        
         void pass_up_and_notify_focus();
 
-        // Graphics system integration
-        void shift_horizontally(Position_delta);
-        void shift_vertically(Position_delta);
-        void shift_up  (Length);
-        void shift_down(Length);
+        void invalidate() override;
 
         // Rendering conveniences
 
@@ -170,12 +120,6 @@ namespace cppgui {
         //auto convert_position_to_inner(const Point &) -> Point;
         static auto advance_to_glyph_at(const Rasterized_font *, const std::u32string &text, size_t from, size_t to, Point &pos) 
             -> const Glyph_control_box *;
-        void draw_borders(Canvas *, const Point & offs, Width width, const RGBA &color);
-        void draw_borders(Canvas *, const Rectangle &rect, const Point &offs, Width width, const RGBA &color);
-        void draw_borders(Canvas *, const Rectangle &rect, const Point &offs, 
-            Width width, const RGBA & top, const RGBA & right, const RGBA & bottom, const RGBA & left);
-        // PROVISIONAL
-        //void draw_stippled_inner_rect(Canvas *, const Rectangle &, const Point &offs);
 
         // Visual state
         virtual auto visual_states() -> Widget_states;
@@ -199,40 +143,20 @@ namespace cppgui {
         static constexpr auto hovered_item_background_color  () -> RGBA      { return { 0.8f, 0.8f, 0.8f, 1 }; }
 
         // Styling
-        // TODO: move to new class Abstract_button<> ?
+        // TODO: replace with actual styling/themes
         auto button_face_color  () -> RGBA;
         auto button_border_color() -> RGBA;
         auto button_border_width() -> int;
 
         Container_base             *_container = nullptr;
 
-        //Rectangle               _inner_rect;
-
     private:
-        friend class Drag_controller;
 
         #ifdef _DEBUG
         const char  *_id;
         #endif
 
-        Point                   _position = {};
-        Bbox                    _bounds = {};
-        //RGBA                    _bkgnd_clr = {0, 0, 0, 0};
         Click_handler           _click_hndlr;
-        bool                    _visible = true;
-        //bool                    _focussable = true;
-        bool                    _hovered = false;
-
-        //-----------------------------------------------------------
-        // "Updater" "aspect
-        // TODO: make configurable by preprocessor
-
-    public:
-        // TODO: make this virtual ?
-        void invalidate();
-
-        // END of Updater aspect
-        //-----------------------------------------------------------
 
     #ifndef CPPGUI_EXCLUDE_LAYOUTING
     public:
