@@ -3,7 +3,7 @@
 #include <memory>
 #include <cppgui/Widget.hpp>
 #include <cppgui/Boxed.hpp>
-#include <cppgui/Internal_popup_zone.hpp>
+#include <cppgui/Internal_popup.hpp>
 
 
 namespace cppgui
@@ -36,7 +36,7 @@ namespace cppgui
             RGBA                                    _color = {0, 0, 0, 1};
             std::u32string                          _label;
             Bbox                                    _label_bbox;
-            std::unique_ptr<Internal_popup_zone>    _popup_zone;
+            std::unique_ptr<Internal_popup>    _popup_zone;
 
         #ifndef CPPGUI_EXCLUDE_LAYOUTING
 

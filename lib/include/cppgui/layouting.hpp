@@ -7,16 +7,31 @@
 namespace cppgui {
     
     /*
-    * Can be used to specify both the position (of the origin point) and the bounds of a 
-    * Widget as a combined parameter.
-    * 
-    * TODO: rename to Positioned_bbox ?
-    */
+     * Can be used to specify both the position (of the origin point) and the bounds of a 
+     * Widget as a combined parameter.
+     * 
+     * TODO: rename to Positioned_bbox ?
+     */
     struct Layout_box
     {
         Point   orig;
         Bbox    bbox;
     };
+
+    /*
+     * Alignment
+     */
+
+    // Horizontal
+    auto align_left    (Bbox_cref reference, Bbox_ref alignee) -> Position_delta;
+    auto align_right   (Bbox_cref reference, Bbox_ref alignee) -> Position_delta;
+    //auto align_origin  (Bbox_cref reference, Bbox_ref alignee) -> Position_delta;
+    auto align_center  (Bbox_cref reference, Bbox_ref alignee) -> Position_delta;
+    // Vertical
+    auto align_top     (Bbox_cref reference, Bbox_ref alignee) -> Position_delta;
+    auto align_bottom  (Bbox_cref reference, Bbox_ref alignee) -> Position_delta;
+    //auto align_baseline(Bbox_cref reference, Bbox_ref alignee) -> Position_delta;
+    auto align_middle  (Bbox_cref reference, Bbox_ref alignee) -> Position_delta;
 
     /*
      * TODO: so far, this only serves to compute the minimal bounding box. We need actual layouting options.

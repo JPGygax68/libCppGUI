@@ -25,7 +25,7 @@ namespace cppgui {
 
     // Forward / undefined declarations
     class Container_base;
-    class Internal_popup_zone;
+    class Internal_popup;
 
     // Widget 
 
@@ -102,10 +102,10 @@ namespace cppgui {
         // Misc 
 
         auto container() const -> Container_base * { return _container; }
+        virtual auto root_widget() -> Root_widget*;
 
     protected:
 
-        virtual auto root_widget() -> Root_widget*;
         
         void pass_up_and_notify_focus();
 

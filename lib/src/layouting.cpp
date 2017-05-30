@@ -5,7 +5,48 @@ namespace cppgui
 {
     // TODO: support vertical scripts
     // TODO: testing
-    
+
+    auto align_left(Bbox_cref reference, Bbox_ref alignee) -> Position_delta
+    {
+        return (-alignee.x_min) - (-reference.x_min);
+    }
+
+    auto align_right(Bbox_cref reference, Bbox_ref alignee) -> Position_delta
+    {
+        return reference.x_max - alignee.x_max;
+    }
+
+    auto align_center(Bbox_cref reference, Bbox_ref alignee) -> Position_delta
+    {
+        auto w_r2 = reference.width() / 2, w_a2 = alignee.width() / 2; // halves of widths
+
+        auto dx_r = w_r2 - (-reference.x_min); // reference origin: distance from alignment axis (positive left)
+        auto dx_a = w_a2 - (-alignee  .x_min); // alignee origin: distance from alignment axis (positive left)
+
+        return dx_r - dx_a;
+    }
+
+    auto align_top(Bbox_cref reference, Bbox_ref alignee) -> Position_delta
+    {
+        return alignee.y_max - reference.y_max;
+    }
+
+    auto align_bottom(Bbox_cref reference, Bbox_ref alignee) -> Position_delta
+    {
+        return - (-alignee.y_min - (-reference.y_min));
+    }
+
+    auto align_middle(Bbox_cref reference, Bbox_ref alignee) -> Position_delta
+    {
+        auto h_r2 = reference.height() / 2, h_a2 = alignee.height() / 2; // halves of heights
+
+        auto dy_r = h_r2 - (-reference.y_min); // reference origin: distance from alignment axis (positive down)
+        auto dy_a = h_a2 - (-alignee  .y_min); // alignee origin: distance from alignment axis (positive down)
+
+        return dy_a - dy_r;
+    }
+
+
     void Inline_layouter::set_default_spacing(const Rasterized_font *f)
     {
         _spacing = f->lookup_glyph(0, U' ')->cbox.adv_x;

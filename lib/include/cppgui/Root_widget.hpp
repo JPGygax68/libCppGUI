@@ -25,6 +25,9 @@
 
 namespace cppgui {
 
+    class Internal_popup;
+
+
     class Root_widget: public Container_base
     {
     public:
@@ -68,6 +71,10 @@ namespace cppgui {
         void capture_mouse(Widget *);
         void release_mouse();
         auto mouse_holder() const { return _mouse_holder; }
+
+        bool add_popup(Internal_popup *);
+        void remove_popup(Internal_popup *);
+        void invalidate_popup(Internal_popup *);
 
         // Specific functionality
 

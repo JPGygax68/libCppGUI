@@ -75,6 +75,13 @@ namespace cppgui {
         _end
     };
 
+    enum Relative_position
+    {
+        // TODO: cultural directions
+
+        to_left, to_right, above, below
+    };
+
     struct Point
     {
         Position        x, y;

@@ -17,16 +17,18 @@ limitations under the License.
 
 #include <cppgui/unicode.hpp>
 #include <cppgui/Root_widget.hpp>
-#include <cppgui/Internal_popup_zone.hpp>
+#include <cppgui/Internal_popup.hpp>
 #include "./Popup_test_button.hpp"
 
 
 namespace cppgui {
 
-    class Dummy_popup_zone: public Internal_popup_zone
+    class Dummy_popup_zone: public Internal_popup
     {
     public:
-        using Internal_popup_zone::Internal_popup_zone;
+        using Internal_popup::Internal_popup;
+
+        void render(Canvas *, const Point &offset) override;
     };
 
 
@@ -93,7 +95,6 @@ namespace cppgui {
 
     void Popup_test_button_base::toggle_popup()
     {
-        /*
         if (!_popup_zone)
         {
             _popup_zone.reset( new Dummy_popup_zone(this) );
@@ -102,7 +103,6 @@ namespace cppgui {
         {
             _popup_zone.reset();
         }
-        */
     }
 
 #ifndef CPPGUI_EXCLUDE_LAYOUTING
@@ -154,5 +154,11 @@ namespace cppgui {
     }
 
 #endif // CPPGUI_EXCLUDE_LAYOUTING
+
+
+    void Dummy_popup_zone::render(Canvas *c, const Point & offset)
+    {
+        c->fill_rect(rectangle(), {1, 1, 0.5f});
+    }
 
 } // ns cppgui

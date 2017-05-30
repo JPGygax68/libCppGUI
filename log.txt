@@ -1,3 +1,95 @@
+2017-05-29
+==========
+
+Speedbump regarding the positioning of popups. Trying to think of all angles:
+
+- Popups can be positioned above or below, to the right or the left of the owning widget
+
+- In some cases, flipping to the other side (e.g. placing the popup above the widget instead of below) is allowable, in some cases it isn't
+
+  -> it could be useful if the widget could "probe" a direction without actually bringing up the popup, in order to give visual feedback to the user as to where the popup would appear (e.g. replacing the "down" arrow of a combo box with an "up" arrow)
+    - [This is edge case. I think it is actually next to useless in practice.]
+    
+- In addition to the preferred relative position (above, below, to the right, to the left), a widget should be able to specify how to align the popup in the other direction (left, center, right, or top, middle, bottom, baseline)
+  - "baseline" could be optically useful if the popup is supposed to extend an abridged text, as well as for submenus in drop-down menus
+  - left and right alignment could occasionally follow the widget's own alignment
+  - center (horizontal) alignment is useful if the content of the popup does not have an alignment (e.g. a video or 3D preview)
+
+- In some cases, it might be useful to let the widget to all positioning and sizing itself - this is possible because the widget can know its own rectangle (and bounds, for the origin) as well as the extents of the root widget.
+
+- The "flyout" is a common application of popups. It is essentially a vertical or horizontal sequence of additional widgets. That use case should be well-supported; in particular, a scrollbar should automatically be added when available space in the preferred relative position is insufficient - that feature however is one or two layers above the popups themselves.
+
+- In some cases, it may be desirable to specify both a minimum and a maximum size when bringing up a popup (e.g. a combo box with a long list). 
+
+- If the minimum size cannot be obtained in the aligning direction (i.e. the axis that does NOT determine the relative position of the popup), the algorithm could shift the popup. E.g. if the listbox dropped down from a combobox is too wide / too close to the right edge of the window, the algorithm could the popup to the left. 
+  - This comes at a cost to user-friendliness though, by potentially forcing the user to move the mouse in awkward ways to reach the correct row or column in the popup.
+    -> When using the mouse, this could be handled by "warping" the mouse. It could even be handled automatically by the code that positions and sizes the popup.
+      -> However that is not allowable when the event that gave rise to the popup was a touch event. In such a case, the "shift" option should be prohibited.
+
+- The same problem can arise with the maximum size. Whether or not shifting should be allowed in that case is a matter of preference that should be made an input parameter.
+
+Devising the algorithm
+----------------------
+
+- Popup.place(relative_position, alignment, minimal_bounds, preferred_bounds, gap, flags) -> Bounds
+  maximum_size: optional
+  gap: Position_delta: defaults to 0
+  flags: optional: can_shift_from_alignment, cannot_flip_to_other_side
+
+(con'td 2017-05-30)
+
+### Algorithm:
+
+- check for sufficient space:
+
+  - if placement is vertical (above or below):
+    
+    - if below: 
+      - check:
+        - client widget lower edge + gap + minimal height (= ascender - descender)
+        - if not enough:
+          - set flipped flag
+          - check client widget lower edge + gap + preferred height (= ascender - descender)
+          - if still not enough:
+            - log an ERROR
+            - constrain to available height
+        - else:
+          - if preferred height specified:
+            - extend height to minimum of available and preferred
+            
+    - else (above):
+      - check:
+        - client widget top edge - gap - minimal height
+        - if not enough:
+          - set flipped flag
+          - check client widget upper edge - gap - preferred height
+          - if still not enough:
+            - log an ERROR
+            - constrain to available height
+        - else:
+          - if preferred height specified:
+            - extend height to minimum of available and preferred
+
+    - handle alignment:
+      - compute left and right edges according to specified alignment:
+        - left: left edge = left edge of client widget, right edge = left edge + minimal bounds width
+        - right: right edge = right edge of client widget, left edge = right edge - minimal bounds width
+        - center: compute middle of client widget, left edge = middle - (minimal bounds width / 2), right edge = middle + (rest of width)
+        - origin: left edge = origin + left extents, right edge = origin + right extents
+        (all the above should be implemented as a generic layouting routine in the appropriate module)
+        - if option can_shift_from_alignment was specified:
+          - if alignment was left, origin, or middle, and right edge is past canvas width:
+              - shift to the left by the amount the right edge extends past the canvas edge, but no further than to canvas left edge
+          - else if alignment was "right" and left edge is before canvas left edge (0):
+              - shift to the right by the amount the left edge extends before the canvas left edge, but no further than to canvas right limit
+        - if either left or right edge are beyond canvas confines:
+          - log an ERROR
+      
+  - else (placement is horizontal, i.e. to_right or to_left):
+    ... similar ...
+  
+
+  
 2017-05-26
 ==========
 
