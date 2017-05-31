@@ -213,9 +213,9 @@ namespace cppgui {
 
     void Textbox::render(Canvas *c, const Point &offs)
     {
-        auto p = offs + position();
+        auto p = offs + origin();
 
-        draw_background_and_border(c, p, bounds(), visual_states());
+        draw_background_and_border(c, p, bbox(), visual_states());
 
         //c->set_clipping_rect(p.x + _inner_rect.p.x, p.y + _inner_rect.p.y, _inner_rect.ext.w, _inner_rect.ext.h);
         c->push_clipping_rect(Rectangle{_inner_bbox} + p);
@@ -589,7 +589,7 @@ namespace cppgui {
     {
         _font.assign(font);
         compute_text_extents();
-        compute_layout(bounds());
+        compute_layout(bbox());
     }
 
     void Textbox::compute_text_extents()

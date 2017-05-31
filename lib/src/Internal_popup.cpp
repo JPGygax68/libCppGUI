@@ -22,12 +22,13 @@ namespace cppgui
     {
         // Since popups are not nested within containers, their relative position is also their 
         // absolute one.
-        return position();
+        return origin();
     }
 
     void Internal_popup::invalidate()
     {
-        _owner->root_widget()->invalidate_popup(this);
+        throw std::runtime_error("Internal_popup::invalidate() not implemented yet");
+        // _owner->root_widget()->invalidate_popup(this);
     }
 
 } // ns cppgui

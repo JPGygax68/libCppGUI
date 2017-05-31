@@ -17,9 +17,9 @@ namespace cppgui {
     public:
         void render(Canvas *c, const Point &offset) override
         {
-            auto p = offset + this->position();
+            auto p = offset + this->origin();
 
-            draw_background_and_border(c, p, this->bounds(), this->visual_states());
+            draw_background_and_border(c, p, this->bbox(), this->visual_states());
 
             WidgetC::render(c, offset);
         }

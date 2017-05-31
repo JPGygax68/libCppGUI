@@ -63,6 +63,7 @@ STATIC
     include/cppgui/Icon_resources.hpp       src/Icon_resources.cpp
 
     include/cppgui/Bbox.hpp                 src/Bbox.cpp
+    include/cppgui/Positioned_bbox.hpp      src/Positioned_bbox.cpp
     include/cppgui/Extents.hpp              src/Extents.cpp
     include/cppgui/Rectangle.hpp            src/Rectangle.cpp
     include/cppgui/layouting.hpp            src/layouting.cpp
@@ -86,7 +87,7 @@ STATIC
     include/cppgui/Listbox.hpp              src/Listbox.cpp
     #include/cppgui/Scrollbox.hpp            src/Scrollbox.cpp
     include/cppgui/Dropdown_button.hpp      src/Dropdown_button.cpp
-    include/cppgui/Internal_popup.hpp       src/Internal_popup_zone.cpp
+    include/cppgui/Internal_popup.hpp       src/Internal_popup.cpp
 )
 
 # This will allow source files to include their contract header files without using paths

@@ -6,7 +6,7 @@ namespace cppgui
     
     void UI_element::move_by(const Point &d)
     {
-        _position += d;
+        _bounds.orig += d;
 
         // NOTE: this does not invalidate - must be done by caller!
     }
@@ -42,7 +42,7 @@ namespace cppgui
     {
         // TODO: 
         //set_position({ position().x + delta, position().y });
-        _position.x += delta;
+        _bounds.orig.x += delta;
         invalidate();
     }
 
@@ -50,7 +50,7 @@ namespace cppgui
     {
         // TODO: 
         //set_position({ position().x, position().y + delta });
-        _position.y += delta;
+        _bounds.orig.y += delta;
         invalidate();
     }
 

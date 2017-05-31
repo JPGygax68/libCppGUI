@@ -127,7 +127,7 @@ namespace cppgui {
     {
         assert( container() ); // must not query before inserted into widget tree
 
-        return container()->container_absolute_position() + position();
+        return container()->container_absolute_position() + origin();
     }
 
     bool Widget::mouse_motion(const Point &p)
@@ -240,7 +240,7 @@ namespace cppgui {
         _container->child_invalidated(this);
     }
 
-    void Widget::set_bounds(const Layout_box &lb, Alignment h_align, Alignment v_align)
+    void Widget::set_bounds(const Pbbox &lb, Alignment h_align, Alignment v_align)
     {
         set_bounds(lb.orig, lb.bbox, h_align, v_align);
     }
@@ -265,8 +265,8 @@ namespace cppgui {
     #error Upward Y axis not supported yet
     #endif
 
-        position() = p + d;
-        bounds() = b;
+        origin() = p + d;
+        bbox() = b;
     }
 
     /*

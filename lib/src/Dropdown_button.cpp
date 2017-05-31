@@ -48,7 +48,7 @@ namespace cppgui {
 
     void Dropdown_button_base::render(Canvas *c, const Point &offs)
     {
-        auto p = offs + position();
+        auto p = offs + origin();
 
         //draw_background_and_border(c, p, bounds(), visual_states());
 
@@ -129,14 +129,14 @@ namespace cppgui {
     void Dropdown_button_base::font_changed()
     {
         compute_label_bounds();
-        compute_layout(bounds());
+        compute_layout(bbox());
         invalidate();
     }
 
     void Dropdown_button_base::text_changed()
     {
         compute_label_bounds();
-        compute_layout(bounds());
+        compute_layout(bbox());
         invalidate();
     }
 

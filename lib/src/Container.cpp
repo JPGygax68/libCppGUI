@@ -30,7 +30,7 @@ namespace cppgui {
 
     auto Container_base::container_absolute_position() -> Point
     {
-        return container()->container_absolute_position() + position();
+        return container()->container_absolute_position() + origin();
     }
 
     void Container_base::set_focus_on_child(Widget *child)
@@ -112,7 +112,7 @@ namespace cppgui {
 
     void Container_base::render(Canvas *c, const Point &offs)
     {
-        auto p = offs + position();
+        auto p = offs + origin();
         // c->fill_rect(Rectangle{bounds()} + p, background_color(visual_states()));
 
         // This base implementation just renders the children, without border or background
@@ -137,7 +137,7 @@ namespace cppgui {
 
         if (_hovered_child)
         {
-            return _hovered_child->mouse_motion(p - _hovered_child->position());
+            return _hovered_child->mouse_motion(p - _hovered_child->origin());
         }
 
         return false;
@@ -147,7 +147,7 @@ namespace cppgui {
     {
         auto child = child_at(p);
 
-        if (child) return child->mouse_button(p - child->position(), button, state, clicks);
+        if (child) return child->mouse_button(p - child->origin(), button, state, clicks);
 
         return false;
     }
@@ -257,7 +257,7 @@ namespace cppgui {
     auto Container_base::child_at(const Point &p) -> Widget*
     {
         auto child = std::find_if(begin(_children), end(_children), [&](auto ch) { 
-            return ch->visible() && ch->bounds().contains_point(p - ch->position()); 
+            return ch->visible() && ch->bbox().contains_point(p - ch->origin()); 
         });
 
         return child != end(_children) ? *child : nullptr;

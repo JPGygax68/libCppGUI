@@ -17,6 +17,7 @@
     limitations under the License.
 */
 
+#include <functional>
 #include "./UI_element.hpp"
 #include "./layouting.hpp"
 
@@ -161,7 +162,7 @@ namespace cppgui {
     #ifndef CPPGUI_EXCLUDE_LAYOUTING
     public:
 
-        void set_bounds(const Layout_box &lb, Alignment h_align = horigin, Alignment v_align = baseline);
+        void set_bounds(const Pbbox &lb, Alignment h_align = horigin, Alignment v_align = baseline);
         void set_bounds(const Point &, Bbox_cref, Alignment h_align = horigin, Alignment v_align = baseline);
         void set_rectangle(const Point &, const Extents &, Alignment h_ref=left, Alignment v_ref=top);
 

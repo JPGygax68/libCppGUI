@@ -32,7 +32,7 @@ namespace cppgui {
 
     void Scrolling_container::render(Canvas *c, const Point &offs)
     {
-        auto p = offs + position();
+        auto p = offs + origin();
 
         // Scrollbar
         _vscrollbar.render(c, p);
@@ -88,7 +88,7 @@ namespace cppgui {
 
     void Scrolling_container::bring_item_into_view(Widget *c)
     {
-        auto r_item = c->rectangle() + content_pane()->position();
+        auto r_item = c->rectangle() + content_pane()->origin();
         auto r_win = Rectangle{_window_bbox};
 
         Vector d{0, 0};
@@ -127,7 +127,7 @@ namespace cppgui {
 
     auto Scrolling_container::item_rectangle(Widget *item) const -> Rectangle
     {
-        return item->rectangle() + content_pane()->position();    
+        return item->rectangle() + content_pane()->origin();    
     }
 
     auto Scrolling_container::focused_item_index() const -> Index

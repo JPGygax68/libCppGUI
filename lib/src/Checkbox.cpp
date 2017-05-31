@@ -59,7 +59,7 @@ namespace cppgui {
 
     void Checkbox::render(Canvas *c, const Point & offs)
     {
-        auto p = offs + position();
+        auto p = offs + origin();
 
         // Label
         c->render_text(_label_font.get(), p.x, p.y, _label.data(), _label.size());
@@ -72,7 +72,7 @@ namespace cppgui {
 
         if (has_focus() && !_label.empty())
         {
-            auto r = Rectangle{bounds()};
+            auto r = Rectangle{bbox()};
             r.inflate(3, 2); // TODO: make this configurable somewhere
             c->draw_stippled_rectangle_outline(p.x + r.pos.x, p.y + r.pos.y, r.ext.w, r.ext.h, {0, 0, 0.5f, 1});
         }

@@ -51,7 +51,7 @@ namespace cppgui {
 
     void Glyph_button_base::render(Canvas *c, const Point & offset)
     {
-        auto p = offset + this->position();
+        auto p = offset + this->origin();
 
         // Label
         if (!_label.empty())

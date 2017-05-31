@@ -81,7 +81,7 @@ namespace cppgui {
 
     void Vertical_scrollbar_base::render(Canvas *c, const Point &offset)
     {
-        auto p = offset + position();
+        auto p = offset + origin();
 
         // Thumb
         auto hilite = has_focus() || hovered() || _dragging_thumb;

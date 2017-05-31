@@ -49,7 +49,7 @@ namespace cppgui {
 
     void Label::render(Canvas *c, const Point &offs)
     {
-        auto p = offs + this->position();
+        auto p = offs + this->origin();
 
         //c->fill_rect(Rectangle{bounds()} + p, background_color(visual_states()));
 

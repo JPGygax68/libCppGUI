@@ -26,7 +26,13 @@ protected:
     void before_draw_ui(void *context) override;
 
 private:
+    using Widget = cppgui::Widget;
     using Test_button = cppgui::Boxed<cppgui::Glyph_button_base, cppgui::Borderless_button_box_styles>;
+
+    static void align_widgets_left  (Widget &ref, Widget &tgt);
+    static void align_widgets_origin(Widget &ref, Widget &tgt);
+    static void align_widgets_center(Widget &ref, Widget &tgt);
+    static void align_widgets_right (Widget &ref, Widget &tgt);
 
     std::vector<Test_button>            _button_list;
 
@@ -39,4 +45,12 @@ private:
     cppgui::Listbox                     _listbox;
     //cppgui::Dropdown_button             _dropdownbtn;
     cppgui::Popup_test_button           _popupbtn;
+       
+    cppgui::Button                      _align_left_ref   , _align_left_tgt;
+    cppgui::Button                      _align_origin_ref , _align_origin_tgt;
+    cppgui::Button                      _align_right_ref  , _align_right_tgt;
+    cppgui::Button                      _align_center_ref , _align_center_tgt;
+    cppgui::Button                      _align_top_ref    , _align_top_tgt;
+    cppgui::Button                      _align_bottom_ref , _align_bottom_tgt;
+    cppgui::Button                      _align_middle_ref , _align_middle_tgt;
 };

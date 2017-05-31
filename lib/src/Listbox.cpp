@@ -36,7 +36,7 @@ namespace cppgui {
     {
         // TODO: optimize implementation to only draw visible items
 
-        auto p = offs + position();
+        auto p = offs + origin();
 
         for (auto child: children())
         {

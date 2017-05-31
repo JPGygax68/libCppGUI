@@ -17,11 +17,10 @@
     limitations under the License.
 */
 
-#include <functional>
 #include <cppgui_config.hpp>
 #include CPPGUI_RENDERER_HEADER
 #include CPPGUI_PLATFORM_ADAPTER_HEADER
-#include "./Bbox.hpp"
+#include "./Positioned_bbox.hpp"
 #include "./Canvas.hpp"
 
 
@@ -36,12 +35,14 @@ namespace cppgui {
 
         virtual ~UI_element() {}
 
-        auto rectangle() const -> Rectangle { return Rectangle{_bounds} + _position; }; 
-        auto& position() { return _position; }
-        auto& position() const { return _position; }
+        // TODO: is it a good idea to give direct access to bounds() (+ origin(), bbox()), or should this be encapsulated ? or friend-accessible only ?
+        auto rectangle() const -> Rectangle { return Rectangle{_bounds.bbox} + _bounds.orig; }; 
+        auto& origin() { return _bounds.orig; }
+        auto& origin() const { return _bounds.orig; }
+        auto& bbox() { return _bounds.bbox; }
+        auto& bbox() const { return _bounds.bbox; }
+        auto bounds() const { return _bounds; }
         auto& bounds() { return _bounds; }
-        auto& bounds() const { return _bounds; }
-        auto positioned_bounds() const { return _bounds + _position; }
         auto width () const { return rectangle().width (); }
         auto height() const { return rectangle().height(); }
 
@@ -106,8 +107,9 @@ namespace cppgui {
 
     private:
 
-        Point                   _position = {};
-        Bbox                    _bounds = {};
+        //Point                   _origin = {};
+        //Bbox                    _bbox = {};
+        Positioned_bbox         _bounds = {};
         bool                    _visible = true;
         bool                    _hovered = false;
     };

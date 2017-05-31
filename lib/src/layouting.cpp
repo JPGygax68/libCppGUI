@@ -3,49 +3,6 @@
 
 namespace cppgui
 {
-    // TODO: support vertical scripts
-    // TODO: testing
-
-    auto align_left(Bbox_cref reference, Bbox_ref alignee) -> Position_delta
-    {
-        return (-alignee.x_min) - (-reference.x_min);
-    }
-
-    auto align_right(Bbox_cref reference, Bbox_ref alignee) -> Position_delta
-    {
-        return reference.x_max - alignee.x_max;
-    }
-
-    auto align_center(Bbox_cref reference, Bbox_ref alignee) -> Position_delta
-    {
-        auto w_r2 = reference.width() / 2, w_a2 = alignee.width() / 2; // halves of widths
-
-        auto dx_r = w_r2 - (-reference.x_min); // reference origin: distance from alignment axis (positive left)
-        auto dx_a = w_a2 - (-alignee  .x_min); // alignee origin: distance from alignment axis (positive left)
-
-        return dx_r - dx_a;
-    }
-
-    auto align_top(Bbox_cref reference, Bbox_ref alignee) -> Position_delta
-    {
-        return alignee.y_max - reference.y_max;
-    }
-
-    auto align_bottom(Bbox_cref reference, Bbox_ref alignee) -> Position_delta
-    {
-        return - (-alignee.y_min - (-reference.y_min));
-    }
-
-    auto align_middle(Bbox_cref reference, Bbox_ref alignee) -> Position_delta
-    {
-        auto h_r2 = reference.height() / 2, h_a2 = alignee.height() / 2; // halves of heights
-
-        auto dy_r = h_r2 - (-reference.y_min); // reference origin: distance from alignment axis (positive down)
-        auto dy_a = h_a2 - (-alignee  .y_min); // alignee origin: distance from alignment axis (positive down)
-
-        return dy_a - dy_r;
-    }
-
 
     void Inline_layouter::set_default_spacing(const Rasterized_font *f)
     {
@@ -116,7 +73,7 @@ namespace cppgui
      * the layout box of the element, containing the computed position of the origin point and the
      * vertically extended bounding box to apply to the element.
      */
-    auto layout_element_at_right_edge(Bbox_ref cont, Bbox_cref elem, Alignment valign) -> Layout_box
+    auto layout_element_at_right_edge(Bbox_ref cont, Bbox_cref elem, Alignment valign) -> Pbbox
     {
         // Compute position of element origin point
         auto x = cont.x_max - elem.x_max;
@@ -145,7 +102,7 @@ namespace cppgui
 
     // TODO: inelegant, replace
 
-    auto layout_element_at_top_edge(Bbox_ref cont, Bbox_cref elem, Alignment halign) -> Layout_box
+    auto layout_element_at_top_edge(Bbox_ref cont, Bbox_cref elem, Alignment halign) -> Positioned_bbox
     {
         // Compute position of element origin point
     #ifdef CPPGUI_Y_AXIS_DOWN
@@ -172,7 +129,7 @@ namespace cppgui
 
     // TODO: inelegant, replace
 
-    auto layout_element_at_bottom_edge(Bbox_ref cont, Bbox_cref elem, Alignment halign) -> Layout_box
+    auto layout_element_at_bottom_edge(Bbox_ref cont, Bbox_cref elem, Alignment halign) -> Pbbox
     {
         // Compute position of element origin point
     #ifdef CPPGUI_Y_AXIS_DOWN
@@ -207,7 +164,7 @@ namespace cppgui
         cont.y_min -= h;
     }
 
-    auto align_top_left(Bbox_cref cont, Bbox_cref elem) -> Layout_box
+    auto align_top_left(Bbox_cref cont, Bbox_cref elem) -> Pbbox
     {
     #ifdef CPPGUI_Y_AXIS_DOWN
         return { { - (-cont.x_min - (-elem.x_min)), - (cont.y_max - elem.y_max) }, elem };
