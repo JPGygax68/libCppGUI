@@ -29,8 +29,8 @@ namespace cppgui
         auto& align_center_to  (Pbbox_cref ref) { orig.x = ref.center() - bbox.width() / 2 - bbox.x_min; return *this; }
         auto& align_baseline_to(Pbbox_cref ref) { orig.y = ref.orig.y; return *this; }
         auto& align_top_to     (Pbbox_cref ref) { orig.y = ref.top   () + bbox.y_max; return *this; }
-        auto& align_bottom_to  (Pbbox_cref ref) { orig.y = ref.bottom() - bbox.y_min; return *this; }
-        auto& align_middle_to  (Pbbox_cref ref) { orig.y = ref.center() - bbox.height() / 2 + bbox.y_max; return *this; }
+        auto& align_bottom_to  (Pbbox_cref ref) { orig.y = ref.bottom() + bbox.y_min; return *this; }
+        auto& align_middle_to  (Pbbox_cref ref) { orig.y = ref.middle() - bbox.height() / 2 + bbox.y_max; return *this; }
     };
 
 } // ns cppgui

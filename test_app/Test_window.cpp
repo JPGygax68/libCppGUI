@@ -104,48 +104,55 @@ void Test_window::create_ui()
 
 #endif
 
-    _align_left_ref  .set_font(dflt_font);
-    _align_left_ref  .set_label(U"Align left");
-    _align_left_tgt  .set_font(dflt_font);
-    _align_left_tgt  .set_label(U"LEFT");
-    _align_origin_ref.set_font(dflt_font);
-    _align_origin_ref.set_label(U"Align origin");
-    _align_origin_tgt.set_font(dflt_font);
-    _align_origin_tgt.set_label(U"ORIGIN");
-    _align_center_ref.set_font(dflt_font);
-    _align_center_ref.set_label(U"Align center");
-    _align_center_tgt.set_font(dflt_font);
-    _align_center_tgt.set_label(U"CENTER");
-    _align_right_ref .set_font(dflt_font);
-    _align_right_ref .set_label(U"Align right");
-    _align_right_tgt .set_font(dflt_font);
-    _align_right_tgt .set_label(U"RIGHT");
-    _align_top_ref   .set_font(dflt_font);
-    _align_top_ref   .set_label(U"Align top");
-    _align_top_tgt   .set_font(dflt_font);
-    _align_top_tgt   .set_label(U"TOP");
-    _align_middle_ref.set_font(dflt_font);
-    _align_middle_ref.set_label(U"Align middle");
-    _align_middle_tgt.set_font(dflt_font);
-    _align_middle_tgt.set_label(U"MIDDLE");
-    _align_bottom_ref.set_font(dflt_font);
-    _align_bottom_ref.set_label(U"Align bottom");
-    _align_bottom_tgt.set_font(dflt_font);
-    _align_bottom_tgt.set_label(U"BOTTOM");
-    _align_left_ref  .on_pushed([this]() { align_widgets_left  (_align_left_ref  , _align_left_tgt  ); return true; });
-    _align_origin_ref.on_pushed([this]() { align_widgets_origin(_align_origin_ref, _align_origin_tgt); return true; });
-    _align_center_ref.on_pushed([this]() { align_widgets_center(_align_center_ref, _align_center_tgt); return true; });
-    _align_right_ref .on_pushed([this]() { align_widgets_right (_align_right_ref , _align_right_tgt ); return true; });
-    root_widget().add_child(&_align_left_ref  ); root_widget().add_child(&_align_left_tgt  );
-    root_widget().add_child(&_align_origin_ref); root_widget().add_child(&_align_origin_tgt);
-    root_widget().add_child(&_align_center_ref); root_widget().add_child(&_align_center_tgt);
-    root_widget().add_child(&_align_right_ref ); root_widget().add_child(&_align_right_tgt );
-    root_widget().add_child(&_align_top_ref   ); root_widget().add_child(&_align_top_tgt   );
-    root_widget().add_child(&_align_middle_ref); root_widget().add_child(&_align_middle_tgt);
-    root_widget().add_child(&_align_bottom_ref); root_widget().add_child(&_align_bottom_tgt);
+    _align_left_ref    .set_font(dflt_font);
+    _align_left_ref    .set_label(U"Align left");
+    _align_left_tgt    .set_font(dflt_font);
+    _align_left_tgt    .set_label(U"LEFT");
+    _align_origin_ref  .set_font(dflt_font);
+    _align_origin_ref  .set_label(U"Align origin");
+    _align_origin_tgt  .set_font(dflt_font);
+    _align_origin_tgt  .set_label(U".ORIGIN");
+    _align_center_ref  .set_font(dflt_font);
+    _align_center_ref  .set_label(U"Align center");
+    _align_center_tgt  .set_font(dflt_font);
+    _align_center_tgt  .set_label(U"CENTER");
+    _align_right_ref   .set_font(dflt_font);
+    _align_right_ref   .set_label(U"Align right");
+    _align_right_tgt   .set_font(dflt_font);
+    _align_right_tgt   .set_label(U"RIGHT");
+    _align_top_ref     .set_font(dflt_font);
+    _align_top_ref     .set_label(U"Align top");
+    _align_top_tgt     .set_font(dflt_font);
+    _align_top_tgt     .set_label(U"TOP");
+    _align_baseline_ref.set_font(dflt_font);
+    _align_baseline_ref.set_label(U"Align baseline");
+    _align_baseline_tgt.set_font(dflt_font);
+    _align_baseline_tgt.set_label(U"BASELINE");
+    _align_middle_ref  .set_label(U"Align middle");
+    _align_middle_ref  .set_font(dflt_font);
+    _align_middle_tgt  .set_font(dflt_font);
+    _align_middle_tgt  .set_label(U"MIDDLE");
+    _align_bottom_ref  .set_font(dflt_font);
+    _align_bottom_ref  .set_label(U"Align bottom");
+    _align_bottom_tgt  .set_font(dflt_font);
+    _align_bottom_tgt  .set_label(U"BOTTOM");
+    _align_left_ref    .on_pushed([this]() { _align_left_tgt    .bounds().align_left_to    (_align_left_ref    .bounds()); return true; });
+    _align_origin_ref  .on_pushed([this]() { _align_origin_tgt  .bounds().align_origin_to  (_align_origin_ref  .bounds()); return true; });
+    _align_center_ref  .on_pushed([this]() { _align_center_tgt  .bounds().align_center_to  (_align_center_ref  .bounds()); return true; });
+    _align_right_ref   .on_pushed([this]() { _align_right_tgt   .bounds().align_right_to   (_align_right_ref   .bounds()); return true; });
+    _align_top_ref     .on_pushed([this]() { _align_top_tgt     .bounds().align_top_to     (_align_top_ref     .bounds()); return true; });
+    _align_baseline_ref.on_pushed([this]() { _align_baseline_tgt.bounds().align_baseline_to(_align_baseline_ref.bounds()); return true; });
+    _align_middle_ref  .on_pushed([this]() { _align_middle_tgt  .bounds().align_middle_to  (_align_middle_ref  .bounds()); return true; });
+    _align_bottom_ref  .on_pushed([this]() { _align_bottom_tgt  .bounds().align_bottom_to  (_align_bottom_ref  .bounds()); return true; });
+    root_widget().add_child(&_align_left_ref    ); root_widget().add_child(&_align_left_tgt    );
+    root_widget().add_child(&_align_origin_ref  ); root_widget().add_child(&_align_origin_tgt  );
+    root_widget().add_child(&_align_center_ref  ); root_widget().add_child(&_align_center_tgt  );
+    root_widget().add_child(&_align_right_ref   ); root_widget().add_child(&_align_right_tgt   );
+    root_widget().add_child(&_align_top_ref     ); root_widget().add_child(&_align_top_tgt     );
+    root_widget().add_child(&_align_baseline_ref); root_widget().add_child(&_align_baseline_tgt);
+    root_widget().add_child(&_align_middle_ref  ); root_widget().add_child(&_align_middle_tgt  );
+    root_widget().add_child(&_align_bottom_ref  ); root_widget().add_child(&_align_bottom_tgt  );
 
-
-    //root_widget().switch_focused_child(&_listbox);
     root_widget().set_initial_focus(&_listbox);
 }
 
@@ -165,38 +172,27 @@ void Test_window::adjust_layout()
         _listbox    .set_bounds({ 150, 150 }, bbox);
     }
 
-    _align_left_ref  .set_bounds({ 600,  50}, _align_left_ref  .get_minimal_bounds());
-    _align_left_tgt  .set_bounds({ 650, 100}, _align_left_tgt  .get_minimal_bounds());
-    _align_origin_ref.set_bounds({ 750,  50}, _align_origin_ref.get_minimal_bounds());
-    _align_origin_tgt.set_bounds({ 800, 100}, _align_origin_tgt.get_minimal_bounds());
-    _align_center_ref.set_bounds({ 900,  50}, _align_center_ref.get_minimal_bounds());
-    _align_center_tgt.set_bounds({ 950, 100}, _align_center_tgt.get_minimal_bounds());
-    _align_right_ref .set_bounds({1050,  50}, _align_right_ref .get_minimal_bounds());
-    _align_right_tgt .set_bounds({1100, 100}, _align_right_tgt .get_minimal_bounds());
+    _align_left_ref    .set_bounds({ 600,  50}, _align_left_ref    .get_minimal_bounds());
+    _align_left_tgt    .set_bounds({ 650, 100}, _align_left_tgt    .get_minimal_bounds());
+    _align_origin_ref  .set_bounds({ 750,  50}, _align_origin_ref  .get_minimal_bounds());
+    _align_origin_tgt  .set_bounds({ 800, 100}, _align_origin_tgt  .get_minimal_bounds());
+    _align_center_ref  .set_bounds({ 900,  50}, _align_center_ref  .get_minimal_bounds());
+    _align_center_tgt  .set_bounds({ 950, 100}, _align_center_tgt  .get_minimal_bounds());
+    _align_right_ref   .set_bounds({1050,  50}, _align_right_ref   .get_minimal_bounds());
+    _align_right_tgt   .set_bounds({1100, 100}, _align_right_tgt   .get_minimal_bounds());
+    auto y1 = 180, y2 = y1 + 40;
+    _align_top_ref     .set_bounds({ 600,  y1}, _align_top_ref     .get_minimal_bounds());
+    _align_top_tgt     .set_bounds({ 750,  y2}, _align_top_tgt     .get_minimal_bounds());
+    _align_baseline_ref.set_bounds({ 900,  y1}, _align_baseline_ref.get_minimal_bounds());
+    _align_baseline_tgt.set_bounds({1050,  y2}, _align_baseline_tgt.get_minimal_bounds());
+    _align_middle_ref  .set_bounds({1200,  y1}, _align_middle_ref  .get_minimal_bounds());
+    _align_middle_tgt  .set_bounds({1350,  y2}, _align_middle_tgt  .get_minimal_bounds());
+    _align_bottom_ref  .set_bounds({1500,  y1}, _align_bottom_ref  .get_minimal_bounds());
+    _align_bottom_tgt  .set_bounds({1650,  y2}, _align_bottom_tgt  .get_minimal_bounds());
 }
 
 void Test_window::before_draw_ui(void *context)
 {
     // TODO: in the future, this may be better done by choosign a correctly customized root widget
     //c->clear({1, 1, 0.8f, 1});
-}
-
-void Test_window::align_widgets_left(Widget &ref, Widget &tgt)
-{
-    tgt.bounds().align_left_to(ref.bounds());
-}
-
-void Test_window::align_widgets_origin(Widget &ref, Widget &tgt)
-{
-    tgt.bounds().align_origin_to(ref.bounds());
-}
-
-void Test_window::align_widgets_center(Widget &ref, Widget &tgt)
-{
-    tgt.bounds().align_center_to(ref.bounds());
-}
-
-void Test_window::align_widgets_right(Widget &ref, Widget &tgt)
-{
-    tgt.bounds().align_right_to(ref.bounds());
 }
