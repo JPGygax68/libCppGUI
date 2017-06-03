@@ -29,9 +29,9 @@ namespace cppgui {
 
         //void init_layout() override;
 
-        auto get_minimal_bounds() -> Bbox override
+        auto get_minimal_bbox() -> Bbox override
         {
-            auto bbox = WidgetC::get_minimal_bounds();
+            auto bbox = WidgetC::get_minimal_bbox();
 
             return this->adjust_box_bounds(bbox);
         }

@@ -158,37 +158,37 @@ void Test_window::create_ui()
 
 void Test_window::adjust_layout()
 {
-    _label      .set_bounds({  50,  50 }, _label      .get_minimal_bounds());
-    _textbox    .set_bounds({ 150,  50 }, _textbox    .get_minimal_bounds());
-    _button     .set_bounds({ 300,  50 }, _button     .get_minimal_bounds());
-    _checkbox   .set_bounds({ 450,  50 }, _checkbox   .get_minimal_bounds());
-    _glyphbutton.set_bounds({  50, 100 }, _glyphbutton.get_minimal_bounds());
-    _popupbtn   .set_bounds({ 350, 100 }, _popupbtn   .get_minimal_bounds());
-    _vscrollbar .set_bounds({  50, 150 }, _vscrollbar .get_minimal_bounds());
+    _label      .set_bounds({  50,  50 }, _label      .get_minimal_bbox());
+    _textbox    .set_bounds({ 150,  50 }, _textbox    .get_minimal_bbox());
+    _button     .set_bounds({ 300,  50 }, _button     .get_minimal_bbox());
+    _checkbox   .set_bounds({ 450,  50 }, _checkbox   .get_minimal_bbox());
+    _glyphbutton.set_bounds({  50, 100 }, _glyphbutton.get_minimal_bbox());
+    _popupbtn   .set_bounds({ 350, 100 }, _popupbtn   .get_minimal_bbox());
+    _vscrollbar .set_bounds({  50, 150 }, _vscrollbar .get_minimal_bbox());
 
     {
-        auto bbox = _listbox.get_minimal_bounds();
+        auto bbox = _listbox.get_minimal_bbox();
         bbox.y_min = -120;
         _listbox    .set_bounds({ 150, 150 }, bbox);
     }
 
-    _align_left_ref    .set_bounds({ 600,  50}, _align_left_ref    .get_minimal_bounds());
-    _align_left_tgt    .set_bounds({ 650, 100}, _align_left_tgt    .get_minimal_bounds());
-    _align_origin_ref  .set_bounds({ 750,  50}, _align_origin_ref  .get_minimal_bounds());
-    _align_origin_tgt  .set_bounds({ 800, 100}, _align_origin_tgt  .get_minimal_bounds());
-    _align_center_ref  .set_bounds({ 900,  50}, _align_center_ref  .get_minimal_bounds());
-    _align_center_tgt  .set_bounds({ 950, 100}, _align_center_tgt  .get_minimal_bounds());
-    _align_right_ref   .set_bounds({1050,  50}, _align_right_ref   .get_minimal_bounds());
-    _align_right_tgt   .set_bounds({1100, 100}, _align_right_tgt   .get_minimal_bounds());
+    _align_left_ref    .set_bounds({ 600,  50}, _align_left_ref    .get_minimal_bbox());
+    _align_left_tgt    .set_bounds({ 650, 100}, _align_left_tgt    .get_minimal_bbox());
+    _align_origin_ref  .set_bounds({ 750,  50}, _align_origin_ref  .get_minimal_bbox());
+    _align_origin_tgt  .set_bounds({ 800, 100}, _align_origin_tgt  .get_minimal_bbox());
+    _align_center_ref  .set_bounds({ 900,  50}, _align_center_ref  .get_minimal_bbox());
+    _align_center_tgt  .set_bounds({ 950, 100}, _align_center_tgt  .get_minimal_bbox());
+    _align_right_ref   .set_bounds({1050,  50}, _align_right_ref   .get_minimal_bbox());
+    _align_right_tgt   .set_bounds({1100, 100}, _align_right_tgt   .get_minimal_bbox());
     auto y1 = 180, y2 = y1 + 40;
-    _align_top_ref     .set_bounds({ 600,  y1}, _align_top_ref     .get_minimal_bounds());
-    _align_top_tgt     .set_bounds({ 750,  y2}, _align_top_tgt     .get_minimal_bounds());
-    _align_baseline_ref.set_bounds({ 900,  y1}, _align_baseline_ref.get_minimal_bounds());
-    _align_baseline_tgt.set_bounds({1050,  y2}, _align_baseline_tgt.get_minimal_bounds());
-    _align_middle_ref  .set_bounds({1200,  y1}, _align_middle_ref  .get_minimal_bounds());
-    _align_middle_tgt  .set_bounds({1350,  y2}, _align_middle_tgt  .get_minimal_bounds());
-    _align_bottom_ref  .set_bounds({1500,  y1}, _align_bottom_ref  .get_minimal_bounds());
-    _align_bottom_tgt  .set_bounds({1650,  y2}, _align_bottom_tgt  .get_minimal_bounds());
+    _align_top_ref     .set_bounds({ 600,  y1}, _align_top_ref     .get_minimal_bbox());
+    _align_top_tgt     .set_bounds({ 750,  y2}, _align_top_tgt     .get_minimal_bbox());
+    _align_baseline_ref.set_bounds({ 900,  y1}, _align_baseline_ref.get_minimal_bbox());
+    _align_baseline_tgt.set_bounds({1050,  y2}, _align_baseline_tgt.get_minimal_bbox());
+    _align_middle_ref  .set_bounds({1200,  y1}, _align_middle_ref  .get_minimal_bbox());
+    _align_middle_tgt  .set_bounds({1350,  y2}, _align_middle_tgt  .get_minimal_bbox());
+    _align_bottom_ref  .set_bounds({1500,  y1}, _align_bottom_ref  .get_minimal_bbox());
+    _align_bottom_tgt  .set_bounds({1650,  y2}, _align_bottom_tgt  .get_minimal_bbox());
 }
 
 void Test_window::before_draw_ui(void *context)

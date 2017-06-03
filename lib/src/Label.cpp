@@ -74,7 +74,7 @@ namespace cppgui {
         // TODO ?
     }
 
-    auto Label::get_minimal_bounds() -> Bbox
+    auto Label::get_minimal_bbox() -> Bbox
     {
         if (!text().empty())
         {

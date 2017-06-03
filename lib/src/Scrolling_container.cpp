@@ -156,11 +156,11 @@ namespace cppgui {
 
 #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
-    auto Scrolling_container::get_minimal_bounds() -> Bbox
+    auto Scrolling_container::get_minimal_bbox() -> Bbox
     {
         auto bbox = Bbox{ _content_pane->get_minimal_window(), left, top };
         bbox.append_to_right( separator_width() );
-        bbox.append_to_right(_vscrollbar.get_minimal_bounds(), top);
+        bbox.append_to_right(_vscrollbar.get_minimal_bbox(), top);
         return bbox;
     }
 
@@ -169,7 +169,7 @@ namespace cppgui {
         auto b{b_};
 
         // Scrollbar at right edge
-        _vscrollbar.set_bounds(layout_element_at_right_edge(b, _vscrollbar.get_minimal_bounds(), vertical_baseline));
+        _vscrollbar.set_bounds(layout_element_at_right_edge(b, _vscrollbar.get_minimal_bbox(), vertical_baseline));
 
         // Separator (gap for now - TODO)
         leave_gap_at_right_edge(b, separator_width());
@@ -191,7 +191,7 @@ namespace cppgui {
     {
         auto bbox = Bbox{ _content_pane->get_optimal_bounds().extents(), left, top };
         bbox.append_to_right( separator_width() );
-        bbox.append_to_right(_vscrollbar.get_minimal_bounds(), top);
+        bbox.append_to_right(_vscrollbar.get_minimal_bbox(), top);
         return bbox;
     }
 

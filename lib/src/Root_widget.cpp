@@ -268,7 +268,7 @@ namespace cppgui {
         init_children_layout();
     }
 
-    auto Root_widget::get_minimal_bounds() -> Bbox
+    auto Root_widget::get_minimal_bbox() -> Bbox
     {
         return {}; // TODO: better solution ?
     }

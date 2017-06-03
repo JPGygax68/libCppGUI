@@ -612,7 +612,7 @@ namespace cppgui {
         compute_text_extents();
     }
 
-    auto Textbox::get_minimal_bounds() -> Bbox
+    auto Textbox::get_minimal_bbox() -> Bbox
     {
         Bbox b{ 0, size() * _mean_char_width, _descent, _ascent };
 

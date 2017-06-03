@@ -64,7 +64,7 @@ namespace cppgui {
 
     public:
         void init_layout() override;
-        auto get_minimal_bounds() -> Bbox override;
+        auto get_minimal_bbox() -> Bbox override;
         void compute_layout(Bbox_cref) override;
 
     private:

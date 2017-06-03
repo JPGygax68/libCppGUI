@@ -114,7 +114,7 @@ namespace cppgui {
         compute_bounds();
     }
 
-    auto Glyph_button_base::get_minimal_bounds() -> Bbox
+    auto Glyph_button_base::get_minimal_bbox() -> Bbox
     {
         Inline_layouter l; // TODO: make a member ?
 

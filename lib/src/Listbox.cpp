@@ -24,7 +24,7 @@ namespace cppgui {
 
     #ifndef CPPGUI_EXCLUDE_LAYOUTING
     public:
-        auto get_minimal_bounds() -> Bbox override;
+        auto get_minimal_bbox() -> Bbox override;
         void compute_layout(Bbox_cref b) override;
         auto get_minimal_window() -> Extents override;
 
@@ -61,7 +61,7 @@ namespace cppgui {
 
 #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
-    auto Listbox_content_pane::get_minimal_bounds() -> Bbox
+    auto Listbox_content_pane::get_minimal_bbox() -> Bbox
     {
         auto bb_min = Bbox::empty();
 
@@ -70,7 +70,7 @@ namespace cppgui {
             for (auto child: children())
             {
                 //bb_min.merge(child->get_minimal_bounds());
-                bb_min.append_at_bottom(child->get_minimal_bounds(), horizontal_origin);
+                bb_min.append_at_bottom(child->get_minimal_bbox(), horizontal_origin);
                 // TODO: margin
             }
 
@@ -91,7 +91,7 @@ namespace cppgui {
             // Layout vertically into the provided bounding box (can exceed at bottom)
             for (auto child: children())
             {
-                auto bc = child->get_minimal_bounds().expand_to({b.width(), 0}, left, baseline);
+                auto bc = child->get_minimal_bbox().expand_to({b.width(), 0}, left, baseline);
                 child->set_bounds(p - b.origin(), bc, left, top);
                 p.y += child->height();
                 p.y += separator_width();
@@ -105,7 +105,7 @@ namespace cppgui {
 
         for (auto child: children())
         {
-            ext |= Extents{child->get_minimal_bounds()};
+            ext |= Extents{child->get_minimal_bbox()};
         }
 
         // TODO: support a dummy item bounding box in case the list can be initially empty

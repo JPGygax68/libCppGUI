@@ -117,7 +117,7 @@ namespace cppgui {
         compute_label_bounds();
     }
 
-    auto Popup_test_button_base::get_minimal_bounds() -> Bbox
+    auto Popup_test_button_base::get_minimal_bbox() -> Bbox
     {
         //return adjust_box_bounds(_label_bbox);
         return _label_bbox;

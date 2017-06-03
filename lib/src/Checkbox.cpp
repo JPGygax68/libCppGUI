@@ -112,7 +112,7 @@ namespace cppgui {
         get_tick_bounds();
     }
 
-    auto Checkbox::get_minimal_bounds() -> Bbox
+    auto Checkbox::get_minimal_bbox() -> Bbox
     {
         Inline_layouter l; // TODO: make a member ?
 

@@ -104,7 +104,7 @@ namespace cppgui {
         compute_label_bounds();
     }
 
-    auto Dropdown_button_base::get_minimal_bounds() -> Bbox
+    auto Dropdown_button_base::get_minimal_bbox() -> Bbox
     {
         //return adjust_box_bounds(_label_bbox);
         return _label_bbox;

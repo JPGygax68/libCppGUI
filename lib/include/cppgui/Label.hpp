@@ -57,7 +57,7 @@ namespace cppgui {
         // Contract
 
         void init_layout() override;
-        auto get_minimal_bounds() -> Bbox override;
+        auto get_minimal_bbox() -> Bbox override;
 
         // Own methods
 

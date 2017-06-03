@@ -262,12 +262,12 @@ namespace cppgui {
 
 #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
-    auto Vertical_scrollbar_base::get_minimal_bounds() -> Bbox
+    auto Vertical_scrollbar_base::get_minimal_bbox() -> Bbox
     {
         Bbox bbox{};
-        bbox.append_at_bottom( _up_btn.get_minimal_bounds() );
-        bbox.append_at_bottom( 3 * _up_btn.get_minimal_bounds().height() );
-        bbox.append_at_bottom( _down_btn.get_minimal_bounds() );
+        bbox.append_at_bottom( _up_btn.get_minimal_bbox() );
+        bbox.append_at_bottom( 3 * _up_btn.get_minimal_bbox().height() );
+        bbox.append_at_bottom( _down_btn.get_minimal_bbox() );
 
         return bbox;
     }
@@ -279,7 +279,7 @@ namespace cppgui {
         auto bbox{ b };
 
         {
-            auto bbmin = _up_btn.get_minimal_bounds();
+            auto bbmin = _up_btn.get_minimal_bbox();
             /*auto bb = */ bbox.cut_from_top(bbmin.height());
             //auto pp = bbmin.position_inside_rectangle(bb);
             //_up_btn.set_bounds(pp, bbmin);
@@ -287,7 +287,7 @@ namespace cppgui {
         }
 
         {
-            auto bbmin = _down_btn.get_minimal_bounds();
+            auto bbmin = _down_btn.get_minimal_bbox();
             /* auto bb = */ bbox.cut_from_bottom(bbmin.height());
             //auto pp = bbmin.position_inside_rectangle(bb);
             //_down_btn.set_bounds(pp, bbmin);

@@ -168,11 +168,11 @@ namespace cppgui {
 
         // To be provided by concrete classes
         virtual void init_layout() = 0;
-        virtual auto get_minimal_bounds() -> Bbox = 0;
+        virtual auto get_minimal_bbox() -> Bbox = 0;
         virtual void compute_layout(Bbox_cref) {}
 
         // Overridable for specialization
-        virtual auto get_optimal_bounds() -> Bbox { return get_minimal_bounds(); }
+        virtual auto get_optimal_bounds() -> Bbox { return get_minimal_bbox(); }
 
     protected:
         // TODO: this really belongs to a utility module

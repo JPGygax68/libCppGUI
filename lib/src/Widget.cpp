@@ -279,7 +279,7 @@ namespace cppgui {
      */
     void Widget::set_rectangle(const Point &p, const Extents &e, Alignment h_ref, Alignment v_ref)
     {
-        auto b = get_minimal_bounds().expand_to(e, horigin /*center*/, baseline /*middle*/);
+        auto b = get_minimal_bbox().expand_to(e, horigin /*center*/, baseline /*middle*/);
 
         set_bounds(p, b, h_ref, v_ref);
     }
