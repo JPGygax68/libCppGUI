@@ -201,4 +201,10 @@ namespace cppgui {
         bool focussable() const override { return false; }
     };
 
+
+    // Miscellaneous
+
+    // Owning collection of widgets
+    using Widget_bag = std::vector<std::unique_ptr<Widget>>;
+
 } // ns cppgui

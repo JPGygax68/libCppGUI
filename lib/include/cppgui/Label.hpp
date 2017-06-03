@@ -18,7 +18,7 @@
 */
 
 #include <string>
-#include "./Widget.hpp"
+#include "./Text_widget.hpp"
 #include "./Boxed.hpp"
 
 
@@ -27,17 +27,17 @@ namespace cppgui {
     /** Label widget.
      */
 
-    class Label: public Widget
+    class Label: public Text_widget
     {
     public:
 
-        void set_font(const Rasterized_font *);
-        //auto font() const { return _font.source(); }
+        Label() = default;
+        explicit Label(const std::u32string &, const Rasterized_font *);
+        explicit Label(const Label &) = default;
+
         void set_color(const RGBA &);
         void set_text(const std::u32string &);
         auto& text() const { return _text; }
-
-        void init(Canvas *) override;
 
         void render(Canvas *, const Point &offset) override;
 
@@ -47,7 +47,6 @@ namespace cppgui {
         bool focussable() const override { return false; }
 
     private:
-        Font_resource           _font;
         std::u32string          _text;
         RGBA                    _color = {0, 0, 0, 1};
 

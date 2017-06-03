@@ -38,18 +38,6 @@ namespace cppgui {
         _on_done = handler;
     }
 
-    void Textbox::set_font(const Rasterized_font *font)
-    {
-        /* TODO: move this change_font() in layouter aspect
-        if (font != _label_font)
-        {
-            _label_font = font;
-            font_changed();
-        }
-        */
-        _font.assign(font);
-    }
-
     void Textbox::set_size(Count chars)
     {
         _size = chars;
@@ -85,11 +73,6 @@ namespace cppgui {
     void Textbox::change_text(const std::string &text)
     {
         change_text( utf8_to_utf32(text) );
-    }
-
-    void Textbox::init(Canvas *c)
-    {
-        _font.translate(c);
     }
 
     void Textbox::compute_view_from_data()
@@ -230,7 +213,7 @@ namespace cppgui {
         if (!_text.empty() && _first_vis_char_idx < _text.size())
         {
             c->set_text_color({0, 0, 0, 1}); // TODO: make configurable!
-            c->render_text(_font.get(), p.x, p.y, 
+            c->render_text(font().get(), p.x, p.y, 
                 _text.data() + _first_vis_char_idx, _text.size() - _first_vis_char_idx, _inner_bbox.width());
         }
 
@@ -379,7 +362,7 @@ namespace cppgui {
 
         for (size_t i = 0; i < count; i++)
         {
-            auto glyph = _font.rasterized->lookup_glyph(0, text[i]); // TODO: support font variants ?
+            auto glyph = font().rasterized->lookup_glyph(0, text[i]); // TODO: support font variants ?
             _caret_pixel_pos += glyph->cbox.adv_x;
         }
 
@@ -397,7 +380,7 @@ namespace cppgui {
         }
         else if (_caret_char_idx > 0)
         {
-            auto glyph = _font.rasterized->lookup_glyph(0, _text[_caret_char_idx - 1]); // TODO: support font variants ?
+            auto glyph = font().rasterized->lookup_glyph(0, _text[_caret_char_idx - 1]); // TODO: support font variants ?
             _caret_pixel_pos -= glyph->cbox.adv_x;
             _caret_char_idx --;
             auto new_text = _text.substr(0, _caret_char_idx) + _text.substr(_caret_char_idx + 1);
@@ -585,9 +568,9 @@ namespace cppgui {
      * been set and the new font may not fit well at all. Maybe it would be best to simply remove
      * this methods.
      */
-    void Textbox::change_font(const Rasterized_font *font)
+    void Textbox::change_font(const Rasterized_font *font_)
     {
-        _font.assign(font);
+        font().assign(font_);
         compute_text_extents();
         compute_layout(bbox());
     }
@@ -596,11 +579,11 @@ namespace cppgui {
     {
         // TODO: free the font handle
 
-        if (_font.rasterized)
+        if (font().rasterized)
         {
             //p()->_fnthnd = p()->root_widget()->get_font_handle(p()->_font);
             // TODO: support other cultures
-            auto bbox = _font.rasterized->compute_text_extents(0, U"My", 2);
+            auto bbox = font().rasterized->compute_text_extents(0, U"My", 2);
             _ascent = bbox.y_max;
             _descent = bbox.y_min;
             _mean_char_width = (bbox.width() + 1) / 2;

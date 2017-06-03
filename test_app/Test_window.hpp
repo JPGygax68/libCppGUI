@@ -8,6 +8,7 @@
 #include <cppgui/Glyph_button.hpp>
 #include <cppgui/Vertical_scrollbar.hpp>
 #include <cppgui/Listbox.hpp>
+#include <cppgui/Grid_container.hpp>
 #include <cppgui/Dropdown_button.hpp>
 
 #include "./Popup_test_button.hpp"
@@ -49,4 +50,7 @@ private:
     cppgui::Button                      _align_baseline_ref, _align_baseline_tgt;
     cppgui::Button                      _align_bottom_ref  , _align_bottom_tgt;
     cppgui::Button                      _align_middle_ref  , _align_middle_tgt;
+
+    cppgui::Grid_container              _grid;
+    cppgui::Widget_bag                  _grid_widgets;
 };

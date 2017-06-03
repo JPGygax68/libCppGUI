@@ -27,9 +27,10 @@
 
 namespace cppgui {
 
-    void Label::set_font(const Rasterized_font *font)
+    Label::Label(const std::u32string &text, const Rasterized_font *font)
     {
-        _font.assign(font);
+        _text = text;
+        set_font(font);
     }
 
     void Label::set_color(const RGBA &color)
@@ -42,11 +43,6 @@ namespace cppgui {
         _text = text;
     }
 
-    void Label::init(Canvas *c)
-    {
-        _font.translate(c);
-    }
-
     void Label::render(Canvas *c, const Point &offs)
     {
         auto p = offs + this->origin();
@@ -56,7 +52,7 @@ namespace cppgui {
         if (!_text.empty())
         {
             c->set_text_color(_color);
-            c->render_text(_font.get(), p.x, p.y, _text.data(), _text.size());
+            c->render_text(font().get(), p.x, p.y, _text.data(), _text.size());
         }
 
         /* if (this->has_focus())
@@ -78,7 +74,7 @@ namespace cppgui {
     {
         if (!text().empty())
         {
-            return {_font.rasterized->compute_text_extents(0, _text.data(), _text.size())};
+            return {font().rasterized->compute_text_extents(0, _text.data(), _text.size())};
         }
 
         return {};

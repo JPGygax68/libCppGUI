@@ -17,7 +17,7 @@
     limitations under the License.
 */
 
-#include "./Widget.hpp"
+#include "./Text_widget.hpp"
 #include "./Box.hpp"
 
 
@@ -27,7 +27,7 @@ namespace cppgui {
 
     // TODO: do not stretch vertically to fill all available space, instead display a strip with border and padding to fit the font size
 
-    class Textbox: public Widget, public Box<Textfield_box_styles>
+    class Textbox: public Text_widget, public Box<Textfield_box_styles>
     {
     public:
 
@@ -41,8 +41,6 @@ namespace cppgui {
         void on_done(Done_handler);
 
         // TODO: implement "set" and "change" variants
-        void set_font(const Rasterized_font *);
-        auto font() const { return _font; }
         void set_size(Count chars);
         auto size() const { return _size; }
         void set_text(const std::u32string &);
@@ -51,7 +49,6 @@ namespace cppgui {
         void change_text(const std::string &);
         auto text() const { return _text; }
 
-        void init(Canvas *) override;
         void compute_view_from_data() override;
 
         bool mouse_motion(const Point &) override;
@@ -102,7 +99,6 @@ namespace cppgui {
         Done_handler            _on_done;
 
         int                     _size;
-        Font_resource           _font;
 
         Bbox                    _inner_bbox;
         int                     _ascent, _descent; // TODO: support vertical writing

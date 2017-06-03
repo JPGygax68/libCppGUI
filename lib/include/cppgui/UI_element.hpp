@@ -33,6 +33,9 @@ namespace cppgui {
     {
     public:
 
+        //UI_element() {}
+        //UI_element(const UI_element &) = delete;
+
         virtual ~UI_element() {}
 
         // TODO: is it a good idea to give direct access to bounds() (+ origin(), bbox()), or should this be encapsulated ? or friend-accessible only ?

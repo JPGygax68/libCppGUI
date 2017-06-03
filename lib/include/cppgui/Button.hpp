@@ -17,7 +17,7 @@
     limitations under the License.
 */
 
-#include "./Widget.hpp"
+#include "./Text_widget.hpp"
 #include "./Boxed.hpp"
 
 
@@ -26,19 +26,15 @@ namespace cppgui {
     /** TODO: how to support changing label (and later on, icon) at runtime without mixing
             in the layouting aspect ?
      */
-    class Button_base: public Widget
+    class Button_base: public Text_widget
     {
     public:
 
         void on_pushed(Pushed_handler);
 
-        void set_font(const Rasterized_font *);
-        auto font() const { return _font.rasterized; }
         void set_label(const std::u32string &);
         void set_label(const std::string &);
         auto label() const { return _label; }
-
-        void init(Canvas *) override;
 
         void render(Canvas *, const Point &) override;
 
@@ -52,7 +48,6 @@ namespace cppgui {
         virtual auto label_color(Widget_states) -> RGBA const { return {0, 0, 0, 1}; }
 
         Pushed_handler          _on_pushed;
-        Font_resource           _font;
         RGBA                    _color = {0, 0, 0, 1};
         std::u32string          _label;
         Bbox                    _label_bbox;
