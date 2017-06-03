@@ -3,5 +3,5 @@
 
 namespace cppgui
 {
-    
+
 } // ns cppgui
