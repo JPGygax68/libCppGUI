@@ -26,9 +26,10 @@
 
 namespace cppgui {
     
-    Textbox::Textbox():
-        _size( 10 ) // TODO: use static method for default
+    Textbox::Textbox(const Rasterized_font *font):
+        _size{ 10 }
     {
+        set_font(font);
     }
 
     void Textbox::on_done(Done_handler handler)

@@ -35,7 +35,7 @@ namespace cppgui {
 
         static constexpr auto default_padding(int /*dir*/) { return 2; }
 
-        Textbox();
+        explicit Textbox(const Rasterized_font * = nullptr);
 
         // TODO: on_blur() ? on_text_changed() ?
         void on_done(Done_handler);

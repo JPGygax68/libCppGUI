@@ -156,6 +156,8 @@ void Test_window::create_ui()
 
     _grid_widgets = build_ui(_grid)
         .add<Label>(U"Last name", dflt_font)
+        .add<Textbox>(dflt_font)
+        .end_row()
         .done();
 
     root_widget().add_child(&_grid);
