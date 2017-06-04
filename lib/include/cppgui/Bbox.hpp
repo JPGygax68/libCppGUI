@@ -81,4 +81,21 @@ namespace cppgui {
         auto expand_to(const Extents &, Alignment h_ref = center, Alignment v_ref = middle) -> Bbox_ref;
     };
 
+    
+    // Utility functions ------------------------------------------------------
+
+    template<typename T>
+    auto& to_max(T& current, const T &other)
+    {
+        if (other > current) current = other;
+        return current;
+    }
+
+    template<typename T>
+    auto& to_min(T& current, const T &other)
+    {
+        if (other < current) current = other;
+        return current;
+    }
+
 } // ns cppgui

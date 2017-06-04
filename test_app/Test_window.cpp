@@ -154,13 +154,24 @@ void Test_window::create_ui()
         root_widget().add_child(&_align_bottom_ref  ); root_widget().add_child(&_align_bottom_tgt  );
     }
 
-    if (false)
+    if (true)
     {
-        _grid_widgets = build_ui(_grid)
+        /*_grid_widgets = build_ui(_grid)
             .add<Label>(U"Last name", dflt_font)
             .add<Textbox>(dflt_font)
             .end_row()
             .done();
+        */
+
+        _grid_widgets = build_ui(_grid)         // -> UI_builder<Grid_container, Nil_struct>
+            //.begin<Other_container>()           // -> UI_builder<Other_container, Grid_container>
+            //    .set_colspan(2)
+            //    .add<Label>("My table")
+            //.end() // how can this method return the type of its caller (i.e. UI_builder<Grid_container>) ?
+            .add<Label>(U"First name", dflt_font).add<Textbox>(dflt_font).end_row()
+            .add<Label>(U"Last name" , dflt_font).add<Textbox>(dflt_font).end_row()
+            .done();
+        //_grid.add_child_cell
 
         root_widget().add_child(&_grid);
     }

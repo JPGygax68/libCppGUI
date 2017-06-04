@@ -1,12 +1,9 @@
 #pragma once
 
-#include <algorithm>
 #include <vector>
 #include <memory>
 #include <cassert>
 #include "Widget.hpp"
-#include "Text_widget.hpp"
-#include "Grid_container.hpp"
 
 
 namespace cppgui
@@ -27,84 +24,77 @@ namespace cppgui
 
     protected:
 
-        void internal_add(Widget *w);
+        void internal_add(Widget *w)
+        {
+            _widgets.push_back(std::unique_ptr<Widget>{w});
+        }
 
         virtual auto container() -> Container_base & = 0;
 
     private:
         Widget_bag              _widgets;
-        const Rasterized_font  *_font = nullptr;
+        //const Rasterized_font  *_font = nullptr;
     };
 
+    template<class ContainerT, class ParentT> class UI_builder;
 
-    template<class ContainerT> class UI_builder;
-
-    template<class ContainerT>
+    template<class ContainerT, class ParentT = void>
     class UI_builder_base2: public UI_builder_base
     {
     public:
+        using Type = UI_builder<ContainerT, ParentT>;
+
         explicit UI_builder_base2(ContainerT &cont): 
             _cont{cont} 
         {}
 
         template<class WidgetT, typename... Args>
-        auto add(Args &&... args) -> UI_builder<ContainerT>&
+        auto add(Args &&... args) -> UI_builder<ContainerT, ParentT>&
         {
             auto w = new WidgetT{std::forward<Args>(args)...};
             internal_add(w);
-            return static_cast<UI_builder<ContainerT>&>(*this);
+            return *static_cast<Type*>(this);
+        }
+
+        /*
+         * Begin a nested container.
+         */
+        template<class NestedT, typename... Args>
+        auto begin(Args&&... args) -> UI_builder<NestedT, ContainerT>
+        {
+            auto c = new NestedT{std::forward<Args>(args)...};
+            internal_add(c);
+            return UI_builder<NestedT, ContainerT>{};
+        }
+
+        auto end() -> UI_builder<ContainerT, ParentT> &
+        {
+            return *static_cast<Type*>(this);
         }
 
     protected:
 
-        auto container() -> Container_base & override { return _cont; }
+        auto container() -> ContainerT & override { return static_cast<ContainerT&>(_cont); }
 
     private:
         ContainerT         &_cont;
     };
 
-    
-    // Specilizations -----------------------------------------------
 
-    // TODO: move to header declaring container each container type ?
-
-    template<class ContainerT> class UI_builder: public UI_builder_base2<ContainerT> {};
-
-    template<>
-    class UI_builder<Grid_container>: public UI_builder_base2<Grid_container>
-    {
-    public:
-        using UI_builder_base2::UI_builder_base2;
-
-        template<class WidgetT, typename... Args>
-        auto add(Args &&... args) -> UI_builder<Grid_container>&
-        {
-            UI_builder_base2::add<WidgetT>(std::forward<Args>(args)...);
-            _col_index ++;
-            return *this;
-        }
-
-        auto& end_row()
-        {
-            _row_index ++;
-            _col_index = 0;
-            return *this;
-        }
-
-    private:
-        int _row_index = 0;
-        int _col_index = 0;
-    };
+    /* 
+     * Unspecialized builder, to be specialized in header files of specific containers.
+     */    
+    template<class ContainerT, class ParentT> 
+    class UI_builder: public UI_builder_base2<ContainerT, ParentT> 
+    {};
 
 
     // Misc ---------------------------------------------------------
 
     template<class ContainerT>
-    auto build_ui(ContainerT &cont) -> UI_builder<ContainerT>
+    auto build_ui(ContainerT &cont) -> UI_builder<ContainerT, void>
     {
-        UI_builder<ContainerT> builder{cont};
-
-        return std::move(builder);
+        return UI_builder<ContainerT, void>{cont};
     }
 
 } // ns cppgui
