@@ -6,6 +6,36 @@
 
 namespace cppgui {
     
+    /*
+     * Specialization of Content_pane: a container intended for use as a list of items.
+     */
+    class Listbox_pane: public Content_pane
+    {
+    public:
+
+        void add_item(Widget *);
+
+        void render(Canvas *, const Point &offs) override;
+
+        void set_focus_on_child(Widget *) override;
+
+    private:
+        using Super = Content_pane;
+
+        auto separator_width() const { return 1; }
+        auto separator_color(Widget_states) const -> RGBA { return { 0.6f, 0.6f, 0.6f, 1 }; }
+
+    #ifndef CPPGUI_EXCLUDE_LAYOUTING
+    public:
+        auto get_minimal_bbox() -> Bbox override;
+        void compute_layout(Bbox_cref b) override;
+        auto get_minimal_window() -> Extents override;
+
+    #endif // !CPPGUI_EXCLUDE_LAYOUTING
+
+    };
+
+
     class Listbox_base: public Scrolling_container 
     {
     public:
@@ -23,6 +53,8 @@ namespace cppgui {
 
     private:
         using Super = Scrolling_container;
+
+        auto listbox_pane() const -> Listbox_pane *;
 
         bool item_fully_visible(Index) const;
         bool first_item_fully_visible() const;

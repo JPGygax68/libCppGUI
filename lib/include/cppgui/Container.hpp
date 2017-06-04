@@ -24,6 +24,8 @@ namespace cppgui {
 
     /*
      *  Container functionality (ability to contain Widgets).
+     *  
+     *  This class should be considered abstract. Do not use it directly.
      */
     class Container_base: public Widget
     {
@@ -35,11 +37,6 @@ namespace cppgui {
         auto child(Index i) { return _children[i]; }
         auto child_count() const -> Index { return static_cast<Index>(_children.size()); }
         auto child_index(Widget *c) const -> Index;
-
-        void add_child(Widget *);
-        // TODO: should removal methods be moved to optional aspect ?
-        void remove_child(Widget *);
-        void remove_all_children();
 
         void compute_view_from_data() override;
 
@@ -79,6 +76,16 @@ namespace cppgui {
     protected:
         using Super = Widget;
         using Child_list = std::vector<Widget*>;
+
+        /*
+         * Adding and removing children are protected methods because actual container classes
+         * should handle positioning, layouting and possibly more each time they add a child
+         * widget.
+         */
+        void add_child(Widget *);
+        // TODO: should removal methods be moved to optional aspect ?
+        void remove_child(Widget *);
+        void remove_all_children();
 
         bool contains_widget(Widget *);
         auto child_at(const Point &) -> Widget *;

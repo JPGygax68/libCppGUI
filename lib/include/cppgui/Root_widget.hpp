@@ -41,6 +41,7 @@ namespace cppgui {
 
         //void set_canvas(Canvas *);
         //auto canvas() const { return _canvas; }
+        using Container_base::add_child;
 
         void init(Canvas *) override;
         void cleanup(); // TODO: override!

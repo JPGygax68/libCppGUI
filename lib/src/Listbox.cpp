@@ -6,33 +6,12 @@
 
 namespace cppgui {
 
-    // Private implementation of Content_pane contract ------------------------
-
-    class Listbox_content_pane: public Content_pane
+    void Listbox_pane::add_item(Widget *item)
     {
-    public:
+        add_child(item);
+    }
 
-        void render(Canvas *, const Point &offs) override;
-
-        void set_focus_on_child(Widget *) override;
-
-    private:
-        using Super = Content_pane;
-
-        auto separator_width() const { return 1; }
-        auto separator_color(Widget_states) const -> RGBA { return { 0.6f, 0.6f, 0.6f, 1 }; }
-
-    #ifndef CPPGUI_EXCLUDE_LAYOUTING
-    public:
-        auto get_minimal_bbox() -> Bbox override;
-        void compute_layout(Bbox_cref b) override;
-        auto get_minimal_window() -> Extents override;
-
-    #endif // !CPPGUI_EXCLUDE_LAYOUTING
-
-    };
-
-    void Listbox_content_pane::render(Canvas *c, const Point &offs)
+    void Listbox_pane::render(Canvas *c, const Point &offs)
     {
         // TODO: optimize implementation to only draw visible items
 
@@ -51,7 +30,7 @@ namespace cppgui {
         }
     }
 
-    void Listbox_content_pane::set_focus_on_child(Widget *c)
+    void Listbox_pane::set_focus_on_child(Widget *c)
     {
         Super::set_focus_on_child(c);
 
@@ -61,7 +40,7 @@ namespace cppgui {
 
 #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
-    auto Listbox_content_pane::get_minimal_bbox() -> Bbox
+    auto Listbox_pane::get_minimal_bbox() -> Bbox
     {
         auto bb_min = Bbox::empty();
 
@@ -82,7 +61,7 @@ namespace cppgui {
         return bb_min;
     }
 
-    void Listbox_content_pane::compute_layout(Bbox_cref b)
+    void Listbox_pane::compute_layout(Bbox_cref b)
     {
         if (child_count() > 0)
         {
@@ -99,7 +78,7 @@ namespace cppgui {
         }
     }
 
-    auto Listbox_content_pane::get_minimal_window() -> Extents
+    auto Listbox_pane::get_minimal_window() -> Extents
     {
         Extents ext;
 
@@ -119,13 +98,13 @@ namespace cppgui {
     // Listbox_base implementation --------------------------------------------
 
     Listbox_base::Listbox_base():
-        Scrolling_container(new Listbox_content_pane())
+        Scrolling_container(new Listbox_pane())
     {
     }
 
     void Listbox_base::add_item(Widget *item) const
     {
-        content_pane()->add_child(item);
+        listbox_pane()->add_item(item);
     }
 
     bool Listbox_base::key_down(const Keycode &k)
@@ -178,6 +157,11 @@ namespace cppgui {
                 d --;
             }
         }
+    }
+
+    auto Listbox_base::listbox_pane() const -> Listbox_pane *
+    {
+        return dynamic_cast<Listbox_pane*>(content_pane());
     }
 
     bool Listbox_base::item_fully_visible(Index index) const

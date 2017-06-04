@@ -28,7 +28,7 @@ void Test_window::create_ui()
 
     root_widget().set_background_color({0, 0.5, 1, 1});
 
-    if (false)
+    if (true)
     {
         
         _label.set_font(dflt_font);
@@ -154,20 +154,23 @@ void Test_window::create_ui()
         root_widget().add_child(&_align_bottom_ref  ); root_widget().add_child(&_align_bottom_tgt  );
     }
 
-    _grid_widgets = build_ui(_grid)
-        .add<Label>(U"Last name", dflt_font)
-        .add<Textbox>(dflt_font)
-        .end_row()
-        .done();
+    if (false)
+    {
+        _grid_widgets = build_ui(_grid)
+            .add<Label>(U"Last name", dflt_font)
+            .add<Textbox>(dflt_font)
+            .end_row()
+            .done();
 
-    root_widget().add_child(&_grid);
+        root_widget().add_child(&_grid);
+    }
 
     root_widget().set_initial_focus(&_grid); //_listbox);
 }
 
 void Test_window::adjust_layout()
 {
-    if (false)
+    if (true)
     {
         _label      .set_bounds({  50,  50 }, _label      .get_minimal_bbox());
         _textbox    .set_bounds({ 150,  50 }, _textbox    .get_minimal_bbox());

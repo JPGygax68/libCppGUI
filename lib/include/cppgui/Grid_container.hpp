@@ -9,13 +9,17 @@ namespace cppgui
     {
     public:
 
-        //Grid_container() {}
-        //Grid_container(const Grid_container &) = delete;
-        //Grid_container(Grid_container &&) = default;
-
         #ifndef CPPGUI_EXCLUDE_LAYOUTING
     public:
+        void set_column_count(uint);
+        void set_row_count(uint);
+
         auto get_minimal_bbox() -> Bbox override;
+
+
+    private:
+        uint        _col_count = 0;
+        uint        _row_count = 0;
     #endif 
     };
 
