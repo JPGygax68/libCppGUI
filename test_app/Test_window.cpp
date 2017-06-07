@@ -4,6 +4,8 @@
 #include <cppgui/unicode.hpp>
 #include <cppgui/layouting.hpp>
 #include <cppgui/UI_builder.hpp>
+#include <cppgui/Grid_container.hpp>
+#include <cppgui/Listbox.hpp>
 #include "./Test_window.hpp"
 
 
@@ -20,11 +22,6 @@ void Test_window::create_ui()
     using namespace std::string_literals;
 
     auto dflt_font = &baked_fonts::default_font();
-
-    // TODO: 
-    //auto tick_font_data = cppgui::Icon_resources<Default_font::size>::tick_font_data();
-    //glyph_font = gpc::fonts::load(tick_font_data.first, tick_font_data.second);
-    //auto tick_descr = cppgui::Icon_resources<Default_font::size>::tick_descr();
 
     root_widget().set_background_color({0, 0.5, 1, 1});
 
@@ -156,22 +153,17 @@ void Test_window::create_ui()
 
     if (true)
     {
-        /*_grid_widgets = build_ui(_grid)
-            .add<Label>(U"Last name", dflt_font)
-            .add<Textbox>(dflt_font)
+        build_ui(_grid, _grid_widgets)         // -> UI_builder<Grid_container, Nil_struct>
+            .add<Label>(U"First name:", dflt_font).add<Textbox>(dflt_font).end_row()
+            .add<Label>(U"Last name:" , dflt_font).add<Textbox>(dflt_font).end_row()
+            .add<Label>(U"Choose:", dflt_font)
+            .begin<Listbox>()
+                .add<Button>(U"Item 1", dflt_font)
+                .add<Button>(U"Item 2", dflt_font)
+                .add<Button>(U"Item 3", dflt_font)
+            .end()
             .end_row()
-            .done();
-        */
-
-        _grid_widgets = build_ui(_grid)         // -> UI_builder<Grid_container, Nil_struct>
-            //.begin<Other_container>()           // -> UI_builder<Other_container, Grid_container>
-            //    .set_colspan(2)
-            //    .add<Label>("My table")
-            //.end() // how can this method return the type of its caller (i.e. UI_builder<Grid_container>) ?
-            .add<Label>(U"First name", dflt_font).add<Textbox>(dflt_font).end_row()
-            .add<Label>(U"Last name" , dflt_font).add<Textbox>(dflt_font).end_row()
-            .done();
-        //_grid.add_child_cell
+            .add<Label>(U"Birth date:", dflt_font).add<Textbox>(dflt_font).end_row();
 
         root_widget().add_child(&_grid);
     }

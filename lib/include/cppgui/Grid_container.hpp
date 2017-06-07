@@ -61,25 +61,24 @@ namespace cppgui
 
 #ifndef CPPGUI_EXCLUDE_UI_BUILDER
 
-    template<class ParentT>
-    class UI_builder<Grid_container, ParentT>: public UI_builder_base2<Grid_container, ParentT>
+    template<class ParentBuilderT>
+    class UI_builder<Grid_container, ParentBuilderT>: public UI_builder_base2<Grid_container, ParentBuilderT>
     {
     public:
-        using UI_builder_base2::UI_builder_base2;
 
-        template<class WidgetT, typename... Args>
-        auto add(Args &&... args) -> UI_builder<Grid_container, ParentT>&
+        //using UI_builder_base2<Grid_container, ParentBuilderT>::UI_builder_base2;
+        UI_builder(Grid_container &c, Widget_bag &b, ParentBuilderT *pb): UI_builder_base2(c, b, pb) {}
+
+        template<class WidgetT>
+        void _add_new_child(WidgetT *child)
         {
-            auto w = new WidgetT{std::forward<Args>(args)...};
-            internal_add(w);
-            container().add_child_cell(w);
+            this->widget().add_child_cell(child);
             _col_index ++;
-            return *this;
         }
 
         auto& end_row()
         {
-            container().end_row();
+            this->widget().end_row();
             _row_index ++;
             _col_index = 0;
             return *this;

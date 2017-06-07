@@ -2,6 +2,9 @@
 
 #include "./Boxed.hpp"
 #include "./Scrolling_container.hpp"
+#ifndef CPPGUI_EXCLUDE_UI_BUILDER
+#include "./UI_builder.hpp"
+#endif
 
 
 namespace cppgui {
@@ -78,6 +81,51 @@ namespace cppgui {
 
     // TODO: define and use a template called Container_boxed<> ?
     using Listbox = Boxed<Listbox_base, Simple_frame_box_styles>;
-    //using Listbox = Listbox_base;
+
+
+#ifndef CPPGUI_EXCLUDE_UI_BUILDER
+
+    /*
+    template<class ParentBuilderT>
+    class UI_builder<Listbox_base, ParentBuilderT>: public UI_builder_base2<Listbox_base, ParentBuilderT>
+    {
+    public:
+        using UI_builder_base2<Listbox_base, ParentBuilderT>::UI_builder_base2;
+
+        template<class WidgetT>
+        void _add_new_child(WidgetT *child)
+        {
+            this->widget().add_item(child);
+        }
+
+    private:
+        int _row_index = 0;
+        int _col_index = 0;
+    };
+    */
+
+    template<class ParentBuilderT>
+    class UI_builder<Listbox, ParentBuilderT>: public UI_builder_base2<Listbox, ParentBuilderT>
+    {
+    public:
+        //using UI_builder_base2<Listbox, ParentBuilderT>::UI_builder_base2;
+
+        UI_builder(Listbox& lb, Widget_bag &wb, ParentBuilderT *pb): 
+            UI_builder_base2{lb, wb, pb} 
+        {}
+
+        template<class WidgetT>
+        void _add_new_child(WidgetT *child)
+        {
+            this->widget().add_item(child);
+        }
+
+    private:
+        int _row_index = 0;
+        int _col_index = 0;
+    };
+
+
+#endif // !CPPGUI_EXCLUDE_UI_BUILDER
 
 } // ns cppgui

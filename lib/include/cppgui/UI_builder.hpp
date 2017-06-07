@@ -16,85 +16,129 @@ namespace cppgui
     class UI_builder_base
     {
     public:
+        explicit UI_builder_base(Widget_bag &bag): _widgets{bag} {}
 
-        auto&& done()
+        /* auto&& done()
         {
             return std::move(_widgets);
-        }
+        } */
 
     protected:
 
-        void internal_add(Widget *w)
+        void add_to_bag(Widget *w)
         {
             _widgets.push_back(std::unique_ptr<Widget>{w});
         }
 
-        virtual auto container() -> Container_base & = 0;
+        //virtual auto widget() -> Container_base & = 0;
 
     private:
-        Widget_bag              _widgets;
+        Widget_bag             &_widgets;
         //const Rasterized_font  *_font = nullptr;
     };
 
-    template<class ContainerT, class ParentT> class UI_builder;
+    template<class ContainerT, class ParentBuilderT> class UI_builder;
 
-    template<class ContainerT, class ParentT = void>
+    /*
+     * Template for a UI_builder for a specified container type, with an optional
+     * parent container type.
+     */
+    template<class ContainerT, class ParentBuilderT>
     class UI_builder_base2: public UI_builder_base
     {
     public:
-        using Type = UI_builder<ContainerT, ParentT>;
+        using Type = UI_builder<ContainerT, ParentBuilderT>;
 
-        explicit UI_builder_base2(ContainerT &cont): 
-            _cont{cont} 
+        explicit UI_builder_base2(ContainerT &cont, Widget_bag &bag, ParentBuilderT *pb):
+            UI_builder_base{bag},
+            _cont{cont},
+            _bag{bag},
+            _parent_builder{pb}
         {}
 
+        /*
+         * Default implementation of _create_new_child<>() template method.
+         */
         template<class WidgetT, typename... Args>
-        auto add(Args &&... args) -> UI_builder<ContainerT, ParentT>&
+        auto _create_new_child(Args &&... args) -> WidgetT *
         {
-            auto w = new WidgetT{std::forward<Args>(args)...};
-            internal_add(w);
+            return new WidgetT{std::forward<Args>(args)...};
+        }
+
+        template<class WidgetT>
+        void _add_new_child(Widget *)
+        {
+            static_assert(false, "UI_builder<> specialization must implement _add_new_child<>()");
+        }
+
+        /*
+         * Add a child to the container represented by this builder.
+         */
+        template<class NestedT, typename... Args>
+        auto add(Args&&... args) -> Type &
+        {
+            NestedT *child = static_cast<Type*>(this)->template _create_new_child<NestedT>(std::forward<Args>(args)...);
+            static_cast<Type*>(this)->_add_new_child(child);
+            add_to_bag(child);            
             return *static_cast<Type*>(this);
         }
 
         /*
-         * Begin a nested container.
+         * Begin work on a new nested container: create it, add it to the current level container,
+         * and return a builder instance for the nested container.
          */
         template<class NestedT, typename... Args>
-        auto begin(Args&&... args) -> UI_builder<NestedT, ContainerT>
+        auto begin(Args&&... args) -> UI_builder<NestedT, Type>
         {
-            auto c = new NestedT{std::forward<Args>(args)...};
-            internal_add(c);
-            return UI_builder<NestedT, ContainerT>{};
+            NestedT *child = static_cast<Type*>(this)->template _create_new_child<NestedT>(std::forward<Args>(args)...);
+            static_cast<Type*>(this)->_add_new_child(child);
+            add_to_bag(child);            
+            // Create and return a builder for the child
+            NestedT &child_ref = *child;
+            return UI_builder<NestedT, Type>{child_ref, this->_bag, static_cast<Type*>(this)};
         }
 
-        auto end() -> UI_builder<ContainerT, ParentT> &
+        template<typename T=ParentBuilderT>
+        auto end() -> typename std::enable_if<!std::is_same<T, void>::value, T&>::type
         {
-            return *static_cast<Type*>(this);
+            return *_parent_builder;
         }
 
     protected:
 
-        auto container() -> ContainerT & override { return static_cast<ContainerT&>(_cont); }
+        auto widget() -> ContainerT & { return _cont; }
 
     private:
         ContainerT         &_cont;
+        Widget_bag         &_bag;
+        ParentBuilderT     *_parent_builder = nullptr;
     };
 
 
     /* 
      * Unspecialized builder, to be specialized in header files of specific containers.
      */    
-    template<class ContainerT, class ParentT> 
-    class UI_builder: public UI_builder_base2<ContainerT, ParentT> 
-    {};
+    //template<class ContainerT, class ParentBuilderT> class UI_builder; //: public UI_builder_base2<ContainerT, ParentBuilderT> {};
 
+    /*
+     * "Root" builder: creates and "carries" the widget bag.
+     */
+
+    template<class ContainerT> 
+    class Root_UI_builder: public UI_builder_base2<ContainerT, void>
+    {
+    public:
+        explicit Root_UI_builder(ContainerT &cont, Widget_bag &bag): 
+            UI_builder_base2<ContainerT, void>{cont, bag, nullptr} 
+        {}
+    };
 
     // Misc ---------------------------------------------------------
 
     template<class ContainerT>
-    auto build_ui(ContainerT &cont) -> UI_builder<ContainerT, void>
+    auto build_ui(ContainerT &cont, Widget_bag &bag)
     {
-        return UI_builder<ContainerT, void>{cont};
+        return std::move(Root_UI_builder<ContainerT>{cont, bag});
     }
 
 } // ns cppgui

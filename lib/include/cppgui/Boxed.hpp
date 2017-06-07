@@ -15,6 +15,8 @@ namespace cppgui {
     class Boxed: public WidgetC, public Box<BoxStyles>
     {
     public:
+        using WidgetC::WidgetC;
+
         void render(Canvas *c, const Point &offset) override
         {
             auto p = offset + this->origin();
