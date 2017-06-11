@@ -64,6 +64,11 @@ namespace cppgui {
         _click_hndlr = handler;
     }
 
+    auto Widget::get_font(Style_element e) -> Font_resource &
+    {
+        return container()->get_font(e);
+    }
+
     void Widget::added_to_container(Container_base *cont)
     {
         _container = cont;

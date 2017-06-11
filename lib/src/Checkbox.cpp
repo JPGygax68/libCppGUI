@@ -21,8 +21,9 @@
 //#include "./Icon_resources.hpp"
 #include "layouting.hpp"
 #include <cppgui/baked_fonts.hpp>
-#include "./Checkbox.hpp"
 #include "Parent_map.hpp"
+#include <cppgui/Container.hpp>
+#include <cppgui/Checkbox.hpp>
 
 
 namespace cppgui {
@@ -49,6 +50,11 @@ namespace cppgui {
         _glyph_font.assign(&baked_fonts::modernpics_18_font());
     }
 
+    auto Checkbox::get_font(Style_element e) -> Font_resource &
+    {
+        return _label_font.rasterized ? _label_font : container()->get_font(e);
+    }
+
     void Checkbox::on_state_change(State_change_handler handler)
     {
         assert(!_state_change_handler);
@@ -57,7 +63,8 @@ namespace cppgui {
 
     void Checkbox::init(Canvas *c)
     {
-        _label_font.translate(c);
+        // TODO: define a standardized query on the Resource contract to determine if assigned ?
+        if (_label_font.rasterized) _label_font.translate(c);
         _glyph_font.translate(c);
     }
 
@@ -66,7 +73,7 @@ namespace cppgui {
         auto p = offs + origin();
 
         // Label
-        c->render_text(_label_font.get(), p.x, p.y, _label.data(), _label.size());
+        c->render_text(get_font(standard_font).get(), p.x, p.y, _label.data(), _label.size());
 
         // Box border and background
         auto r = Rectangle{_tick_bbox.expand(tick_padding() + tick_border())} + Point{_tick_orig, 0};
@@ -120,9 +127,11 @@ namespace cppgui {
     {
         Inline_layouter l; // TODO: make a member ?
 
-        l.set_default_spacing(_label_font.rasterized);
+        auto& fnt = get_font(standard_font);
 
-        l.append_text(_label_font.rasterized, _label.data(), _label.size());
+        l.set_default_spacing(fnt.rasterized);
+
+        l.append_text(fnt.rasterized, _label.data(), _label.size());
         l.append_bounding_box(_tick_bbox.expand(tick_padding() + tick_border()), tick_border() > 0);
 
         return l.minimal_bounds();

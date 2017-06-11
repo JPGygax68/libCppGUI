@@ -87,10 +87,13 @@ STATIC
     include/cppgui/Glyph_button.hpp         src/Glyph_button.cpp
     include/cppgui/Vertical_scrollbar.hpp   src/Vertical_scrollbar.cpp
     include/cppgui/Listbox.hpp              src/Listbox.cpp
-    #include/cppgui/Scrollbox.hpp            src/Scrollbox.cpp
+    # include/cppgui/Scrollbox.hpp            src/Scrollbox.cpp
     include/cppgui/Dropdown_button.hpp      src/Dropdown_button.cpp
     include/cppgui/Internal_popup.hpp       src/Internal_popup.cpp
     include/cppgui/Grid_container.hpp       src/Grid_container.cpp
+
+    include/cppgui/styles.hpp               src/styles.cpp
+
     include/cppgui/UI_builder.hpp           src/UI_builder.cpp
 )
 

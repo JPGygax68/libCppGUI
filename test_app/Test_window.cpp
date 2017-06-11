@@ -24,6 +24,7 @@ void Test_window::create_ui()
     auto dflt_font = &baked_fonts::default_font();
 
     root_widget().set_background_color({0, 0.5, 1, 1});
+    //root_widget().stylesheet().set_standard_font(dflt_font);
 
     if (true)
     {
@@ -43,7 +44,7 @@ void Test_window::create_ui()
         _textbox.set_text(U"Abc1234567890");
         root_widget().add_child(&_textbox);
 
-        _button.set_font(dflt_font);
+        //_button.set_font(dflt_font);
         _button.set_label(U"Click Me!");
         //_button.set_alignment(cppgui::cultural_minor_start);
         root_widget().add_child(&_button);

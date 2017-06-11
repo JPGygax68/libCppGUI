@@ -17,7 +17,8 @@
     limitations under the License.
 */
 
-#include "./Widget.hpp"
+#include "Widget.hpp"
+#include "styles.hpp"
 
 
 namespace cppgui {
@@ -38,9 +39,13 @@ namespace cppgui {
         auto child_count() const -> Index { return static_cast<Index>(_children.size()); }
         auto child_index(Widget *c) const -> Index;
 
+        // Lifecycle
+
         void compute_view_from_data() override;
 
         void init(Canvas *) override;
+
+        // Rendering
 
         void render(Canvas *, const Point &offs) override;
 

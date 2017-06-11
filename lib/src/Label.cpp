@@ -52,7 +52,7 @@ namespace cppgui {
         if (!_text.empty())
         {
             c->set_text_color(_color);
-            c->render_text(font().get(), p.x, p.y, _text.data(), _text.size());
+            c->render_text(get_font(standard_font).get(), p.x, p.y, _text.data(), _text.size());
         }
 
         /* if (this->has_focus())
@@ -74,7 +74,7 @@ namespace cppgui {
     {
         if (!text().empty())
         {
-            return {font().rasterized->compute_text_extents(0, _text.data(), _text.size())};
+            return {get_font(standard_font).rasterized->compute_text_extents(0, _text.data(), _text.size())};
         }
 
         return {};

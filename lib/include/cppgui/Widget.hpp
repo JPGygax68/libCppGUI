@@ -20,6 +20,7 @@
 #include <functional>
 #include "./UI_element.hpp"
 #include "./layouting.hpp"
+#include "styles.hpp"
 
 
 namespace cppgui {
@@ -47,6 +48,10 @@ namespace cppgui {
         }
 
         void on_click(Click_handler);
+
+        // Styles 
+
+        virtual auto get_font(Style_element) -> Font_resource &;
 
         /** The compute_view_from_data() entry point must be called after init(), and also after 
             layout() if run-time layouting is enabled.

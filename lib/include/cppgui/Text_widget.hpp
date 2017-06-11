@@ -17,8 +17,7 @@ namespace cppgui
         void init(Canvas *) override;
 
     protected:
-        auto& font() const { return _font; }
-        auto& font() { return _font; }
+        auto get_font(Style_element) -> Font_resource & override;
 
     private:
         Font_resource           _font;

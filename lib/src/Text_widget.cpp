@@ -10,7 +10,12 @@ namespace cppgui
 
     void Text_widget::init(Canvas *c)
     {
-        _font.translate(c);
+        if (_font.rasterized) _font.translate(c);
+    }
+
+    auto Text_widget::get_font(Style_element e) -> Font_resource &
+    {
+        return _font.rasterized ? _font : Widget::get_font(e);
     }
 
 } // ns cppui

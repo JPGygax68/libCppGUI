@@ -37,7 +37,7 @@ namespace cppgui {
         Checkbox();
 
         void set_font(const Rasterized_font *font) { _label_font.assign(font); }
-        auto font() const { return _label_font; }
+        auto get_font(Style_element) -> Font_resource & override;
         //void set_tick_glyph(const Rasterized_font *, char32_t codepoint); // TODO: use improved Icon_resources methods
         void set_label(const std::u32string &label) { _label = label; }
         auto label() const { return _label; }

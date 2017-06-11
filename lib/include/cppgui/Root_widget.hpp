@@ -21,6 +21,7 @@
 #include <stack>
 #include "./Widget.hpp"
 #include "./Container.hpp"
+#include "./styles.hpp"
 
 
 namespace cppgui {
@@ -37,7 +38,11 @@ namespace cppgui {
             this->set_id("Root_widget_base");
         }
 
+        auto stylesheet() const -> const Basic_stylesheet &;
+
         void set_background_color(const RGBA &color) { _bkgnd_clr = color; }
+
+        auto get_font(Style_element) -> Font_resource & override;
 
         //void set_canvas(Canvas *);
         //auto canvas() const { return _canvas; }
@@ -86,6 +91,7 @@ namespace cppgui {
         using Super = Container_base;
 
         RGBA                        _bkgnd_clr = { 0, 0, 0, 0 };
+        Basic_stylesheet            _stylesheet;
         //Canvas                     *_canvas = nullptr;
         std::stack<Cursor_handle>   _cursor_stack;
         Widget                     *_mouse_holder = nullptr;

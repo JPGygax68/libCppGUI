@@ -49,8 +49,15 @@ namespace cppgui {
             // removed for now: init done by root_widget() user
     } */
 
+    auto Root_widget::get_font(Style_element e) -> Font_resource &
+    {
+        return _stylesheet.font(e);
+    }
+
     void Root_widget::init(Canvas *c)
     {
+        _stylesheet.init(c);
+
         init_child_resources(c);
 
         Widget::init(c);
