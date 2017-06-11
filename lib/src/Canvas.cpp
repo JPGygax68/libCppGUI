@@ -19,7 +19,6 @@
 
 #include "./Canvas.hpp"
 
-#include "./Full_resource_mapper.ipp"
 
 namespace cppgui {
 
