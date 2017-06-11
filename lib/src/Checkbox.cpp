@@ -22,9 +22,13 @@
 #include "layouting.hpp"
 #include <cppgui/baked_fonts.hpp>
 #include "./Checkbox.hpp"
+#include "Parent_map.hpp"
 
 
 namespace cppgui {
+
+    //static Parent_map::Registrant<Checkbox, Widget> parent_map_registrant;
+    REGISTER_PARENTHOOD(Checkbox, Widget)
 
     // static std::unique_ptr<Rasterized_font> glyph_font;
 

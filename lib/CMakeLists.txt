@@ -58,6 +58,7 @@ STATIC
     include/cppgui/fonts/cereal.hpp
 
     include/cppgui/basic_types.hpp
+    include/cppgui/Parent_map.hpp
     include/cppgui/unicode.hpp
 
     include/cppgui/Icon_resources.hpp       src/Icon_resources.cpp

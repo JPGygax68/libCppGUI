@@ -22,11 +22,16 @@
 #include <Container.hpp>
 #include <Root_widget.hpp>
 #include <iostream>
+#include "Parent_map.hpp"
 
 
 namespace cppgui {
 
     // Widget<> implementation --------------------------------------
+
+    //static Parent_map::Registrant<Widget> parent_map_registrant;
+    REGISTER_ANCESTOR(Widget)
+
 
     Widget::Widget()
     #ifdef DEBUG
