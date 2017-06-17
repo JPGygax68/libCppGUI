@@ -2,21 +2,16 @@
 #include <cppgui/baked_fonts.hpp>
 
 
-namespace cppgui {
-
-    Basic_stylesheet::Basic_stylesheet()
+namespace cppgui 
+{
+    void Stylesheet::add_font(Style_element element, const Rasterized_font *rfont)
     {
-        _font.assign(&baked_fonts::default_font());
+        _fonts[element] = rfont;
     }
 
-    void Basic_stylesheet::init(Canvas *c)
+    auto Stylesheet::get_font(Style_element element) const -> const Rasterized_font *
     {
-        _font.translate(c);
-    }
-
-    auto Basic_stylesheet::font(Style_element) -> Font_resource &
-    {
-        return _font;
+        return _fonts.at(element);
     }
 
 } // ns cppgui

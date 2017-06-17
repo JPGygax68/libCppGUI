@@ -7,20 +7,22 @@ namespace cppgui
     
     /*
      * Widget that uses text in some way (i.e. a font).
+     * 
+     * TODO: it would probably be better to implement this functionality as a "decorator" template,
+     * to be wrapped around Widget.
      */
     class Text_widget: public Widget
     {
     public:
 
-        void set_font(const Rasterized_font *);
-
-        void init(Canvas *) override;
+        void obtain_style_elements() override;
 
     protected:
-        auto get_font(Style_element) -> Font_resource & override;
+        auto font() { return _font_rsrc->rasterized; }
+        auto font_handle() { return _font_rsrc->get(); }
 
     private:
-        Font_resource           _font;
+        const Font_resource        *_font_rsrc = nullptr;
     };
 
 } // ns cppgui

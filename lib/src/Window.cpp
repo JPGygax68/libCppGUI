@@ -29,7 +29,7 @@ namespace cppgui {
 
         _canvas = std::make_unique<Canvas>();
         _canvas->init();
-        _root_widget.init(_canvas.get());
+        _root_widget.get_backend_resources(_canvas.get());
     }
 
     void Window::cleanup_window(void *context)

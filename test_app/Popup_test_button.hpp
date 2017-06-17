@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <cppgui/Widget.hpp>
+#include <cppgui/Text_widget.hpp>
 #include <cppgui/Boxed.hpp>
 #include <cppgui/Internal_popup.hpp>
 
@@ -9,17 +9,15 @@
 namespace cppgui
 {
     
-    class Popup_test_button_base: public Widget
+    class Popup_test_button_base: public Text_widget
     {
         public:
 
-            void set_font(const Rasterized_font *);
-            auto font() const { return _font.rasterized; }
+            //void set_font(const Rasterized_font *);
+            //auto font() const { return _font.rasterized; }
             void set_label(const std::u32string &);
             void set_label(const std::string &);
             auto label() const { return _label; }
-
-            void init(Canvas *) override;
 
             void render(Canvas *, const Point &) override;
 
@@ -32,7 +30,7 @@ namespace cppgui
 
             virtual auto label_color(Widget_states) -> RGBA const { return {0, 0, 0, 1}; }
 
-            Font_resource                           _font;
+            //Font_resource                           _font;
             RGBA                                    _color = {0, 0, 0, 1};
             std::u32string                          _label;
             Bbox                                    _label_bbox;

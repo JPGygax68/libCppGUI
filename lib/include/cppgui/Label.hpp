@@ -32,12 +32,14 @@ namespace cppgui {
     public:
 
         Label() = default;
-        explicit Label(const std::u32string &, const Rasterized_font *);
+        explicit Label(const std::u32string &); //, const Rasterized_font *);
         explicit Label(const Label &) = default;
 
         void set_color(const RGBA &);
         void set_text(const std::u32string &);
         auto& text() const { return _text; }
+
+        //void init(Canvas *) override;
 
         void render(Canvas *, const Point &offset) override;
 

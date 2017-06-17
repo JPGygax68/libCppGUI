@@ -36,7 +36,7 @@ namespace cppgui
         void set_label(const std::string &);
         auto label() const { return _label; }
 
-        void init(Canvas *) override;
+        void get_backend_resources(Canvas *) override;
 
         void render(Canvas *, const Point &) override;
 

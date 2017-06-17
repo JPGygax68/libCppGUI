@@ -66,6 +66,14 @@ namespace cppgui {
         return find(begin(children()), end(children()), c) - begin(children());
     }
 
+    void Container_base::obtain_style_elements()
+    {
+        for (auto child : children())
+        {
+            child->obtain_style_elements();
+        }
+    }
+
     void Container_base::add_child(Widget *child)
     {
         _children.push_back(child);
@@ -105,7 +113,7 @@ namespace cppgui {
         compute_child_views();
     }
 
-    void Container_base::init(Canvas *c)
+    void Container_base::get_backend_resources(Canvas *c)
     {
         init_child_resources(c);
     }
@@ -267,7 +275,7 @@ namespace cppgui {
     {
         for (auto child : children())
         {
-            child->init(c);
+            child->get_backend_resources(c);
         }
     }
 

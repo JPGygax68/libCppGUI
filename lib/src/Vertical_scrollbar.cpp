@@ -66,9 +66,9 @@ namespace cppgui {
         _shown_range = fraction;
     }
 
-    void Vertical_scrollbar_base::init(Canvas *c)
+    void Vertical_scrollbar_base::get_backend_resources(Canvas *c)
     {
-        Container_base::init(c);
+        Container_base::get_backend_resources(c);
     }
 
     void Vertical_scrollbar_base::compute_view_from_data()

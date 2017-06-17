@@ -68,7 +68,7 @@ namespace cppgui {
 
         void define_sizes(Length full, Length shown);
 
-        void init(Canvas *) override;
+        void get_backend_resources(Canvas *) override;
 
         void compute_view_from_data() override;
 

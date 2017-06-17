@@ -31,12 +31,6 @@ namespace cppgui {
         void render(Canvas *, const Point &offset) override;
     };
 
-
-    void Popup_test_button_base::set_font(const Rasterized_font *font)
-    {
-        _font.assign(font);
-    }
-
     void Popup_test_button_base::set_label(const std::u32string &label)
     {
         _label = label;
@@ -47,11 +41,6 @@ namespace cppgui {
         set_label( utf8_to_utf32(label) );
     }
 
-    void Popup_test_button_base::init(Canvas *c)
-    {
-        _font.translate(c);
-    }
-
     void Popup_test_button_base::render(Canvas *c, const Point &offs)
     {
         auto p = offs + origin();
@@ -59,7 +48,7 @@ namespace cppgui {
         // draw_background_and_border(c, p, bounds(), visual_states());
 
         c->set_text_color(label_color(visual_states()));
-        c->render_text(_font.get(), p.x /*+ _x_offs*/, p.y, _label.data(), _label.size());
+        c->render_text(font_handle(), p.x /*+ _x_offs*/, p.y, _label.data(), _label.size());
 
         if (this->has_focus())
         {
@@ -109,7 +98,7 @@ namespace cppgui {
 
     void Popup_test_button_base::compute_label_bounds()
     {
-        _label_bbox = _font.rasterized->compute_text_extents(0, _label.data(), _label.size());
+        _label_bbox = font()->compute_text_extents(0, _label.data(), _label.size());
     }
 
     void Popup_test_button_base::init_layout()

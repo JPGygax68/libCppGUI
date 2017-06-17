@@ -43,7 +43,7 @@ namespace cppgui {
         //draw_background_and_border(c, p, bounds(), visual_states());
 
         c->set_text_color(label_color(visual_states()));
-        c->render_text(get_font(standard_font).get(), p.x /*+ _x_offs*/, p.y, _label.data(), _label.size());
+        c->render_text(font_handle(), p.x /*+ _x_offs*/, p.y, _label.data(), _label.size());
 
         if (this->has_focus())
         {
@@ -86,7 +86,7 @@ namespace cppgui {
 
     void Button_base::compute_label_bounds()
     {
-        _label_bbox = get_font(standard_font).rasterized->compute_text_extents(0, _label.data(), _label.size());
+        _label_bbox = font()->compute_text_extents(0, _label.data(), _label.size());
     }
 
     void Button_base::init_layout()

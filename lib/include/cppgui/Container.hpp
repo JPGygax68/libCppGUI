@@ -41,9 +41,11 @@ namespace cppgui {
 
         // Lifecycle
 
+        void obtain_style_elements() override;
+
         void compute_view_from_data() override;
 
-        void init(Canvas *) override;
+        void get_backend_resources(Canvas *) override;
 
         // Rendering
 

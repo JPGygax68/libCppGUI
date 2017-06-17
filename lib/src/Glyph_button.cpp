@@ -43,9 +43,11 @@ namespace cppgui {
         _horz_align = a;
     }
 
-    void Glyph_button_base::init(Canvas *c)
+    void Glyph_button_base::get_backend_resources(Canvas *c)
     {
-        if (_label_font.rasterized) _label_font.translate(c);
+        Widget::get_backend_resources(c);
+
+        //if (_label_font.rasterized) _label_font.translate(c);
         if (_glyph_cp) _glyph_font.translate(c);
     }
 
@@ -57,7 +59,7 @@ namespace cppgui {
         if (!_label.empty())
         {
             c->set_text_color({0, 0, 0, 1}); // TODO: make stylable
-            c->render_text(_label_font.get(), p.x, p.y, _label.data(), _label.size());
+            c->render_text(font_handle(), p.x, p.y, _label.data(), _label.size());
         }
 
         // Glyph
@@ -118,9 +120,9 @@ namespace cppgui {
     {
         Inline_layouter l; // TODO: make a member ?
 
-        if (_label_font.rasterized) l.set_default_spacing(_label_font.rasterized);
+        if (font()) l.set_default_spacing(font());
 
-        l.append_text(_label_font.rasterized, _label.data(), _label.size());
+        l.append_text(font(), _label.data(), _label.size());
         l.append_space(); // necessary to make room for stippled "focus" rectangle
         if (_glyph_cp != 0) l.append_glyph(_glyph_font.rasterized, _glyph_cp);
 
@@ -139,7 +141,7 @@ namespace cppgui {
 
     void Glyph_button_base::compute_bounds()
     {
-        _label_bbox = _label_font.rasterized->compute_text_extents(0, _label.data(), _label.size());
+        _label_bbox = font()->compute_text_extents(0, _label.data(), _label.size());
         if (_glyph_cp != 0)
             _glyph_bbox = _glyph_font.rasterized->compute_text_extents(0, &_glyph_cp, 1);
         else

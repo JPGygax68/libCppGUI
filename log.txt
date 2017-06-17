@@ -1,3 +1,147 @@
+2017-06-17
+==========
+
+(cont'd from 2 days ago: stylesheets)
+
+Specifying the interface:
+
+- Widget::get_style_int(type_index, Style_element, Widget_states) -> int
+- Widget::get_style_bool(..ditto..) -> bool
+- Widget::get_font(type_index, Style_element, Widget_states) -> Font_resource
+
+Is it necessary/useful to be able specify negated widget state bits ? E.g. does it make sense to define and query a state such as: non-hovered, non-focused, etc. ?
+
+=> I don't think so. Where negations make sense, dedicated bits could be used, but I'm not sure that case will ever arise.
+
+This means that any style bit that is no explicitly set is interpreted not as "not set", but as "undefined".
+
+A question: where are the Font_resource objects kept, and by what entity ?
+
+It would be a waste of CPU to have every widget look up the font handle by itself, which is why I bundled the rasterized font pointer and the associated font handle together in Font_resource. But where are these objects kept ?
+
+A typical font style query looks like this: widget calls get_font(..). Get font will try to find a definition in its own stylesheet (if any), then climb up the container hierarchy until it either find a definition or fails.
+If, say, the direct parent has a stylesheet that contains an applicable definition, should the stylesheet itself own the font resource object?
+
+A possible issue here is with serialization. The Rasterized_font pointer is common to all possible build variants of libCppGUI, but the other half of the Font_resource class, the Font_handle, is not: its type is dependant on the Renderer implementation.
+
+If the stylesheets deliver only the Rasterized_font pointer, there would be a need for an intermediary layer. That layer could be the root widget, which however would thus get a double role, both as a possible stylesheet source (via the container hierarchy) and in a management capacity. Not really a problem though, what's needed isn't all that much, just an Boost.Intrusive.Set of Font_resources.
+
+The consumer would thus be given a pointer to a Font_resource instance that is guaranteed to remain valid for the lifetime of the root widget; the root widget takes on the responsibility of obtaining and releasing the associated Renderer resources at the appropriate times, so that the Font_resource objects will be ready when it comes the time to actually render text.
+
+An alternative to this would be to assign that task to the canvas, which would dispose of the necessity to climb up the container hierarchy. Yes, I believe that option is definitely preferrable. It will require a minor redesign of the Canvas class though, which so far only caches fonts without owning them.
+
+Another possible problem is that so far, it was not specified that the canvas instance passed to the root widget is always the same. In the current implementation, the canvas object is owned by the Window class, which is fairly safe since using that class is mandatory.
+
+But what happens once "external" popups are implemented? Those will be based on extra windows and thus cannot share the same canvas.
+
+This all needs more thinking through.
+
+------
+
+To sum up:
+
+- Font resource objects have to potential to significantly reduce overhead when the same font is used by a lot of widgets, which is the case for the great majority of user interfaces.
+
+- Because of that, style lookups should return font resource objects instead of Rasterized_font pointers, which would require an extra lookup (via the canvas).
+
+- The question is where to keep the font resource objects ?
+
+Since style lookups often follow the container hierarchy upwards, it is probably best to introduce a wrapper around the Stylesheet base class that will feature a cache for fonts. Widgets would then get assigned instances of that wrapper class instead of direct Stylesheet instances.
+
+If ever a Renderer implementation needs instance-specific font handles, that wrapper class must, via conditional compilation, include code that supports this. Or, more likely, the Font_resource (currently defined in Canvas.hpp) must add such code; the stylesheet wrapper merely needs to be defined so that the canvas pointer is always available to be used into lookups.
+
+Having each stylesheet wrapper instance keep its own font resource map has the drawback that a given font may be mapped more than once, which will happen when more than one stylesheet points to the same font. That is not a huge problem though.
+
+Two questions remain:
+
+1) When should style lookups happen ?
+
+2) How is style lookup algorithm defined, formally ?
+
+Style lookups must happen before layouting, or as part of that at the latest (I'm not going into style changes for now - for the time being, those are simply unsupported). The question is, should a new lifetime virtual method be introduced just for styles ?
+
+What it comes down to, once again, is performance. There is nothing that stops a widget from getting style information over and over again, every time the widget renders and indeed multiple times during rendering. But it seems like a waste.
+
+Options are: use a generic cache with reasonable performance, or let the widget decide whether to do caching, and if so, how.
+
+For now, the decision is: no optimization in generic code, i.e., widget implementations are responsible; as a recommendation, the init_layout() entry points should be used for style lookups that persist their results.
+
+
+2017-06-15
+==========
+
+Stylesheets
+-----------
+
+Stylesheets have moved to the top of the to-do list because their absence is interfering with even a half-usable implementation of the UI builder (which in turn is interfering with testing, which is interfering with the implementation of popups): having to specify the font for every widget separately is just a no-go.
+
+I've already implemented a first version. It is based on the container hierarchy, and currently, ultimately defers to the root widget to obtain a font resource.
+
+The problem with that approach isn't that it wouldn't work, but it requires a virtual method throughout the whole widget hierarchy for every single style information type. Separation of concerns takes a big hit. It would be impossible, for example, to introduce a new type of styling information for a custom widget or widget collection.
+
+The current implementation defines a single Basic_stylesheet class that is supposed to provide all style-relevant data, which so far is a single Font_resource instance. The sort-of-idea was to let programmers derive from that class to add extra information but, like mentioned above, that would require a virtual method at least for every data type used for styling. Templated methods cannot help here, since they cannot be virtual.
+
+An idea I want to pursue here is chainable stylesheets of arbitrary content. The container hierarchy's role would be reduced to ensuring that all stylesheets up to the root widget are consulted (if necessary) when a widget queries for style information.
+
+The "arbitrary content" part needs more thought. I was imagining a map, keyed with: the widget class (represented by its type_index, which I've already used in my present implementation), a numeric tag, and the widget's states (Widget_states, based on enum Widget_state).
+
+(In CSS-speak, the type index would roughly translate to the element name, the numeric tag would be the CSS class, and the widget states are akin to pseudo-selectors such as :hover etc.)
+
+This approach could be made extensible: the type_index is guaranteed to be unique within a program, numeric tags could be registered via initialization code, while widget states could have a pseudo-extensibility by having values such as "user_state_X" in the Widget_state enum.
+
+As with CSS, there must be clear rules to decide which rule is applied in every possible situation. For example: if the stylesheet attached to the widget itself defines a font for precisely that widget type, but does not specify a tag nor any widget states combination; and the parent container has a stylesheet that matches a twice-removed parent class plus the tag and two of the widget state bits, which of the two rules shall prevail ?
+
+This is non-trivial, and could lead to endless headaches for both developers and designers.
+
+Tentatively, I would say:
+
+- More matching widget states should trump a closer widget class match; i.e. for a Textbox, if a rule for Widget says that the border color when both hovered and focused should be red, and a rule for Textbox says that the hovered color should be blue, red would win because it better matches the widget states. The ranking of the widget type match would only be taken into account when all other things are equal.
+
+- Likewise, container inheritance should be secondary: if an applicable rule from stylesheet attached to a container matches the widget states more closesly than an applicable rule on the widget itself, still the container-inherited rule should win out.
+
+- Tag matches should have a higher priority than both "container distance" and "type distance" (even combined). Whether or not they should have priority over widget states match is an open question.
+
+### A simpler approach ?
+
+The analogy to CSS should not be driven too far (for one thing, my mastery of the CSS rules is far from sufficient). The question that must be asked here is "what am I trying to achieve, precisely ?".
+
+During my latest experimentations, my only concern was to have a default font for my text-based widgets (label, textboxes, buttons). Perhaps the above approach is too sophisticated ?
+
+A simple approach might be for style queries to simply go up the container chain until they find a match - without even attempting any ranking at all.
+
+What this means is that container stylesheets could no longer micro-manage the appearance of their content. However, such a system would probably be too simple to satisfy the needs - it might even break down as soon as a widget class requires two different fonts. Also, how would this work to query, for example, the color of a border if that color must vary according to the widget states?
+
+Well, actually it could work. All that needs to happen is to let the "first match" rule play out; the only question is how to keep in control.
+
+### Trying to come up with alternatives
+
+So far, I have not addressed how to support the various types of style information that might be called for. I have mentioned that I would like custom widgets to add their own styles, but haven't given much thought to the mechanism needed to support this.
+
+Maybe that requirement isn't all that important. If the styling/theming mechanism supports fonts, color, and widths, that should actually cover the basics. Plus, libCppGUI is supposed to be low-level, and doesn't deal with font names, styles, etc, nor with any other units other than pixels, perhaps "higher" forms of styling should likewise best be left to higher layers.
+
+So, a simpler approach might no longer try to deal with widget classes at all, instead directly identifying the information that widgets need to retrieve. For example, a widget might ask for the information border_width, and obtain that information from its own stylesheet or one attached to a container higher up in the tree.
+
+The name "border_width", in this approach, does not specify what kind of border is meant - whether, for example, for a button or for a textbox, which could be wildly different visually. That means that any time a widget needs a border width that is distinct from the already reserved "border_width", it needs to define its one style element, e.g. "button_border_width" or "textbox_border_width". That certainly lacks elegance, though it would have the advantage of forcing widget developers to get a clear understanding of their style element requirements.
+
+Another thought. The above idea of limiting style elements to but a few (fonts, colors, widths) opens to door put styles back under the control of the widget classes themselves (very few virtual methods). This has the following advantages:
+
+- the widget and its implementor can decide on their own whether they want to take styling into consideration at all
+- if the do decide to do that, they keep the option of modifying styles - for example, they could colorize a border to give feedback for hover, focus, etc., which would help prevent styling clashes
+- when no style is provided in any of the stylesheets that could be taken into consideration, the widget is free to choose one itself
+
+So, what could this look like ?
+
+- 3 virtual methods defined in Widget - one for each styling data type - taking the type index, the style element ID and the widget states for parameters
+- optional stylesheet objects that can be attached to any widget, that the widget methods will delegate to if present
+
+This would mean that stylesheets can only be defined by programmers, not artists/designers.
+
+Also, this proposal does not answer the questions asked about about how to classify matches. Leaving the widget code in charge however makes it possible to consider very simple matching rules, leaving it to the widget to do its own fallbacks if a precise match cannot be found, modifying the results of such fallback matches (e.g. modifying colors to reflect states), or even combining the results of multiple fallback queries.
+
+... and, it may also make it possible to re-introduce stylesheets with designer-defined content. Prioritizing less-than-ideal matches could even, again, be left to widget code. The query mechanism need only support masking the widget states. If the widget is capable of utilizing style elements defined for a parent class, it can specify that type index explicitly, thus keeping full control over what it will and will not take into consideration.
+
+
+
 2017-05-29
 ==========
 

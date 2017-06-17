@@ -64,9 +64,33 @@ namespace cppgui {
         _click_hndlr = handler;
     }
 
-    auto Widget::get_font(Style_element e) -> Font_resource &
+    void Widget::set_stylesheet(const Stylesheet &sheet)
     {
-        return container()->get_font(e);
+        _stylesheet = &sheet;
+    }
+
+    auto Widget::get_font(Style_element element /*, std::type_index type*/) -> const Font_resource &
+    {
+        const Rasterized_font *font = nullptr;
+
+        if (_stylesheet) font = _stylesheet->get_font(element);
+
+        if (!font) return container()->get_font(element);
+
+        //auto it = _font_resources.find({font});
+        //if (it != _font_resources.end()) return *it;
+
+        return *_font_resources.emplace(Font_resource{font}).first;
+    }
+
+    void Widget::get_backend_resources(Canvas *c)
+    {
+        UI_element::get_backend_resources(c);
+
+        for (auto &fr: _font_resources)
+        {
+            const_cast<Font_resource&>(fr).translate(c);
+        }
     }
 
     void Widget::added_to_container(Container_base *cont)

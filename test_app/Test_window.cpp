@@ -29,7 +29,7 @@ void Test_window::create_ui()
     if (true)
     {
         
-        _label.set_font(dflt_font);
+        //_label.set_font(dflt_font);
         //_label.set_color({1, 1, 1, 1});
         //_label.set_background_color({1, 1, 1, 1});
         _label.set_text(U"Hello World!");
@@ -40,7 +40,7 @@ void Test_window::create_ui()
         });
         root_widget().add_child(&_label);
 
-        _textbox.set_font(dflt_font);
+        //_textbox.set_font(dflt_font);
         _textbox.set_text(U"Abc1234567890");
         root_widget().add_child(&_textbox);
 
@@ -49,12 +49,12 @@ void Test_window::create_ui()
         //_button.set_alignment(cppgui::cultural_minor_start);
         root_widget().add_child(&_button);
 
-        _checkbox.set_font(dflt_font);
+        //_checkbox.set_font(dflt_font);
         //_checkbox.set_tick_glyph(&cppgui::baked_fonts::default_symbol_font(), tick_descr);
         _checkbox.set_label(U"Check me!");
         root_widget().add_child(&_checkbox);
 
-        _glyphbutton.set_font(dflt_font);
+        //_glyphbutton.set_font(dflt_font);
         _glyphbutton.set_label(U"Click me too!");
         _glyphbutton.set_glyph(Icon_resources::bell());
         root_widget().add_child(&_glyphbutton);
@@ -65,14 +65,14 @@ void Test_window::create_ui()
         _button_list.resize(15);
         for (auto i = 0U; i < _button_list.size(); i ++)
         {
-            _button_list[i].set_font(dflt_font);
+            //_button_list[i].set_font(dflt_font);
             _button_list[i].set_label(utf8_to_utf32("Button #"s + std::to_string(i)));
             _button_list[i].set_glyph(Icon_resources::bell());
             _listbox.add_item(&_button_list[i]);
         }
         root_widget().add_child(&_listbox);
 
-        _popupbtn.set_font(dflt_font);
+        //_popupbtn.set_font(dflt_font);
         _popupbtn.set_label(U"Popup");
         //_button.set_alignment(cppgui::cultural_minor_start);
         root_widget().add_child(&_popupbtn);
@@ -102,37 +102,37 @@ void Test_window::create_ui()
 
     #endif
 
-        _align_left_ref    .set_font(dflt_font);
+        //_align_left_ref    .set_font(dflt_font);
         _align_left_ref    .set_label(U"Align left");
-        _align_left_tgt    .set_font(dflt_font);
+        //_align_left_tgt    .set_font(dflt_font);
         _align_left_tgt    .set_label(U"LEFT");
-        _align_origin_ref  .set_font(dflt_font);
+        //_align_origin_ref  .set_font(dflt_font);
         _align_origin_ref  .set_label(U"Align origin");
-        _align_origin_tgt  .set_font(dflt_font);
+        //_align_origin_tgt  .set_font(dflt_font);
         _align_origin_tgt  .set_label(U".ORIGIN");
-        _align_center_ref  .set_font(dflt_font);
+        //_align_center_ref  .set_font(dflt_font);
         _align_center_ref  .set_label(U"Align center");
-        _align_center_tgt  .set_font(dflt_font);
+        //_align_center_tgt  .set_font(dflt_font);
         _align_center_tgt  .set_label(U"CENTER");
-        _align_right_ref   .set_font(dflt_font);
+        //_align_right_ref   .set_font(dflt_font);
         _align_right_ref   .set_label(U"Align right");
-        _align_right_tgt   .set_font(dflt_font);
+        //_align_right_tgt   .set_font(dflt_font);
         _align_right_tgt   .set_label(U"RIGHT");
-        _align_top_ref     .set_font(dflt_font);
+        //_align_top_ref     .set_font(dflt_font);
         _align_top_ref     .set_label(U"Align top");
-        _align_top_tgt     .set_font(dflt_font);
+        //_align_top_tgt     .set_font(dflt_font);
         _align_top_tgt     .set_label(U"TOP");
-        _align_baseline_ref.set_font(dflt_font);
+        //_align_baseline_ref.set_font(dflt_font);
         _align_baseline_ref.set_label(U"Align baseline");
-        _align_baseline_tgt.set_font(dflt_font);
+        //_align_baseline_tgt.set_font(dflt_font);
         _align_baseline_tgt.set_label(U"BASELINE");
         _align_middle_ref  .set_label(U"Align middle");
-        _align_middle_ref  .set_font(dflt_font);
-        _align_middle_tgt  .set_font(dflt_font);
+        //_align_middle_ref  .set_font(dflt_font);
+        //_align_middle_tgt  .set_font(dflt_font);
         _align_middle_tgt  .set_label(U"MIDDLE");
-        _align_bottom_ref  .set_font(dflt_font);
+        //_align_bottom_ref  .set_font(dflt_font);
         _align_bottom_ref  .set_label(U"Align bottom");
-        _align_bottom_tgt  .set_font(dflt_font);
+        //_align_bottom_tgt  .set_font(dflt_font);
         _align_bottom_tgt  .set_label(U"BOTTOM");
         _align_left_ref    .on_pushed([this]() { _align_left_tgt    .bounds().align_left_to    (_align_left_ref    .bounds()); return true; });
         _align_origin_ref  .on_pushed([this]() { _align_origin_tgt  .bounds().align_origin_to  (_align_origin_ref  .bounds()); return true; });
@@ -155,19 +155,21 @@ void Test_window::create_ui()
     if (true)
     {
         build_ui(_grid, _grid_widgets)         // -> UI_builder<Grid_container, Nil_struct>
-            .add<Label>(U"First name:", dflt_font).add<Textbox>(dflt_font).end_row()
-            .add<Label>(U"Last name:" , dflt_font).add<Textbox>(dflt_font).end_row()
-            .add<Label>(U"Choose:", dflt_font)
+            .add<Label>(U"First name:").add<Textbox>().end_row()
+            .add<Label>(U"Last name:" ).add<Textbox>().end_row()
+            .add<Label>(U"Choose:")
             .begin<Listbox>()
-                .add<Button>(U"Item 1", dflt_font)
-                .add<Button>(U"Item 2", dflt_font)
-                .add<Button>(U"Item 3", dflt_font)
+                .add<Button>(U"Item 1")
+                .add<Button>(U"Item 2")
+                .add<Button>(U"Item 3")
             .end()
             .end_row()
-            .add<Label>(U"Birth date:", dflt_font).add<Textbox>(dflt_font).end_row();
+            .add<Label>(U"Birth date:").add<Textbox>().end_row();
 
         root_widget().add_child(&_grid);
     }
+
+    root_widget().obtain_style_elements();
 
     root_widget().set_initial_focus(&_grid); //_listbox);
 }

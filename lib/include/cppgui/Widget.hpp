@@ -18,9 +18,11 @@
 */
 
 #include <functional>
+#include <typeindex>
 #include "./UI_element.hpp"
 #include "./layouting.hpp"
 #include "styles.hpp"
+#include <set>
 
 
 namespace cppgui {
@@ -51,11 +53,20 @@ namespace cppgui {
 
         // Styles 
 
-        virtual auto get_font(Style_element) -> Font_resource &;
+        void set_stylesheet(const Stylesheet &);
 
-        /** The compute_view_from_data() entry point must be called after init(), and also after 
-            layout() if run-time layouting is enabled.
-        */
+        auto get_font(Style_element/*, std::type_index = typeid(Widget)*/) -> const Font_resource &;
+        // TODO: other data types
+
+        // Lifecycle
+
+        virtual void obtain_style_elements() {}
+
+        void get_backend_resources(Canvas *) override;
+
+        /** The compute_view_from_data() entry point must be called after get_backend_resources() [WHY?], 
+         *  and also after layout() if run-time layouting is enabled.
+         */
         virtual void compute_view_from_data() {}
 
         void added_to_container(Container_base *);
@@ -162,7 +173,12 @@ namespace cppgui {
         const char  *_id;
         #endif
 
-        Click_handler           _click_hndlr;
+        // Behaviour
+        Click_handler               _click_hndlr;
+
+        // Styles
+        const Stylesheet           *_stylesheet = nullptr;
+        std::set<Font_resource>     _font_resources; 
 
     #ifndef CPPGUI_EXCLUDE_LAYOUTING
     public:

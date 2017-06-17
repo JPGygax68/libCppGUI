@@ -1,5 +1,6 @@
 #pragma once
 
+#include <typeindex>
 #include "Canvas.hpp"
 
 
@@ -12,20 +13,20 @@ namespace cppgui
     };
 
 
-    class Basic_stylesheet
+    class Stylesheet
     {
     public:
 
-        Basic_stylesheet();
+        void add_font(Style_element, const Rasterized_font *);
 
-        void init(Canvas *);
-
-        // void cleanup(Canvas *);
-
-        auto font(Style_element) -> Font_resource &;
+        auto get_font(Style_element) const -> const Rasterized_font *;
+        auto get_int(Style_element) const -> int;
+        auto get_uint(Style_element) const -> uint;
 
     private:
-        Font_resource                   _font;
+        std::map<Style_element, const Rasterized_font *>    _fonts;
+        std::map<Style_element, int>                        _ints;
+        std::map<Style_element, uint>                       _uints;
     };
 
 } // ns cppgui

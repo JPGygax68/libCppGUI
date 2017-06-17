@@ -18,49 +18,38 @@
 */
 
 #include <iostream>
-
+#include <cppgui/baked_fonts.hpp>
 #include <cppgui/Root_widget.hpp>
 
 
 namespace cppgui {
 
-    /*
-    template<class Config, bool With_layout>
-    Root_widget<Config, With_layout>::Root_widget(Canvas_t *cv)
+    class Default_stylesheet: public Stylesheet
     {
-        _canvas = cv;
-    }
-    */
+    public:
+        Default_stylesheet()
+        {
+            add_font(standard_font, &baked_fonts::default_font());
+        }
+    };
 
-    /*
-    template<class GUIConfig, bool WithLayout>
-    void Root_widget<GUIConfig, WithLayout>::add_child(Widget<GUIConfig, WithLayout> *child)
+    Default_stylesheet default_stylesheet;
+
+
+    Root_widget::Root_widget()
     {
-        _add_child(child);
-        child->added_to_container(static_cast<Abstract_container_t*>(this));
-    }
-    */
+        set_id("Root_widget_base");
 
-    /* void Root_widget::set_canvas(Canvas *cv)
-    {
-        _canvas = cv;
-
-        //_canvas->init(); // TODO: parameters ?
-            // removed for now: init done by root_widget() user
-    } */
-
-    auto Root_widget::get_font(Style_element e) -> Font_resource &
-    {
-        return _stylesheet.font(e);
+        set_stylesheet(default_stylesheet);
     }
 
-    void Root_widget::init(Canvas *c)
+    void Root_widget::get_backend_resources(Canvas *c)
     {
-        _stylesheet.init(c);
+        //_stylesheet.init(c);
 
         init_child_resources(c);
 
-        Widget::init(c);
+        Widget::get_backend_resources(c);
     }
 
     void Root_widget::cleanup()
@@ -291,7 +280,7 @@ namespace cppgui {
 
         child->init_layout();
         child->compute_layout(b);
-        child->init(c);
+        child->get_backend_resources(c);
 
         invalidate();
     }

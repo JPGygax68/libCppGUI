@@ -20,7 +20,7 @@
 #include <functional>
 
 //#include "./Box_model.hpp"
-#include "./Widget.hpp"
+#include "./Text_widget.hpp"
 #include "./Box.hpp"
 //#include "./Icon_resources.hpp"
 
@@ -29,7 +29,7 @@ namespace cppgui {
 
     struct Font_icon_descr;
 
-    class Checkbox: public Widget, protected Box<Button_box_styles> // TODO: replace with specific styles
+    class Checkbox: public Text_widget, protected Box<Button_box_styles> // TODO: replace with specific styles
     {
     public:
         using State_change_handler = std::function<void(bool)>;
@@ -37,7 +37,7 @@ namespace cppgui {
         Checkbox();
 
         void set_font(const Rasterized_font *font) { _label_font.assign(font); }
-        auto get_font(Style_element) -> Font_resource & override;
+        //auto get_font(Style_element) -> Font_resource & override;
         //void set_tick_glyph(const Rasterized_font *, char32_t codepoint); // TODO: use improved Icon_resources methods
         void set_label(const std::u32string &label) { _label = label; }
         auto label() const { return _label; }
@@ -46,7 +46,7 @@ namespace cppgui {
 
         void on_state_change(State_change_handler handler);
 
-        void init(Canvas *) override;
+        void get_backend_resources(Canvas *) override;
 
         void render(Canvas *, const Point &offset) override;
 

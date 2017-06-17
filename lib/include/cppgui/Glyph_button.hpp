@@ -18,7 +18,7 @@
 */
 
 #include "./Boxed.hpp"
-#include "./Widget.hpp"
+#include "./Text_widget.hpp"
 
 
 namespace cppgui {
@@ -29,18 +29,18 @@ namespace cppgui {
 
     // Glyph_button declaration 
 
-    class Glyph_button_base: public Widget
+    class Glyph_button_base: public Text_widget
     {
     public:
 
         void on_pushed(Pushed_handler);
 
-        void set_font(const Rasterized_font *font) { _label_font.assign(font); }
+        //void set_font(const Rasterized_font *font) { _label_font.assign(font); }
         void set_label(const std::u32string &label) { _label = label; }
         void set_glyph(const Glyph_specifier &);
         void set_horizontal_alignment(Alignment);
 
-        void init(Canvas *) override;
+        void get_backend_resources(Canvas *) override;
 
         void render(Canvas *, const Point &offset) override;
 
@@ -53,7 +53,7 @@ namespace cppgui {
         bool do_pushed();
 
         Pushed_handler                  _on_pushed;
-        Font_resource                   _label_font;
+        //Font_resource                   _label_font;
         std::u32string                  _label;
         Font_resource                   _glyph_font;
         char32_t                        _glyph_cp = 0;

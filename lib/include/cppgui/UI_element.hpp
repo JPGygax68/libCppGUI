@@ -52,10 +52,10 @@ namespace cppgui {
         void move_by(const Point &);
         void shift_by(const Point &);
 
-        /** The init() entry point is where a UI element "connects" to its backends (the most important of
+        /** The get_backend_resources() entry point is where a UI element "connects" to its backends (the most important of
             which being the canvas).
         */
-        virtual void init(Canvas *) {}
+        virtual void get_backend_resources(Canvas *) {}
         
         // Run-time states
 

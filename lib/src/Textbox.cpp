@@ -26,10 +26,10 @@
 
 namespace cppgui {
     
-    Textbox::Textbox(const Rasterized_font *font):
+    Textbox::Textbox(): //const Rasterized_font *font):
         _size{ 10 }
     {
-        set_font(font);
+        //set_font(font);
     }
 
     void Textbox::on_done(Done_handler handler)
@@ -61,15 +61,11 @@ namespace cppgui {
         _first_vis_char_idx = 0;
         _scroll_offs = 0;
 
-        if (get_font(standard_font).rasterized) 
-            // TODO: is there a way to avoid this check ? (i.e. use different set_text() before font is set ?)
-        {
-            internal_select_all();
-            _caret_char_idx = _sel_start_char_idx;
-            _caret_pixel_pos = _sel_start_pixel_pos;
-            bring_caret_into_view();
-            this->invalidate();
-        }
+        internal_select_all();
+        _caret_char_idx = _sel_start_char_idx;
+        _caret_pixel_pos = _sel_start_pixel_pos;
+        bring_caret_into_view();
+        this->invalidate();
     }
 
     void Textbox::change_text(const std::string &text)
@@ -215,7 +211,7 @@ namespace cppgui {
         if (!_text.empty() && _first_vis_char_idx < _text.size())
         {
             c->set_text_color({0, 0, 0, 1}); // TODO: make configurable!
-            c->render_text(get_font(standard_font).get(), p.x, p.y, 
+            c->render_text(font_handle(), p.x, p.y, 
                 _text.data() + _first_vis_char_idx, _text.size() - _first_vis_char_idx, _inner_bbox.width());
         }
 
@@ -249,7 +245,7 @@ namespace cppgui {
         if (_caret_char_idx > 0)
         {
             _caret_char_idx--;
-            auto glyph = get_font(standard_font).rasterized->lookup_glyph(0, _text[_caret_char_idx]); // TODO: support font variants ?
+            auto glyph = font()->lookup_glyph(0, _text[_caret_char_idx]); // TODO: support font variants ?
             _caret_pixel_pos -= glyph->cbox.adv_x; // TODO: support vertical advance
             if (extend_sel)
             {
@@ -279,7 +275,7 @@ namespace cppgui {
     {
         if (_caret_char_idx < _text.size())
         {
-            auto glyph = get_font(standard_font).rasterized->lookup_glyph(0, _text[_caret_char_idx]); // TODO: support font variants ?
+            auto glyph = font()->lookup_glyph(0, _text[_caret_char_idx]); // TODO: support font variants ?
             _caret_char_idx ++;
             _caret_pixel_pos += glyph->cbox.adv_x; // TODO: support vertical advance
             if (extend_sel)
@@ -313,7 +309,7 @@ namespace cppgui {
             while (_caret_char_idx > 0)
             {
                 _caret_char_idx--;
-                auto glyph = get_font(standard_font).rasterized->lookup_glyph(0, _text[_caret_char_idx]); // TODO: support font variants ?
+                auto glyph = font()->lookup_glyph(0, _text[_caret_char_idx]); // TODO: support font variants ?
                 _caret_pixel_pos -= glyph->cbox.adv_x; // TODO: support vertical advance
             }
             if (extend_sel)
@@ -338,7 +334,7 @@ namespace cppgui {
         {
             while (_caret_char_idx < _text.size())
             {
-                auto glyph = get_font(standard_font).rasterized->lookup_glyph(0, _text[_caret_char_idx]); // TODO: support font variants ?
+                auto glyph = font()->lookup_glyph(0, _text[_caret_char_idx]); // TODO: support font variants ?
                 _caret_char_idx++;
                 _caret_pixel_pos += glyph->cbox.adv_x; // TODO: support vertical advanc
             }
@@ -364,7 +360,7 @@ namespace cppgui {
 
         for (size_t i = 0; i < count; i++)
         {
-            auto glyph = get_font(standard_font).rasterized->lookup_glyph(0, text[i]); // TODO: support font variants ?
+            auto glyph = font()->lookup_glyph(0, text[i]); // TODO: support font variants ?
             _caret_pixel_pos += glyph->cbox.adv_x;
         }
 
@@ -382,7 +378,7 @@ namespace cppgui {
         }
         else if (_caret_char_idx > 0)
         {
-            auto glyph = get_font(standard_font).rasterized->lookup_glyph(0, _text[_caret_char_idx - 1]); // TODO: support font variants ?
+            auto glyph = font()->lookup_glyph(0, _text[_caret_char_idx - 1]); // TODO: support font variants ?
             _caret_pixel_pos -= glyph->cbox.adv_x;
             _caret_char_idx --;
             auto new_text = _text.substr(0, _caret_char_idx) + _text.substr(_caret_char_idx + 1);
@@ -448,7 +444,7 @@ namespace cppgui {
         unsigned i;
         for (i = 0; i < _text.size(); i++)
         {
-            auto glyph = get_font(standard_font).rasterized->lookup_glyph(0, _text[i]);
+            auto glyph = font()->lookup_glyph(0, _text[i]);
             auto w = glyph->cbox.bounds.x_max - glyph->cbox.bounds.x_min;
 
             if (p.x < _scroll_offs + x + w / 2) break;
@@ -465,14 +461,14 @@ namespace cppgui {
         {
             assert(_first_vis_char_idx > 0);
             _first_vis_char_idx --;
-            auto glyph = get_font(standard_font).rasterized->lookup_glyph(0, _text[_first_vis_char_idx]);
+            auto glyph = font()->lookup_glyph(0, _text[_first_vis_char_idx]);
             _scroll_offs += glyph->cbox.adv_x;
         }
 
         while ((_scroll_offs + _caret_pixel_pos) > _inner_bbox.width())
         {
             assert(_first_vis_char_idx < (_text.size() - 1));
-            auto glyph = get_font(standard_font).rasterized->lookup_glyph(0, _text[_first_vis_char_idx]);
+            auto glyph = font()->lookup_glyph(0, _text[_first_vis_char_idx]);
             _first_vis_char_idx ++;
             _scroll_offs -= glyph->cbox.adv_x;
         }
@@ -536,7 +532,7 @@ namespace cppgui {
 
         if (_sel_end_char_idx > _sel_start_char_idx)
         {
-            cbox = advance_to_glyph_at(get_font(standard_font).rasterized, _text, _sel_start_char_idx, _sel_end_char_idx - 1, pos);
+            cbox = advance_to_glyph_at(font(), _text, _sel_start_char_idx, _sel_end_char_idx - 1, pos);
             //_sel_end_pixel_pos = p.x + cbox->bounds.x_max;
             _sel_end_pixel_pos = pos.x + cbox->adv_x;
         }
@@ -570,26 +566,23 @@ namespace cppgui {
      * been set and the new font may not fit well at all. Maybe it would be best to simply remove
      * this methods.
      */
-    void Textbox::change_font(const Rasterized_font *font_)
+    /* void Textbox::change_font(const Rasterized_font *font_)
     {
         get_font(standard_font).assign(font_);
         compute_text_extents();
         compute_layout(bbox());
-    }
+    } */
 
     void Textbox::compute_text_extents()
     {
         // TODO: free the font handle
 
-        if (get_font(standard_font).rasterized)
-        {
-            //p()->_fnthnd = p()->root_widget()->get_font_handle(p()->_font);
-            // TODO: support other cultures
-            auto bbox = get_font(standard_font).rasterized->compute_text_extents(0, U"My", 2);
-            _ascent = bbox.y_max;
-            _descent = bbox.y_min;
-            _mean_char_width = (bbox.width() + 1) / 2;
-        }
+        //p()->_fnthnd = p()->root_widget()->get_font_handle(p()->_font);
+        // TODO: support other cultures
+        auto bbox = font()->compute_text_extents(0, U"My", 2);
+        _ascent = bbox.y_max;
+        _descent = bbox.y_min;
+        _mean_char_width = (bbox.width() + 1) / 2;
     }
 
     void Textbox::init_layout()

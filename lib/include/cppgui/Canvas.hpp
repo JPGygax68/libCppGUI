@@ -64,6 +64,11 @@ namespace cppgui {
         const Rasterized_font  *rasterized = nullptr;
         Font_handle             handle = 0;
 
+        Font_resource() = default;
+        Font_resource(const Rasterized_font *font): rasterized{font} {}
+
+        bool operator < (const Font_resource &other) const { return rasterized < other.rasterized; }
+
         void assign(const Rasterized_font *font);
         auto get() const -> Font_handle;
 

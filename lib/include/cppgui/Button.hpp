@@ -32,10 +32,10 @@ namespace cppgui {
 
         Button_base() = default;
 
-        explicit Button_base(const std::u32string &label, const Rasterized_font *font)
+        explicit Button_base(const std::u32string &label) //, const Rasterized_font *font)
         {
             set_label(label);
-            set_font(font);
+            //set_font(font);
         }
 
         void on_pushed(Pushed_handler);

@@ -41,7 +41,7 @@ namespace cppgui {
         set_label( utf8_to_utf32(label) );
     }
 
-    void Dropdown_button_base::init(Canvas *c)
+    void Dropdown_button_base::get_backend_resources(Canvas *c)
     {
         _font.translate(c);
     }
