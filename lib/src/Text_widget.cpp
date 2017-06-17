@@ -14,13 +14,13 @@ namespace cppgui
     }
     */
 
-    void Text_widget::obtain_style_elements()
+    void Text_widget::init()
     {
         // We do not specify a widget type index here, meaning that we are asking for a rule
         // defined for Widget.
         _font_rsrc = & get_font(standard_font);
 
-        Widget::obtain_style_elements();
+        Widget::init();
     }
 
     /*

@@ -75,6 +75,7 @@ STATIC
     include/cppgui/Boxed.hpp
     include/cppgui/Canvas.hpp               src/Canvas.cpp
     include/cppgui/UI_element.hpp           src/UI_element.cpp
+    include/cppgui/Stylesheet.hpp           src/Stylesheet.cpp
     include/cppgui/Widget.hpp               src/Widget.cpp
     include/cppgui/Text_widget.hpp          src/Text_widget.cpp
     include/cppgui/Container.hpp            src/Container.cpp
@@ -91,8 +92,6 @@ STATIC
     include/cppgui/Dropdown_button.hpp      src/Dropdown_button.cpp
     include/cppgui/Internal_popup.hpp       src/Internal_popup.cpp
     include/cppgui/Grid_container.hpp       src/Grid_container.cpp
-
-    include/cppgui/styles.hpp               src/styles.cpp
 
     include/cppgui/UI_builder.hpp           src/UI_builder.cpp
 )

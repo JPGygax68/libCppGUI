@@ -18,7 +18,7 @@
 */
 
 #include "Widget.hpp"
-#include "styles.hpp"
+#include "Stylesheet.hpp"
 
 
 namespace cppgui {
@@ -41,7 +41,7 @@ namespace cppgui {
 
         // Lifecycle
 
-        void obtain_style_elements() override;
+        void init() override;
 
         void compute_view_from_data() override;
 

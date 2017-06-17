@@ -21,7 +21,7 @@
 #include <typeindex>
 #include "./UI_element.hpp"
 #include "./layouting.hpp"
-#include "styles.hpp"
+#include "Stylesheet.hpp"
 #include <set>
 
 
@@ -60,7 +60,8 @@ namespace cppgui {
 
         // Lifecycle
 
-        virtual void obtain_style_elements() {}
+        virtual void init() {}
+            // Called when the UI is complete. Use to acquire styling information.
 
         void get_backend_resources(Canvas *) override;
 

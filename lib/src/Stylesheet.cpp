@@ -1,4 +1,4 @@
-#include <cppgui/styles.hpp>
+#include <cppgui/Stylesheet.hpp>
 #include <cppgui/baked_fonts.hpp>
 
 

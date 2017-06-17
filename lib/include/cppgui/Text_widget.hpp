@@ -15,7 +15,7 @@ namespace cppgui
     {
     public:
 
-        void obtain_style_elements() override;
+        void init() override;
 
     protected:
         auto font() { return _font_rsrc->rasterized; }

@@ -169,7 +169,7 @@ void Test_window::create_ui()
         root_widget().add_child(&_grid);
     }
 
-    root_widget().obtain_style_elements();
+    root_widget().init();
 
     root_widget().set_initial_focus(&_grid); //_listbox);
 }

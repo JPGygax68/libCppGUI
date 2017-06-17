@@ -66,11 +66,11 @@ namespace cppgui {
         return find(begin(children()), end(children()), c) - begin(children());
     }
 
-    void Container_base::obtain_style_elements()
+    void Container_base::init()
     {
         for (auto child : children())
         {
-            child->obtain_style_elements();
+            child->init();
         }
     }
 

@@ -21,7 +21,7 @@
 #include <stack>
 #include "./Widget.hpp"
 #include "./Container.hpp"
-#include "./styles.hpp"
+#include "./Stylesheet.hpp"
 
 
 namespace cppgui {
