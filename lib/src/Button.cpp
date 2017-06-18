@@ -82,6 +82,11 @@ namespace cppgui {
 
 #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
+    void Button_base::set_alignment(Alignment a)
+    {
+        _alignment = a;
+    }
+
     void Button_base::compute_label_bounds()
     {
         _label_pbbox.bbox = font()->compute_text_extents(0, _label.data(), _label.size());
@@ -102,12 +107,15 @@ namespace cppgui {
     {        
         Widget::compute_layout(b);
 
-        // This is centered alignment
-        // TODO: other alignments
-        _label_pbbox.align_center_to(Pbbox{b});
+        if (_alignment == center)
+            _label_pbbox.align_center_to(Pbbox{b});
+        else if (_alignment == left)
+            _label_pbbox.align_left_to(Pbbox{b});
+        else if (_alignment == right)
+            _label_pbbox.align_right_to(Pbbox{b});
     }
 
-    #ifdef NOT_DEFINED
+#ifdef NOT_DEFINED
     void Button::set_alignment(Alignment align)
     {
         _minor_align = align;

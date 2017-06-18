@@ -17,8 +17,9 @@
     limitations under the License.
 */
 
-#include "./Text_widget.hpp"
-#include "./Boxed.hpp"
+#include "Text_widget.hpp"
+#include "Boxed.hpp"
+#include "UI_builder.hpp"
 
 
 namespace cppgui {
@@ -32,10 +33,10 @@ namespace cppgui {
 
         Button_base() = default;
 
-        explicit Button_base(const std::u32string &label) //, const Rasterized_font *font)
+        explicit Button_base(const std::u32string &l, Alignment a = center)
         {
-            set_label(label);
-            //set_font(font);
+            set_label(l);
+            set_alignment(a);
         }
 
         void on_pushed(Pushed_handler);
@@ -71,7 +72,7 @@ namespace cppgui {
         // TODO
         // void change_font(const Rasterized_font *);
         // void change_label(const std::u32string &);
-        //void set_alignment(Alignment);
+        void set_alignment(Alignment);
 
         // Extra properties
         //auto minimal_padding() -> int; // THIS *INCLUDES* THE BORDER WIDTH (unlike the CSS box model!)
@@ -90,14 +91,42 @@ namespace cppgui {
     private:
         using Super = Widget;
 
-        //Alignment               _minor_align = cultural_minor_middle;
+        Alignment               _alignment = center;
         //Alignment               _major_align = cultural_major_middle;
-        //Text_bounding_box       _label_bbox;
         
-        #endif // CPPGUI_EXCLUDE_LAYOUTING
+    #endif // CPPGUI_EXCLUDE_LAYOUTING
     };
 
 
     using Button = Boxed<Button_base, Button_box_styles>;
+
+
+#ifndef CPPGUI_EXCLUDE_UI_BUILDER
+
+#ifdef REMOVED_CODE
+
+    /* This UI builder was working, but using the only method it brings to the table requires
+     * using begin<>() / end(), which makes this very verbose.
+     * Alignment will now be made into an optional constructor parameter.
+     */
+    template<class ParentBuilderT>
+    class UI_builder<Button, ParentBuilderT>: public UI_builder_base2<Button, ParentBuilderT>
+    {
+    public:
+
+        UI_builder(Button& lb, Widget_bag &wb, ParentBuilderT *pb): 
+            UI_builder_base2{lb, wb, pb} 
+        {}
+
+        auto& set_alignment(Alignment a)
+        {
+            this->widget().set_alignment(a);
+            return *this;
+        }
+    };
+
+#endif // REMOVED_CODE
+
+#endif // !CPPGUI_EXCLUDE_UI_BUILDER
 
 } // ns cppgui
