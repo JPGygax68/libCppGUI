@@ -84,7 +84,10 @@ namespace cppgui {
 
     struct Point
     {
-        Position        x, y;
+        Position        x = 0, y = 0;
+
+        Point() = default;
+        Point(Position x_, Position y_): x{x_}, y{y_} {}
 
         auto operator - () const -> Point { return { -x, -y }; }
 
@@ -94,6 +97,8 @@ namespace cppgui {
         auto& operator += (const Point &delta) { x += delta.x, y += delta.y; return *this; }
         auto& operator -= (const Point &delta) { x -= delta.x, y -= delta.y; return *this; }
     };
+
+    using Point_cref = const Point &;
 
     using Vector = Point;
 

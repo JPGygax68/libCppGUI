@@ -164,7 +164,8 @@ void Test_window::create_ui()
                 .add<Button>(U"Item 3")
             .end()
             .end_row()
-            .add<Label>(U"Birth date:").add<Textbox>().end_row();
+            .add<Label>(U"Birth date:").add<Textbox>().end_row()
+            .add<Button>(U"Cancel").add<Button>(U"OK").end_row();
 
         root_widget().add_child(&_grid);
     }

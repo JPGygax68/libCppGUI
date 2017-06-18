@@ -58,9 +58,9 @@ namespace cppgui {
         Pushed_handler          _on_pushed;
         RGBA                    _color = {0, 0, 0, 1};
         std::u32string          _label;
-        Bbox                    _label_bbox;
+        Pbbox                   _label_pbbox;
 
-        #ifndef CPPGUI_EXCLUDE_LAYOUTING
+    #ifndef CPPGUI_EXCLUDE_LAYOUTING
 
     public:
         void init_layout() override;

@@ -1,7 +1,8 @@
 #pragma once
 
-#include "./basic_types.hpp"
-#include "./Extents.hpp"
+#include "basic_types.hpp"
+#include "Extents.hpp"
+#include "Positioned_bbox.hpp"
 
 
 namespace cppgui {
@@ -10,7 +11,8 @@ namespace cppgui {
         Point           pos;
         Extents         ext;
 
-        Rectangle(Bbox_cref b);
+        Rectangle(Bbox_cref);
+        Rectangle(Pbbox_cref);
 
         Rectangle(const Rectangle &) = default;
         Rectangle(Rectangle &&) = default;

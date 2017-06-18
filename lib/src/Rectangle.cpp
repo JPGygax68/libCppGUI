@@ -15,6 +15,12 @@ namespace cppgui {
 #endif
     }
 
+    Rectangle::Rectangle(Pbbox_cref pb):
+        Rectangle{pb.bbox}
+    {
+        operator += (pb.orig);
+    }
+
     auto Rectangle::operator+(const Point &p) -> Rectangle
     {
         auto r{*this};

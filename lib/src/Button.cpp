@@ -40,14 +40,12 @@ namespace cppgui {
     {
         auto p = offs + origin();
 
-        //draw_background_and_border(c, p, bounds(), visual_states());
-
         c->set_text_color(label_color(visual_states()));
-        c->render_text(font_handle(), p.x /*+ _x_offs*/, p.y, _label.data(), _label.size());
+        c->render_text(font_handle(), p.x +_label_pbbox.orig.x, p.y + _label_pbbox.orig.y, _label.data(), _label.size());
 
         if (this->has_focus())
         {
-            auto r = Rectangle{_label_bbox};
+            auto r = Rectangle{_label_pbbox};
             r.inflate(2, 2); // TODO: make this configurable somewhere
             c->draw_stippled_rectangle_outline(p.x + r.pos.x, p.y + r.pos.y, r.ext.w, r.ext.h, {0, 0, 0.5f, 1});
         }
@@ -86,7 +84,7 @@ namespace cppgui {
 
     void Button_base::compute_label_bounds()
     {
-        _label_bbox = font()->compute_text_extents(0, _label.data(), _label.size());
+        _label_pbbox.bbox = font()->compute_text_extents(0, _label.data(), _label.size());
     }
 
     void Button_base::init_layout()
@@ -97,16 +95,16 @@ namespace cppgui {
     auto Button_base::get_minimal_bbox() -> Bbox
     {
         //return adjust_box_bounds(_label_bbox);
-        return _label_bbox;
+        return _label_pbbox.bbox;
     }
 
     void Button_base::compute_layout(Bbox_cref b)
     {        
         Widget::compute_layout(b);
 
-        //auto inner_bounds = adjust_box_bounds(b, -1);
-
-        //_x_offs = align_cultural_minor(_label_bbox, inner_bounds, _minor_align);
+        // This is centered alignment
+        // TODO: other alignments
+        _label_pbbox.align_center_to(Pbbox{b});
     }
 
     #ifdef NOT_DEFINED
