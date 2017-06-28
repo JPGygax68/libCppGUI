@@ -101,7 +101,6 @@ namespace cppgui
         // Specialization
         virtual void init_window(void *context) = 0;
         virtual void cleanup_window(void *context) = 0;
-        virtual void redraw(void *context) = 0;
 
         // Lifecycle hooks
         virtual void closing() {}
