@@ -63,12 +63,14 @@ STATIC
 
     include/cppgui/Icon_resources.hpp       src/Icon_resources.cpp
 
+    include/cppgui/ISurface.hpp
+    include/cppgui/Window.hpp               src/Window.cpp
+
     include/cppgui/Bbox.hpp                 src/Bbox.cpp
     include/cppgui/Positioned_bbox.hpp      src/Positioned_bbox.cpp
     include/cppgui/Extents.hpp              src/Extents.cpp
     include/cppgui/Rectangle.hpp            src/Rectangle.cpp
     include/cppgui/layouting.hpp            src/layouting.cpp
-    include/cppgui/Window.hpp               src/Window.cpp
     include/cppgui/Application.hpp          src/Application.cpp
     include/cppgui/Resource.hpp
     include/cppgui/Box.hpp                  src/Box.cpp

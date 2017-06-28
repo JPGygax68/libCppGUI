@@ -8,6 +8,7 @@
 #include <SDL.h>
 #include <cppgui_config.hpp>
 //#include <cppgui/basic_types.hpp>
+#include <cppgui/ISurface.hpp>
 #include <cppgui/Extents.hpp>
 
 
@@ -30,7 +31,7 @@ namespace cppgui
     // Derive from this, NOT directly from SDL2_window
     #define CPPGUI_WINDOW_BASE_CLASS    SDL2_window
 
-    class SDL2_window 
+    class SDL2_window: public ISurface
     {
         struct Deleter;
 
@@ -55,8 +56,12 @@ namespace cppgui
         void init();
         void cleanup();
 
-        auto sdl2_window() -> SDL_Window * { return _win.get(); }
+        auto sdl2_window() const -> SDL_Window * { return _win.get(); }
         auto id() -> uint32_t;
+
+        // ISurface contract ------------------------------
+
+        void invalidate() override;
 
         // Rendering management ---------------------------
 
@@ -71,8 +76,6 @@ namespace cppgui
         void make_gl_context_current(SDL_GLContext);
         void select_default_graphics_context();
         void gl_swap();
-
-        void invalidate();
 
         auto client_extents() const -> Extents;
 

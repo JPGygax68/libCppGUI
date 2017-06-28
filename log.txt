@@ -1,3 +1,78 @@
+2017-06-28
+==========
+
+Begun implementing the new approach to popups outlined yesterday. I cherry-picked this log file to preserve the reasoning that led to this attempted change.
+
+
+2017-06-27
+==========
+
+I'm still trying to implement internal popups that can contain widgets of their own, and this is so much work that I'm feeling I'm doing something wrong.
+
+For one thing, I'm duplicating code between two separate implementations of Root_widget_base - the "real" one, Root_widget, and the one attached to internal popups - and that annoys me.
+
+The main reason for this code duplication is that the real root widget has to handle internal popups, whereas the popup one, by definition, cannot bring up popups, at least not in the same way. Yet popups are so maddeningly similar to widgets that all this code I have to write feels like horrible bloat.
+
+Let's review my reasons why I didn't want to treat popups the same way I'm treating widgets.
+
+- Popups are on a higher "layer"
+- Popups do not participate in layouting
+
+And I think that's it!
+
+Yet the differences are significant. The question I'm really asking myself is whether the root widget is really the right place to handle popups. So what's the alternative ?
+
+The only thing I can think of is the canvas itself - yet, as I've ruminated earlier, is not a solution, since a single display surface can be potentially be serviced by multiple canvas instances.
+
+Yet again, those instances are required to communicate insofar as to share resources such as font handles. Could the same thing be done with popup zones ?
+
+Why not - but that gives rise to the next question: which software entity will be able to abstract away the differences between "internal" and "external" popups ?
+
+The canvas cannot do so, because there is more than drawing involved - events must be abstracted aa well. So, can the platform adapter do it ?
+
+Probably YES - the platform adapter already provides the platform-specific base class for Window, so it could reuse that same class, or maybe its parent class, to base external popups on.
+
+Popups, whether internal or external, would then have a similar interface to implement, which covers both rendering and event handling.
+
+For internal popups, the platform adapter would keep a list of rectangular zones, much like the root widget does in the current attempt. It would thus be up to the platform adapter to decide whether an event should go to the normal event handling routines of the window, or to one of the popup zones instead. The canvas would be shared between the window and internal popups.
+
+For external popups, the popups would actually be windows, for each of which the platform would create their own canvas, while also being responsible for message pumping. (It could do that alongside the main window message pumping, or in one or more separate threads.)
+
+A detail question: how would a widget ask for a popup in this new approach ? Who would it ask it from ? It cannot directly go to the platform adapter, at least not without specifying the window. And alas, that information is lost when the window sends events to the root widget.
+
+The only way to do that is to have the root widget maintain a reference back to the window or popup it is plugged into. This in turn suggests the definition of an interface, to be implemented by both windows and popups (both types!). "Surface", possibly ?
+
+One downside to this new idea: more work for platform adapter implementors ? The current approach leaves it to the Root_widget class to implement internal popups, though in a manner that is not yet optimized for any scenario. Such optimization would have had to be done in Root_widget code, via preprocessor definitions.
+
+... which leads me to a mistake in my reasoning above: not the platform adapter, but the Window class is the right place where to implement internal popups (once the link from root widget back to containing window has been established).
+
+However, the similiraties between the old and the new approach go further - they extend into the annoying parts as well. We have, once again, the situation where a common interface (ISurface ?) must be implemented by multiple classes (in this case, Window and Internal_popup).
+
+Can this be done via multiple inheritance ?
+
+1) Window, inheriting from both the platform-specific base class and ISurface, and
+2) Internal_popup, inheriting from ISurface only ?
+
+No, that's not it. The way to go would be for the platform-specific window base class to inherit from ISurface, quite simply. ISurface would thus define entry points (virtual methods) for drawing and event injection. Internal_popup would simply reuse the same interface, which the Window class would use to divert input events and rendering calls as needed.
+
+--> CONCLUSION: the current branch will probably be reverted back to before work on popups started. (Unfortunately, that's gonna axe a few smaller improvements that were made along the way.)
+
+
+
+2017-06-19
+==========
+
+A short observation about popups - I've only just begun with the implementation, but I'm unclear about whether they really should be specified as positioned bounding boxes rather than simple rectangles.
+
+The case can be made for widgets to use positioned bounding boxes, as the great majority of widgets contain text in some form at its alignment will most likely be facilitated by the use of a baseline and origin. But is the same true of popups ?
+
+Horizontal alignment at the origin could help with combo boxes, vertical alignment on the base would probably help with hierarchical pull-down menus. 
+
+I think I'm going to leave this policy in place. However one question irks me, and that's what to use as reference edge for the axis that is *not* aligned, e.g. the vertical direction for the popup under a combo box. In which situation should y_min be left and the height be attributed to y_max, and vice versa ? Does it play any role at all ?
+
+It doesn't really, but maybe I can define one now. Let's say the choice between y_min and y_max determines the *orientation* of the rectangle on the non-aligned axis. I'm not sure what could be made with that information, but it's not necessarily useless: by consulting the orientation of its containing popup, a dropped-down (or popped-up) listbox under / above a combo box could optimize its appearance and layout without being explicitly told by its owner. For sure, that information could, and maybe should be communicated explicitly; nonetheless, the concept of bounding box "orientation" is a potentially useful one.
+
+
 2017-06-17
 ==========
 

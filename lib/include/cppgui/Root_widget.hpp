@@ -26,6 +26,7 @@
 
 namespace cppgui {
 
+    class ISurface;
     class Internal_popup;
 
 
@@ -33,7 +34,7 @@ namespace cppgui {
     {
     public:
 
-        Root_widget();
+        explicit Root_widget(ISurface *);
 
         //auto stylesheet() const -> const Basic_stylesheet &;
 
@@ -84,26 +85,17 @@ namespace cppgui {
         void insert_child(Widget * child, const Point &p, Bbox_cref b, Canvas *c);
         void drop_child(Widget * child);
 
+        void invalidate() override;
+
     private:
         using Super = Container_base;
 
         RGBA                        _bkgnd_clr = { 0, 0, 0, 0 };
-        //Canvas                     *_canvas = nullptr;
+        ISurface                   *_surface = nullptr;
+
         std::stack<Cursor_handle>   _cursor_stack;
         Widget                     *_mouse_holder = nullptr;
         Point                       _capture_offset;
-
-    // Updating aspect ------------------------------------
-    
-    public:
-        using Invalidated_handler = std::function<void()>;
-
-        void invalidate();
-        void on_invalidated(Invalidated_handler handler) { _on_invalidated = handler; }
-
-    private:
-        Invalidated_handler _on_invalidated;
-
 
         // Container_updater aspect ---------------------------------
 

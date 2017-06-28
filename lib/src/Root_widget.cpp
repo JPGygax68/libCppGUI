@@ -36,9 +36,11 @@ namespace cppgui {
     Default_stylesheet default_stylesheet;
 
 
-    Root_widget::Root_widget()
+    Root_widget::Root_widget(ISurface *surface)
     {
         set_id("Root_widget_base");
+
+        _surface = surface;
 
         set_stylesheet(default_stylesheet);
     }
@@ -245,11 +247,9 @@ namespace cppgui {
         }
     }
 
-    // Updater aspect -----------------------------------------------
-
     void Root_widget::invalidate()
     {
-        _on_invalidated();
+        _surface->invalidate();
     }
 
     void Root_widget::child_invalidated(Widget *)
