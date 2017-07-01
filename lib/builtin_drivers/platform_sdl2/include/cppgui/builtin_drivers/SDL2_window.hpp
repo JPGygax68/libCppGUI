@@ -31,7 +31,7 @@ namespace cppgui
     // Derive from this, NOT directly from SDL2_window
     #define CPPGUI_WINDOW_BASE_CLASS    SDL2_window
 
-    class SDL2_window: public ISurface
+    class SDL2_window: public ISurface 
     {
         struct Deleter;
 
@@ -47,21 +47,8 @@ namespace cppgui
         explicit SDL2_window(const std::string &title, int w = 800, int h = 600); // TODO: should probably be made protected
         virtual ~SDL2_window();
 
-        /* TODO: the following lifecycle methods are only required because a C++ constructor
-         * cannot call a specialized virtual method. CRTP specialization could solve that
-         * problem. A decision needs to be made regarding this.
-         * An alternative could be to post a user-defined message that will serve as the
-         * "created" event.
-         */
-        void init();
-        void cleanup();
-
-        auto sdl2_window() const -> SDL_Window * { return _win.get(); }
+        auto sdl2_window() -> SDL_Window * { return _win.get(); }
         auto id() -> uint32_t;
-
-        // ISurface contract ------------------------------
-
-        void invalidate() override;
 
         // Rendering management ---------------------------
 
@@ -71,11 +58,13 @@ namespace cppgui
         // OpenGL-specific --------------------------------
 
         auto get_current_gl_context() -> SDL_GLContext;
-        auto create_additional_gl_context() -> SDL_GLContext;           
+        auto create_additional_gl_context() -> SDL_GLContext;
         static void delete_gl_context(SDL_GLContext);
         void make_gl_context_current(SDL_GLContext);
         void select_default_graphics_context();
         void gl_swap();
+
+        void invalidate() override;
 
         auto client_extents() const -> Extents;
 
@@ -87,8 +76,9 @@ namespace cppgui
         static void dispatch_mousewheel_event(SDL_MouseWheelEvent &ev);
         static void dispatch_textinput_event(SDL_TextInputEvent &ev);
         static void dispatch_keydown_event(SDL_KeyboardEvent &ev);
+        //static void dispatch_init(const Uint32 window_id);
         static void dispatch_redraw(uint32_t win_id);
-        static void dispatch_custom_event(uint32_t win_id);
+        //static void dispatch_custom_event(uint32_t win_id);
 
         // Interface towards Application<>
 
@@ -101,6 +91,7 @@ namespace cppgui
         // Specialization
         virtual void init_window(void *context) = 0;
         virtual void cleanup_window(void *context) = 0;
+        //virtual void redraw(void *context) = 0; // Now defined in ISurface
 
         // Lifecycle hooks
         virtual void closing() {}
@@ -124,6 +115,9 @@ namespace cppgui
         void handle_redraw();
         // /*virtual*/ void handle_custom_event(SDL_UserEvent &) {}
 
+        void init();
+        void cleanup();
+
         SDL2_window(const SDL2_window &) = delete; // no copy constructor please
         struct Deleter { void operator() (SDL_Window *win); };
 
@@ -139,6 +133,7 @@ namespace cppgui
         #error No or unsupported graphics backend 
         #endif
 
+        bool            _init_done = false;
         bool            _must_redraw;
     };
 

@@ -20,12 +20,17 @@ namespace cppgui {
             if (SDL_VideoInit(nullptr) < 0) throw std::runtime_error("trying to initialize SDL video subsystem");
             atexit(&SDL_VideoQuit);
 
+            /*init_window = sdl::register_custom_event([](const SDL_UserEvent &ev)
+            {
+               SDL2_window::dispatch_init(ev.windowID); 
+            });*/
             redraw_window = sdl::register_custom_event([](const SDL_UserEvent &ev) {
 
                 SDL2_window::dispatch_redraw(ev.windowID);
             });
         }
 
+        //uint32_t init_window;
         uint32_t redraw_window;
     };
 
@@ -59,6 +64,13 @@ namespace cppgui {
         #endif
 
         window_map()[id()] = this; // static_cast<SDL2_window*>(this);
+
+        // Immediately queue an "initialize" event
+        //SDL_Event ev;
+        //ev.type = _initializer.redraw_window;
+        //SDL_UserEvent &ue = ev.user;
+        //ue.windowID = id();
+        //SDL_PushEvent(&ev);
     }
 
     SDL2_window::~SDL2_window()
@@ -68,16 +80,23 @@ namespace cppgui {
 
     void SDL2_window::init()
     {
-        #ifdef CPPGUI_USING_OPENGL
-        SDL_GL_MakeCurrent(_win.get(), _gr_ctx);
-        #else
-        #error No or unsupported graphics library defined
-        #endif
-        init_window(_gr_ctx); // TODO: other subsystem contexts ?
+        if (!_init_done)
+        {
+            #ifdef CPPGUI_USING_OPENGL
+            SDL_GL_MakeCurrent(_win.get(), _gr_ctx);
+            #else
+            #error No or unsupported graphics library defined
+            #endif
+            init_window(_gr_ctx); // TODO: other subsystem contexts ?
+
+            _init_done = true;
+        }
     }
 
     void SDL2_window::cleanup()
     {
+        assert(_init_done);
+
         cleanup_window(_gr_ctx);
 
         #ifdef CPPGUI_USING_OPENGL
@@ -85,6 +104,8 @@ namespace cppgui {
         #else
         #error No or unsupported graphics library defined
         #endif
+
+        _init_done = false;
     }
 
     auto SDL2_window::id() -> uint32_t
@@ -186,19 +207,26 @@ namespace cppgui {
         window_map()[ev.windowID]->handle_keydown_event(ev);
     }
 
+    /* void SDL2_window::dispatch_init(const Uint32 win_id)
+    {
+        window_map()[win_id]->init();
+    } */
+
     void SDL2_window::dispatch_redraw(uint32_t win_id)
     {
         window_map()[win_id]->handle_redraw();
     }
 
-    void SDL2_window::dispatch_custom_event(uint32_t win_id)
+    /* void SDL2_window::dispatch_custom_event(uint32_t win_id)
     {
         window_map()[win_id]->handle_redraw();
-    }
+    } */
 
     void SDL2_window::handle_window_event(SDL_WindowEvent &ev)
     {
         //std::cout << "Window::handle_window_event()" << std::endl;
+
+        if (!_init_done) init();
 
         switch (ev.event)
         {
@@ -216,6 +244,9 @@ namespace cppgui {
             break;
         case SDL_WINDOWEVENT_CLOSE:
             closing();
+            cleanup();
+            break;
+        default:
             break;
         }
     }
