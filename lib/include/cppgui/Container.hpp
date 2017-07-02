@@ -81,7 +81,6 @@ namespace cppgui {
         template<class Pred> auto scan_children_backward(Index from, Pred) -> Index;
 
     protected:
-        using Super = Widget;
         using Child_list = std::vector<Widget*>;
 
         /*

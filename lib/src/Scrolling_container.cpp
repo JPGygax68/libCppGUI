@@ -27,7 +27,7 @@ namespace cppgui {
         // TODO: use items counts (visible, total) instead ?
         _vscrollbar.define_sizes(_content_pane->height(), _window_bbox.height());
 
-        Super::compute_view_from_data();
+        Container_base::compute_view_from_data();
     }
 
     void Scrolling_container::render(Canvas *c, const Point &offs)
@@ -72,7 +72,7 @@ namespace cppgui {
             return true;
         }
 
-        return Super::key_down(key);
+        return Container_base::key_down(key);
     }
 
     bool Scrolling_container::mouse_wheel(const Vector &v)
@@ -120,7 +120,7 @@ namespace cppgui {
     /*
     void Scrolling_container::gained_focus()
     {
-        Super::gained_focus();
+        Container_base::gained_focus();
         set_focus_on_child(content_pane());
     }
     */

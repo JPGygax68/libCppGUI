@@ -82,7 +82,7 @@ namespace cppgui {
             return do_pushed();
         }
 
-        return Super::key_down(k);
+        return Widget::key_down(k);
     }
 
     bool Dropdown_button_base::do_pushed()

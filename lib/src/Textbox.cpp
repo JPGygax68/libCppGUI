@@ -108,7 +108,7 @@ namespace cppgui {
             return true;
         }
         else {
-            return Super::mouse_motion(pos);
+            return Widget::mouse_motion(pos);
         }
     }
 
@@ -127,7 +127,7 @@ namespace cppgui {
             return true;
         }
 
-        return Super::mouse_button(p, button, state, clicks);
+        return Widget::mouse_button(p, button, state, clicks);
     }
 
     bool Textbox::mouse_click(const Point &, int /*button*/, Count count)
@@ -182,7 +182,7 @@ namespace cppgui {
     {
         // TODO: more...
 
-        Super::gained_focus();
+        Widget::gained_focus();
     }
 
     void Textbox::loosing_focus()
@@ -237,7 +237,7 @@ namespace cppgui {
         if (is_delete   (key)) { delete_after_caret  ()               ; return true; }
         if (is_return   (key)) { done                ()               ; return true; }                
 
-        return Super::key_down(key);
+        return Widget::key_down(key);
     }
 
     void Textbox::move_cursor_left(bool extend_sel)

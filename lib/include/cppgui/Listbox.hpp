@@ -23,12 +23,12 @@ namespace cppgui {
         void set_focus_on_child(Widget *) override;
 
     private:
-        using Super = Content_pane;
 
         auto separator_width() const { return 1; }
         auto separator_color(Widget_states) const -> RGBA { return { 0.6f, 0.6f, 0.6f, 1 }; }
 
     #ifndef CPPGUI_EXCLUDE_LAYOUTING
+        
     public:
         auto get_minimal_bbox() -> Bbox override;
         void compute_layout(Bbox_cref b) override;
@@ -55,7 +55,6 @@ namespace cppgui {
         void scroll_by_items(int d);
 
     private:
-        using Super = Scrolling_container;
 
         auto listbox_pane() const -> Listbox_pane *;
 

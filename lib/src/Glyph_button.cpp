@@ -84,7 +84,7 @@ namespace cppgui {
             return do_pushed();
         }
 
-        return Super::mouse_click(p, button, count);
+        return Widget::mouse_click(p, button, count);
     }
 
     bool Glyph_button_base::key_down(const Keycode &k)
@@ -94,7 +94,7 @@ namespace cppgui {
             return do_pushed();
         }
 
-        return Super::key_down(k);
+        return Widget::key_down(k);
     }
 
     bool Glyph_button_base::do_pushed()

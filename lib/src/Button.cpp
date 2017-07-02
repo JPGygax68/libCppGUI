@@ -70,7 +70,7 @@ namespace cppgui {
             return do_pushed();
         }
 
-        return Super::key_down(k);
+        return Widget::key_down(k);
     }
 
     bool Button_base::do_pushed()

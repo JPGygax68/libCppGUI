@@ -111,7 +111,7 @@ namespace cppgui {
         // Note: there should be no harm in repeating a mouse motion event (contrary to e.g. mouse button events)
         //  (we need to repeat the event so as to support drag-and-drop, e.g. highlighting potential targets)
         // TODO: this will trigger mouse_exit() even if the mouse was captured - is that correct/acceptable ?
-        consumed = consumed || Super::mouse_motion(pos);
+        consumed = consumed || Container_base::mouse_motion(pos);
 
         unlock();
 
@@ -132,7 +132,7 @@ namespace cppgui {
         }
         else
         {
-            consumed = Super::mouse_button(p, button, state, clicks);
+            consumed = Container_base::mouse_button(p, button, state, clicks);
         }
 
         #else
@@ -158,7 +158,7 @@ namespace cppgui {
     bool Root_widget::mouse_wheel(const Vector &dir)
     {
         lock();
-        auto consumed = Super::mouse_wheel(dir);
+        auto consumed = Container_base::mouse_wheel(dir);
         unlock();
 
         return consumed;
@@ -188,7 +188,7 @@ namespace cppgui {
             focused_child()->key_down(key);
         }
         */
-        auto consumed = Super::key_down(key);
+        auto consumed = Container_base::key_down(key);
 
         // TODO: ensure this is called in case of an exception
         unlock();

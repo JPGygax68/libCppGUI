@@ -63,9 +63,6 @@ namespace cppgui
 
             void toggle_popup();
 
-        private:
-            using Super = Widget;
-
         #endif // CPPGUI_EXCLUDE_LAYOUTING
     };
 

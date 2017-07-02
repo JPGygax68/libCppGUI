@@ -48,7 +48,6 @@ namespace cppgui {
         bool key_down(const Keycode &) override;
 
     private:
-        using Super = Widget;
 
         bool do_pushed();
 
@@ -68,7 +67,6 @@ namespace cppgui {
         void compute_layout(Bbox_cref) override;
 
     private:
-        using Super = Widget;
 
         void compute_bounds();
 

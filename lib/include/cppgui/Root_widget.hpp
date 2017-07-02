@@ -76,19 +76,12 @@ namespace cppgui {
         void release_mouse();
         auto mouse_holder() const { return _mouse_holder; }
 
-        bool add_popup(Internal_popup *);
-        void remove_popup(Internal_popup *);
-        void invalidate_popup(Internal_popup *);
-
-        // Specific functionality
-
         void insert_child(Widget * child, const Point &p, Bbox_cref b, Canvas *c);
         void drop_child(Widget * child);
 
         void invalidate() override;
 
     private:
-        using Super = Container_base;
 
         RGBA                        _bkgnd_clr = { 0, 0, 0, 0 };
         ISurface                   *_surface = nullptr;
@@ -97,7 +90,7 @@ namespace cppgui {
         Widget                     *_mouse_holder = nullptr;
         Point                       _capture_offset;
 
-        // Container_updater aspect ---------------------------------
+    // Container_updater aspect -------------------------------------
 
     public:
 

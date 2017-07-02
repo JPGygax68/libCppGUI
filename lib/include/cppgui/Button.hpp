@@ -89,7 +89,6 @@ namespace cppgui {
         bool do_pushed();
 
     private:
-        using Super = Widget;
 
         Alignment               _alignment = center;
         //Alignment               _major_align = cultural_major_middle;

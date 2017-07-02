@@ -52,8 +52,7 @@ namespace cppgui {
 
         bool mouse_click(const Point &, int button, Count count) override;
 
-    protected: // for access by Layouter aspect
-        using Super = Widget;
+    private:
 
         Font_resource           _label_font;
         Font_resource           _glyph_font;    // TODO: rename to _tick_font ?
@@ -66,7 +65,6 @@ namespace cppgui {
         //Rectangle               _box_rect;
         Position                _tick_orig = 0;
 
-    private:
         bool                    _checked = false;
 
         #ifndef CPPGUI_EXCLUDE_LAYOUTING

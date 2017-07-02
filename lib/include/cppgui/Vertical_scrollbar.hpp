@@ -94,7 +94,6 @@ namespace cppgui {
             // Recomputes and updates the thumb position according to the specified value.
 
     protected:
-        using Super = Container_base;
 
         // Specialization hooks
 

@@ -111,7 +111,7 @@ namespace cppgui {
             return true;
         }
 
-        return Super::mouse_click(p, button, count);
+        return Widget::mouse_click(p, button, count);
     }
 
     #ifndef CPPGUI_EXCLUDE_LAYOUTING

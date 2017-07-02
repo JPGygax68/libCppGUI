@@ -66,7 +66,6 @@ namespace cppgui {
         void render(Canvas *, const Point &pos) override;
 
     protected:
-        using Super = Widget;
 
         // Actions
         // TODO: may need to be made public again

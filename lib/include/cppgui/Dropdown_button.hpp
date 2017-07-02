@@ -82,9 +82,6 @@ namespace cppgui
 
         bool do_pushed();
 
-    private:
-        using Super = Widget;
-
     #endif // CPPGUI_EXCLUDE_LAYOUTING
     };
 

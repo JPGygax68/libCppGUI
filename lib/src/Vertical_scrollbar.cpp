@@ -139,7 +139,7 @@ namespace cppgui {
             }
         }
 
-        return Super::mouse_button(p, button, state, clicks);
+        return Container_base::mouse_button(p, button, state, clicks);
     }
 
     bool Vertical_scrollbar_base::mouse_motion(const Point &p)
@@ -160,7 +160,7 @@ namespace cppgui {
             return true;
         }
         
-        return Super::mouse_motion(p);
+        return Container_base::mouse_motion(p);
     }
 
     bool Vertical_scrollbar_base::mouse_wheel(const Vector &delta)

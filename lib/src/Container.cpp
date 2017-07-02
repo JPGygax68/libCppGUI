@@ -170,7 +170,7 @@ namespace cppgui {
             _hovered_child = nullptr;
         }
 
-        Super::mouse_exit();
+        Widget::mouse_exit();
     }
 
     bool Container_base::cycle_focus(int steps)
@@ -326,7 +326,7 @@ namespace cppgui {
             return _focused_child->text_input(text, size);
         }
 
-        return Super::text_input(text, size);
+        return Widget::text_input(text, size);
     }
 
     bool Container_base::key_down(const Keycode &key)

@@ -63,7 +63,6 @@ namespace cppgui {
         void update_scrollbar();
 
     private:
-        using Super = Container_base;
 
         virtual void navigate(Navigation_unit, const Fraction<int> &d) = 0;
 

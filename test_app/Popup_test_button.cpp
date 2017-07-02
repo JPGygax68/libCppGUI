@@ -79,7 +79,7 @@ namespace cppgui {
             return true;
         }
 
-        return Super::key_down(k);
+        return Widget::key_down(k);
     }
 
     void Popup_test_button_base::toggle_popup()

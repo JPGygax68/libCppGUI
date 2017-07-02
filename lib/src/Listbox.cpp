@@ -32,7 +32,7 @@ namespace cppgui {
 
     void Listbox_pane::set_focus_on_child(Widget *c)
     {
-        Super::set_focus_on_child(c);
+        Content_pane::set_focus_on_child(c);
 
         if (c) container()->bring_item_into_view(c);
     }
@@ -114,7 +114,7 @@ namespace cppgui {
         if (is_page_down(k)) return selection_page_down();
         if (is_page_up  (k)) return selection_page_up  ();
 
-        return Super::key_down(k);
+        return Scrolling_container::key_down(k);
     }
 
     void Listbox_base::navigate(Navigation_unit unit, const Fraction<int> &delta)
