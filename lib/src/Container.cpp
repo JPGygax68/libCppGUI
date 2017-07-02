@@ -28,11 +28,6 @@ namespace cppgui {
         _focused_child = child;
     }
 
-    auto Container_base::container_absolute_position() -> Point
-    {
-        return container()->container_absolute_position() + origin();
-    }
-
     void Container_base::set_focus_on_child(Widget *child)
     {
         if (child != _focused_child)

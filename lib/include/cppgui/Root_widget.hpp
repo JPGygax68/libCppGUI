@@ -51,9 +51,9 @@ namespace cppgui {
 
         void compute_view_from_data() override;
 
-        // TODO: request mechanism ?
         bool has_focus() override { return true; } // TODO: return window activation state ?
-        auto container_absolute_position() -> Point override;
+        auto absolute_position() -> Point override;
+        auto surface() const -> ISurface *;
 
         //void set_focus_to(Widget *);
         //auto focused_widget() const { return focused_child(); } // TODO: remove and replace all calls?
@@ -76,8 +76,8 @@ namespace cppgui {
         void release_mouse();
         auto mouse_holder() const { return _mouse_holder; }
 
-        void insert_child(Widget * child, const Point &p, Bbox_cref b, Canvas *c);
-        void drop_child(Widget * child);
+        void insert_child(Widget *, const Point &, Bbox_cref, Canvas *);
+        void drop_child(Widget *);
 
         void invalidate() override;
 

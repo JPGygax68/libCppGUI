@@ -161,7 +161,7 @@ namespace cppgui {
     {
         assert( container() ); // must not query before inserted into widget tree
 
-        return container()->container_absolute_position() + origin();
+        return container()->absolute_position() + origin();
     }
 
     bool Widget::mouse_motion(const Point &p)

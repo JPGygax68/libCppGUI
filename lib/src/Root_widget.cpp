@@ -227,9 +227,14 @@ namespace cppgui {
         }
     }
 
-    auto Root_widget::container_absolute_position() -> Point
+    auto Root_widget::absolute_position() -> Point
     {
         return origin();
+    }
+
+    auto Root_widget::surface() const -> ISurface *
+    {
+        return _surface;
     }
 
     void Root_widget::render(Canvas *cv, const Point &offs)

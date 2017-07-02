@@ -69,7 +69,6 @@ namespace cppgui {
 
         // Queries
 
-        virtual auto container_absolute_position() -> Point ;
         auto focused_child() const -> Widget * { return _focused_child; }
 
         auto first_child() -> Widget * { assert(!_children.empty()); return _children.front(); }
