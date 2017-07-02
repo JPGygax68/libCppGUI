@@ -59,9 +59,9 @@ namespace cppgui {
 
         _win.reset(win);
 
-        #ifdef CPPGUI_USING_OPENGL
+    #ifdef CPPGUI_USING_OPENGL
         _gr_ctx = SDL_GL_CreateContext(win);
-        #endif
+    #endif
 
         window_map()[id()] = this; // static_cast<SDL2_window*>(this);
 
@@ -82,11 +82,11 @@ namespace cppgui {
     {
         if (!_init_done)
         {
-            #ifdef CPPGUI_USING_OPENGL
+        #ifdef CPPGUI_USING_OPENGL
             SDL_GL_MakeCurrent(_win.get(), _gr_ctx);
-            #else
+        #else
             #error No or unsupported graphics library defined
-            #endif
+        #endif
             init_window(_gr_ctx); // TODO: other subsystem contexts ?
 
             _init_done = true;
@@ -99,11 +99,11 @@ namespace cppgui {
 
         cleanup_window(_gr_ctx);
 
-        #ifdef CPPGUI_USING_OPENGL
+    #ifdef CPPGUI_USING_OPENGL
         SDL_GL_MakeCurrent(_win.get(), _gr_ctx);
-        #else
+    #else
         #error No or unsupported graphics library defined
-        #endif
+    #endif
 
         _init_done = false;
     }
@@ -308,12 +308,12 @@ namespace cppgui {
     {
         if (_must_redraw)
         {
-            #ifdef CPPGUI_USING_OPENGL
+        #ifdef CPPGUI_USING_OPENGL
             SDL_GL_MakeCurrent(_win.get(), _gr_ctx);
             redraw(_gr_ctx);
-            #else
+        #else
             redraw(nullptr); // TODO: a different type of context ?
-            #endif
+        #endif
             _must_redraw = false;
         }
     }
@@ -324,18 +324,18 @@ namespace cppgui {
 
         SDL_Event ev;
         ev.type = _initializer.redraw_window;
-        SDL_UserEvent &ue = ev.user;
+        auto &ue = ev.user;
         ue.windowID = SDL_GetWindowID(_win.get());
         SDL_PushEvent(&ev);
     }
 
-    auto SDL2_window::client_extents() const -> Extents
+    auto SDL2_window::rectangle() -> Rectangle
     {
         Extents ext;
 
         SDL_GetWindowSize(_win.get(), &ext.w, &ext.h);
 
-        return ext;
+        return Rectangle{{0, 0}, ext};
     }
 
     void SDL2_window::Deleter::operator()(SDL_Window * win)

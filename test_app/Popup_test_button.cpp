@@ -1,35 +1,55 @@
 /*  libCppGUI - A GUI library for C++11/14
 
-Copyright 2016, 2017 Hans-Peter Gygax
+    Copyright 2016, 2017 Hans-Peter Gygax
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 */
 
 #include <cppgui/unicode.hpp>
 #include <cppgui/Root_widget.hpp>
 #include <cppgui/Internal_popup.hpp>
+#include <cppgui/Window.hpp>
+#include <gl/glew.h>
 #include "./Popup_test_button.hpp"
 
 
 namespace cppgui {
 
-    class Dummy_popup_zone: public Internal_popup
+
+    // Private class My_popup -------------------------------------------------
+
+    class My_popup: public Window::Popup_base
     {
     public:
-        using Internal_popup::Internal_popup;
+        using Popup_base::Popup_base;
 
-        void render(Canvas *, const Point &offset) override;
+        void render(Canvas *) override;
     };
+
+    void My_popup::render(Canvas *canvas)
+    {
+        auto r = rectangle();
+
+        canvas->fill_rect(rectangle(), {1, 1, 0.2f, 1});
+    }
+
+
+    // Main class implementation ----------------------------------------------
+
+    Popup_test_button_base::Popup_test_button_base(const std::u32string &l)
+    {
+        set_label(l);
+    }
 
     void Popup_test_button_base::set_label(const std::u32string &label)
     {
@@ -84,13 +104,13 @@ namespace cppgui {
 
     void Popup_test_button_base::toggle_popup()
     {
-        if (!_popup_zone)
+        if (!_popup)
         {
-            _popup_zone.reset( new Dummy_popup_zone(this) );
+            _popup.reset(new My_popup{root_widget()->surface(), {0, 0, 200, 140}});
         }
         else
         {
-            _popup_zone.reset();
+            _popup.reset();
         }
     }
 
@@ -143,11 +163,5 @@ namespace cppgui {
     }
 
 #endif // CPPGUI_EXCLUDE_LAYOUTING
-
-
-    void Dummy_popup_zone::render(Canvas *c, const Point & offset)
-    {
-        c->fill_rect(rectangle(), {1, 1, 0.5f});
-    }
 
 } // ns cppgui

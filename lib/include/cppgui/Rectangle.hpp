@@ -22,7 +22,7 @@ namespace cppgui {
 
         explicit Rectangle(const Point &p, const Extents &e): pos{p}, ext{e} {}
         explicit Rectangle(Point &&p, Extents &&e): pos{p}, ext{e} {}
-        explicit Rectangle(Position x, Position y, Length w, Length h): pos{x, y}, ext{w, h} {}
+        Rectangle(Position x, Position y, Length w, Length h): pos{x, y}, ext{w, h} {}
 
         auto width () const { return ext.w; }
         auto height() const { return ext.h; }

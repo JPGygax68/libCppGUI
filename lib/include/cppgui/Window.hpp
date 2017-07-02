@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <list>
 #include "cppgui_config.hpp"
 #include CPPGUI_PLATFORM_ADAPTER_HEADER
 #include "Canvas.hpp"
@@ -13,16 +14,39 @@ namespace cppgui {
     {
     public:
         
+        class Popup_base: public ISurface
+        {
+        public:
+            explicit Popup_base(ISurface *owner, const Rectangle &);
+            ~Popup_base() override;
+
+            auto rectangle() -> Rectangle override;
+
+            void invalidate() override;
+
+            void add_popup(ISurface *) override;
+            void remove_popup(ISurface *) override;
+
+            //protected:
+            //    void redraw(void *context) override;
+
+        private:
+            Window     *_owner;
+            Rectangle   _rect;
+        };
+
         explicit Window(const std::string &title);
 
-        //void set_background_color(const RGBA &);
-
         auto& root_widget() { return _root_widget; }
+
+        void add_popup(ISurface *) override;
+        void remove_popup(ISurface *) override;
+
+        void render(Canvas *) override;
 
     protected:
         
         // Specializing base Window for UI tasks
-
         void init_window(void *context) override;
         void cleanup_window(void *context) override;
         void redraw(void *context) override;
@@ -38,14 +62,16 @@ namespace cppgui {
         virtual void adjust_layout() {}
         virtual void before_draw_ui(void *context) {}
 
-        // Drawing details (use when overloading redraw())
-        void draw_ui();
-
     private:
 
-        //RGBA                        _bkg_color;
+        using Popup_list = std::list<Popup_base*>;
+
+        void draw_ui(void *context);
+
         std::unique_ptr<Canvas>     _canvas;
         Root_widget                 _root_widget;
+
+        Popup_list                  _popups;
     };
 
 } // ns cppgui

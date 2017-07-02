@@ -73,9 +73,9 @@ void Test_window::create_ui()
         root_widget().add_child(&_listbox);
 
         //_popupbtn.set_font(dflt_font);
-        _popupbtn.set_label(U"Popup");
+        //_popupbtn.set_label(U"Popup");
         //_button.set_alignment(cppgui::cultural_minor_start);
-        root_widget().add_child(&_popupbtn);
+        //root_widget().add_child(&_popupbtn);
 
 
     #ifdef NOT_DEFINED
@@ -165,7 +165,7 @@ void Test_window::create_ui()
             .end()
             .end_row()
             .add<Label>(U"Birth date:").add<Textbox>().end_row()
-            .add<Button>(U"Cancel").add<Button>(U"OK").end_row();
+            .add<Button>(U"Cancel").add<Popup_test_button>(U"OK").end_row();
 
         root_widget().add_child(&_grid);
     }
@@ -184,7 +184,7 @@ void Test_window::adjust_layout()
         _button     .set_bounds({ 300,  50 }, _button     .get_minimal_bbox());
         _checkbox   .set_bounds({ 450,  50 }, _checkbox   .get_minimal_bbox());
         _glyphbutton.set_bounds({  50, 100 }, _glyphbutton.get_minimal_bbox());
-        _popupbtn   .set_bounds({ 350, 100 }, _popupbtn   .get_minimal_bbox());
+        //_popupbtn   .set_bounds({ 350, 100 }, _popupbtn   .get_minimal_bbox());
         _vscrollbar .set_bounds({  50, 150 }, _vscrollbar .get_minimal_bbox());
 
         {

@@ -5,7 +5,10 @@
 #include "Window.hpp"
 
 
-namespace cppgui {
+namespace cppgui 
+{
+
+    // Main class -------------------------------------------------------------
 
     Window::Window(const std::string &title):
         SDL2_window{title},
@@ -13,12 +16,17 @@ namespace cppgui {
     {
     }
 
-    /*
-    void Window::set_background_color(const RGBA &color)
+    void Window::add_popup(ISurface *popup)
     {
-        //_bkg_color = color;
+        _popups.push_back(static_cast<Popup_base*>(popup));
+        invalidate();
     }
-    */
+
+    void Window::remove_popup(ISurface *popup)
+    {
+        _popups.remove(static_cast<Popup_base*>(popup));
+        invalidate();
+    }
 
     void Window::init_window(void *context)
     {
@@ -42,21 +50,25 @@ namespace cppgui {
     {
         begin_rendering();
         before_draw_ui(context);
-        draw_ui();
+        draw_ui(context);
         done_rendering();
     }
 
-    void Window::draw_ui()
+    void Window::render(Canvas *canvas)
+    {
+        _root_widget.render(canvas, {0, 0});
+        
+        for (auto popup: _popups) popup->render(canvas);
+    }
+
+    void Window::draw_ui(void *context)
     {
         //_canvas->clear(_bkg_color);
         _canvas->enter_context(); // TODO: pass/check context ?
                                   // TODO: must be made optional!
 
-        // TODO: pass context to canvas / check if matches / etc ?
-        //before_draw_ui(_canvas.get());
+        render(_canvas.get());
 
-        _root_widget.render(_canvas.get(), {0, 0});
-        
         _canvas->leave_context();
     }
 
@@ -94,6 +106,42 @@ namespace cppgui {
     void Window::mouse_wheel(const Point &p)
     {
         _root_widget.mouse_wheel(p);
+    }
+
+    
+    // Inner class Popup_base -------------------------------------------------
+
+    Window::Popup_base::Popup_base(ISurface *owner, const Rectangle &r):
+        _owner{static_cast<Window*>(owner)},
+        _rect{r}
+    {
+        _owner->add_popup(this);
+    }
+
+    Window::Popup_base::~Popup_base()
+    {
+        _owner->remove_popup(this);
+    }
+
+    auto Window::Popup_base::rectangle() -> Rectangle
+    {
+        return _rect;
+    }
+
+    void Window::Popup_base::invalidate()
+    {
+        // TODO: optimize
+        _owner->invalidate();
+    }
+
+    void Window::Popup_base::add_popup(ISurface *popup)
+    {
+        _owner->add_popup(popup);
+    }
+
+    void Window::Popup_base::remove_popup(ISurface *popup)
+    {
+        _owner->remove_popup(popup);
     }
 
 } // ns cppgui

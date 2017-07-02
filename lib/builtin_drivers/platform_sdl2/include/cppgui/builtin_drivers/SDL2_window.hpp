@@ -31,6 +31,7 @@ namespace cppgui
     // Derive from this, NOT directly from SDL2_window
     #define CPPGUI_WINDOW_BASE_CLASS    SDL2_window
 
+
     class SDL2_window: public ISurface 
     {
         struct Deleter;
@@ -66,7 +67,7 @@ namespace cppgui
 
         void invalidate() override;
 
-        auto client_extents() const -> Extents;
+        auto rectangle() -> Rectangle override; // for ISurface
 
         //virtual void closing() {};
 
@@ -80,7 +81,7 @@ namespace cppgui
         static void dispatch_redraw(uint32_t win_id);
         //static void dispatch_custom_event(uint32_t win_id);
 
-        // Interface towards Application<>
+        // Interface towards Application
 
         static void for_each_window(std::function<void(SDL2_window*)>);
 
@@ -91,7 +92,7 @@ namespace cppgui
         // Specialization
         virtual void init_window(void *context) = 0;
         virtual void cleanup_window(void *context) = 0;
-        //virtual void redraw(void *context) = 0; // Now defined in ISurface
+        virtual void redraw(void *context) = 0;
 
         // Lifecycle hooks
         virtual void closing() {}
@@ -103,6 +104,9 @@ namespace cppgui
         virtual void mouse_wheel(const Point&) {}
         virtual void text_input(const char32_t *text, size_t cp_count) {}
         virtual void key_down(SDL_Keysym key) {}
+
+        // Conveniences
+        //void setup_viewport_y_axis_down();
 
     private:
         // Event handling
@@ -127,11 +131,11 @@ namespace cppgui
         static auto window_map() -> std::map<uint32_t, SDL2_window*> &;
 
         Pointer         _win;
-        #ifdef CPPGUI_USING_OPENGL
+    #ifdef CPPGUI_USING_OPENGL
         SDL_GLContext   _gr_ctx;
-        #else
+    #else
         #error No or unsupported graphics backend 
-        #endif
+    #endif
 
         bool            _init_done = false;
         bool            _must_redraw;
