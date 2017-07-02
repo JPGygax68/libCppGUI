@@ -111,7 +111,7 @@ namespace cppgui {
 
         // Queries
 
-        auto absolute_position() -> Point override;
+        auto absolute_position() const -> Point override;
 
         // Run-time manipulations
 

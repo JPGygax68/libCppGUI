@@ -3,7 +3,11 @@
 
 namespace cppgui
 {
-    
+    auto UI_element::absolute_bounds() const -> Pbbox
+    {
+        return { absolute_position(), _bounds.bbox };
+    }
+
     void UI_element::move_by(const Point &d)
     {
         _bounds.orig += d;

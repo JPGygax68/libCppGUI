@@ -17,7 +17,6 @@
 
 #include <cppgui/unicode.hpp>
 #include <cppgui/Root_widget.hpp>
-#include <cppgui/Internal_popup.hpp>
 #include <cppgui/Window.hpp>
 #include <gl/glew.h>
 #include "./Popup_test_button.hpp"
@@ -106,7 +105,8 @@ namespace cppgui {
     {
         if (!_popup)
         {
-            _popup.reset(new My_popup{root_widget()->surface(), {0, 0, 200, 140}});
+            auto r = Rectangle{absolute_bounds()};
+            _popup.reset(new My_popup{root_widget()->surface(), r.south(150)});
         }
         else
         {

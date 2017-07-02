@@ -20,6 +20,8 @@ namespace cppgui
         Positioned_bbox(Point_cref p, Bbox_cref b): orig{p}, bbox{b} {}
         Positioned_bbox(Bbox_cref bb): bbox{bb} {}
 
+        auto operator + (const Point &) const -> Positioned_bbox;
+
         auto left  () const { return orig.x + bbox.x_min; }
         auto center() const { return orig.x + bbox.x_min + bbox.width() / 2; }
         auto right () const { return orig.x + bbox.x_max; }

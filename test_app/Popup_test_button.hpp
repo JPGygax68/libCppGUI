@@ -3,7 +3,6 @@
 #include <memory>
 #include <cppgui/Text_widget.hpp>
 #include <cppgui/Boxed.hpp>
-#include <cppgui/Internal_popup.hpp>
 #include <cppgui/Window.hpp>
 
 

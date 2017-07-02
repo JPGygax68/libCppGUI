@@ -227,7 +227,7 @@ namespace cppgui {
         }
     }
 
-    auto Root_widget::absolute_position() -> Point
+    auto Root_widget::absolute_position() const -> Point
     {
         return origin();
     }

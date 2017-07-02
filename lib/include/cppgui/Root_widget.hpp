@@ -52,7 +52,7 @@ namespace cppgui {
         void compute_view_from_data() override;
 
         bool has_focus() override { return true; } // TODO: return window activation state ?
-        auto absolute_position() -> Point override;
+        auto absolute_position() const -> Point override;
         auto surface() const -> ISurface *;
 
         //void set_focus_to(Widget *);

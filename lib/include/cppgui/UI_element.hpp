@@ -33,21 +33,21 @@ namespace cppgui {
     {
     public:
 
-        //UI_element() {}
-        //UI_element(const UI_element &) = delete;
-
         virtual ~UI_element() {}
 
-        // TODO: is it a good idea to give direct access to bounds() (+ origin(), bbox()), or should this be encapsulated ? or friend-accessible only ?
-        auto rectangle() const -> Rectangle { return Rectangle{_bounds.bbox} + _bounds.orig; }; 
         auto& origin() { return _bounds.orig; }
         auto& origin() const { return _bounds.orig; }
         auto& bbox() { return _bounds.bbox; }
         auto& bbox() const { return _bounds.bbox; }
         auto bounds() const { return _bounds; }
         auto& bounds() { return _bounds; }
-        auto width () const { return rectangle().width (); }
-        auto height() const { return rectangle().height(); }
+        auto extents() const { return _bounds.bbox.extents(); }
+        auto width () const { return _bounds.bbox.width (); }
+        auto height() const { return _bounds.bbox.height(); }
+
+        // TODO: is it a good idea to give direct access to bounds() (+ origin(), bbox()), or should this be encapsulated ? or friend-accessible only ?
+        auto rectangle() const -> Rectangle { return Rectangle{_bounds.bbox} + _bounds.orig; };
+        auto absolute_bounds() const -> Pbbox;
 
         void move_by(const Point &);
         void shift_by(const Point &);
@@ -65,7 +65,7 @@ namespace cppgui {
         // Queries
 
         bool hovered() const { return _hovered; }
-        virtual auto absolute_position() -> Point = 0;
+        virtual auto absolute_position() const -> Point = 0;
 
         // Input event injection
 

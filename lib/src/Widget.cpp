@@ -157,7 +157,7 @@ namespace cppgui {
         return container()->has_focus() && container()->focused_child() == this;
     }
 
-    auto Widget::absolute_position() -> Point
+    auto Widget::absolute_position() const -> Point
     {
         assert( container() ); // must not query before inserted into widget tree
 

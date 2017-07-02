@@ -47,6 +47,14 @@ namespace cppgui {
         bool contains_full_height_of(const Rectangle &r) const;
 
         bool intersects_vertically_with(const Rectangle &r) const;
+
+        auto south(Length h) -> Rectangle
+        {
+            auto r = *this;
+            r.pos.y = r.y2();
+            r.ext.h = h;
+            return r;
+        }
     };
 
 }
