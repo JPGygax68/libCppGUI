@@ -19,6 +19,9 @@ namespace cppgui
     void Window::add_popup(ISurface *popup)
     {
         _popups.push_back(static_cast<Popup_base*>(popup));
+        auto size = popup->rectangle().ext;
+        popup->size_changed(size);
+            // ^ slightly odd - the popup is being told its own size
         invalidate();
     }
 
@@ -28,7 +31,7 @@ namespace cppgui
         invalidate();
     }
 
-    void Window::init_window(void *context)
+    void Window::init(void *context)
     {
         create_ui();
 
@@ -36,11 +39,12 @@ namespace cppgui
 
         _canvas = std::make_unique<Canvas>();
         _canvas->init();
-        _root_widget.get_backend_resources(_canvas.get());
+        canvas_created(_canvas.get());
     }
 
-    void Window::cleanup_window(void *context)
+    void Window::cleanup(void *context)
     {
+        before_destroy_canvas(_canvas.get());
         _root_widget.cleanup(); // TODO: pass canvas ?
         _canvas->cleanup();
         _canvas.release();
@@ -50,24 +54,24 @@ namespace cppgui
     {
         begin_rendering();
         before_draw_ui(context);
-        draw_ui(context);
+        render_canvas(context);
         done_rendering();
     }
 
-    void Window::render(Canvas *canvas)
+    void Window::render_ui(Canvas *canvas)
     {
         _root_widget.render(canvas, {0, 0});
         
-        for (auto popup: _popups) popup->render(canvas);
+        for (auto popup: _popups) popup->render_ui(canvas);
     }
 
-    void Window::draw_ui(void *context)
+    void Window::render_canvas(void *context)
     {
         //_canvas->clear(_bkg_color);
         _canvas->enter_context(); // TODO: pass/check context ?
                                   // TODO: must be made optional!
 
-        render(_canvas.get());
+        render_ui(_canvas.get());
 
         _canvas->leave_context();
     }
@@ -77,10 +81,10 @@ namespace cppgui
         // Inform canvas
         _canvas->define_viewport(0, 0, e.w, e.h);
         // (Re-)do layout
-        _root_widget.init_layout();
+        _root_widget.init_layout(); // TODO: should not be called more than once
         _root_widget.set_bounds({0, 0}, Bbox{e, left, top});
         adjust_layout();
-        _root_widget.compute_view_from_data();
+        _root_widget.compute_view_from_data();  // TODO: clarify if this may be called more than once
     }
 
     void Window::text_input(const char32_t *text, size_t cp_count)
@@ -95,32 +99,49 @@ namespace cppgui
 
     void Window::mouse_motion(const Point &p)
     {
+        // TODO: popups
         _root_widget.mouse_motion(p);
     }
 
     void Window::mouse_button(const Point &p, uint btn, Key_state state, uint clicks)
     {
+        // TODO: popups
         _root_widget.mouse_button(p, btn, state, clicks);
     }
 
     void Window::mouse_wheel(const Point &p)
     {
+        // TODO: popups
         _root_widget.mouse_wheel(p);
     }
 
-    
+    void Window::canvas_created(Canvas *canvas)
+    {
+        _root_widget.get_backend_resources(canvas);
+    }
+
+    void Window::before_destroy_canvas(Canvas *canvas)
+    {
+        //_root_widget.release_backend_resources(_canvas.get());
+    }
+
+
     // Inner class Popup_base -------------------------------------------------
 
     Window::Popup_base::Popup_base(ISurface *owner, const Rectangle &r):
         _owner{static_cast<Window*>(owner)},
         _rect{r}
     {
-        _owner->add_popup(this);
     }
 
     Window::Popup_base::~Popup_base()
     {
         _owner->remove_popup(this);
+    }
+
+    void Window::Popup_base::show()
+    {
+        _owner->add_popup(this);
     }
 
     auto Window::Popup_base::rectangle() -> Rectangle
@@ -136,6 +157,7 @@ namespace cppgui
 
     void Window::Popup_base::add_popup(ISurface *popup)
     {
+        // Since a popup cannot own a popup, we delegate to owning window
         _owner->add_popup(popup);
     }
 

@@ -36,27 +36,20 @@ namespace cppgui {
 
         explicit Root_widget(ISurface *);
 
-        //auto stylesheet() const -> const Basic_stylesheet &;
-
         void set_background_color(const RGBA &color) { _bkgnd_clr = color; }
 
-        //auto get_font(Style_element) -> Font_resource & override;
-
-        //void set_canvas(Canvas *);
-        //auto canvas() const { return _canvas; }
         using Container_base::add_child;
 
+        // TODO: the following pair belongs into Container_base
         void get_backend_resources(Canvas *) override;
         void cleanup(); // TODO: override!
 
+        // TODO: belongs into Container_base
         void compute_view_from_data() override;
 
         bool has_focus() override { return true; } // TODO: return window activation state ?
         auto absolute_position() const -> Point override;
         auto surface() const -> ISurface *;
-
-        //void set_focus_to(Widget *);
-        //auto focused_widget() const { return focused_child(); } // TODO: remove and replace all calls?
 
         void push_cursor(Cursor_handle);
         void pop_cursor();

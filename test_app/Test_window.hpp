@@ -39,8 +39,6 @@ private:
     cppgui::Glyph_button                _glyphbutton;
     cppgui::Boxed_vertical_scrollbar    _vscrollbar;
     cppgui::Listbox                     _listbox;
-    //cppgui::Dropdown_button             _dropdownbtn;
-    //cppgui::Popup_test_button           _popupbtn;
        
     cppgui::Button                      _align_left_ref    , _align_left_tgt;
     cppgui::Button                      _align_origin_ref  , _align_origin_tgt;

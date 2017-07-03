@@ -18,18 +18,19 @@
 */
 
 #include <functional>
-#include <typeindex>
+#include <set>
 #include "./UI_element.hpp"
 #include "./layouting.hpp"
 #include "Stylesheet.hpp"
-#include <set>
 
 
-namespace cppgui {
+namespace cppgui 
+{
 
     // Forward / undefined declarations
     class Container_base;
     class Internal_popup;
+
 
     // Widget 
 
@@ -44,9 +45,9 @@ namespace cppgui {
 
         void set_id(const char *id)
         {
-            #ifdef _DEBUG
+        #ifdef _DEBUG
             _id = id;
-            #endif
+        #endif
         }
 
         void on_click(Click_handler);

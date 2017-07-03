@@ -15,11 +15,13 @@
     limitations under the License.
 */
 
+#include <gl/glew.h>
 #include <cppgui/unicode.hpp>
 #include <cppgui/Root_widget.hpp>
 #include <cppgui/Window.hpp>
-#include <gl/glew.h>
+#include <cppgui/Root_popup.hpp>
 #include "./Popup_test_button.hpp"
+#include <cppgui/Button.hpp>
 
 
 namespace cppgui {
@@ -27,19 +29,24 @@ namespace cppgui {
 
     // Private class My_popup -------------------------------------------------
 
-    class My_popup: public Window::Popup_base
+    class My_popup: public Root_popup<Window::Popup_base>
     {
     public:
-        using Popup_base::Popup_base;
+        using Root_popup::Root_popup;
 
-        void render(Canvas *) override;
+        My_popup(ISurface *, const Rectangle &);
+
+        //void render_ui(Canvas *) override;
+
+    private:
+        Button          _button;
     };
 
-    void My_popup::render(Canvas *canvas)
+    My_popup::My_popup(ISurface *surf, const Rectangle &rect):
+        Root_popup{surf, rect}
     {
-        auto r = rectangle();
-
-        canvas->fill_rect(rectangle(), {1, 1, 0.2f, 1});
+        _button.set_label(U"I popped!");
+        root_widget().add_child(&_button);
     }
 
 
@@ -107,6 +114,7 @@ namespace cppgui {
         {
             auto r = Rectangle{absolute_bounds()};
             _popup.reset(new My_popup{root_widget()->surface(), r.south(150)});
+            _popup->show();
         }
         else
         {

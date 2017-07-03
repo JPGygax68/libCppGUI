@@ -87,7 +87,7 @@ namespace cppgui {
         #else
             #error No or unsupported graphics library defined
         #endif
-            init_window(_gr_ctx); // TODO: other subsystem contexts ?
+            init(_gr_ctx); // TODO: other subsystem contexts ?
 
             _init_done = true;
         }
@@ -97,7 +97,7 @@ namespace cppgui {
     {
         assert(_init_done);
 
-        cleanup_window(_gr_ctx);
+        cleanup(_gr_ctx);
 
     #ifdef CPPGUI_USING_OPENGL
         SDL_GL_MakeCurrent(_win.get(), _gr_ctx);
@@ -111,6 +111,11 @@ namespace cppgui {
     auto SDL2_window::id() -> uint32_t
     {
         return SDL_GetWindowID(_win.get());
+    }
+
+    void SDL2_window::show()
+    {
+        SDL_ShowWindow(_win.get());
     }
 
     void SDL2_window::begin_rendering()

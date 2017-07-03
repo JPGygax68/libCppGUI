@@ -20,15 +20,14 @@ namespace cppgui {
             explicit Popup_base(ISurface *owner, const Rectangle &);
             ~Popup_base() override;
 
+            void show() override;
+
             auto rectangle() -> Rectangle override;
 
             void invalidate() override;
 
             void add_popup(ISurface *) override;
             void remove_popup(ISurface *) override;
-
-            //protected:
-            //    void redraw(void *context) override;
 
         private:
             Window     *_owner;
@@ -39,16 +38,18 @@ namespace cppgui {
 
         auto& root_widget() { return _root_widget; }
 
-        void add_popup(ISurface *) override;
+        void add_popup   (ISurface *) override;
         void remove_popup(ISurface *) override;
 
-        void render(Canvas *) override;
+        void render_ui(Canvas *) override;
 
     protected:
         
         // Specializing base Window for UI tasks
-        void init_window(void *context) override;
-        void cleanup_window(void *context) override;
+        void init(void *context) override;
+        void cleanup(void *context) override;
+        void canvas_created(Canvas *) override;
+        void before_destroy_canvas(Canvas *) override;
         void redraw(void *context) override;
         void size_changed(const Extents &) override;
         void text_input(const char32_t *text, size_t cp_count) override;
@@ -66,7 +67,7 @@ namespace cppgui {
 
         using Popup_list = std::list<Popup_base*>;
 
-        void draw_ui(void *context);
+        void render_canvas(void *context);
 
         std::unique_ptr<Canvas>     _canvas;
         Root_widget                 _root_widget;

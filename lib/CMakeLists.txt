@@ -94,6 +94,7 @@ STATIC
     include/cppgui/Dropdown_button.hpp      src/Dropdown_button.cpp
     #include/cppgui/Internal_popup.hpp       src/Internal_popup.cpp
     include/cppgui/Grid_container.hpp       src/Grid_container.cpp
+    include/cppgui/Root_popup.hpp
 
     include/cppgui/UI_builder.hpp           src/UI_builder.cpp
 )

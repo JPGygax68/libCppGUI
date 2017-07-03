@@ -51,6 +51,8 @@ namespace cppgui
         auto sdl2_window() -> SDL_Window * { return _win.get(); }
         auto id() -> uint32_t;
 
+        void show() override;
+
         // Rendering management ---------------------------
 
         void begin_rendering();
@@ -90,8 +92,8 @@ namespace cppgui
     protected:
 
         // Specialization
-        virtual void init_window(void *context) = 0;
-        virtual void cleanup_window(void *context) = 0;
+        virtual void init(void *context) = 0;
+        virtual void cleanup(void *context) = 0;
         virtual void redraw(void *context) = 0;
 
         // Lifecycle hooks
