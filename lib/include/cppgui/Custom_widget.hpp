@@ -30,8 +30,20 @@ namespace cppgui
         using Widget_t = Widget<Config, With_layout>;
         using Canvas_t = typename Widget_t::Canvas_t;
 
+        using Mouse_motion_handler = std::function<void(const Point &)>;
+        using Mouse_button_handler = std::function<void(const Point &, int button, Key_state, Count clicks)>;
+
+        void on_mouse_motion(Mouse_motion_handler);
+        void on_mouse_button(Mouse_button_handler);
+
+        void mouse_motion(const Point &) override;
+        void mouse_button(const Point &, int /*button*/, Key_state, Count clicks) override;
+
         void render(Canvas_t *, const Point &offset) override;
 
+    private:
+        Mouse_motion_handler        _on_mouse_motion;
+        Mouse_button_handler        _on_mouse_button;
     };
 
 } // ns cppgui

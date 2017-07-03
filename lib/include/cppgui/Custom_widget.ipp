@@ -29,9 +29,41 @@ namespace cppgui
     }
 
     template <class Config, bool With_layout>
+    void Custom_widget<Config, With_layout>::on_mouse_motion(Mouse_motion_handler handler)
+    {
+        assert(!_on_mouse_motion);
+
+        _on_mouse_motion = handler;
+    }
+
+    template <class Config, bool With_layout>
+    void Custom_widget<Config, With_layout>::on_mouse_button(Mouse_button_handler handler)
+    {
+        _on_mouse_button = handler;
+    }
+
+    template <class Config, bool With_layout>
+    void Custom_widget<Config, With_layout>::mouse_motion(const Point &pos)
+    {
+        if (_on_mouse_motion)
+        {
+            _on_mouse_motion(pos);
+        }
+    }
+
+    template <class Config, bool With_layout>
+    void Custom_widget<Config, With_layout>::mouse_button(const Point &pos, int button, Key_state state, Count clicks)
+    {
+        if (_on_mouse_button)
+        {
+            _on_mouse_button(pos, button, state, clicks);
+        }
+    }
+
+    template <class Config, bool With_layout>
     void Custom_widget<Config, With_layout>::render(Canvas_t *, const Point & offset)
     {
-        // TODO
+        
     }
 
 } // ns cppgui
