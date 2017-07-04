@@ -16,6 +16,11 @@ namespace cppgui
     {
     }
 
+    auto Window::canvas() -> Canvas *
+    {
+        return _canvas.get();
+    }
+
     void Window::add_popup(ISurface *popup)
     {
         _popups.push_back(static_cast<Popup_base*>(popup));
@@ -139,7 +144,7 @@ namespace cppgui
         _owner->remove_popup(this);
     }
 
-    void Window::Popup_base::show()
+    void Window::Popup_base::show(Canvas *)
     {
         _owner->add_popup(this);
     }
@@ -147,6 +152,11 @@ namespace cppgui
     auto Window::Popup_base::rectangle() -> Rectangle
     {
         return _rect;
+    }
+
+    auto Window::Popup_base::canvas() -> Canvas *
+    {
+        return _owner->canvas();
     }
 
     void Window::Popup_base::invalidate()

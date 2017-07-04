@@ -29,6 +29,9 @@ namespace cppgui {
         Bbox(Position x_min, Position x_max, Position y_min, Position y_max):
             fonts::Bounding_box{x_min, x_max, y_min, y_max} {}
 
+        Bbox(const Extents &ext):
+            fonts::Bounding_box{0, ext.w, -ext.h, 0} {}
+
         Bbox() = default;
 
         auto extents() const { return Extents{ - x_min + x_max, y_max + - y_min }; }

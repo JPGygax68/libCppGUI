@@ -51,8 +51,6 @@ namespace cppgui
         auto sdl2_window() -> SDL_Window * { return _win.get(); }
         auto id() -> uint32_t;
 
-        void show() override;
-
         // Rendering management ---------------------------
 
         void begin_rendering();

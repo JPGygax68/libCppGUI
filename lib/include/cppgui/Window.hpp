@@ -20,9 +20,12 @@ namespace cppgui {
             explicit Popup_base(ISurface *owner, const Rectangle &);
             ~Popup_base() override;
 
-            void show() override;
+            virtual void show(Canvas *);
+                // Must be called after construction.
 
             auto rectangle() -> Rectangle override;
+
+            auto canvas() -> Canvas * override;
 
             void invalidate() override;
 
@@ -35,6 +38,8 @@ namespace cppgui {
         };
 
         explicit Window(const std::string &title);
+
+        auto canvas() -> Canvas * override;
 
         auto& root_widget() { return _root_widget; }
 

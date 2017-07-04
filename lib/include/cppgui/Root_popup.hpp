@@ -17,14 +17,16 @@ namespace cppgui
         {
         }
 
-        void init(void *context) override
-        {
-            // Nothing to do here
-        }
+        void init(void *context) override {}    // Nothing to do here
 
-        void cleanup(void *context) override
+        void cleanup(void *context) override {} // Nothing to do here
+
+        void show(Canvas *canvas) override
         {
-            // Nothing to do here
+            Base::show(canvas);
+
+            _root_widget.init_layout();
+            _root_widget.get_backend_resources(canvas);
         }
 
         // TODO: call this!! but when, and from where ?
@@ -41,13 +43,15 @@ namespace cppgui
 
         void render_ui(Canvas *canvas) override
         {
-            _root_widget.render(canvas, {0, 0});
+            auto p = this->rectangle().pos;
+            _root_widget.render(canvas, p);
         }
 
         void size_changed(const Extents &ext) override
         {
             // TODO: implement this in an intermediary base class ?
             // (Re-)do layout
+            _root_widget.init();
             _root_widget.init_layout(); // TODO: should not be called more than once
             _root_widget.set_bounds({0, 0}, Bbox{ext, left, top});
             _root_widget.compute_view_from_data();  // TODO: clarify if this may be called more than once

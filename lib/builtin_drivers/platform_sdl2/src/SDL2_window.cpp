@@ -113,10 +113,10 @@ namespace cppgui {
         return SDL_GetWindowID(_win.get());
     }
 
-    void SDL2_window::show()
+    /* void SDL2_window::show()
     {
         SDL_ShowWindow(_win.get());
-    }
+    } */
 
     void SDL2_window::begin_rendering()
     {

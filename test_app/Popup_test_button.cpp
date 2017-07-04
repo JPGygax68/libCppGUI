@@ -47,6 +47,8 @@ namespace cppgui {
     {
         _button.set_label(U"I popped!");
         root_widget().add_child(&_button);
+        auto pbb = Pbbox{{0, 0}, rect.ext};
+        _button.set_bounds(pbb);
     }
 
 
@@ -114,10 +116,11 @@ namespace cppgui {
         {
             auto r = Rectangle{absolute_bounds()};
             _popup.reset(new My_popup{root_widget()->surface(), r.south(150)});
-            _popup->show();
+            _popup->show(root_widget()->surface()->canvas());
         }
         else
         {
+            // TODO: _popup->remove(root_widget()->surface()->canvas());
             _popup.reset();
         }
     }

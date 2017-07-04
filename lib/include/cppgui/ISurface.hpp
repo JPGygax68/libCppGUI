@@ -28,8 +28,7 @@ namespace cppgui
 
         virtual void render_ui(Canvas *) = 0;
 
-        virtual void show() = 0;
-            // May be unnecessary, but must be called to ensure surface will be shown.
+        virtual auto canvas() -> Canvas * = 0;
 
         virtual auto rectangle() -> Rectangle = 0;
 
