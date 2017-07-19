@@ -41,6 +41,21 @@ cmake_minimum_required(VERSION 3.7)
 # reliable deserialization.
 #
 
+# Conan
+
+# Download automatically, you can also just copy the conan.cmake file
+if (NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+   message(STATUS "Downloading conan.cmake from https://github.com/memsharded/cmake-conan")
+   file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/master/conan.cmake"
+                 "${CMAKE_BINARY_DIR}/conan.cmake")
+endif()
+
+include(${CMAKE_BINARY_DIR}/conan.cmake)
+
+conan_cmake_run(REQUIRES gpcbin2c/0.1.1@jpgygax68/testing
+                BASIC_SETUP CMAKE_TARGETS
+                BUILD missing)
+
 # TODO: option to make constant arrays private
 
 function(target_bake_font target font_file)
@@ -84,18 +99,20 @@ function(target_bake_font target font_file)
         set(header_file "${CMAKE_CURRENT_BINARY_DIR}/generated/headers/${filename}-${size}.h")
         set(source_file "${CMAKE_CURRENT_BINARY_DIR}/generated/sources/${filename}-${size}.c")
 
+        #message("COMMAND CONAN_PKG::gpcbin2c ARGS -i ${raster_file} -c ${font_id}_${size} -h ${header_file} -s ${source_file}
+
         add_custom_command(
             OUTPUT ${header_file} ${source_file}
             DEPENDS ${raster_file}
             # TODO: use "bin2c" instead of "gpcbin2c"
-            COMMAND gpcbin2c ARGS
+            COMMAND CONAN_PKG::gpcbin2c ARGS
                 -i ${raster_file}
                 -c ${font_id}_${size}
                 -h ${header_file}
                 -s ${source_file}
         )
 
-        target_sources(${target} PRIVATE ${source_file})
+        target_sources(${target} PRIVATE "${source_file}")
 
     endforeach()
 
