@@ -1,10 +1,25 @@
 cmake_minimum_required(VERSION 3.4)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindFreetype.cmake)
+#------------------------------------------------
+# Target: executable
+#
 
+project(fontrasterizer)
+
+file(GLOB SOURCES *.cpp)
+
+add_executable(${PROJECT_NAME} ${SOURCES})
+
+#------------------------------------------------
+# CMake scripts
+#
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindFreetype.cmake)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
+#------------------------------------------------
 # Conan
+#
 
 # Download automatically, you can also just copy the conan.cmake file
 if (NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
@@ -15,19 +30,9 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-conan_cmake_run(REQUIRES freetype/2.6.3@hilborn/stable Boost/1.62.0@lasote/stable
+conan_cmake_run(REQUIRES freetype/2.6.3@hilborn/stable Boost/1.62.0@lasote/stable # cereal/1.2.2@Brunni/stable
                 BASIC_SETUP CMAKE_TARGETS
                 BUILD missing)
-
-#------------------------------------------------
-# Target: executable
-#
-
-project(fontrasterizer)
-
-file(GLOB SOURCES *.cpp)
-
-add_executable(${PROJECT_NAME} ${SOURCES})
 
 #------------------------------------------------
 # Libraries

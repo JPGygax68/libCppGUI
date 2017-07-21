@@ -1,3 +1,4 @@
 build*/*
 docs/Backup*.cdr
 **/.conan/*
+/__pycache__

@@ -17,9 +17,9 @@ else()
 endif()
 endif()
 
-if (NOT TARGET gpcbin2c)
-    add_subdirectory(external/GPCBin2C)
-endif()
+#if (NOT TARGET gpcbin2c)
+#    add_subdirectory(external/GPCBin2C)
+#endif()
 
 add_subdirectory(lib)
 

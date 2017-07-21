@@ -52,9 +52,14 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
+if (0)
 conan_cmake_run(REQUIRES gpcbin2c/0.1.1@jpgygax68/testing
                 BASIC_SETUP CMAKE_TARGETS
                 BUILD missing)
+if (NOT TARGET CONAN_PKG::gpcbin2c)
+  message(FATAL_ERROR "no target CONAN_PKG::gpcbin2c")
+endif()
+endif()
 
 # TODO: option to make constant arrays private
 
@@ -105,7 +110,7 @@ function(target_bake_font target font_file)
             OUTPUT ${header_file} ${source_file}
             DEPENDS ${raster_file}
             # TODO: use "bin2c" instead of "gpcbin2c"
-            COMMAND CONAN_PKG::gpcbin2c ARGS
+            COMMAND gpcbin2c ARGS
                 -i ${raster_file}
                 -c ${font_id}_${size}
                 -h ${header_file}
