@@ -2,7 +2,7 @@ from conans import ConanFile
 
 
 class CppGUI(ConanFile):
-    build_requires = "gpcbin2c/0.1.1@jpgygax68/testing"
+    requires = "gpcbin2c/0.1.1@jpgygax68/testing"
     generators = "virtualbuildenv"
 
     #def build_requirements(self):
