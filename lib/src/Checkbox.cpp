@@ -45,15 +45,12 @@ namespace cppgui {
 
     #endif
 
-    Checkbox::Checkbox()
+    Checkbox::Checkbox(State_change_handler state_change_handler, const std::u32string &label)
     {
         _glyph_font.assign(&baked_fonts::modernpics_18_font());
+        _label = label;
+        _state_change_handler = state_change_handler;
     }
-
-    /* auto Checkbox::get_font(Style_element e) -> Font_resource &
-    {
-        return _label_font.rasterized ? _label_font : container()->get_font(e);
-    } */
 
     void Checkbox::on_state_change(State_change_handler handler)
     {
@@ -73,7 +70,10 @@ namespace cppgui {
         auto p = offs + origin();
 
         // Label
-        c->render_text(font_handle(), p.x, p.y, _label.data(), _label.size());
+        if (!_label.empty())
+        {
+            c->render_text(font_handle(), p.x, p.y, _label.data(), _label.size());
+        }
 
         // Box border and background
         auto r = Rectangle{_tick_bbox.expand(tick_padding() + tick_border())} + Point{_tick_orig, 0};

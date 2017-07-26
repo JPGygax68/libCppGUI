@@ -125,11 +125,11 @@ namespace cppgui
      */
 
     template<class ContainerT> 
-    class Root_UI_builder: public UI_builder_base2<ContainerT, void>
+    class Root_UI_builder: public UI_builder<ContainerT, void>
     {
     public:
         explicit Root_UI_builder(ContainerT &cont, Widget_bag &bag): 
-            UI_builder_base2<ContainerT, void>{cont, bag, nullptr} 
+            UI_builder{cont, bag, nullptr} 
         {}
     };
 

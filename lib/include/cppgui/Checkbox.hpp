@@ -34,7 +34,7 @@ namespace cppgui {
     public:
         using State_change_handler = std::function<void(bool)>;
 
-        Checkbox();
+        Checkbox(State_change_handler = nullptr, const std::u32string &label = U"");
 
         void set_font(const Rasterized_font *font) { _label_font.assign(font); }
         //auto get_font(Style_element) -> Font_resource & override;

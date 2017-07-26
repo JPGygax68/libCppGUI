@@ -33,11 +33,7 @@ namespace cppgui {
 
         Button_base() = default;
 
-        explicit Button_base(const std::u32string &l, Alignment a = center)
-        {
-            set_label(l);
-            set_alignment(a);
-        }
+        explicit Button_base(const std::u32string &l, Pushed_handler = nullptr, Alignment a = center);
 
         void on_pushed(Pushed_handler);
 

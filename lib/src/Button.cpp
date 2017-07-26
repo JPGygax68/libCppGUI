@@ -19,7 +19,14 @@
 #include "Button.hpp"
 
 
-namespace cppgui {
+namespace cppgui 
+{
+    Button_base::Button_base(const std::u32string &l, Pushed_handler on_pushed, Alignment a)
+    {
+        set_label(l);
+        _on_pushed = on_pushed;
+        set_alignment(a);
+    }
 
     void Button_base::on_pushed(Pushed_handler handler)
     {

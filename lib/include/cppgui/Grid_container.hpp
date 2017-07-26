@@ -10,6 +10,7 @@ namespace cppgui
 {
     class Grid_container: public Container_base
     {
+    public:
     #ifndef CPPGUI_EXCLUDE_LAYOUTING
     public:
         
@@ -67,7 +68,11 @@ namespace cppgui
     public:
 
         //using UI_builder_base2<Grid_container, ParentBuilderT>::UI_builder_base2;
-        UI_builder(Grid_container &c, Widget_bag &b, ParentBuilderT *pb): UI_builder_base2(c, b, pb) {}
+        UI_builder(Grid_container &c, Widget_bag &b, ParentBuilderT *pb): 
+            UI_builder_base2(c, b, pb),
+            _row_index{0}, _col_index{0}
+        {            
+        }
 
         template<class WidgetT>
         void _add_new_child(WidgetT *child)
