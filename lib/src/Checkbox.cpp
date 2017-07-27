@@ -35,17 +35,7 @@ namespace cppgui {
 
     static const char32_t tick_cp = 0x25; //0x2714; // E14C; // 0xE876;
 
-    #ifdef NOT_DEFINED
-
-    void Checkbox::set_tick_glyph(const Rasterized_font *font, char32_t codepoint)
-    {
-        _glyph_font.assign( font );
-        _tick_codepoint = codepoint;
-    }
-
-    #endif
-
-    Checkbox::Checkbox(State_change_handler state_change_handler, const std::u32string &label)
+    Checkbox::Checkbox(const std::u32string &label, State_change_handler state_change_handler)
     {
         _glyph_font.assign(&baked_fonts::modernpics_18_font());
         _label = label;
