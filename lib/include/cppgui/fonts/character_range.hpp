@@ -32,7 +32,7 @@ namespace cppgui {
     
         struct Character_range {
             uint32_t	starting_codepoint;
-            size_t      count;
+            uint32_t    count;
             bool contains(uint32_t ch) const { return ch >= starting_codepoint && ch < starting_codepoint + count; }
         };
         

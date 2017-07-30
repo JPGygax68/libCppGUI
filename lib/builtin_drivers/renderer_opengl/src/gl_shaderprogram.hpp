@@ -94,6 +94,8 @@ namespace gl {
 
     // Name-checking variants -----------------------------------
 
+#ifdef NOT_DEFINED
+
     template<typename... Args> inline void 
         setUniform(const char *name, GLuint index, Args&&... args)
     {
@@ -114,5 +116,7 @@ namespace gl {
         checkUniformLocation(name, index);
         setUniformMatrix4(index, std::forward<Args>(args)...);
     }
+
+#endif
 
 } // ns gpc

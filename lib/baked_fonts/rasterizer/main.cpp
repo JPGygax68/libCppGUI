@@ -300,7 +300,7 @@ int main(int argc, const char *argv[])
                         slot->bitmap_left, static_cast<signed>(bitmap.width) + slot->bitmap_left,
                         slot->bitmap_top - static_cast<signed>(bitmap.rows), slot->bitmap_top,
                         slot->advance.x >> 6, slot->advance.y >> 6,
-                        variant.pixels.size()
+                        static_cast<uint32_t>(variant.pixels.size())
                     });
 
 					/*

@@ -35,7 +35,7 @@ namespace cppgui {
 
             struct glyph_record {
                 Rasterized_glyph_cbox cbox;
-                size_t pixel_base;      // offset in pixel buffer where this glyph starts
+                uint32_t pixel_base;      // offset in pixel buffer where this glyph starts
             };
             
             // Contains the data specific to a given size/style combination
@@ -52,7 +52,7 @@ namespace cppgui {
                 size_t base = 0; // base glyph index for current range
                 for (auto range_it = begin(ranges); range_it != end(ranges); base += (*range_it).count, ++range_it)
                     if (cp >= (*range_it).starting_codepoint && cp < ((*range_it).starting_codepoint + (*range_it).count))
-                        return base + (cp - (*range_it).starting_codepoint);
+                        return static_cast<int>(base + (cp - (*range_it).starting_codepoint));
                 return -1;
             }
             

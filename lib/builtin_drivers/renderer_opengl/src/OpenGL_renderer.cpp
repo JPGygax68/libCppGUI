@@ -105,8 +105,8 @@ namespace cppgui {
         GL(Viewport, x, y, w, h);
 
         GL(UseProgram, program);
-        gl::setUniform("viewport_w", 0, w);
-        gl::setUniform("viewport_h", 1, h);
+        gl::setUniform(/*"viewport_w", */ 0, w);
+        gl::setUniform(/*"viewport_h", */ 1, h);
     }
 
     /*
@@ -194,7 +194,7 @@ namespace cppgui {
     void OpenGL_renderer::fill_rect(int x, int y, int w, int h, const RGBA &color)
     {
         GL(Uniform4fv, 2, 1, color);
-        gl::setUniform("render_mode", 5, 1);
+        gl::setUniform(/*"render_mode", */ 5, 1);
 
         draw_rect(x, y, w, h);
     }
@@ -210,13 +210,13 @@ namespace cppgui {
 
         //GL(ActiveTexture, GL_TEXTURE0);
         GL(BindTexture, GL_TEXTURE_RECTANGLE, image);
-        gl::setUniform("color", 2, black);
+        gl::setUniform(/* "color", */ 2, black);
         GLint position[2] = { x, y };
-        gl::setUniform("sampler", 3, 0);
-        gl::setUniform("position", 4, position);
+        gl::setUniform(/* "sampler" , */ 3, 0);
+        gl::setUniform(/* "position", */ 4, position);
         GLint offset[2] = { offset_x, offset_y };
-        gl::setUniform("offset", 6, offset);
-        gl::setUniform("render_mode", 5, 2); // 2 = "paste image"
+        gl::setUniform(/* "offset"     , */ 6, offset);
+        gl::setUniform(/* "render_mode", */ 5, 2); // 2 = "paste image"
 
         draw_rect(x, y, w, h);
 
@@ -279,15 +279,15 @@ namespace cppgui {
 
         //GL(ActiveTexture, GL_TEXTURE0);
         GL(BindTexture, GL_TEXTURE_RECTANGLE, img);
-        setUniform("color", 2, native_clr.components);
+        setUniform(/* "color", */ 2, native_clr.components);
         GLint position[2] = { x + origin_x, y + origin_y };
-        setUniform("sampler", 3, 0);
-        setUniform("position", 4, position);
+        setUniform(/* "sampler" , */ 3, 0);
+        setUniform(/* "position", */ 4, position);
         GLint offset[2] = { offset_x, offset_y };
-        setUniform("offset", 6, offset);
+        setUniform(/* "offset", */ 6, offset);
         GLfloat texcoord_matrix[2][2] = { texrot_cos, - texrot_sin, texrot_sin, texrot_cos };
         setUniformMatrix2("texcoord_matrix", 10, &texcoord_matrix[0][0]);
-        setUniform("render_mode", 5, 4); // 4 = "modulate greyscale image"
+        setUniform(/* "render_mode", */ 5, 4); // 4 = "modulate greyscale image"
 
         draw_rect(x, y, w, h);
 
@@ -373,21 +373,21 @@ namespace cppgui {
         //dx -= glyph->cbox.bounds.x_min;
 
         GL(Uniform4fv, 2, 1, text_color); // 2 = color
-        setUniform("render_mode", 5, 3);
-        setUniform("font_pixels", 7, 0); // use texture unit 0 to access glyph pixels
+        setUniform(/* "render_mode", */ 5, 3);
+        setUniform(/* "font_pixels", */ 7, 0); // use texture unit 0 to access glyph pixels
 
         for (const auto *p = text; p < (text + count); p++)
         {
             glyph_index = mfont.find_glyph(*p);
             glyph = & variant.glyphs[glyph_index];
 
-            setUniform("glyph_base", 8, glyph->pixel_base);
+            setUniform(/* "glyph_base", */ 8, glyph->pixel_base);
             GLint cbox[4] = { 
                 glyph->cbox.bounds.x_min, glyph->cbox.bounds.x_max, 
                 glyph->cbox.bounds.y_min, glyph->cbox.bounds.y_max };
-            setUniform("glyph_cbox", 9, cbox);
+            setUniform(/* "glyph_cbox", */ 9, cbox);
             GLint position[2] = { x + dx, y };
-            setUniform("position", 4, position);
+            setUniform(/* "position", */ 4, position);
 
             GLint base = 4 * glyph_index;
             GL(DrawArrays, GL_QUADS, base, 4);

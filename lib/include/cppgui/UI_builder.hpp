@@ -74,6 +74,17 @@ namespace cppgui
         /*
          * Add a child to the container represented by this builder.
          */
+
+        template<class NestedT, typename... Args>
+        auto add(NestedT* &ref, Args&&... args) -> Type &
+        {
+            NestedT *child = static_cast<Type*>(this)->template _create_new_child<NestedT>(std::forward<Args>(args)...);
+            static_cast<Type*>(this)->_add_new_child(child);
+            add_to_bag(child);  
+            ref = child;
+            return *static_cast<Type*>(this);
+        }
+
         template<class NestedT, typename... Args>
         auto add(Args&&... args) -> Type &
         {
