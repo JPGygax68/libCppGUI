@@ -1,0 +1,5 @@
+[requires]
+gpcbin2c/0.1.1@jpgygax68/testing
+
+[generators]
+virtualenv

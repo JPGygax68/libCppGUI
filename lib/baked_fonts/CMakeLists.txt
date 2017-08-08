@@ -4,15 +4,15 @@ project(cppgui_baked_fonts)
 
 # TODO: split this component between actual fonts (optional), and icon font resources (mandatory, with configurable size)
 
-# TODO: this might actually belong with the font rasterizer project
-include("${CMAKE_CURRENT_SOURCE_DIR}/BakeFontFile.cmake")
-
 
 #------------------------------------------------------------------------------
-# Prerequisite: font rasterizer command-line tool
+# Font "baking" requires a helper utility
 #
 
 add_subdirectory(rasterizer)
+
+# TODO: this might actually belong with the font rasterizer project
+include("${CMAKE_CURRENT_SOURCE_DIR}/BakeFontFile.cmake")
 
 
 #------------------------------------------------------------------------------
@@ -22,6 +22,8 @@ add_subdirectory(rasterizer)
 add_library(${PROJECT_NAME} STATIC
     include/cppgui/baked_fonts.hpp      src/baked_fonts.cpp
     ${PROJECT_BINARY_DIR}/cppgui_baked_fonts_config.hpp
+
+    BakeFontFile.cmake
 )
 
 target_bake_font(${PROJECT_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/data/fonts/LiberationSans-Regular.ttf" 

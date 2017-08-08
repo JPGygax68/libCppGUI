@@ -265,7 +265,7 @@ int main(int argc, const char *argv[])
         {
 			for (auto const &range : rast_font.ranges)
             {
-                for (size_t i = 0; i < range.count; i++)
+                for (uint32_t i = 0; i < range.count; i++)
                 {
                     // Codepoint
                     uint32_t cp = range.starting_codepoint + i;
@@ -314,7 +314,7 @@ int main(int argc, const char *argv[])
 					*/
 
 					// Copy the pixels
-					uint32_t pixel_base = pixels.size();
+					auto pixel_base = static_cast<uint32_t>(pixels.size());
 					pixels.resize(pixel_base + bitmap.width * bitmap.rows);
 					auto dit = pixels.begin() + pixel_base;
 					auto sit = bitmap.buffer;

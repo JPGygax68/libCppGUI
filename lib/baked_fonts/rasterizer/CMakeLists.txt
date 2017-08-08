@@ -30,7 +30,7 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-conan_cmake_run(REQUIRES freetype/2.6.3@hilborn/stable Boost/1.62.0@lasote/stable # cereal/1.2.2@Brunni/stable
+conan_cmake_run(REQUIRES freetype/2.6.3@hilborn/stable boost/1.62.0@lasote/vcpkg
                 BASIC_SETUP CMAKE_TARGETS
                 BUILD missing)
 
@@ -46,7 +46,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/external/
 
 if (1)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE CONAN_PKG::Boost)
+target_link_libraries(${PROJECT_NAME} PRIVATE CONAN_PKG::boost)
 
 else()
 set(Boost_USE_STATIC_LIBS ON)

@@ -43,6 +43,7 @@ cmake_minimum_required(VERSION 3.7)
 
 # Conan
 
+if (0)
 # Download automatically, you can also just copy the conan.cmake file
 if (NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
    message(STATUS "Downloading conan.cmake from https://github.com/memsharded/cmake-conan")
@@ -52,7 +53,6 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-if (0)
 conan_cmake_run(REQUIRES gpcbin2c/0.1.1@jpgygax68/testing
                 BASIC_SETUP CMAKE_TARGETS
                 BUILD missing)
@@ -90,6 +90,7 @@ function(target_bake_font target font_file)
         #message("args: ${args}")
 
         set(raster_file "${CMAKE_CURRENT_BINARY_DIR}/generated/rastfont/${filename}-${size}.rastfont")
+
 
         add_custom_command(
             OUTPUT ${raster_file}

@@ -1,13 +1,25 @@
 project(cppgui_renderer_opengl)
 
-# GLSL shader files
-
 add_library(${PROJECT_NAME} STATIC 
     src/OpenGL_renderer.cpp include/cppgui/builtin_drivers/OpenGL_renderer.hpp
     include/cppgui/builtin_drivers/import_gl.hpp
     src/gl_shaderprogram.hpp src/gl_shaderprogram.cpp
 )
     
+# Conan-cmake: download automatically, you can also just copy the conan.cmake file
+
+if (NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+   message(STATUS "Downloading conan.cmake from https://github.com/memsharded/cmake-conan")
+   file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/master/conan.cmake"
+                 "${CMAKE_BINARY_DIR}/conan.cmake")
+endif()
+
+include(${CMAKE_BINARY_DIR}/conan.cmake)
+
+conan_cmake_run(REQUIRES glew/2.0.0-1@lasote/vcpkg
+                BASIC_SETUP CMAKE_TARGETS
+                BUILD missing)
+
 # Source files need easy access to our gl.h OpenGL importer convenience
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/cppgui/builtin_drivers/)
 
@@ -55,11 +67,15 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${OPENGL_gl_LIBRARY} ${OPENGL_glu_L
 
 # GLEW (= more OpenGL!)
 # TODO: make optional (or one of several choices)
+if (1)
+  target_link_libraries(${PROJECT_NAME} PUBLIC CONAN_PKG::glew)
+else()
 find_package(GLEW REQUIRED)
 if (GLEW_FOUND)
-    target_include_directories(${PROJECT_NAME} PRIVATE ${GLEW_INCLUDE_DIRS})
-    message("GLEW_LIBRARIES: ${GLEW_LIBRARIES}")
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${GLEW_LIBRARIES})
-    #target_compile_definitions(${PROJECT_NAME} PRIVATE GLEW_STATIC)
+  target_include_directories(${PROJECT_NAME} PRIVATE ${GLEW_INCLUDE_DIRS})
+  message("GLEW_LIBRARIES: ${GLEW_LIBRARIES}")
+  target_link_libraries(${PROJECT_NAME} PUBLIC ${GLEW_LIBRARIES})
+  #target_compile_definitions(${PROJECT_NAME} PRIVATE GLEW_STATIC)
+endif()
 endif()
 
