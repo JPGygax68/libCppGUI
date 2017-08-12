@@ -109,6 +109,8 @@ static auto parse_codepoint(const std::string &s) -> char32_t
 
 int main(int argc, const char *argv[])
 {
+    std::cout << "fontrasterizer here" << std::endl;
+
     using namespace std;
 	using cppgui::fonts::Rasterized_glyph_cbox;
     using cppgui::fonts::Character_range;
