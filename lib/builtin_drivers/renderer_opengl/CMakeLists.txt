@@ -25,9 +25,10 @@ set(GENERATED_HEADERS_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated_headers")
 target_include_directories(${PROJECT_NAME} PRIVATE ${GENERATED_HEADERS_DIR})
 
 # Find the GPC Bin2C utility
-# TODO: replace with CppGUI-specific version
+if (0)
 if (NOT TARGET gpcbin2c)
     find_package(gpcbin2c REQUIRED)
+endif()
 endif()
 
 # Add a custom target and a dependency for each shader file
