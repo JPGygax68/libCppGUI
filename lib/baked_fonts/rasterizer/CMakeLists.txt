@@ -18,10 +18,9 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindFreetype.cmake)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
 #------------------------------------------------
-# Conan
+# Conan (through cmake-conan)
 #
 
-if (0)
 # Download automatically, you can also just copy the conan.cmake file
 if (NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
    message(STATUS "Downloading conan.cmake from https://github.com/memsharded/cmake-conan")
@@ -31,11 +30,10 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-conan_cmake_run(REQUIRES freetype/2.6.3@hilborn/stable Boost/1.62.0@lasote/vcpkg
+conan_cmake_run(REQUIRES freetype/2.6.3@hilborn/stable Boost/1.62.0@lasote/stable
                 BASIC_SETUP CMAKE_TARGETS
                 OPTIONS Boost:shared=False
                 BUILD missing)
-endif()
 
 #------------------------------------------------
 # Libraries
