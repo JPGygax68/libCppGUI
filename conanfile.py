@@ -2,7 +2,7 @@ from conans import ConanFile, CMake
 
 
 class CppGUI(ConanFile):
-    requires = "gpcbin2c/0.1.1@jpgygax68/testing", "boost/1.62.0@lasote/vcpkg"
+    requires = "Boost/1.62.0@lasote/stable"
     settings = "os", "compiler", "build_type", "arch"
 
     generators = "cmake", "virtualenv"
