@@ -10,5 +10,11 @@ namespace cppgui {
     public:
 
         void run();
+
+        void run_unconstrained();
+
+    protected:
+
+        virtual void idle() {}
     };
 }

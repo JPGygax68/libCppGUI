@@ -14,4 +14,12 @@ namespace cppgui
         }
     }
 
+    void Application::run_unconstrained()
+    {
+        while (perform_pending_main_thread_tasks(false))
+        {
+            idle();
+        }
+    }
+
 } // ns cppgui
