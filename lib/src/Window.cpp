@@ -42,7 +42,7 @@ namespace cppgui {
     void Window::redraw(void *context)
     {
         begin_rendering();
-        before_draw_ui(context);
+        before_redraw(context);
         draw_ui();
         done_rendering();
     }
@@ -54,7 +54,7 @@ namespace cppgui {
                                   // TODO: must be made optional!
 
         // TODO: pass context to canvas / check if matches / etc ?
-        //before_draw_ui(_canvas.get());
+        before_draw_ui(_canvas.get());
 
         _root_widget.render(_canvas.get(), {0, 0});
         
