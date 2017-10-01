@@ -71,6 +71,12 @@ void Test_window::create_ui()
     }
     root_widget().add_child(&_listbox);
 
+    _dropdownbtn.set_font(&cppgui::baked_fonts::default_font());
+    _dropdownbtn.set_label(U"Just do it");
+    //_button.set_alignment(cppgui::cultural_minor_start);
+    root_widget().add_child(&_dropdownbtn);
+
+
 #ifdef NOT_DEFINED
 
     _menu_header.set_font(&dflt_font);
@@ -106,6 +112,7 @@ void Test_window::adjust_layout()
     _button     .set_bounds({ 300,  50 }, _button     .get_minimal_bounds());
     _checkbox   .set_bounds({ 450,  50 }, _checkbox   .get_minimal_bounds());
     _glyphbutton.set_bounds({  50, 100 }, _glyphbutton.get_minimal_bounds());
+    _dropdownbtn.set_bounds({ 350, 100 }, _dropdownbtn.get_minimal_bounds());
     _vscrollbar .set_bounds({  50, 150 }, _vscrollbar .get_minimal_bounds());
 
     {

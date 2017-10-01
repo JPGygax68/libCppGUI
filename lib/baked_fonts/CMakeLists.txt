@@ -56,4 +56,6 @@ configure_file("${PROJECT_SOURCE_DIR}/cppgui_baked_fonts_config.in.hpp"
                "${PROJECT_BINARY_DIR}/cppgui_baked_fonts_config.hpp" )
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_BINARY_DIR})
 
+# Cereal (header-only library)
 
+target_link_libraries(${PROJECT_NAME} PUBLIC CONAN_PKG::cereal)

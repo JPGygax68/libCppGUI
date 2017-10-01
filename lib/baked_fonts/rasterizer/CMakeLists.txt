@@ -15,7 +15,7 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-conan_cmake_run(REQUIRES freetype/2.6.3@hilborn/stable
+conan_cmake_run(REQUIRES freetype/2.6.3@hilborn/stable Boost/1.62.0@lasote/stable
                 BASIC_SETUP CMAKE_TARGETS
                 BUILD missing)
 
@@ -39,48 +39,25 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/external/
 
 # Boost
 
+if (1)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE CONAN_PKG::Boost)
+
+else()
 set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost REQUIRED COMPONENTS system filesystem)
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${Boost_INCLUDE_DIR})
+endif()
 
 # FreeType
 
-if (1)
+target_link_libraries(${PROJECT_NAME} PRIVATE CONAN_PKG::freetype)
 
-target_link_libraries(${PROJECT_NAME} CONAN_PKG::freetype)
+# Cereal (header-only library)
 
-else()
+target_link_libraries(${PROJECT_NAME} PUBLIC CONAN_PKG::cereal)
 
-if (0)
-# FreeType: get the one we built as part of our prereqs
-
-set(ENV{FREETYPE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../prereqs/install/freetype)
-find_package(Freetype REQUIRED)
-target_link_libraries(${PROJECT_NAME} ${FREETYPE_LIBRARIES})
-target_include_directories(${PROJECT_NAME} PRIVATE ${FREETYPE_INCLUDE_DIRS})
-#target_link_libraries(${PROJECT_NAME} freetype)
-
-else()
-
-add_subdirectory(external/freetype2)
-include_directories(external/freetype2/include)
-target_link_libraries(${PROJECT_NAME} freetype)
-
-endif()
-
-# Also required for FreeType
-if (0)
-add_subdirectory("external/zlib")
-if (NOT TARGET zlib)
-    message(FATAL_ERROR "zlib is not defined as a target")
-endif()
-ExternalProject_Add(zlib URL http://www.zlib.net/zlib-1.2.11.tar.gz)
-else()
-endif()
-target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARIES})
-target_include_directories(${PROJECT_NAME} PRIVATE ${ZLIB_INCLUDE_DIRS})
-endif()
 
 #-----------------------------------------------
 # Testing
