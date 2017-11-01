@@ -4,6 +4,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindFreetype.cmake)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
+if (1)
 # Conan
 
 # Download automatically, you can also just copy the conan.cmake file
@@ -15,9 +16,12 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-conan_cmake_run(REQUIRES freetype/2.6.3@hilborn/stable Boost/1.62.0@lasote/stable
+conan_cmake_run(REQUIRES 
+                  freetype/2.6.3@hilborn/stable 
+                  # Boost/1.62.0@lasote/stable
                 BASIC_SETUP CMAKE_TARGETS
                 BUILD missing)
+endif()
 
 #------------------------------------------------
 # Target: executable
@@ -39,14 +43,13 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/external/
 
 # Boost
 
-if (1)
-
+if (0)
 target_link_libraries(${PROJECT_NAME} PRIVATE CONAN_PKG::Boost)
-
 else()
+
 set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost REQUIRED COMPONENTS system filesystem)
-target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${Boost_INCLUDE_DIR})
 endif()
 
