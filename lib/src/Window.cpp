@@ -40,6 +40,7 @@ namespace cppgui
     {
         create_ui();
 
+        _root_widget.init();
         _root_widget.init_layout();
 
         _canvas = std::make_unique<Canvas>();

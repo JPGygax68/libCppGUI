@@ -78,7 +78,7 @@ namespace cppgui {
         window_map().erase(id());
     }
 
-    void SDL2_window::init()
+    void SDL2_window::do_init()
     {
         if (!_init_done)
         {
@@ -93,7 +93,7 @@ namespace cppgui {
         }
     }
 
-    void SDL2_window::cleanup()
+    void SDL2_window::do_cleanup()
     {
         assert(_init_done);
 
@@ -231,7 +231,7 @@ namespace cppgui {
     {
         //std::cout << "Window::handle_window_event()" << std::endl;
 
-        if (!_init_done) init();
+        if (!_init_done) do_init();
 
         switch (ev.event)
         {
@@ -249,7 +249,7 @@ namespace cppgui {
             break;
         case SDL_WINDOWEVENT_CLOSE:
             closing();
-            cleanup();
+            do_cleanup();
             break;
         default:
             break;

@@ -119,8 +119,8 @@ namespace cppgui
         void handle_redraw();
         // /*virtual*/ void handle_custom_event(SDL_UserEvent &) {}
 
-        void init();
-        void cleanup();
+        void do_init();
+        void do_cleanup();
 
         SDL2_window(const SDL2_window &) = delete; // no copy constructor please
         struct Deleter { void operator() (SDL_Window *win); };
