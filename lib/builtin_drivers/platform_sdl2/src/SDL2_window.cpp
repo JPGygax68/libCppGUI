@@ -242,15 +242,14 @@ namespace cppgui {
 
     void SDL2_window::handle_textinput_event(SDL_TextInputEvent & ev)
     {
-        #if _MSC_VER == 1900
+        #if _MSC_VER
         std::wstring_convert<std::codecvt_utf8<int32_t>, int32_t> utf32conv;
         auto utf32 = utf32conv.from_bytes(ev.text);
         text_input(reinterpret_cast<const char32_t *>(utf32.data()), utf32.size());
         #else
         std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> utf32conv;
         auto utf32 = utf32conv.from_bytes(ev.text);
-        _text_input_handler(utf32.c_str(), utf32.size());
-        p()->text_input(utf32.data(), utf32.size());
+        text_input(utf32.data(), utf32.size());
         #endif
     }
 

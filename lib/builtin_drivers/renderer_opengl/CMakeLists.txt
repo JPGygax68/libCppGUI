@@ -57,9 +57,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${OPENGL_gl_LIBRARY} ${OPENGL_glu_L
 # TODO: make optional (or one of several choices)
 find_package(GLEW REQUIRED)
 if (GLEW_FOUND)
-    target_include_directories(${PROJECT_NAME} PRIVATE ${GLEW_INCLUDE_DIRS})
-    message("GLEW_LIBRARIES: ${GLEW_LIBRARIES}")
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${GLEW_LIBRARIES})
-    #target_compile_definitions(${PROJECT_NAME} PRIVATE GLEW_STATIC)
+  target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::glew)
 endif()
 

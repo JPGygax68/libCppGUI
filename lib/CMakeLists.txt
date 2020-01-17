@@ -2,7 +2,7 @@ project (libCppGUI)
 
 #------------------------------------------------------------------------------
 #  libCppGUI - A GUI library for C++11/14
-#  
+#
 #  Copyright 2016,2017 Hans-Peter Gygax
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,7 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-conan_cmake_run(REQUIRES cereal/1.2.2@Brunni/stable
+conan_cmake_run(REQUIRES cereal/1.2.2@conan/stable
                 BASIC_SETUP CMAKE_TARGETS
                 BUILD missing)
 
@@ -45,7 +45,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/builtin_drivers/platform_sdl2)
 
 
 # Define main target: static library
-add_library( ${PROJECT_NAME} 
+add_library( ${PROJECT_NAME}
 STATIC
 
     # "fonts" component  TODO: single out into own library again ?
@@ -128,4 +128,11 @@ target_link_libraries(${PROJECT_NAME} PUBLIC cppgui_platform_sdl2)
 # Dependencies
 #
 
-target_link_libraries(${PROJECT_NAME} PUBLIC CONAN_PKG::cereal)
+if (1)
+  if (NOT TARGET cereal)
+    message(FATAL_ERROR "Target \"cereal\" must be provided!")
+  endif()
+  target_link_libraries(${PROJECT_NAME} PUBLIC cereal)
+else()
+  target_link_libraries(${PROJECT_NAME} PUBLIC CONAN_PKG::cereal)
+endif()

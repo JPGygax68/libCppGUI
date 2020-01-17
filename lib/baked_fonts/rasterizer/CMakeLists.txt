@@ -16,8 +16,8 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-conan_cmake_run(REQUIRES 
-                  freetype/2.6.3@hilborn/stable 
+conan_cmake_run(REQUIRES
+                  freetype/2.10.1
                   # Boost/1.62.0@lasote/stable
                 BASIC_SETUP CMAKE_TARGETS
                 BUILD missing)
@@ -59,7 +59,14 @@ target_link_libraries(${PROJECT_NAME} PRIVATE CONAN_PKG::freetype)
 
 # Cereal (header-only library)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC CONAN_PKG::cereal)
+if (1)
+  if (NOT TARGET cereal)
+    message(FATAL_ERROR "Target \"cereal\" must be provided!")
+  endif()
+  target_link_libraries(${PROJECT_NAME} PUBLIC cereal)
+else()
+  target_link_libraries(${PROJECT_NAME} PUBLIC CONAN_PKG::cereal)
+endif()
 
 
 #-----------------------------------------------
